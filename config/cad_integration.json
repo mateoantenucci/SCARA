@@ -1,0 +1,112 @@
+{
+  "source_assembly": "0-EnsambleColision.SLDASM",
+  "canonical_frame": "Z arriba mediante Rx(pi); J1 en X=Y=0; plano inferior de torre Z=0; J1-J2 guardado alineado con +X",
+  "shoulder_center_local_m": [
+    0,
+    0,
+    0.03
+  ],
+  "elbow_center_local_m": [
+    0,
+    0,
+    0.22
+  ],
+  "tool_point_local_m": [
+    0,
+    0,
+    0
+  ],
+  "tool_heading_local": [
+    -1,
+    0,
+    0
+  ],
+  "saved_slider_position_m": 0.06,
+  "reference_status": "Convenciones de simulacion provisionales. No son ceros, homing, TCP ni fase de montaje certificados.",
+  "groups": {
+    "base": [
+      "0-Torre-1",
+      "A-CarretelInf-1"
+    ],
+    "arm": [
+      "A-Brazo-1",
+      "A-BridaEje-1",
+      "A-CarretelSup-1",
+      "B-CarretelSup-1"
+    ],
+    "forearm": [
+      "B-Antebrazo-1",
+      "B-CarretelInf-1",
+      "NEMA17-1",
+      "R-Bancada-1",
+      "R-ContraBancada-1",
+      "R-CarretelInf-1"
+    ],
+    "wrist": [
+      "Z-BujeExterior-1",
+      "Z-Cuerpo-1",
+      "Z-SoporteM4-1",
+      "Z-SoporteRuleman-1",
+      "NEMA17-2",
+      "R-CarretelSup-1"
+    ],
+    "tool": [
+      "Z-Piston-1",
+      "Z-SoporteEfector-1"
+    ]
+  },
+  "provisional_attachments": [
+    "A-CarretelInf-1",
+    "A-CarretelSup-1",
+    "B-CarretelInf-1",
+    "B-CarretelSup-1",
+    "R-CarretelInf-1",
+    "R-CarretelSup-1"
+  ],
+  "attachment_note": "Lados de articulacion inferidos de diametros, contactos y montaje; la fase angular de los carreteles no esta resuelta por mates. Se conserva la pose guardada y se propone una pertenencia visual reversible. Ver docs/INTEGRACION_CAD_CRITERIOS.md.",
+  "additional_occurrences": {
+    "base": [
+      "0-Bancada-registro-1",
+      "0-ElevadorM2-registro-1",
+      "0-PlatinaSuperior-registro-1",
+      "0-SoporteMotores-registro-1",
+      "NEMA23-registro-1",
+      "NEMA23-registro-2",
+      "0-6203-2RS-registro-1",
+      "0-6203-2RS-registro-2"
+    ],
+    "arm": [
+      "B-SoporteRuleman-registro-1",
+      "B-SoporteRuleman-registro-2",
+      "Z-608zz-registro-1",
+      "Z-608zz-registro-2",
+      "2GT_80Teet_16Bore-registro-1"
+    ],
+    "forearm": [
+      "B-SoporteEjeFijo-registro-1",
+      "B-SoporteM3-registro-1",
+      "Z-6907-2RS-registro-1",
+      "Z-6907-2RS-registro-2",
+      "2GT_60Teet_8Bore-registro-1"
+    ],
+    "wrist": [
+      "2GT_80Teet_40Bore-registro-R"
+    ]
+  },
+  "additional_note": "Colocaciones registradas desde subensambles; no resuelven todos los mates ni certifican una revisión oficial. Seis rodamientos se muestran como simplificaciones sobre sus soportes, sin separar anillos ni asignar masa. Las poleas de salida 80_16 y 60_8 acompañan al brazo y antebrazo respectivamente: ejes y diámetros coinciden con sus fijaciones; se conserva la fase guardada, provisional. Las poleas de motor y del eje interior, ejes con poses/revisiones ambiguas y elementos de transmisión no sustentados quedan fuera. Ver docs/TRANSMISION.md. Polea de muñeca 80_40 seleccionada explícitamente desde R-EnsambleRotacion: apoyo en escalón y sin invasión BREP; no se adopta la pose B incompatible. Fase y fijación siguen provisionales.",
+  "placement_overrides": {
+    "R-ContraBancada-1": {
+      "assembly": "R-EnsambleRotacion.SLDASM",
+      "anchor": "R-Bancada-1",
+      "reason": "Adoptar la pose relativa guardada en el subensamble coherente: la tapa global está invertida y desplaza 3 mm los asientos. Se conserva el original; no se desplaza ni deforma la geometría. Corrección del prototipo, no revisión mecánica oficial."
+    }
+  },
+  "ambiguous_occurrence_choices": {
+    "2GT_80Teet_40Bore-registro-R": {
+      "basename": "2GT_80Teet_40Bore.SLDPRT",
+      "source_assembly": "R-EnsambleRotacion",
+      "source_instance": "2GT_80Teet_40Bore-1",
+      "reason": "El montaje R apoya en el escalón de Z-BujeExterior sin invasión BREP; la alternativa de B invade el escalón 470.3756 mm³. Solo visual en muñeca, fase y fijación provisionales; ver validation/remaining_mounts.json."
+    }
+  }
+}

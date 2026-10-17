@@ -1,0 +1,121 @@
+{
+  "status": "passed",
+  "created_utc": "2026-10-16T20:20:33.690545+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "scope": "Four supported bearing visuals, sampled internal CAD audit and continuous tool/payload versus fixed base envelope guard",
+  "instances": 34,
+  "added_visual_bearings": [
+    "0-6203-2RS-registro-1",
+    "0-6203-2RS-registro-2",
+    "Z-608zz-registro-1",
+    "Z-608zz-registro-2"
+  ],
+  "prior_30_instances_max_pose_matrix_change": 0.0,
+  "original_files_checked": 152,
+  "originals_unchanged": true,
+  "physics_parameters_unchanged": {
+    "geometry": true,
+    "limits": true,
+    "initial_positions": true,
+    "max_velocity": true,
+    "max_acceleration": true,
+    "max_effort": true,
+    "body_properties": true,
+    "environment": true,
+    "simulation": true
+  },
+  "physics_note": "No mass, COM, inertia, effort, timestep or joint-limit change; only collision scope/provenance texts changed in config",
+  "properties_summary": {
+    "parts": 50,
+    "computed_parts": 49,
+    "computed_solids": 51,
+    "excluded_parts": [
+      "B-ExtensorM3"
+    ],
+    "instances": 34,
+    "computed_instances": 34
+  },
+  "guard_scope": {
+    "continuous_environment": true,
+    "continuous_tool_and_payload_vs_fixed_base": true,
+    "continuous_other_internal_pairs": false,
+    "native_selfCollision": false,
+    "margin_m": 0.001,
+    "conservative_envelopes_may_reject_clear_paths": true
+  },
+  "software_tests": {
+    "passed": 32,
+    "skipped": 0
+  },
+  "internal_audit": {
+    "instances": 34,
+    "poses": 41,
+    "bbox_candidates": 680,
+    "confirmed_intersections": 4,
+    "initial_envelope_overlaps_without_CAD_volume": 12,
+    "checks_passed": 6,
+    "status": "interferences_found"
+  },
+  "native_CAD": {
+    "status": "passed",
+    "snapshots": 11,
+    "instance_comparisons": 374,
+    "arrivals": 6
+  },
+  "native_contacts": {
+    "status": "passed",
+    "checks": 6
+  },
+  "external_CAD": {
+    "status": "passed",
+    "summary": {
+      "poses": 11,
+      "movable_instances": 24,
+      "valid_movable_instances": 24,
+      "excluded_movable_instances": 0,
+      "confirmed_intersections": 8
+    }
+  },
+  "baseline_reproducer": {
+    "command": "python3 -B -m unittest tests.test_collisions.CollisionTests.test_folded_tool_cannot_enter_the_fixed_tower -v",
+    "before": "FAILED: four known CAD invasions were allowed; conflict=None",
+    "after": "Passed: all four rejected before changing commanded position",
+    "baseline_snapshot": "validation/historico/antes_montaje_20261016"
+  },
+  "withheld": [
+    "Two wrist bearings: 3 mm axial mismatch in opposing housing",
+    "Six pulleys: rotor/transmission assignment remains unresolved",
+    "Z internal assembly revisions not globally registered"
+  ],
+  "limitations": [
+    "41 sampled poses do not certify all internal trajectories",
+    "No same-rigid-body pair audit or omitted-component coverage",
+    "Guard bounds nominal reference only, not physical motion under faults",
+    "Bearings are axisymmetric visual simplifications; races are not animated independently",
+    "Windows/Linux native validation remains pending"
+  ],
+  "sources_sha256": {
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "config/cad_integration.json": "166422832b5d7bf09f2e882c0fc7988dc9da23e9d624ebb0e44132175ebcecae",
+    "scara/collisions.py": "25cad1ea1031e727ac50daaa4244b352f83138c8da5c0ec5e0c7293e2eab33ec",
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "tools/check_self_collisions.py": "20752a44ee7fec80b8ce1b9f6fb82808e8a35e52dc19e10e23311c2d6d81b2af",
+    "tools/check_collisions.py": "4c7c1b2bd4696e587f25085cf8a82b790b6086d17b6f88fcf4d2cb9d7ea22cab",
+    "tools/check_collisions_native.py": "8516003e34252e0a8c2f5575559107e08a86e36e7bc5dc076fbe720989e071b7",
+    "tools/check_cad_motion.py": "c21bd01f906d5d327c41c252ab7a4a8cb390275ef16f1794a28a8a094b6e2120",
+    "tools/generate_world.py": "168e01f570e97d3055365d5c327d3221c9b2269d87e9981dcae2a8b7cd0baa3f",
+    "tools/integrate_cad.py": "0afeba5ddcfae7c1f15900fdc9072df6e49b364221c785dea947cb2c19a9bd76",
+    "tests/test_collisions.py": "e6c301e201a71cf734d15d02dd924dec9627bb60f5ae79fe20bc2360f753f746",
+    "cad/ensambles/integracion_articulada.json": "50012030877ff706695f0ad644baef86604762168d31af94969bbcb54f1c2331",
+    "cad/propiedades/propiedades_geometricas.json": "59e52f1b41e836844a4eb7f87abe12847e8d8ae499ed3c24d355ad23992eee35",
+    "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+    "webots/protos/SCARA.proto": "ff33b74546069e84961f07b0dc27012d937c9bef444541366098a267508c2078",
+    "validation/self_collisions.json": "7cc85170006526913540b6c1d76a46a4f212965189b8e98f4ea8bb8ab09ab324",
+    "validation/collisions_mounting.json": "1eca2cac48b29c3126449ab91d6540aba37bfb3f14fc19257a9bc7298571af4a",
+    "validation/collisions_native_mounting.json": "015befe1ca2675ab4fed1d14cc3f18096a2902256a5ad3bea432fc5ad45d6d1d",
+    "validation/cad_motion_mounting.json": "1f41b4f324d4fabaf7c9fcf7f78668b15807eeedc31534912fc1f62708286796",
+    "validation/mounting_tests.json": "475ed797b2a1b9c6b98a6ff06e8ca0975d49ce299fc5740e1521fe9057d37ace",
+    "validation/mounting_evidence.json": "c9c92b885b0f754e0a9e1404bc6cbd7ce4b7abe198142593ad631b60ea73f8d9"
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "scope": "Comparación de aceptación de consignas, no ejecución física de la revisión anterior",
+  "cases": [
+    {
+      "name": "folded_pedestal",
+      "start": [
+        0,
+        1.5707963267948966,
+        -1.5707963267948966,
+        0.06
+      ],
+      "target": [
+        0,
+        2.356194490192345,
+        -2.356194490192345,
+        0.12
+      ],
+      "before": {
+        "event": "accepted",
+        "id": null,
+        "mode": "MOVING"
+      },
+      "after": {
+        "event": "rejected",
+        "id": null,
+        "message": "Recorrido rechazado: Z-Piston-1 puede tocar pedestal_de_ensayo (envolventes y margen 1 mm)"
+      }
+    },
+    {
+      "name": "clear_endpoints_invasive_middle",
+      "start": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.12
+      ],
+      "target": [
+        0.5235987755982988,
+        2.0943951023931953,
+        0,
+        0.12
+      ],
+      "before": {
+        "event": "accepted",
+        "id": null,
+        "mode": "MOVING"
+      },
+      "after": {
+        "event": "rejected",
+        "id": null,
+        "message": "Recorrido rechazado: Z-Piston-1 puede tocar pedestal_de_ensayo (envolventes y margen 1 mm)"
+      }
+    }
+  ],
+  "sources_sha256": {
+    "validation/historico/antes_colisiones_20261015/scara/runtime.py": "b44882cfd2cabd4ae4435860994784fe4376174c379a7c232355c357e8a4a287",
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+    "scara/collisions.py": "d322e655a32a5e5a604f33adb9e4789fdf71bfa675837adbc35abd8ba21545d7"
+  }
+}

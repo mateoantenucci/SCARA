@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "completed_utc": "2026-10-17T23:24:13.968415+00:00",
+  "status": "complete",
+  "owner": "director/root",
+  "scope": "Only new isolated copies owned by roundA; prior rounds,installed Webots,CAD environment and foreign processes preserved",
+  "removed": [
+    {
+      "path": "/private/tmp/scara-rondaA-20261017-01",
+      "owner_uid": 501,
+      "regular_files": 6877,
+      "bytes": 477369735,
+      "symlinks_unlinked_without_following": 48,
+      "lsof_before_removal": {
+        "exit_code": 1,
+        "stdout_empty": true,
+        "stderr_empty": true
+      },
+      "reason": "Reviewed candidates copied exactly; runtime ZIP,source identity,15screenshots,rawtelemetry,events,CAD39/38comparison,reproducibleCADchecker,independent reviews and manifests durable in project",
+      "absence_verified": true
+    }
+  ],
+  "preserved": [
+    "validation/sesion5/SCARA-ejecucion.zip and LEEME",
+    "cad/propiedades/propiedades_geometricas.{json,csv} historical38",
+    "validation/sesion6 and prior rollback snapshots",
+    ".agent-state/ronda-profesor-20261017/baseline-rondaA.json and antes-rondaA.tar.gz",
+    "Existing CAD venv /private/tmp/scara-cad-piloto-20261014/venv",
+    "Foreign Webots PID983/TCP19051 and all prior session temporary resources"
+  ],
+  "not_retained": [
+    "Clean runtime extraction reconstructible from exact preserved ZIP",
+    "Full isolated CAD project reconstructible from source and baseline",
+    "Temporary Webots application clone: only appmetadata modified,installed executable hash and build retained",
+    "One-off capture/metadata/review-generation helpers; generated results and sources retained"
+  ],
+  "verification": {
+    "candidate_files_preserved": 55,
+    "links_checked": 106,
+    "broken_links": 0,
+    "software_or_native_suites_rerun": false,
+    "package_rebuilt": false
+  },
+  "final_listener_observation": {
+    "observed_utc": "2026-10-17T23:24:49.547403+00:00",
+    "own_ports_8765_9000_1237": "no listeners",
+    "foreign_port19051": {
+      "pid": 983,
+      "process": "Python",
+      "address": "127.0.0.1",
+      "state": "LISTEN"
+    },
+    "foreign_resources_modified": false
+  }
+}

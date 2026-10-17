@@ -1,0 +1,388 @@
+{
+  "schema_version": 1,
+  "prepared_utc": "2026-10-17T22:52:03.030178+00:00",
+  "meeting_date_local": "2026-10-20",
+  "timezone": "America/Argentina/Tucuman",
+  "round_date": "2026-10-17",
+  "status": "consolidated_available_evidence_for_meeting",
+  "identity": {
+    "scheme": "SHA-256 per source and evidence file; no Git revision available in this workspace",
+    "source_root": "/Users/mateoantenucci/Developer/SCARA",
+    "visual_instances": 39,
+    "geometric_precalculation_instances": 38,
+    "active_physics": "unchanged provisional body properties",
+    "protocol": "scara-dev/1 provisional",
+    "sources_sha256": {
+      "cad/ensambles/integracion_articulada.json": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475",
+      "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+      "config/cad_integration.json": "f974033cc568cec76d0be0b380df7195cbe90c0966766144701e2ad02c5654b5",
+      "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+      "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+      "webots/controllers/scara_bridge/scara_bridge.py": "bd1d225a863c14d9371a6f28644cf2c6c9d6730cb78041e0ef946826ab7e30ba",
+      "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+      "scara/collisions.py": "25cad1ea1031e727ac50daaa4244b352f83138c8da5c0ec5e0c7293e2eab33ec",
+      "scara/kinematics.py": "9ac6bb81fc5511d90b79e0aec77eb59464c80df4ee559a3b1cf3bba6550b41a9",
+      "scara/transport.py": "090c4588e846d36de6de330ea0cf888481dcdac3792f2342e90ac94619fb8d0b",
+      "client/app.py": "2c787b00e2ec1998477bc2588e61ab026eb06930c1dff3bc369e6c7a1a0a91be",
+      "client/index.html": "0799eb40e667a90f4f38aef1c579c3409a17d5ba2708fbf3d36c492831b5b3d5",
+      "tools/check_self_collisions.py": "e73d986b98ca3c51dd659a858e17ce497735ecb4b3a220b089df4d63c216e3c6",
+      "tests/test_collisions.py": "dfc34955865bc4d461c449ccc550a99cb3d8781ac7b336d615d7ddb489eda435"
+    }
+  },
+  "sessions": [
+    {
+      "session": 1,
+      "state": "integrated_reviewed",
+      "result": "39 visual instances; wrist pulley from saved R assembly; omitted parts retained with reasons",
+      "checks": {
+        "software_at_session1": 35,
+        "software_skips": 0,
+        "native_placement_comparisons": 429,
+        "native_joint_arrivals": 6,
+        "native_contact_checks": 6
+      },
+      "environment": {
+        "platform": "macOS27.0.1 arm64",
+        "python_with_ocp": "3.12.14",
+        "webots": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+        "physics_step_ms": 2
+      },
+      "evidence": [
+        {
+          "path": "validation/remaining_mounts.json",
+          "sha256": "3941220c89526caeca18923f6a23ee9a416c2b3f6537ebb0678400170a399143"
+        },
+        {
+          "path": "validation/remaining_mounts_execution.json",
+          "sha256": "0fea004d53fcb65dd7df74964463427a3d030f87b6d70e8ee8899ed8d3398363"
+        },
+        {
+          "path": "validation/remaining_mounts_tests.json",
+          "sha256": "f842a69d3f740cd646bc439cea2d0cd784f15b3391067f99a363c09658bf3365"
+        },
+        {
+          "path": "validation/cad_motion_remaining.json",
+          "sha256": "fd8c8ddd122132c82ca544080adbd9331c9760d3602ec938619744ac9ef7d469"
+        },
+        {
+          "path": "validation/collisions_native_remaining.json",
+          "sha256": "8b5017511cd05279cc7a1d96c91f6bce0091288cae144608c6ab3ad2f01efe44"
+        }
+      ],
+      "limits": [
+        "175 protected originals unchanged according to session1 baseline verification",
+        "M3 extensor diameter8mm / pinion bore5mm, incompatible axial overlap17mm",
+        "Tower shafts and vertical revisions remain unresolved",
+        "No active physics change"
+      ]
+    },
+    {
+      "session": 2,
+      "state": "integrated_reviewed",
+      "result": "Extended finite CAD audit and Runtime rejection regression; no model, contact-shape or guard coverage change",
+      "checks": {
+        "software_discovered": 36,
+        "software_passed": 36,
+        "software_skipped": 0,
+        "cad_named_samples": 95,
+        "cad_unique_poses": 78,
+        "pairs_total": 741,
+        "pairs_between_bodies_evaluated": 583,
+        "pairs_same_body_excluded": 158,
+        "intersection_records": 8,
+        "unique_known_intrusive_poses": 4,
+        "new_interfering_pairs": 0,
+        "initial_false_envelope_overlap_pairs": 23,
+        "runtime_crossing_rejections": 4
+      },
+      "environment": {
+        "platform": "macOS27.0.1 arm64",
+        "python": "3.12.14",
+        "ocp": true
+      },
+      "evidence": [
+        {
+          "path": "validation/sesion2/INFORME.md",
+          "sha256": "7582601e488589eb999db3e54570cd19cd1319a939d0ef1b0c04ccafcf68b6b8"
+        },
+        {
+          "path": "validation/sesion2/self_collisions.json",
+          "sha256": "d1bcc7a365f8ad829ff62a7721ae86dfdd824f16f40aa2de1b7565a834fea400"
+        },
+        {
+          "path": "validation/sesion2/execution.json",
+          "sha256": "b8c5db9a873b9143ddd406369a3e9beccde39a86e022eda6fb2ea30e1b765e8b"
+        },
+        {
+          "path": "validation/sesion2/review.json",
+          "sha256": "9f5ad425ecfbae9cb8e5d514b71697c92cc149e79244627c0ca4f941d4f505cd"
+        },
+        {
+          "path": "validation/sesion2/integration.json",
+          "sha256": "3576cab95da8fa465b499f565d0ef4902d7e0c82fcf183604313d55864b086e1"
+        }
+      ],
+      "native_reuse": {
+        "from_session": 1,
+        "checks": 6,
+        "reported_source_hashes_identical": 13,
+        "rerun": false
+      },
+      "limits": [
+        "Finite samples, no continuous all-pairs CAD sweep or proof of full motion space",
+        "Continuous nominal guard only environment and tool/payload against fixed base",
+        "SelfCollision remains FALSE; no internal physical contact validation",
+        "Volume threshold0.001mm3 is numerical, not physical clearance; guard margin1mm / bound resolution0.2mm"
+      ]
+    },
+    {
+      "session": 3,
+      "state": "integrated_reviewed_documentary",
+      "result": "Primary-source nominal material/printing/transmission preparation; no new physical properties applied",
+      "evidence": [
+        {
+          "path": "validation/physics_sources.json",
+          "sha256": "920956287162b3eb48be6a4744138e61b18ced8937de16065150aff4dd858b9a"
+        }
+      ],
+      "method": "Local master/drawings/G-code, manufacturer catalog searches, exact nominal arithmetic; no Webots or hardware measurements",
+      "limits": [
+        "Material indications are per-piece design nominal values",
+        "G-code covers A lower+upper together; not measured mass nor split per piece",
+        "Exact motor datasheets not found in consulted sources; not proof none exist",
+        "Geometric precalculation retained38instances; not effective mass/inertia of39visualinstances"
+      ]
+    },
+    {
+      "session": 4,
+      "state": "native_final_passed_independently_reviewed",
+      "result": "16 native checks on final39 minimal package; reset to stable stopped trial; historical38 retained separately",
+      "baseline": {
+        "visual_instances": 38,
+        "software_passed": 34,
+        "native_checks": 15
+      },
+      "limits": [
+        "No implemented homing; reset_trial reloads known simulation state",
+        "Injected fault notice is not autonomous hardware diagnosis",
+        "No silent-network-loss detection, encoder, step-loss or detachment certification"
+      ],
+      "checks": {
+        "simulation": 9,
+        "supplement": 6,
+        "demo_collision": 1,
+        "total_native": 16
+      },
+      "environment": {
+        "platform": "macOS27.0.1 arm64",
+        "webots": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+        "python": "3.9.6 standard; -B -S checker",
+        "physics_step_ms": 2
+      },
+      "evidence": [
+        {
+          "path": "validation/sesion4/final39_execution.json",
+          "sha256": "064bf3343f5b98a28ad46c8ad0e8471a271c20120b915de491074537da1de021"
+        },
+        {
+          "path": "validation/sesion4/final39_simulation.json",
+          "sha256": "7c0dc706090b0c7f04b414537c3d0b6af7be6122d39bed0bba5e82a9cd6d1c69"
+        },
+        {
+          "path": "validation/sesion4/final39_supplement.json",
+          "sha256": "cbd05c72c46150702890e5db24da5dd20828ef8a1bf5d6f4d8a9a321efc3d313"
+        },
+        {
+          "path": "validation/sesion4/final39_demo_collision.json",
+          "sha256": "922fba407d5264f28146c64669e9637478cdddcd66170c2a60ca6384a7b7336c"
+        },
+        {
+          "path": "validation/sesion4/review.json",
+          "sha256": "67274ea32454406c5111fe63b1462dc51d8171ca6a48fb682b02e4647d6d59c5"
+        }
+      ],
+      "execution_notes": [
+        "Runtime sources match root except TCP port controllerArgs in copied world; complete hashes in execution report",
+        "21+12 checker assertion ASTs identical after adapting harness/input/output paths",
+        "No product code changes; application closed, ports19141/19143 free",
+        "No new visual browser observation; no deliberate physical impact in collision demo"
+      ]
+    },
+    {
+      "session": 5,
+      "state": "passed_available_platform_scope_reviewed",
+      "result": "Clean spaced-path runtime package; real software execution on three interpreters;16native macOS checks reused from exact final4 runtime sources",
+      "checks": [
+        {
+          "platform": "macOS27.0.1 arm64",
+          "python": "3.9.6",
+          "discovered": 36,
+          "passed": 33,
+          "skipped_ocp": 3,
+          "http_checks_without_webots": 5,
+          "real_execution": true
+        },
+        {
+          "platform": "macOS27.0.1 arm64",
+          "python": "3.15.0",
+          "discovered": 36,
+          "passed": 33,
+          "skipped_ocp": 3,
+          "http_checks_without_webots": 5,
+          "real_execution": true
+        },
+        {
+          "platform": "Linuxarm64 Dockerlocal",
+          "python": "3.12.15",
+          "discovered": 36,
+          "passed": 33,
+          "skipped_ocp": 3,
+          "http_checks_without_webots": 5,
+          "real_execution": true
+        }
+      ],
+      "package": {
+        "path": "validation/sesion5/SCARA-ejecucion.zip",
+        "sha256": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+        "files": 52,
+        "stl_meshes": 35,
+        "bytes_uncompressed": 6546305,
+        "archive_bytes": 1743294,
+        "runtime_source_files": 51,
+        "qa_source_files_in_separate_full_copy": 340
+      },
+      "limits": [
+        "Five HTTP checks start real client.app with no Webots; no visual browser QA",
+        "client socket tests use reference test server, not native robot",
+        "Linux container has no desktop/Webots; Windows unavailable",
+        "Runtime ZIP excludes original CAD, tests and validation scripts"
+      ],
+      "evidence": [
+        {
+          "path": "validation/sesion5/snapshot.json",
+          "sha256": "eafcf27bff17053675faf9fecb88c1bab0751c950dd88a2a5e5d4721acad8c54"
+        },
+        {
+          "path": "validation/sesion5/portability.json",
+          "sha256": "cf0a33b0fa6f36787470479a08b1df9d60ca5cfcb7cdcecada66f50685c845f4"
+        },
+        {
+          "path": "validation/sesion5/final_root_match.json",
+          "sha256": "3380d8a513011edec60ec0928962453562be6dfad2089b46e429bb4942905c79"
+        },
+        {
+          "path": "validation/sesion5/review.json",
+          "sha256": "6adb216cab8cbcf74d8a9629150a89135406ce4a423908491b519ea4a2bbdc49"
+        }
+      ],
+      "native_identity": {
+        "report": "validation/sesion4/final39_execution.json",
+        "checks": 16,
+        "only_runtime_test_difference": "TCP port19141 in copied world vs9000 delivered",
+        "only_package_change_after_native": "LEEME evidence wording"
+      }
+    },
+    {
+      "session": 6,
+      "state": "meeting_material_prepared",
+      "result": "Prioritized questions with decisions and concrete movement/collision/Hall demo; merged into existing document owners",
+      "documents": [
+        "docs/VALIDACION_WEBOTS.md",
+        "docs/DATOS_PARA_EL_PROFESOR.md"
+      ],
+      "demo": {
+        "status": "software_and_native_tcp_checked_no_new_visual_browser_qa",
+        "initial": "fresh reset_trial, payload0kg, explicit rearm, current initial_positions",
+        "movement": {
+          "xyz_mm": [
+            240,
+            250,
+            35
+          ],
+          "yaw_deg": null,
+          "speed_fraction": 0.3,
+          "success": "completed consignas followed by simulated arrival observation"
+        },
+        "collision_after_movement": {
+          "xyz_mm": [
+            73.2233,
+            176.7767,
+            34.6669
+          ],
+          "yaw_deg": 0,
+          "speed_fraction": 0.3,
+          "software_ik_q_deg_mm": [
+            2.1558641969061555e-06,
+            134.99999936856233,
+            -135.00000152442652,
+            59.999958864799474
+          ],
+          "software_result": "rejected possible tool/tower contact; Runtime unchanged",
+          "software_check_scope": "inverse and Runtime only; no browser nor Webots for this preparation",
+          "native_evidence": "validation/sesion4/final39_demo_collision.json",
+          "native_result": "rejected tool/tower potential contact,6unchanged samples; physical position within tolerances"
+        },
+        "fault_after_fresh_reset": {
+          "kind": "hall_stuck",
+          "axis": 1,
+          "factor": 1,
+          "expected": "Injected signal/fault visible; rearm blocked until clear_faults; clear does not rearm; explicit rearm then stop to finish STOPPED"
+        }
+      },
+      "limits": [
+        "Meeting questions not sent to professor",
+        "No human, visual browser or physical QA claimed",
+        "Independent review and integration records:validation/sesion6/review.json and integration.json"
+      ]
+    }
+  ],
+  "remaining_decisions": [
+    {
+      "priority": 1,
+      "owner": "Professor/design authority",
+      "question": "Official mechanical revision/configuration, M3/shafts/vertical discrepancies, fixtures/phases/belts",
+      "unblocks": "Complete evidence-based assembly/transmission",
+      "next_action": "Llevar tabla de discrepancias a reunión; registrar revisión/configuración elegida y las piezas/fijaciones confirmadas antes de incorporar CAD retenido."
+    },
+    {
+      "priority": 2,
+      "owner": "Professor/design authority and team measurement",
+      "question": "Confirm nominal materials, current printed/commercial parts, exact motors/driver current/voltage/microstep/curves, mass/distribution/payload",
+      "unblocks": "Apply supported mass/inertia/effort",
+      "next_action": "Confirmar nominales por pieza y códigos completos; obtener curvas/configuración del driver o plan de medición y luego calcular propiedades/esfuerzos aplicables."
+    },
+    {
+      "priority": 3,
+      "owner": "Professor/design authority",
+      "question": "Zeros, signs, stops, TCP, Hall geometry/polarity and safe homing sequence including J4 hold",
+      "unblocks": "Implement bounded homing and reference recovery",
+      "next_action": "Acordar mapa Hall/imán, ceros/TCP, sentido y secuencia segura de J4; fijar límites/abortos y solo después implementar homing."
+    },
+    {
+      "priority": 4,
+      "owner": "Professor",
+      "question": "Official TCP message examples/framing/units/states/completion/cancel/reconnect/liveness",
+      "unblocks": "Adapt interpreter and kinematic boundary",
+      "next_action": "Obtener ejemplos oficiales de ida/vuelta; adaptar framing/intérprete y ejecutar casos de fragmentación/reconexión con resultados esperados acordados."
+    },
+    {
+      "priority": 5,
+      "owner": "Professor",
+      "question": "Task, required faults/collision coverage/tolerances/deliveryOS/acceptance",
+      "unblocks": "Final acceptance suite",
+      "next_action": "Acordar tarea, fallas, cobertura/tolerancias y sistemas requeridos; convertir el acuerdo en la batería de aceptación."
+    },
+    {
+      "priority": 6,
+      "owner": "Team member with target runtime",
+      "question": "Execute native Windows and Linuxdesktop/Webots with versions and outputs",
+      "unblocks": "Claim those target platforms",
+      "next_action": "Ejecutar LEEME del paquete final en equipo Windows o Linux con Webots; registrar versiones, comandos, consola y resultados."
+    }
+  ],
+  "verification_policy": "Reuse evidence when relevant hashes match; repeat affected checks on source/model/config/executable changes. Do not sum historical software counts as current tests.",
+  "final_review_and_integration": {
+    "review": "validation/sesion6/review.json",
+    "integration": "validation/sesion6/integration.json"
+  }
+}

@@ -1,0 +1,4910 @@
+{
+  "created_utc": "2026-10-16T20:02:01.496633+00:00",
+  "converter_repository": "https://github.com/BlinkingSun/sldprt2step",
+  "converter_revision_declared": "fa954124f4f126e0c465c8f96454978ac80b812e",
+  "converter_revision_verified": true,
+  "converter_source_sha256": {
+    "sldprt2step.py": "e66a95874bc397f7d6c97e436b18adbcf9f02e0ae67ea3c96b8a82c70f5937cd",
+    "sldprt2step_lib/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sldprt2step_lib/container/__init__.py": "a21b93d0ec428b2f5986f8b176462c592c06fc85e34863a9f15f6881d716aea3",
+    "sldprt2step_lib/container/blobs.py": "beb19d8d0690ad126ff0cf1bf5351c6000bfcc019676ca781ffa6ec78fae2740",
+    "sldprt2step_lib/container/container.py": "d176b370112b9d8cc5da4f024fb5dce93db4ba26cccd9a425c401f740cdda5db",
+    "sldprt2step_lib/container/ole_cfb.py": "f424c28e34acb4b60e2d22d6a8b5e169a969cd614e369662a11bb1f0ccc97e44",
+    "sldprt2step_lib/container/sw3d.py": "2766e14280c2106b9ef081ebb45327c10c69bcd5c70d1449dc56d599fe20f8b4",
+    "sldprt2step_lib/jscompat.py": "8fce540f02f8af658fa21a72f094a66eb6e4547c3a1a778524778b899f217c6d",
+    "sldprt2step_lib/step/__init__.py": "23f61d78f0384b522390496a7008a4a89f19c796df88132495c55da0f7354c76",
+    "sldprt2step_lib/step/convert.py": "ededc74715b8f1747a7de0daaa0a475ca82ec7bdf875d6bdc2836b122384ab00",
+    "sldprt2step_lib/step/mapper.py": "d801bc74a540d282a141dcc9004420c9e96369be992d3ea82b5a6acc2b29a258",
+    "sldprt2step_lib/xt/__init__.py": "cc91a30380b54d1b5a3fbc86f2c1019798d8f5ea40c3174d0f85e393cdbef252",
+    "sldprt2step_lib/xt/geom.py": "eeff4d61f37147f88834d5dff94a0442879d891830cb4d74da4f6f5b0428e526",
+    "sldprt2step_lib/xt/reader.py": "a369e59e944bbbb9ea80c9f64b139822bdd4699cdc5f0f4deef4414942ad57db",
+    "sldprt2step_lib/xt/schema.py": "7f875436998c040db38c6e61c7231b93042f3e674009c6366cf22ed9e7694883",
+    "tests/fuzz.py": "f4ac6c9cf29c16a23e737e4156492901d1ee0613bd2cd8f7277df7eb5406d7a2",
+    "tests/gate.py": "094425e81e6fc32e8d1d01b1ab49be2cff971c3528d8cac6951343be293195f4"
+  },
+  "converter_original_tree_sha256": "5abed6e10f5eea683f2b208c848c7f3f165cb22c6d414035fd00e41ac8481104",
+  "converter_patch": {
+    "id": "SCARA-CFB-MiniFAT-1",
+    "path": "tools/patches/ole_ministreams.py",
+    "sha256": "85886233f45ee9e43bec5bec11bd8ec5b176f96a21511ab18ca7855ff7fa003c",
+    "upstream_files_modified": false
+  },
+  "converter_effective_source_sha256": "ad631f03a7d7f24ee1c7c5b12af6d26cbba8def4fd9399f6f3ccf37f161b44fd",
+  "converter_geometry_patch": {
+    "id": "SCARA-XT-Intersection-1",
+    "path": "tools/patches/intersection_precision.py",
+    "sha256": "253e49676dc5fe23d6fc1e1af91015985db49afdd1ab0217303d00aebf967fb2",
+    "intersection_target_m": 1e-09,
+    "explicit_brep_repair": false
+  },
+  "pipeline_sha256": "e8dfd765ae74abab569efc2c9982e5870756f0a223e6dd62742f00d077547520",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "kernel_distribution": {
+    "cadquery-ocp-novtk": "8.0.1.1.0",
+    "cadquery-ocp-proxy": "8.0.1.1.0"
+  },
+  "assembly_placement": false,
+  "part_count": 50,
+  "parts": [
+    {
+      "source": "Modelos3D/0-6203-2RS.SLDPRT",
+      "source_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          11684.368476863838
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 11684.368476863838,
+        "bbox_mm": [
+          [
+            -20.0000001,
+            -20.0000001,
+            -1e-07
+          ],
+          [
+            20.0000001,
+            20.0000001,
+            12.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          40.0000002,
+          40.0000002,
+          12.000000199999999
+        ],
+        "volume_centroid_mm": [
+          6.9324989225599e-17,
+          8.287520434345255e-18,
+          5.999999999999998
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1268,
+          "bbox_m": [
+            [
+              -0.01997513882815838,
+              -0.01999378390610218,
+              0.0
+            ],
+            [
+              0.019999999552965164,
+              0.01999378390610218,
+              0.012000000104308128
+            ]
+          ],
+          "signed_volume_m3": 1.1670313849523576e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0012028572505302648,
+          "max_bbox_error_m": 2.486127184162315e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/0-6203-2RS.step",
+        "sha256": "a7150e212c04792c69a0d301fb7441daa0d5e67ae1f1c3b09b40c30790441969"
+      },
+      "stl": {
+        "path": "stl/0-6203-2RS.stl",
+        "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.04
+    },
+    {
+      "source": "Modelos3D/0-Bancada.SLDPRT",
+      "source_sha256": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 23,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 23,
+        "solid_volumes_mm3": [
+          115402.80709103162
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 115402.80709103162,
+        "bbox_mm": [
+          [
+            -27.000000000000004,
+            -27.000000000000007,
+            -1e-07
+          ],
+          [
+            27.0,
+            26.999999999999996,
+            60.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          54.0,
+          54.0,
+          60.0000002
+        ],
+        "volume_centroid_mm": [
+          4.567498964476857e-13,
+          -1.0780087236862194e-13,
+          29.77461299744552
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 2094,
+          "bbox_m": [
+            [
+              -0.027000000700354576,
+              -0.027000000700354576,
+              0.0
+            ],
+            [
+              0.027000000700354576,
+              0.027000000700354576,
+              0.05999999865889549
+            ]
+          ],
+          "signed_volume_m3": 0.00011551450791840064,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0009679212333275622,
+          "max_bbox_error_m": 1.4411045065609862e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/0-Bancada.step",
+        "sha256": "9329ad8231093d0da547086e8dff49a3dc13e599b6f2191f8629240d6900d5a5"
+      },
+      "stl": {
+        "path": "stl/0-Bancada.stl",
+        "sha256": "009ba429eb3948aa598a2a61e9d8397731405855e2eca4cef230e80b87781345"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.068
+    },
+    {
+      "source": "Modelos3D/0-ElevadorM2.SLDPRT",
+      "source_sha256": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 56,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 56,
+        "solid_volumes_mm3": [
+          35120.7243475574
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 35120.7243475574,
+        "bbox_mm": [
+          [
+            -28.200000000000003,
+            -40.0,
+            -1e-07
+          ],
+          [
+            38.800000000000004,
+            39.99999999999999,
+            17.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          67.0,
+          80.0,
+          17.000000200000002
+        ],
+        "volume_centroid_mm": [
+          12.900133709264924,
+          -8.921915387900384e-15,
+          8.499999999999991
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 2100,
+          "bbox_m": [
+            [
+              -0.028200000524520874,
+              -0.03999999910593033,
+              0.0
+            ],
+            [
+              0.03880000114440918,
+              0.03999999910593033,
+              0.017000000923871994
+            ]
+          ],
+          "signed_volume_m3": 3.512559741790563e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.00013875198871193817,
+          "max_bbox_error_m": 1.1444091715939742e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/0-ElevadorM2.step",
+        "sha256": "6779b0cf347f1ac69121c3d7be085949067e3f42caf4f9211b9b9c7c5e0342ff"
+      },
+      "stl": {
+        "path": "stl/0-ElevadorM2.stl",
+        "sha256": "78bb2f5901ebbfa5227fd60108cc22026126dbecea18cc29f351dde427428870"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.127
+    },
+    {
+      "source": "Modelos3D/0-PlatinaSuperior.SLDPRT",
+      "source_sha256": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 31,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 31,
+        "solid_volumes_mm3": [
+          49215.55892011468
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 49215.55892011468,
+        "bbox_mm": [
+          [
+            -60.0000001,
+            -60.0000001,
+            -1e-07
+          ],
+          [
+            60.0000001,
+            60.0000001,
+            4.762500100000001
+          ]
+        ],
+        "dimensions_mm": [
+          120.0000002,
+          120.0000002,
+          4.762500200000002
+        ],
+        "volume_centroid_mm": [
+          6.375538122425312e-16,
+          2.5132556076807025e-15,
+          2.3501510534958454
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 4504,
+          "bbox_m": [
+            [
+              -0.05997508019208908,
+              -0.059993769973516464,
+              0.0
+            ],
+            [
+              0.05999999865889549,
+              0.059993769973516464,
+              0.004762500058859587
+            ]
+          ],
+          "signed_volume_m3": 4.9204770476563225e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.00021920798601449132,
+          "max_bbox_error_m": 2.4919907910918304e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/0-PlatinaSuperior.step",
+        "sha256": "2c3549e449e02fc3f21b373688193f016c1858580894d98d7827a9f12b838c5f"
+      },
+      "stl": {
+        "path": "stl/0-PlatinaSuperior.stl",
+        "sha256": "0a13e701c3d75c77a44640f83a295635837e78d052117e7706afd5946072e828"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.112
+    },
+    {
+      "source": "Modelos3D/0-SoporteMotores.SLDPRT",
+      "source_sha256": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 47,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 47,
+        "solid_volumes_mm3": [
+          23619.01993244654
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 23619.01993244654,
+        "bbox_mm": [
+          [
+            -100.0,
+            -40.0,
+            -1e-07
+          ],
+          [
+            100.00000000000001,
+            40.00000000000001,
+            2.4000000999999997
+          ]
+        ],
+        "dimensions_mm": [
+          200.0,
+          80.0,
+          2.4000001999999996
+        ],
+        "volume_centroid_mm": [
+          -10.159430220100068,
+          1.1398035671876458e-14,
+          1.1999999999999984
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 2940,
+          "bbox_m": [
+            [
+              -0.10000000149011612,
+              -0.03999999910593033,
+              0.0
+            ],
+            [
+              0.10000000149011612,
+              0.03999999910593033,
+              0.002400000113993883
+            ]
+          ],
+          "signed_volume_m3": 2.362916990078436e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0004297370664341216,
+          "max_bbox_error_m": 1.4901161138336505e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/0-SoporteMotores.step",
+        "sha256": "68719fd360164dbdbd7a16bf1bd725b7cfd80a72ad324a2da8fc9e2784089215"
+      },
+      "stl": {
+        "path": "stl/0-SoporteMotores.stl",
+        "sha256": "241e242aa526a5b39c97a9a8cca9cf313d67ba0f4574d37ab0d23490b2b1dbef"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.121
+    },
+    {
+      "source": "Modelos3D/0-Torre.SLDPRT",
+      "source_sha256": "fd94227671db45086676cdf6400add36907ed54e42645c7f0be022c91325f2ff",
+      "status": "failed",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "failed",
+        "error": "STL is not a closed manifold after float32 export"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 3,
+        "faces": 62,
+        "bodies": [
+          "Body1",
+          "Body2",
+          "Body3"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 3,
+        "faces": 62,
+        "solid_volumes_mm3": [
+          9457.636133149845,
+          9457.636133149845,
+          373897.66336414486
+        ],
+        "solid_validity": [
+          true,
+          true,
+          true
+        ],
+        "volume_mm3": 392812.9356306602,
+        "bbox_mm": [
+          [
+            -158.79193575586228,
+            -128.7919357558623,
+            -1e-07
+          ],
+          [
+            158.79193575586234,
+            128.79193575586226,
+            221.6000001
+          ]
+        ],
+        "dimensions_mm": [
+          317.5838715117246,
+          257.58387151172457,
+          221.60000019999998
+        ],
+        "volume_centroid_mm": [
+          2.3269378050427577e-12,
+          1.7304488626201547e-13,
+          106.50588004859348
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 4286,
+          "bbox_m": [
+            [
+              -0.1587919294834137,
+              -0.128791943192482,
+              0.0
+            ],
+            [
+              0.1587919294834137,
+              0.128791943192482,
+              0.2215999960899353
+            ]
+          ],
+          "signed_volume_m3": 0.0003927903961456311,
+          "boundary_edges": 8,
+          "nonmanifold_edges": 10,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 5.737969141195176e-05,
+          "max_bbox_error_m": 7.436619736678196e-09
+        },
+        "errors": [
+          "STL is not a closed manifold after float32 export"
+        ]
+      },
+      "step": {
+        "path": "step/0-Torre.step",
+        "sha256": "5645cfedfce3ba8235655667d94065563690c423de68ef12d4890a746c34e5a8"
+      },
+      "error": "STL is not a closed manifold after float32 export",
+      "source_unchanged": true,
+      "elapsed_seconds": 1.146
+    },
+    {
+      "source": "Modelos3D/2GT_20Teet_5Bore.SLDPRT",
+      "source_sha256": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 13,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 13,
+        "solid_volumes_mm3": [
+          2351.6382735995317
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 2351.6382735995317,
+        "bbox_mm": [
+          [
+            -8.0000001,
+            -8.0000001,
+            -1e-07
+          ],
+          [
+            8.0000001,
+            8.0000001,
+            18.000000100000005
+          ]
+        ],
+        "dimensions_mm": [
+          16.0000002,
+          16.0000002,
+          18.000000200000006
+        ],
+        "volume_centroid_mm": [
+          0.0867658534945671,
+          0.08675989098286248,
+          8.190549977758726
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1364,
+          "bbox_m": [
+            [
+              -0.00800000037997961,
+              -0.00800000037997961,
+              0.0
+            ],
+            [
+              0.00800000037997961,
+              0.007977630011737347,
+              0.017999999225139618
+            ]
+          ],
+          "signed_volume_m3": 2.3428050685274656e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0037561920858456554,
+          "max_bbox_error_m": 2.2370088262653118e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_20Teet_5Bore.step",
+        "sha256": "dd6d03d5593d1259403e732c7fd06b3f0fa5ce8ab1c9faecb036080edf8767ab"
+      },
+      "stl": {
+        "path": "stl/2GT_20Teet_5Bore.stl",
+        "sha256": "3571f31a2a1b0ce351b8172857c5c3c2cff29d89e44a9d257e7c4414fdf02701"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.043
+    },
+    {
+      "source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+      "source_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 13,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 13,
+        "solid_volumes_mm3": [
+          2143.8875407764754
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 2143.8875407764754,
+        "bbox_mm": [
+          [
+            -8.0000001,
+            -8.0000001,
+            -1e-07
+          ],
+          [
+            8.0000001,
+            8.0000001,
+            18.000000100000005
+          ]
+        ],
+        "dimensions_mm": [
+          16.0000002,
+          16.0000002,
+          18.000000200000006
+        ],
+        "volume_centroid_mm": [
+          0.08885816160058503,
+          0.08885068447068362,
+          8.086653722094688
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1360,
+          "bbox_m": [
+            [
+              -0.00800000037997961,
+              -0.00800000037997961,
+              0.0
+            ],
+            [
+              0.00800000037997961,
+              0.007977630011737347,
+              0.017999999225139618
+            ]
+          ],
+          "signed_volume_m3": 2.135772931541747e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.003784997617827246,
+          "max_bbox_error_m": 2.2370088262653118e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_20Teet_635Bore.step",
+        "sha256": "7dfee691b7d44518a13d3a13f09577d2684323adae4e0f4502209a03ed262634"
+      },
+      "stl": {
+        "path": "stl/2GT_20Teet_635Bore.stl",
+        "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.084
+    },
+    {
+      "source": "Modelos3D/2GT_60Teet_10Bore.SLDPRT",
+      "source_sha256": "1c7c2bc6126f5b37da5510fbf8362f0ea9fa6d2864239b6c1dcd3dcaa3196395",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          17831.509837193455
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 17831.509837193455,
+        "bbox_mm": [
+          [
+            -21.0000001,
+            -21.0000001,
+            -1e-07
+          ],
+          [
+            21.0000001,
+            21.0000001,
+            20.3000001
+          ]
+        ],
+        "dimensions_mm": [
+          42.0000002,
+          42.0000002,
+          20.3000002
+        ],
+        "volume_centroid_mm": [
+          0.04709426010239871,
+          0.047099829469862776,
+          8.337154248525119
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1514,
+          "bbox_m": [
+            [
+              -0.020975476130843163,
+              -0.02099386788904667,
+              0.0
+            ],
+            [
+              0.020999999716877937,
+              0.02099386788904667,
+              0.0203000009059906
+            ]
+          ],
+          "signed_volume_m3": 1.780144271407043e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.001686179319505099,
+          "max_bbox_error_m": 2.4523969156840103e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_60Teet_10Bore.step",
+        "sha256": "c3c149fc239fbacec54d60e8321cd6d843e9144b5ad36c15f85723e0860d8e42"
+      },
+      "stl": {
+        "path": "stl/2GT_60Teet_10Bore.stl",
+        "sha256": "81ed1c4c8b1e7f89b00a59ee604bd5ea5a40650309771c6246acdd6ade8681d4"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.075
+    },
+    {
+      "source": "Modelos3D/2GT_60Teet_8Bore.SLDPRT",
+      "source_sha256": "9170edde358c18ed83128338c22d180afafe90ca9f9e2583acd38819149af637",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          18230.61452455085
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 18230.61452455085,
+        "bbox_mm": [
+          [
+            -21.0000001,
+            -21.0000001,
+            -1e-07
+          ],
+          [
+            21.0000001,
+            21.0000001,
+            20.3000001
+          ]
+        ],
+        "dimensions_mm": [
+          42.0000002,
+          42.0000002,
+          20.3000002
+        ],
+        "volume_centroid_mm": [
+          0.04832518445781082,
+          0.04833313666686573,
+          8.369019029508394
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1574,
+          "bbox_m": [
+            [
+              -0.020975476130843163,
+              -0.02099386788904667,
+              0.0
+            ],
+            [
+              0.020999999716877937,
+              0.02099386788904667,
+              0.0203000009059906
+            ]
+          ],
+          "signed_volume_m3": 1.8199052665755623e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0017312558911672937,
+          "max_bbox_error_m": 2.4523969156840103e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_60Teet_8Bore.step",
+        "sha256": "a8c93048980047eb231ad53e7c6a9f1e3ad2bfcbd60c35701991d83d4de3c82a"
+      },
+      "stl": {
+        "path": "stl/2GT_60Teet_8Bore.stl",
+        "sha256": "402bbb41e12e8cc0f3279f3fad8bbd84e5bbbcbb67f814597c2adc261d7482d6"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.071
+    },
+    {
+      "source": "Modelos3D/2GT_80Teet_10Bore.SLDPRT",
+      "source_sha256": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          32365.76129918455
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 32365.76129918455,
+        "bbox_mm": [
+          [
+            -27.550000100000002,
+            -27.550000100000002,
+            -1e-07
+          ],
+          [
+            27.550000100000002,
+            27.550000100000002,
+            20.7000001
+          ]
+        ],
+        "dimensions_mm": [
+          55.100000200000004,
+          55.100000200000004,
+          20.7000002
+        ],
+        "volume_centroid_mm": [
+          0.03928941978066735,
+          0.03928710292857483,
+          8.338574694686855
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1642,
+          "bbox_m": [
+            [
+              -0.027550000697374344,
+              -0.027525177225470543,
+              0.0
+            ],
+            [
+              0.027550000697374344,
+              0.027525177225470543,
+              0.02070000022649765
+            ]
+          ],
+          "signed_volume_m3": 3.2323612463869045e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.001302266148659137,
+          "max_bbox_error_m": 2.482287452946e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_80Teet_10Bore.step",
+        "sha256": "da202bb84137439e3bf76d8a4f74f31580dd8ebf167649818fdd47c6d4eed2e9"
+      },
+      "stl": {
+        "path": "stl/2GT_80Teet_10Bore.stl",
+        "sha256": "69461078f64d90b43019405973d59bf49fc2bcb25127120e9c0d801bc6ef6185"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.103
+    },
+    {
+      "source": "Modelos3D/2GT_80Teet_16Bore.SLDPRT",
+      "source_sha256": "cf753a7288a8d1636e21c7662990837188679c6deeeacbe7a6771450b5c15746",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          29753.797335579686
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 29753.797335579686,
+        "bbox_mm": [
+          [
+            -27.550000100000002,
+            -27.550000100000002,
+            -1e-07
+          ],
+          [
+            27.550000100000002,
+            27.550000100000002,
+            20.7000001
+          ]
+        ],
+        "dimensions_mm": [
+          55.100000200000004,
+          55.100000200000004,
+          20.7000002
+        ],
+        "volume_centroid_mm": [
+          0.03398900807956908,
+          0.03399031550258756,
+          8.181896283411135
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1638,
+          "bbox_m": [
+            [
+              -0.027550000697374344,
+              -0.027525177225470543,
+              0.0
+            ],
+            [
+              0.027550000697374344,
+              0.027525177225470543,
+              0.02070000022649765
+            ]
+          ],
+          "signed_volume_m3": 2.9720612160137123e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.001115325720219329,
+          "max_bbox_error_m": 2.482287452946e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_80Teet_16Bore.step",
+        "sha256": "c72927f9edb8c75986cf0b44724cfcdb908c01a66823dd5851573ec2da582ce6"
+      },
+      "stl": {
+        "path": "stl/2GT_80Teet_16Bore.stl",
+        "sha256": "6d18e9c7ba7fd9dd7953f6dac0c210691522543a46166c1f56b5c90f12d2e108"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.096
+    },
+    {
+      "source": "Modelos3D/2GT_80Teet_40Bore.SLDPRT",
+      "source_sha256": "7652b60cc56bd4c7481448dc077eeeb698a377fe7a4f539a647e8b14d26c1c90",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 168,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 168,
+        "solid_volumes_mm3": [
+          9166.651648302222
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 9166.651648302222,
+        "bbox_mm": [
+          [
+            -27.550000100000002,
+            -27.550000100000002,
+            -1e-07
+          ],
+          [
+            27.550000100000002,
+            27.550000100000002,
+            12.0
+          ]
+        ],
+        "dimensions_mm": [
+          55.100000200000004,
+          55.100000200000004,
+          12.0000001
+        ],
+        "volume_centroid_mm": [
+          -1.58748426215826e-15,
+          -1.1490657569450218e-14,
+          5.498531095971593
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 8376,
+          "bbox_m": [
+            [
+              -0.027550000697374344,
+              -0.027525177225470543,
+              0.0
+            ],
+            [
+              0.027550000697374344,
+              0.027525177225470543,
+              0.012000000104308128
+            ]
+          ],
+          "signed_volume_m3": 9.185656992640063e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0020733136882493675,
+          "max_bbox_error_m": 2.482287452946e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_80Teet_40Bore.step",
+        "sha256": "056cb1e3d8c51a271cd5608e0541b31423963b89241c5bb00d6cba3b5ffe99c4"
+      },
+      "stl": {
+        "path": "stl/2GT_80Teet_40Bore.stl",
+        "sha256": "becb8baa552beb5ba7b782b8f286adfffd86ccad736afb2b296137bc5ad78c48"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.382
+    },
+    {
+      "source": "Modelos3D/2GT_80Teet_8Bore.SLDPRT",
+      "source_sha256": "5b3ea76034fd57d2c06b0db4493302670b1e1ae3ecb7eb6fb738be5fa6ea80d8",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          32773.10825524493
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 32773.10825524493,
+        "bbox_mm": [
+          [
+            -27.550000100000002,
+            -27.550000100000002,
+            -1e-07
+          ],
+          [
+            27.550000100000002,
+            27.550000100000002,
+            20.7000001
+          ]
+        ],
+        "dimensions_mm": [
+          55.100000200000004,
+          55.100000200000004,
+          20.7000002
+        ],
+        "volume_centroid_mm": [
+          0.04005876428476986,
+          0.04005867207734612,
+          8.359341931961485
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1702,
+          "bbox_m": [
+            [
+              -0.027550000697374344,
+              -0.027525177225470543,
+              0.0
+            ],
+            [
+              0.027550000697374344,
+              0.027525177225470543,
+              0.02070000022649765
+            ]
+          ],
+          "signed_volume_m3": 3.272940881668657e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0013333931654581077,
+          "max_bbox_error_m": 2.482287452946e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/2GT_80Teet_8Bore.step",
+        "sha256": "0973313d4cae80689caf511b1d7a570a7619f2031b42742b9be587998f6d8f24"
+      },
+      "stl": {
+        "path": "stl/2GT_80Teet_8Bore.stl",
+        "sha256": "c50af4d1fc2716721e2fa8abb15ab43f13dac44ca5f84bfca3c40283f6e9547f"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.086
+    },
+    {
+      "source": "Modelos3D/A-Brazo.SLDPRT",
+      "source_sha256": "3465c2fede70b9befc81f6f723a73551b294f24aee7b0663001d43057c3d0b6c",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 29,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 29,
+        "solid_volumes_mm3": [
+          69501.053162809
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 69501.053162809,
+        "bbox_mm": [
+          [
+            -25.000000100000015,
+            -25.0000001,
+            0.0
+          ],
+          [
+            25.0000001,
+            25.0000001,
+            300.0
+          ]
+        ],
+        "dimensions_mm": [
+          50.00000020000002,
+          50.0000002,
+          300.0
+        ],
+        "volume_centroid_mm": [
+          -8.842902614487757e-15,
+          0.0847050949231908,
+          150.10116227076867
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "reference_checks": {
+          "dimensions_300_50_50_mm": true,
+          "tube_center_is_void": true,
+          "wall_at_0_6_mm_is_solid": true,
+          "volume_below_unperforated_1_2_mm_tube": true,
+          "probe_center_mm": [
+            -7.105427357601002e-15,
+            0.0,
+            150.0
+          ],
+          "probe_wall_mm": [
+            -24.400000100000014,
+            0.0,
+            150.0
+          ]
+        },
+        "mesh": {
+          "triangles": 3300,
+          "bbox_m": [
+            [
+              -0.02500000037252903,
+              -0.02500000037252903,
+              0.0
+            ],
+            [
+              0.02500000037252903,
+              0.02500000037252903,
+              0.30000001192092896
+            ]
+          ],
+          "signed_volume_m3": 6.950391969392388e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 4.124442701836095e-05,
+          "max_bbox_error_m": 1.1920928966180355e-08
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/A-Brazo.step",
+        "sha256": "0ee05855061f8a008a7d8ff5c6335b41076980e7e65227c0f4b9091e091ec809"
+      },
+      "stl": {
+        "path": "stl/A-Brazo.stl",
+        "sha256": "b8c4483d288c0214338d76300f81658a843db5c9a55932a1ce6f4376ccb86ef7"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.089
+    },
+    {
+      "source": "Modelos3D/A-BridaEje.SLDPRT",
+      "source_sha256": "208eead9ba17df76d6ab435ec1faf4068a2939c0b3eeedb7b9e568e29d220d8b",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (6 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (6 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 20,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 20,
+        "solid_volumes_mm3": [
+          15899.208160247426
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 15899.208160247426,
+        "bbox_mm": [
+          [
+            -25.00000000000001,
+            -30.000000000000004,
+            -1e-07
+          ],
+          [
+            25.000000000000004,
+            29.999999999999993,
+            14.7625001
+          ]
+        ],
+        "dimensions_mm": [
+          50.000000000000014,
+          60.0,
+          14.7625002
+        ],
+        "volume_centroid_mm": [
+          0.10466221738050385,
+          0.12818901122816054,
+          3.7906371586191923
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 3936,
+          "bbox_m": [
+            [
+              -0.02500000037252903,
+              -0.029999999329447746,
+              0.0
+            ],
+            [
+              0.02500000037252903,
+              0.029999999329447746,
+              0.014762500301003456
+            ]
+          ],
+          "signed_volume_m3": 1.5900476200560907e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 7.975493500689268e-05,
+          "max_bbox_error_m": 6.705522595518154e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/A-BridaEje.step",
+        "sha256": "739817b0ef0ea0cb6ecc8b91ea449daee9a76f96e2b76a9f69dae31e7d01b97f"
+      },
+      "stl": {
+        "path": "stl/A-BridaEje.stl",
+        "sha256": "906d2b56d2cab1e9146b22d6c1a8628e52f1e2a7f7113b57b4f6fff350ebe997"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.139
+    },
+    {
+      "source": "Modelos3D/A-CarretelInf.SLDPRT",
+      "source_sha256": "4d22c619cbc9afe94af2b2b317c936ceb8eee41785c7bd2ca9a56aeebebe13ba",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 14,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 14,
+        "solid_volumes_mm3": [
+          13735.971852430575
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 13735.971852430575,
+        "bbox_mm": [
+          [
+            -35.00000010000001,
+            -35.00000010000001,
+            -1e-07
+          ],
+          [
+            35.00000010000001,
+            35.000000100000015,
+            15.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          70.00000020000002,
+          70.00000020000002,
+          15.000000199999999
+        ],
+        "volume_centroid_mm": [
+          6.475650722447466e-07,
+          0.27422318992725625,
+          4.886245933300397
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 8476,
+          "bbox_m": [
+            [
+              -0.03499544784426689,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.03500000014901161,
+              0.03499886021018028,
+              0.014999999664723873
+            ]
+          ],
+          "signed_volume_m3": 1.3718206906236242e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0012933155647949501,
+          "max_bbox_error_m": 4.552255733120125e-06
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/A-CarretelInf.step",
+        "sha256": "c42706b7a029a91416cfe235108e4f743e390324a1a1f2cd823996ac2f939e3c"
+      },
+      "stl": {
+        "path": "stl/A-CarretelInf.stl",
+        "sha256": "07f5694e603f7165f0733fc8bed1272bcec61c9129bfc7bc8bae58f53290ea93"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.134
+    },
+    {
+      "source": "Modelos3D/A-CarretelSup.SLDPRT",
+      "source_sha256": "724e621b00264214b071c7cec7ff35d340c10a05d0458d8a7f5fca50af40914f",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 13,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 13,
+        "solid_volumes_mm3": [
+          13647.085133646417
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 13647.085133646417,
+        "bbox_mm": [
+          [
+            -35.00000010000001,
+            -35.00000010000001,
+            -1e-07
+          ],
+          [
+            35.00000010000001,
+            35.000000100000015,
+            15.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          70.00000020000002,
+          70.00000020000002,
+          15.000000199999999
+        ],
+        "volume_centroid_mm": [
+          6.339016814622234e-07,
+          0.2760092498409001,
+          4.860442154070876
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 6970,
+          "bbox_m": [
+            [
+              -0.03499544784426689,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.03500000014901161,
+              0.03499886021018028,
+              0.014999999664723873
+            ]
+          ],
+          "signed_volume_m3": 1.3627063416025501e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.001467105790345924,
+          "max_bbox_error_m": 4.552255733120125e-06
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/A-CarretelSup.step",
+        "sha256": "5a377c4df3120be3f2a2148e5d8e5ffbda8309046bf146fae18277431be556b2"
+      },
+      "stl": {
+        "path": "stl/A-CarretelSup.stl",
+        "sha256": "28f081e8066408731411c70772a94b38dfda520d813c2c85fcb6c5bba4aec2db"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.137
+    },
+    {
+      "source": "Modelos3D/A-Eje.SLDPRT",
+      "source_sha256": "11d0824a7e2f383101cddc9ee18b5999b6a770f221a6bae04171b51f94ab9000",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 14,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 14,
+        "solid_volumes_mm3": [
+          21130.771067065427
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 21130.771067065427,
+        "bbox_mm": [
+          [
+            -9.4000001,
+            -9.4000001,
+            -1e-07
+          ],
+          [
+            9.4000001,
+            9.4000001,
+            140.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          18.8000002,
+          18.8000002,
+          140.0000002
+        ],
+        "volume_centroid_mm": [
+          -1.1728739355820478e-15,
+          1.1656357330256947e-16,
+          67.1001466915117
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1184,
+          "bbox_m": [
+            [
+              -0.009399999864399433,
+              -0.009399999864399433,
+              0.0
+            ],
+            [
+              0.009399999864399433,
+              0.009399999864399433,
+              0.14000000059604645
+            ]
+          ],
+          "signed_volume_m3": 2.1054795099157038e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.003595513276219542,
+          "max_bbox_error_m": 4.960464539127685e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/A-Eje.step",
+        "sha256": "a31fdfcfbb667dd40d718ad4ed3848899dfee34df068d51456a04898cf0cc834"
+      },
+      "stl": {
+        "path": "stl/A-Eje.stl",
+        "sha256": "b6c2650f745c6a2a9cc66efa16441bbe56adb68f12bc966d481905dee29710ec"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.035
+    },
+    {
+      "source": "Modelos3D/A-EjeInterior.SLDPRT",
+      "source_sha256": "d8ee48f0fea3937bc23e39950aa8b63e46e11516959ba09e378c3e5b7485e861",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "failed",
+        "error": "Source converter failed: {'error': 'no_parasolid_geometry', 'message': 'no Parasolid transmit found in the file (not a SolidWorks part, or an unsupported storage layout)', 'ok': False, 'warnings': []}"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 3,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 3,
+        "solid_volumes_mm3": [
+          13467.615006857743
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 13467.615006857743,
+        "bbox_mm": [
+          [
+            -4.7500001,
+            -4.7500001,
+            -1e-07
+          ],
+          [
+            4.7500001,
+            4.7500001,
+            190.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          9.5000002,
+          9.5000002,
+          190.0000002
+        ],
+        "volume_centroid_mm": [
+          4.727238571319925e-16,
+          -3.2373756079174395e-16,
+          95.0
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 164,
+          "bbox_m": [
+            [
+              -0.004749999847263098,
+              -0.004736718256026506,
+              0.0
+            ],
+            [
+              0.004749999847263098,
+              0.004736718256026506,
+              0.1899999976158142
+            ]
+          ],
+          "signed_volume_m3": 1.341743699513019e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0037258276021405745,
+          "max_bbox_error_m": 1.3281843973493926e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/A-EjeInterior.step",
+        "sha256": "8a027439a2c307c0cc49f0f182d5ca12b341bde8b5602376913ef664c444f560"
+      },
+      "stl": {
+        "path": "stl/A-EjeInterior.stl",
+        "sha256": "280e8f9452531063003dcd8cfb1e4eeac728717475f6484c3f54a71f4ab2502b"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.02
+    },
+    {
+      "source": "Modelos3D/B-Antebrazo.SLDPRT",
+      "source_sha256": "12c370a6136c7e357c23bfddec99d4ada03d69969b0c4db15456ed232470d8ce",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 40,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 40,
+        "solid_volumes_mm3": [
+          54121.248841523506
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 54121.248841523506,
+        "bbox_mm": [
+          [
+            -25.000000100000015,
+            -25.0000001,
+            -9.300470469642013e-16
+          ],
+          [
+            25.0000001,
+            25.0000001,
+            237.0
+          ]
+        ],
+        "dimensions_mm": [
+          50.00000020000002,
+          50.0000002,
+          237.0
+        ],
+        "volume_centroid_mm": [
+          2.93873274133531e-15,
+          -0.04249062746430706,
+          117.68420752300887
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 4522,
+          "bbox_m": [
+            [
+              -0.02500000037252903,
+              -0.02500000037252903,
+              0.0
+            ],
+            [
+              0.02500000037252903,
+              0.02500000037252903,
+              0.2370000034570694
+            ]
+          ],
+          "signed_volume_m3": 5.4125761595659924e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 8.338229869053748e-05,
+          "max_bbox_error_m": 3.4570693807634e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-Antebrazo.step",
+        "sha256": "d4d2ec22f148da9c6042ed3cb7e0cb07e305dd128202c92ad852129a120e0381"
+      },
+      "stl": {
+        "path": "stl/B-Antebrazo.stl",
+        "sha256": "3d75388aa30bddb254c185ca90e4353b3978f869c8b2e3e61437c6770e6d1016"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.143
+    },
+    {
+      "source": "Modelos3D/B-CarretelInf.SLDPRT",
+      "source_sha256": "a937c813349b4f3730047cbdbc7490acc6eda49c62a35317a457527982d37eaf",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "converter_effective_source_sha256": "ad631f03a7d7f24ee1c7c5b12af6d26cbba8def4fd9399f6f3ccf37f161b44fd",
+      "pipeline_sha256": "e8dfd765ae74abab569efc2c9982e5870756f0a223e6dd62742f00d077547520",
+      "previous_outcome": {
+        "status": "failed",
+        "error": "missing solid or nonpositive/nonfinite solid volume"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 25,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 25,
+        "solid_volumes_mm3": [
+          12725.752427807656
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 12725.752427807656,
+        "bbox_mm": [
+          [
+            -35.00000010000001,
+            -35.00000010000001,
+            -1e-07
+          ],
+          [
+            35.00000010000001,
+            35.00000010000001,
+            14.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          70.00000020000002,
+          70.00000020000002,
+          14.000000199999999
+        ],
+        "volume_centroid_mm": [
+          0.005655840471061389,
+          0.503661577057253,
+          4.24811495945914
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 8290,
+          "bbox_m": [
+            [
+              -0.03499998897314072,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.03500000014901161,
+              0.034999996423721313,
+              0.014000000432133675
+            ]
+          ],
+          "signed_volume_m3": 1.2706912305566061e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0014804721644927632,
+          "max_bbox_error_m": 1.1126859295051972e-08
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-CarretelInf.step",
+        "sha256": "01a1eee8c95fe665a8bd05c19c73f7601e55205e95e2fdce62eadb3135fcee6d"
+      },
+      "stl": {
+        "path": "stl/B-CarretelInf.stl",
+        "sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.094
+    },
+    {
+      "source": "Modelos3D/B-CarretelSup.SLDPRT",
+      "source_sha256": "f470bd3408e498096b28f2c40a2c9e7ef8c29bce4642f21e1dc584bb2b81bc5b",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "converter_effective_source_sha256": "ad631f03a7d7f24ee1c7c5b12af6d26cbba8def4fd9399f6f3ccf37f161b44fd",
+      "pipeline_sha256": "e8dfd765ae74abab569efc2c9982e5870756f0a223e6dd62742f00d077547520",
+      "previous_outcome": {
+        "status": "failed",
+        "error": "missing solid or nonpositive/nonfinite solid volume"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 25,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 25,
+        "solid_volumes_mm3": [
+          12725.752427807656
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 12725.752427807656,
+        "bbox_mm": [
+          [
+            -35.00000010000001,
+            -35.00000010000001,
+            -1e-07
+          ],
+          [
+            35.00000010000001,
+            35.00000010000001,
+            14.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          70.00000020000002,
+          70.00000020000002,
+          14.000000199999999
+        ],
+        "volume_centroid_mm": [
+          0.005655840471061389,
+          0.503661577057253,
+          4.24811495945914
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 8290,
+          "bbox_m": [
+            [
+              -0.03499998897314072,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.03500000014901161,
+              0.034999996423721313,
+              0.014000000432133675
+            ]
+          ],
+          "signed_volume_m3": 1.2706912305566061e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0014804721644927632,
+          "max_bbox_error_m": 1.1126859295051972e-08
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-CarretelSup.step",
+        "sha256": "0d326cc0c64ab626fe390af85c4114a236464b783a8cafae0601613513c880ed"
+      },
+      "stl": {
+        "path": "stl/B-CarretelSup.stl",
+        "sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.089
+    },
+    {
+      "source": "Modelos3D/B-Eje.SLDPRT",
+      "source_sha256": "a93fa00bab44a857a422444804773979e09b4a40e6293327c7fe0c191759edfa",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "failed",
+        "error": "Source converter failed: {'error': 'no_parasolid_geometry', 'message': 'no Parasolid transmit found in the file (not a SolidWorks part, or an unsupported storage layout)', 'ok': False, 'warnings': []}"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 3,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 3,
+        "solid_volumes_mm3": [
+          6534.512719466769
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 6534.512719466769,
+        "bbox_mm": [
+          [
+            -4.0000001,
+            -4.0000001,
+            -1e-07
+          ],
+          [
+            4.0000001,
+            4.0000001,
+            130.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          8.0000002,
+          8.0000002,
+          130.0000002
+        ],
+        "volume_centroid_mm": [
+          1.3918324759908725e-16,
+          -1.3243233853209767e-16,
+          65.00000000000001
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 164,
+          "bbox_m": [
+            [
+              -0.004000000189989805,
+              -0.003988815005868673,
+              0.0
+            ],
+            [
+              0.004000000189989805,
+              0.003988815005868673,
+              0.12999999523162842
+            ]
+          ],
+          "signed_volume_m3": 6.510165912728684e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0037258794623745706,
+          "max_bbox_error_m": 1.1185094131327226e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-Eje.step",
+        "sha256": "0c781de53f284b3198e1f5152ebef40fe93fe9fffd34bfc579d98f4a67da2733"
+      },
+      "stl": {
+        "path": "stl/B-Eje.stl",
+        "sha256": "589ab2d65eb22703253efb06cdd9483dada31c301a052328a7173a6db64071a3"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.016
+    },
+    {
+      "source": "Modelos3D/B-ExtensorM3.SLDPRT",
+      "source_sha256": "2439f98e8ab45f98226f2146007136e7442e9552f7291909445b3c7cb51d8c94",
+      "status": "failed",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "failed",
+        "error": "BRepCheck_Analyzer.IsValid() is false; an individual solid failed BRepCheck_Analyzer"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": false,
+        "solids": 1,
+        "faces": 13,
+        "solid_volumes_mm3": [
+          2213.5338369830156
+        ],
+        "solid_validity": [
+          false
+        ],
+        "volume_mm3": 2213.5338369830156,
+        "bbox_mm": [
+          [
+            -6.3500001,
+            -6.3500001,
+            -1e-07
+          ],
+          [
+            6.3500001,
+            6.3500001,
+            32.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          12.7000002,
+          12.7000002,
+          32.0000002
+        ],
+        "volume_centroid_mm": [
+          0.06399271937850183,
+          0.09992615366976507,
+          13.250465599700608
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "errors": [
+          "BRepCheck_Analyzer.IsValid() is false",
+          "an individual solid failed BRepCheck_Analyzer"
+        ]
+      },
+      "step": {
+        "path": "step/B-ExtensorM3.step",
+        "sha256": "396d4a85ca1af1354b12853b2818ba778ec34dbc9ee26ffca0f37819f44b8e49"
+      },
+      "error": "BRepCheck_Analyzer.IsValid() is false; an individual solid failed BRepCheck_Analyzer",
+      "source_unchanged": true,
+      "elapsed_seconds": 1.058
+    },
+    {
+      "source": "Modelos3D/B-SoporteEjeFijo.SLDPRT",
+      "source_sha256": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 20,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 20,
+        "solid_volumes_mm3": [
+          83434.84601812216
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 83434.84601812216,
+        "bbox_mm": [
+          [
+            -25.0,
+            -25.0,
+            -13.23243291566195
+          ],
+          [
+            25.00000000000001,
+            25.0,
+            30.0
+          ]
+        ],
+        "dimensions_mm": [
+          50.000000000000014,
+          50.0,
+          43.232432915661946
+        ],
+        "volume_centroid_mm": [
+          -3.980108595760932e-07,
+          4.6121977978332394e-07,
+          9.091589083356448
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1404,
+          "bbox_m": [
+            [
+              -0.02500000037252903,
+              -0.02500000037252903,
+              -0.01323243323713541
+            ],
+            [
+              0.02500000037252903,
+              0.02500000037252903,
+              0.029999999329447746
+            ]
+          ],
+          "signed_volume_m3": 8.34104186594474e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.00029277166364582996,
+          "max_bbox_error_m": 6.705522526129215e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-SoporteEjeFijo.step",
+        "sha256": "944f453803c847117dc2299ee9bdb7589b6e2be48d7ae2c57c16bdfff373c6d6"
+      },
+      "stl": {
+        "path": "stl/B-SoporteEjeFijo.stl",
+        "sha256": "0cd4092fbbdd8b5605e8d268919408e9d4080a90eb4df56096cb5420ece6e86b"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.094
+    },
+    {
+      "source": "Modelos3D/B-SoporteM3.SLDPRT",
+      "source_sha256": "6b1e7eb5bccbd0c2f88fad4a66b16c48dfff06a394005d4fe1b0647fa37b8135",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 61,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 61,
+        "solid_volumes_mm3": [
+          20470.094515679797
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 20470.094515679797,
+        "bbox_mm": [
+          [
+            -41.99999999999999,
+            -25.000000000000007,
+            -1e-07
+          ],
+          [
+            42.00000000000002,
+            25.0,
+            8.0
+          ]
+        ],
+        "dimensions_mm": [
+          84.00000000000001,
+          50.00000000000001,
+          8.0000001
+        ],
+        "volume_centroid_mm": [
+          7.053327662745163e-15,
+          -5.08450509861669e-15,
+          2.8636159913673382
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 3156,
+          "bbox_m": [
+            [
+              -0.041999999433755875,
+              -0.02500000037252903,
+              0.0
+            ],
+            [
+              0.041999999433755875,
+              0.02500000037252903,
+              0.00800000037997961
+            ]
+          ],
+          "signed_volume_m3": 2.047520342896871e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.00024957936979719264,
+          "max_bbox_error_m": 5.662441487919168e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-SoporteM3.step",
+        "sha256": "d0f72a7f583f6b4c5f240eb68010d8acd990447dfc02a5d5d8857e68cb43eb87"
+      },
+      "stl": {
+        "path": "stl/B-SoporteM3.stl",
+        "sha256": "1d282aa050033e6c7a98ae89909f1238c37e93c2a2f52fa8c1e2da5a0287f122"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.122
+    },
+    {
+      "source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+      "source_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 13,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 13,
+        "solid_volumes_mm3": [
+          22631.939575141736
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 22631.939575141736,
+        "bbox_mm": [
+          [
+            -25.000000000000004,
+            -20.000000000000004,
+            -1e-07
+          ],
+          [
+            25.000000000000018,
+            32.01562118716425,
+            13.2
+          ]
+        ],
+        "dimensions_mm": [
+          50.00000000000002,
+          52.01562118716426,
+          13.200000099999999
+        ],
+        "volume_centroid_mm": [
+          1.8849902684387688e-15,
+          6.07548458423007,
+          6.245688900891832
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 818,
+          "bbox_m": [
+            [
+              -0.02500000037252903,
+              -0.019999999552965164,
+              0.0
+            ],
+            [
+              0.02500000037252903,
+              0.03199132904410362,
+              0.013199999928474426
+            ]
+          ],
+          "signed_volume_m3": 2.2638046897957417e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.00026985414994595835,
+          "max_bbox_error_m": 2.429214306062799e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/B-SoporteRuleman.step",
+        "sha256": "604491002716f6d9ff41906abc2a9895f5a5e66e4c378db3dc99850170b46f7e"
+      },
+      "stl": {
+        "path": "stl/B-SoporteRuleman.stl",
+        "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.034
+    },
+    {
+      "source": "Modelos3D/BorneraX4.SLDPRT",
+      "source_sha256": "777f0bb4c22f6f324db2ad6773c2c1ff3c2c3a7e1e54d08152ee15d636d1082f",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 81,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 81,
+        "solid_volumes_mm3": [
+          1441.1946710584625
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 1441.1946710584625,
+        "bbox_mm": [
+          [
+            0.0,
+            0.0,
+            -1e-07
+          ],
+          [
+            31.750000000000007,
+            18.0,
+            14.500000099999998
+          ]
+        ],
+        "dimensions_mm": [
+          31.750000000000007,
+          18.0,
+          14.500000199999997
+        ],
+        "volume_centroid_mm": [
+          15.875000000000032,
+          8.99999999999998,
+          6.064589553649968
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 3392,
+          "bbox_m": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.03175000101327896,
+              0.017999999225139618,
+              0.014499999582767487
+            ]
+          ],
+          "signed_volume_m3": 1.4403518350880543e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.000584817573457519,
+          "max_bbox_error_m": 1.0132789537986575e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/BorneraX4.step",
+        "sha256": "25e578ddc3990eaf299058ca964d8e4acd8b511d8cd9d3b32b65180ea5ab48ab"
+      },
+      "stl": {
+        "path": "stl/BorneraX4.stl",
+        "sha256": "60566797fb1df4e272a79e6ae86c6cb8ac303b9b8260b3f9be031db9b2b9d9f9"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.139
+    },
+    {
+      "source": "Modelos3D/BorneraX6.SLDPRT",
+      "source_sha256": "04ac74f2ac6eeed22166e3db68dc8cd215f46fbc8d76fa8bf873691d54c779f4",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 123,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 123,
+        "solid_volumes_mm3": [
+          2170.154839646543
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 2170.154839646543,
+        "bbox_mm": [
+          [
+            0.0,
+            0.0,
+            -1e-07
+          ],
+          [
+            48.25000000000001,
+            18.0,
+            14.500000099999998
+          ]
+        ],
+        "dimensions_mm": [
+          48.25000000000001,
+          18.0,
+          14.500000199999997
+        ],
+        "volume_centroid_mm": [
+          24.125000000000025,
+          8.999999999999961,
+          6.058560305872905
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 5184,
+          "bbox_m": [
+            [
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.048250000923871994,
+              0.017999999225139618,
+              0.014499999582767487
+            ]
+          ],
+          "signed_volume_m3": 2.168942551576645e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0005586182367041115,
+          "max_bbox_error_m": 9.238719858584155e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/BorneraX6.step",
+        "sha256": "a586686389678b3d7d12a1e4bae4ccc724dd807d5078dfc07ea5b73dafe55041"
+      },
+      "stl": {
+        "path": "stl/BorneraX6.stl",
+        "sha256": "258afd4898b61f413fb499f286309ab06d1cff37338e482293cdf8b345e71140"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.2
+    },
+    {
+      "source": "Modelos3D/KY-003.SLDPRT",
+      "source_sha256": "f4dc8c5b2fcebf24fc16a6664c45eef1ca69a4bced5ba8ed1b2808f4344ec094",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 20,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 20,
+        "solid_volumes_mm3": [
+          823.725666117692
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 823.725666117692,
+        "bbox_mm": [
+          [
+            -7.5000000000000036,
+            -13.499999999999998,
+            -1e-07
+          ],
+          [
+            7.499999999999999,
+            14.0,
+            5.0
+          ]
+        ],
+        "dimensions_mm": [
+          15.000000000000004,
+          27.5,
+          5.0000001
+        ],
+        "volume_centroid_mm": [
+          -1.343493782538321e-15,
+          -0.8812646819632282,
+          1.9469171983874483
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 396,
+          "bbox_m": [
+            [
+              -0.007499999832361937,
+              -0.013500000350177288,
+              0.0
+            ],
+            [
+              0.007499999832361937,
+              0.014000000432133675,
+              0.004999999888241291
+            ]
+          ],
+          "signed_volume_m3": 8.238310030541673e-07,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.00012787866253072266,
+          "max_bbox_error_m": 4.321336743301485e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/KY-003.step",
+        "sha256": "1e8e12a67ce29985b58c460ef30c12f6b1124477e4494713c10003301f542262"
+      },
+      "stl": {
+        "path": "stl/KY-003.stl",
+        "sha256": "5c2723ccb49664fe5d71ad761fb96e486197f6be744e1dd10caf95d0e3db3b69"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.024
+    },
+    {
+      "source": "Modelos3D/NEMA17.SLDPRT",
+      "source_sha256": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 23,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 23,
+        "solid_volumes_mm3": [
+          65771.94303032657
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 65771.94303032657,
+        "bbox_mm": [
+          [
+            -20.999999999999993,
+            -24.000000000000014,
+            -1e-07
+          ],
+          [
+            21.000000000000014,
+            20.999999999999996,
+            53.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          42.00000000000001,
+          45.000000000000014,
+          53.0000002
+        ],
+        "volume_centroid_mm": [
+          1.2822367958158108e-14,
+          -0.005079332732000494,
+          19.334469946710673
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1248,
+          "bbox_m": [
+            [
+              -0.020999999716877937,
+              -0.024000000208616257,
+              0.0
+            ],
+            [
+              0.020999999716877937,
+              0.020999999716877937,
+              0.05299999937415123
+            ]
+          ],
+          "signed_volume_m3": 6.57727143754726e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 1.1727571217923227e-05,
+          "max_bbox_error_m": 7.258487699779437e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/NEMA17.step",
+        "sha256": "c518140415b5025553a38991630df1e97a5f4e75c574d25d7d5e6ca2532bc6f9"
+      },
+      "stl": {
+        "path": "stl/NEMA17.stl",
+        "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.037
+    },
+    {
+      "source": "Modelos3D/NEMA23.SLDPRT",
+      "source_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 42,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 42,
+        "solid_volumes_mm3": [
+          143509.89533809279
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 143509.89533809279,
+        "bbox_mm": [
+          [
+            -28.200000000000003,
+            -28.200000000000006,
+            0.0
+          ],
+          [
+            28.200000000000003,
+            28.199999999999996,
+            72.60000009999999
+          ]
+        ],
+        "dimensions_mm": [
+          56.400000000000006,
+          56.400000000000006,
+          72.60000009999999
+        ],
+        "volume_centroid_mm": [
+          -1.7491514233074502e-15,
+          -3.244802640338458e-15,
+          25.18026605862741
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1868,
+          "bbox_m": [
+            [
+              -0.028200000524520874,
+              -0.028200000524520874,
+              0.0
+            ],
+            [
+              0.028200000524520874,
+              0.028200000524520874,
+              0.07259999960660934
+            ]
+          ],
+          "signed_volume_m3": 0.00014350293048931206,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 4.8532184936389555e-05,
+          "max_bbox_error_m": 5.245208781201605e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/NEMA23.step",
+        "sha256": "91fce9bc605daba76f877f53f5cf5d0387d829082d157ef73ba40f38ce4c8b7d"
+      },
+      "stl": {
+        "path": "stl/NEMA23.stl",
+        "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.048
+    },
+    {
+      "source": "Modelos3D/R-Bancada.SLDPRT",
+      "source_sha256": "142b7025e8e5aa78bcd99d926460960d4733b04a96e766522c1096475149d31c",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 53,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 53,
+        "solid_volumes_mm3": [
+          68995.31352805997
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 68995.31352805997,
+        "bbox_mm": [
+          [
+            -45.00000000000001,
+            -25.000000099999994,
+            -20.00000009999976
+          ],
+          [
+            45.00000000000001,
+            23.80000010000001,
+            40.0
+          ]
+        ],
+        "dimensions_mm": [
+          90.00000000000001,
+          48.8000002,
+          60.00000009999976
+        ],
+        "volume_centroid_mm": [
+          -7.722991333092608e-15,
+          -0.5592117257530413,
+          7.9633397898255085
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 3738,
+          "bbox_m": [
+            [
+              -0.04500000178813934,
+              -0.02500000037252903,
+              -0.019999999552965164
+            ],
+            [
+              0.04500000178813934,
+              0.023800000548362732,
+              0.03999999910593033
+            ]
+          ],
+          "signed_volume_m3": 6.902146041702448e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0003789661591127036,
+          "max_bbox_error_m": 1.7881393379881594e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/R-Bancada.step",
+        "sha256": "959a722d9ff724f910bc6e75b58f40b29be9c056f38d3652a1c65681cb10871d"
+      },
+      "stl": {
+        "path": "stl/R-Bancada.stl",
+        "sha256": "384f7805ad648b512753da167b438189a0dada45e4f710480a4f9e6ed2ad504f"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.118
+    },
+    {
+      "source": "Modelos3D/R-CarretelInf.SLDPRT",
+      "source_sha256": "64541bc13b13a388b14236e65d4dc2d8fac748b3e9681bf884bff2882763b2c3",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 26,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 26,
+        "solid_volumes_mm3": [
+          13609.588603004973
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 13609.588603004973,
+        "bbox_mm": [
+          [
+            -35.00000010000001,
+            -35.00000010000001,
+            -1e-07
+          ],
+          [
+            35.00000010000001,
+            35.00000010000001,
+            14.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          70.00000020000002,
+          70.00000020000002,
+          14.000000199999999
+        ],
+        "volume_centroid_mm": [
+          0.005303021472098553,
+          0.5739809076965554,
+          5.0082438761353725
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 6866,
+          "bbox_m": [
+            [
+              -0.03500000014901161,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.03500000014901161,
+              0.03500000014901161,
+              0.014000000432133675
+            ]
+          ],
+          "signed_volume_m3": 1.3607071827251687e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0001849266591887888,
+          "max_bbox_error_m": 3.3213367472972877e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/R-CarretelInf.step",
+        "sha256": "735859230e4c2592b7a9e6681bad153602d619050b14b69f3ad8b8c8ba237d6a"
+      },
+      "stl": {
+        "path": "stl/R-CarretelInf.stl",
+        "sha256": "d451893b2600214f6a0a4fdb5668f70af5e53a8b523f5d052646513d5a3dc361"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.167
+    },
+    {
+      "source": "Modelos3D/R-CarretelSup.SLDPRT",
+      "source_sha256": "da9dcc5e2862c373070e67306f165e324c042da2ebbede433a2a216e8705d0c1",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (14 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (14 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 26,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 26,
+        "solid_volumes_mm3": [
+          13136.720349500833
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 13136.720349500833,
+        "bbox_mm": [
+          [
+            -35.00000010000001,
+            -35.00000010000001,
+            -1e-07
+          ],
+          [
+            35.00000010000001,
+            35.00000010000001,
+            14.000000100000165
+          ]
+        ],
+        "dimensions_mm": [
+          70.00000020000002,
+          70.00000020000002,
+          14.000000200000164
+        ],
+        "volume_centroid_mm": [
+          -0.04385058489519085,
+          -0.17793834445818232,
+          5.265913165095601
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 9538,
+          "bbox_m": [
+            [
+              -0.03500000014901161,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.03500000014901161,
+              0.03500000014901161,
+              0.014000000432133675
+            ]
+          ],
+          "signed_volume_m3": 1.3128007233140641e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0006632642035744318,
+          "max_bbox_error_m": 3.3213350993099855e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/R-CarretelSup.step",
+        "sha256": "e9817a1a2b12e436272cb4f7cb6bcedba74f0fc4a14b4723dc357f4dc6c343f7"
+      },
+      "stl": {
+        "path": "stl/R-CarretelSup.stl",
+        "sha256": "0da333ba5884503e29010d7e15c9bed95a55945af8cdec699606d00cbb28380c"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.191
+    },
+    {
+      "source": "Modelos3D/R-ContraBancada.SLDPRT",
+      "source_sha256": "010f3d820c0e69d6b8f39b89eb7fb42ceb869a09106a0d36a9be997ff008b71e",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 26,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 26,
+        "solid_volumes_mm3": [
+          45476.7265671733
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 45476.7265671733,
+        "bbox_mm": [
+          [
+            -45.0,
+            -35.00000000000001,
+            0.0
+          ],
+          [
+            45.0,
+            1e-07,
+            47.6
+          ]
+        ],
+        "dimensions_mm": [
+          90.0,
+          35.00000010000001,
+          47.6
+        ],
+        "volume_centroid_mm": [
+          4.495601353220813e-15,
+          -16.790354804324707,
+          24.609546809726393
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1760,
+          "bbox_m": [
+            [
+              -0.04500000178813934,
+              -0.03500000014901161,
+              0.0
+            ],
+            [
+              0.04500000178813934,
+              2.168404344971009e-18,
+              0.047600001096725464
+            ]
+          ],
+          "signed_volume_m3": 4.5465229054127125e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0002528219138462351,
+          "max_bbox_error_m": 1.7881393449270533e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/R-ContraBancada.step",
+        "sha256": "f6aea6ef73e6e5afe78835dce0342ea27cf20928ceaf5a264c72ca7abae9f0a4"
+      },
+      "stl": {
+        "path": "stl/R-ContraBancada.stl",
+        "sha256": "0cda5062b40426c20fec05789d7cb05320e60e2d0050418148d457ea24f650c6"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.064
+    },
+    {
+      "source": "Modelos3D/Z-608zz.SLDPRT",
+      "source_sha256": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          2073.451151369264
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 2073.451151369264,
+        "bbox_mm": [
+          [
+            -11.0000001,
+            -11.0000001,
+            -1e-07
+          ],
+          [
+            11.0000001,
+            11.0000001,
+            7.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          22.0000002,
+          22.0000002,
+          7.000000200000001
+        ],
+        "volume_centroid_mm": [
+          1.696295830113875e-16,
+          -2.4508684214901846e-16,
+          3.5
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1052,
+          "bbox_m": [
+            [
+              -0.010975435376167297,
+              -0.010993856936693192,
+              0.0
+            ],
+            [
+              0.010999999940395355,
+              0.010993856936693192,
+              0.007000000216066837
+            ]
+          ],
+          "signed_volume_m3": 2.0675705543451986e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.002836139650641001,
+          "max_bbox_error_m": 2.45647238327016e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-608zz.step",
+        "sha256": "aa5f0ccb12440d7270369381516d47c6c4356b9c2e54a12e2d5a84ba7968d18f"
+      },
+      "stl": {
+        "path": "stl/Z-608zz.stl",
+        "sha256": "0b8926526636d1f0878de2724e85540a324d44caf6e91066c9419605920b3e8b"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.057
+    },
+    {
+      "source": "Modelos3D/Z-6907-2RS.SLDPRT",
+      "source_sha256": "ffad950d435c7adda8d5addd482bb20fcd00cb3ec95eff544001603f35e8e8fa",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          13006.193585861742
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 13006.193585861742,
+        "bbox_mm": [
+          [
+            -27.5000001,
+            -27.5000001,
+            -1e-07
+          ],
+          [
+            27.5000001,
+            27.5000001,
+            10.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          55.0000002,
+          55.0000002,
+          10.000000199999999
+        ],
+        "volume_centroid_mm": [
+          2.7883716318522455e-15,
+          2.454508004033668e-15,
+          5.000000000000001
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1604,
+          "bbox_m": [
+            [
+              -0.027499999850988388,
+              -0.02747522108256817,
+              0.0
+            ],
+            [
+              0.027499999850988388,
+              0.02747522108256817,
+              0.009999999776482582
+            ]
+          ],
+          "signed_volume_m3": 1.2996654990479496e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0007333886981826243,
+          "max_bbox_error_m": 2.4779017431832834e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-6907-2RS.step",
+        "sha256": "c8ca82d62e37b6b2490ad9c627797199300b800e7d83ca21a1f542bc374125ea"
+      },
+      "stl": {
+        "path": "stl/Z-6907-2RS.stl",
+        "sha256": "ad7aa39f051c22ab659ea67e65f2bc857c2826b6ccf29293ef92ee24855aaaa6"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.042
+    },
+    {
+      "source": "Modelos3D/Z-AcopleFlex.SLDPRT",
+      "source_sha256": "7a534620cfec214ae1593b3bfbd0873c0fe17aafeb083ddb8a2d55701ac0ce53",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 70,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 70,
+        "solid_volumes_mm3": [
+          4601.7395514615055
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 4601.7395514615055,
+        "bbox_mm": [
+          [
+            -9.5000001,
+            -9.5000001,
+            -1.0000000040610145e-07
+          ],
+          [
+            9.5000001,
+            9.5000001,
+            25.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          19.0000002,
+          19.0000002,
+          25.000000200000002
+        ],
+        "volume_centroid_mm": [
+          0.12153883712950388,
+          -6.9078728196322e-05,
+          12.086516233451643
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 2892,
+          "bbox_m": [
+            [
+              -0.009499999694526196,
+              -0.009499999694526196,
+              0.0
+            ],
+            [
+              0.009499999694526196,
+              0.009499999694526196,
+              0.02500000037252903
+            ]
+          ],
+          "signed_volume_m3": 4.588255187801615e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0029302752815743016,
+          "max_bbox_error_m": 4.054738038383743e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-AcopleFlex.step",
+        "sha256": "7529b06440c35cb9d395a5f94b65bea92ab2da81e845c35c353ab6680b08f3ed"
+      },
+      "stl": {
+        "path": "stl/Z-AcopleFlex.stl",
+        "sha256": "41f86eb6845fd3b001aba13ca29d2c2995d63876b44301fc9fc468c5e9dc7814"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.204
+    },
+    {
+      "source": "Modelos3D/Z-BridaACME.SLDPRT",
+      "source_sha256": "5b46f5a58c491ba8b6276925cbf84123bda7919e574f18a95c5e62122d0eb288",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 9,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 9,
+        "solid_volumes_mm3": [
+          1342.3901503004934
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 1342.3901503004934,
+        "bbox_mm": [
+          [
+            -9.0000001,
+            -9.0000001,
+            -1e-07
+          ],
+          [
+            9.0000001,
+            9.0000001,
+            8.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          18.0000002,
+          18.0000002,
+          8.000000199999999
+        ],
+        "volume_centroid_mm": [
+          0.4312832648337452,
+          3.186389149662225e-05,
+          4.304136445461219
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 898,
+          "bbox_m": [
+            [
+              -0.008999999612569809,
+              -0.008999999612569809,
+              0.0
+            ],
+            [
+              0.008999999612569809,
+              0.008999999612569809,
+              0.00800000037997961
+            ]
+          ],
+          "signed_volume_m3": 1.3387539148052995e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0027087769486240365,
+          "max_bbox_error_m": 4.874301899604472e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-BridaACME.step",
+        "sha256": "dfaa32620985bee36942fb60e8d35212507eba7701f997586cf3532ee498a810"
+      },
+      "stl": {
+        "path": "stl/Z-BridaACME.stl",
+        "sha256": "98b05c4cc885a384aba024dd016b8d64a99474572adaac7bda2ac8e62b5bffae"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.054
+    },
+    {
+      "source": "Modelos3D/Z-BujeExterior.SLDPRT",
+      "source_sha256": "ed4d66fb189feb52c9d3d94714475d08da3dd05d25b13f597ac419d466ab2790",
+      "status": "kernel_validated",
+      "warnings": [
+        "tolerant_edge: tolerant edges rebuilt from their fin SP-curves (4 occurrences)",
+        "sp_curve: curves defined in surface parameter space approximated by cubic splines through evaluated points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "tolerant_edge: tolerant edges rebuilt from their fin SP-curves (4 occurrences)",
+          "sp_curve: curves defined in surface parameter space approximated by cubic splines through evaluated points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 46,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 46,
+        "solid_volumes_mm3": [
+          38989.97697236621
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 38989.97697236621,
+        "bbox_mm": [
+          [
+            -21.999999999999996,
+            -22.000000000000007,
+            -1e-07
+          ],
+          [
+            22.000000000000004,
+            21.999999999999993,
+            91.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          44.0,
+          44.0,
+          91.00000019999999
+        ],
+        "volume_centroid_mm": [
+          -5.252429294908399e-07,
+          0.05609998879779049,
+          41.41158886765175
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 3080,
+          "bbox_m": [
+            [
+              -0.02199999988079071,
+              -0.02199999988079071,
+              0.0
+            ],
+            [
+              0.02199999988079071,
+              0.02199999988079071,
+              0.09099999815225601
+            ]
+          ],
+          "signed_volume_m3": 3.885148417300523e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0035520102886734684,
+          "max_bbox_error_m": 1.947743979990868e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-BujeExterior.step",
+        "sha256": "5e4189efa3a28149596ee1c8eb29467485654c5cfa7ef0931ef6f12fe7889bcc"
+      },
+      "stl": {
+        "path": "stl/Z-BujeExterior.stl",
+        "sha256": "c44397ae816d097ec226bb1b46533a95d9004bb08d8bb2c2bbb0bb24bf63975e"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 2.82
+    },
+    {
+      "source": "Modelos3D/Z-BujeInterior.SLDPRT",
+      "source_sha256": "a8fa4a5e821b31f9ef6b3d2878d73fec4415969b2481eb63e2a802a182ff9547",
+      "status": "failed",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "failed",
+        "error": "STL is not a closed manifold after float32 export"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 37,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 37,
+        "solid_volumes_mm3": [
+          8449.958364146778
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 8449.958364146778,
+        "bbox_mm": [
+          [
+            -11.3000001,
+            -11.300000000000002,
+            -1e-07
+          ],
+          [
+            11.300000099999998,
+            11.299999999999999,
+            25.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          22.600000199999997,
+          22.6,
+          25.000000200000002
+        ],
+        "volume_centroid_mm": [
+          -4.107626140913284e-06,
+          1.537464182841664e-05,
+          13.311312122069262
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 2488,
+          "bbox_m": [
+            [
+              -0.011300000362098217,
+              -0.011300000362098217,
+              0.0
+            ],
+            [
+              0.011300000362098217,
+              0.011300000362098217,
+              0.02500000037252903
+            ]
+          ],
+          "signed_volume_m3": 8.456932192408448e-06,
+          "boundary_edges": 4,
+          "nonmanifold_edges": 4,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0008253091862866491,
+          "max_bbox_error_m": 3.6209821772936746e-10
+        },
+        "errors": [
+          "STL is not a closed manifold after float32 export"
+        ]
+      },
+      "step": {
+        "path": "step/Z-BujeInterior.step",
+        "sha256": "b4279e268659378f7b2ea163e70ffbad291d19d398b9b7ca4bdd07f334b95d0c"
+      },
+      "error": "STL is not a closed manifold after float32 export",
+      "source_unchanged": true,
+      "elapsed_seconds": 1.113
+    },
+    {
+      "source": "Modelos3D/Z-Cuerpo.SLDPRT",
+      "source_sha256": "e3f1fc239fcf450806833f2213d44b76337858e126df9fe3bc99b3cb1408309a",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 22,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 22,
+        "solid_volumes_mm3": [
+          21537.529188601042
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 21537.529188601042,
+        "bbox_mm": [
+          [
+            -12.500000100000008,
+            -12.5,
+            0.0
+          ],
+          [
+            12.500000099999994,
+            12.500000000000004,
+            190.0
+          ]
+        ],
+        "dimensions_mm": [
+          25.000000200000002,
+          25.000000000000004,
+          190.0
+        ],
+        "volume_centroid_mm": [
+          -4.3917502400621666e-15,
+          -2.1114183846452723e-15,
+          95.1782376065299
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 912,
+          "bbox_m": [
+            [
+              -0.012500000186264515,
+              -0.012500000186264515,
+              0.0
+            ],
+            [
+              0.012500000186264515,
+              0.012500000186264515,
+              0.1899999976158142
+            ]
+          ],
+          "signed_volume_m3": 2.1536959987855707e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 2.6428321482474537e-05,
+          "max_bbox_error_m": 2.384185793236071e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-Cuerpo.step",
+        "sha256": "d79131aad2aa22def2fd9cf1d809f24a01ad8decf43f1f215e527c0230790ce5"
+      },
+      "stl": {
+        "path": "stl/Z-Cuerpo.stl",
+        "sha256": "d06650ba64f8bd4674420be39afc2a128194e8585ebb253e1b9bee2988da18eb"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.065
+    },
+    {
+      "source": "Modelos3D/Z-Piston.SLDPRT",
+      "source_sha256": "9daee92ea9d50c3f3d0db4d1f55bc49165789efad022cfc00dd8108a8a261e8c",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 14,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 14,
+        "solid_volumes_mm3": [
+          16148.952220392297
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 16148.952220392297,
+        "bbox_mm": [
+          [
+            -10.000000100000001,
+            -9.999999999999998,
+            0.0
+          ],
+          [
+            10.000000100000001,
+            10.000000000000002,
+            180.0
+          ]
+        ],
+        "dimensions_mm": [
+          20.000000200000002,
+          20.0,
+          180.0
+        ],
+        "volume_centroid_mm": [
+          1.5795751864059905e-15,
+          2.4179132669279233e-15,
+          90.00000000000001
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 720,
+          "bbox_m": [
+            [
+              -0.009999999776482582,
+              -0.009999999776482582,
+              0.0
+            ],
+            [
+              0.009999999776482582,
+              0.009999999776482582,
+              0.18000000715255737
+            ]
+          ],
+          "signed_volume_m3": 1.6149301448991295e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 2.162546487416428e-05,
+          "max_bbox_error_m": 7.152557379708213e-09
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-Piston.step",
+        "sha256": "341bbfe5c6ebbd029d49105c88d2cfef348c74151e7c3a51a2f5c366664b9029"
+      },
+      "stl": {
+        "path": "stl/Z-Piston.stl",
+        "sha256": "0c4253764ef904a6b7118ee57d4857e674761eb053fea745b08266b66abb6288"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.047
+    },
+    {
+      "source": "Modelos3D/Z-SoporteEfector.SLDPRT",
+      "source_sha256": "e28bbbcbdc55730b57c1332a735f0108f83657879813b28a23e761ac07cf1a62",
+      "status": "kernel_validated",
+      "warnings": [
+        "cliff_edge_blend: cliff-edge blends built as rolling-ball blends between a face and the cliff edge curve",
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (3 occurrences)",
+        "rolling_ball_blend: exact rolling-ball blend surfaces approximated by interpolating rational B-spline surfaces (exact circular cross-sections)",
+        "OCCT and converter report different face counts"
+      ],
+      "converter_effective_source_sha256": "ad631f03a7d7f24ee1c7c5b12af6d26cbba8def4fd9399f6f3ccf37f161b44fd",
+      "pipeline_sha256": "e8dfd765ae74abab569efc2c9982e5870756f0a223e6dd62742f00d077547520",
+      "previous_outcome": {
+        "status": "failed",
+        "error": "BRepCheck_Analyzer.IsValid() is false; an individual solid failed BRepCheck_Analyzer"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "cliff_edge_blend: cliff-edge blends built as rolling-ball blends between a face and the cliff edge curve",
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (3 occurrences)",
+          "rolling_ball_blend: exact rolling-ball blend surfaces approximated by interpolating rational B-spline surfaces (exact circular cross-sections)"
+        ],
+        "solids": 1,
+        "faces": 48,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 49,
+        "solid_volumes_mm3": [
+          22148.1569853383
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 22148.1569853383,
+        "bbox_mm": [
+          [
+            -30.0000001,
+            -30.0000001,
+            -1e-07
+          ],
+          [
+            30.0000001,
+            30.0000001,
+            19.00000010000001
+          ]
+        ],
+        "dimensions_mm": [
+          60.0000002,
+          60.0000002,
+          19.00000020000001
+        ],
+        "volume_centroid_mm": [
+          5.0895384002154205e-06,
+          -0.06231569345714889,
+          6.938092202085742
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 6188,
+          "bbox_m": [
+            [
+              -0.029975034296512604,
+              -0.029993757605552673,
+              0.0
+            ],
+            [
+              0.029999999329447746,
+              0.029993757605552673,
+              0.01899999938905239
+            ]
+          ],
+          "signed_volume_m3": 2.2123256745045557e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0011242578923937874,
+          "max_bbox_error_m": 2.4965803487396465e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-SoporteEfector.step",
+        "sha256": "269f273b7c5495cd9ef5d28b36a3e0a8e27aaf84a9eb63b808b4fe1f0f4e1043"
+      },
+      "stl": {
+        "path": "stl/Z-SoporteEfector.stl",
+        "sha256": "ab8d05b92dd68fefb42c9d0e57c1c8487871a70f1229fb91d6a1da5354c4b0b9"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.477
+    },
+    {
+      "source": "Modelos3D/Z-SoporteM4.SLDPRT",
+      "source_sha256": "89b47ec55d4ed5e62665c11cd19e1e23931e9c4fdfcdc50856ec96968ce1636a",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (12 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (12 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 43,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 43,
+        "solid_volumes_mm3": [
+          27456.826603016943
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 27456.826603016943,
+        "bbox_mm": [
+          [
+            -21.000000000000007,
+            -21.000000000000014,
+            -1e-07
+          ],
+          [
+            21.00000000000001,
+            21.00000000000001,
+            46.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          42.000000000000014,
+          42.00000000000003,
+          46.0000002
+        ],
+        "volume_centroid_mm": [
+          3.214218912885801e-07,
+          1.945892819175087e-10,
+          24.22889163161579
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 6468,
+          "bbox_m": [
+            [
+              -0.020999999716877937,
+              -0.020999999716877937,
+              0.0
+            ],
+            [
+              0.020999999716877937,
+              0.020999999716877937,
+              0.04600000008940697
+            ]
+          ],
+          "signed_volume_m3": 2.7473413411362594e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.000604105076871031,
+          "max_bbox_error_m": 2.8312207786540533e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-SoporteM4.step",
+        "sha256": "e5e59199fb510d339f3635aaa616e330c77dcbec837a1714d660ccf9c34e6b86"
+      },
+      "stl": {
+        "path": "stl/Z-SoporteM4.stl",
+        "sha256": "4094d5d0b568a987f461483e9a5b1334e9ec98c0bf86418440ddb6b11de6de49"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.203
+    },
+    {
+      "source": "Modelos3D/Z-SoporteRuleman.SLDPRT",
+      "source_sha256": "5c5d2923eeda77663c858ab739024197898eabaf7a4061b33fa3922f7722e5a6",
+      "status": "kernel_validated",
+      "warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [
+          "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+        ],
+        "solids": 1,
+        "faces": 36,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 36,
+        "solid_volumes_mm3": [
+          30143.45376428802
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 30143.45376428802,
+        "bbox_mm": [
+          [
+            -21.0000001,
+            -21.00000000000001,
+            -1e-07
+          ],
+          [
+            21.0000001,
+            20.999999999999993,
+            22.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          42.0000002,
+          42.0,
+          22.000000200000002
+        ],
+        "volume_centroid_mm": [
+          1.6634973867281208e-08,
+          2.9574194397099705e-07,
+          10.729371964774721
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 2492,
+          "bbox_m": [
+            [
+              -0.020999999716877937,
+              -0.020999999716877937,
+              0.0
+            ],
+            [
+              0.020999999716877937,
+              0.020999999716877937,
+              0.02199999988079071
+            ]
+          ],
+          "signed_volume_m3": 3.0159397301358696e-05,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0005289220404320893,
+          "max_bbox_error_m": 3.831220653227607e-10
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-SoporteRuleman.step",
+        "sha256": "b271c02e03f36fa01f35d2285c2b61ad57de56159b8309cbbd4e843364b0ab89"
+      },
+      "stl": {
+        "path": "stl/Z-SoporteRuleman.stl",
+        "sha256": "82f9b126d8f647c3f6d4e9b186a65c36931f8551a22ddc6081bc1bd435de4fa0"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.131
+    },
+    {
+      "source": "Modelos3D/Z-TuercaACME.SLDPRT",
+      "source_sha256": "f30046870bc161d83abd8d72488ea43b1a348ed000db10ebafc4a5feadc35d13",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "kernel_validated",
+        "error": null
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 12,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 12,
+        "solid_volumes_mm3": [
+          1381.4839534895757
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 1381.4839534895757,
+        "bbox_mm": [
+          [
+            -11.0000001,
+            -11.0000001,
+            -1.5000001
+          ],
+          [
+            11.0000001,
+            11.0000001,
+            13.5000001
+          ]
+        ],
+        "dimensions_mm": [
+          22.0000002,
+          22.0000002,
+          15.000000199999999
+        ],
+        "volume_centroid_mm": [
+          -1.3372657049759939e-15,
+          -1.3356963917677586e-15,
+          3.2011700095510975
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 1380,
+          "bbox_m": [
+            [
+              -0.010975435376167297,
+              -0.010993856936693192,
+              -0.001500000013038516
+            ],
+            [
+              0.010999999940395355,
+              0.010993856936693192,
+              0.013500000350177288
+            ]
+          ],
+          "signed_volume_m3": 1.3773345292342585e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0030035993142273343,
+          "max_bbox_error_m": 2.45647238327016e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-TuercaACME.step",
+        "sha256": "1fdb85fc5efdf3c2a55447f12fb2f07d5f985b1568d797258535b0a84c92a760"
+      },
+      "stl": {
+        "path": "stl/Z-TuercaACME.stl",
+        "sha256": "38d82cfb762fe1104121ee80640d190cbf46860797bbacfaa84ce6d476eefcb7"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.046
+    },
+    {
+      "source": "Modelos3D/Z-VarillaACME.SLDPRT",
+      "source_sha256": "2fa6450e36dc00b89c599e91b2690b84348df990cc8ebb239f30faef3d3bee24",
+      "status": "kernel_validated",
+      "warnings": [],
+      "previous_outcome": {
+        "status": "failed",
+        "error": "Source converter failed: {'error': 'xt_parse_error', 'message': 'no partition transmit found and no solid feature bodies exist to fall back on', 'ok': False, 'warnings': []}"
+      },
+      "conversion": {
+        "ok": true,
+        "warnings": [],
+        "solids": 1,
+        "faces": 3,
+        "bodies": [
+          "Body"
+        ]
+      },
+      "geometry": {
+        "valid": true,
+        "solids": 1,
+        "faces": 3,
+        "solid_volumes_mm3": [
+          9801.769079200152
+        ],
+        "solid_validity": [
+          true
+        ],
+        "volume_mm3": 9801.769079200152,
+        "bbox_mm": [
+          [
+            -4.0000001,
+            -4.0000001,
+            -1e-07
+          ],
+          [
+            4.0000001,
+            4.0000001,
+            195.0000001
+          ]
+        ],
+        "dimensions_mm": [
+          8.0000002,
+          8.0000002,
+          195.0000002
+        ],
+        "volume_centroid_mm": [
+          1.855776634654497e-16,
+          -5.1300655963336213e-17,
+          97.49999999999999
+        ],
+        "explicit_repair": false,
+        "step_importer": "OCCT STEPControl_Reader",
+        "input_unit": "mm (declared in generated STEP)",
+        "stl_unit": "m",
+        "scale_mm_to_m": 0.001,
+        "linear_tessellation_mm": 0.05,
+        "angular_tessellation_rad": 0.3,
+        "mass_kg": null,
+        "mesh": {
+          "triangles": 164,
+          "bbox_m": [
+            [
+              -0.004000000189989805,
+              -0.003988815005868673,
+              0.0
+            ],
+            [
+              0.004000000189989805,
+              0.003988815005868673,
+              0.19499999284744263
+            ]
+          ],
+          "signed_volume_m3": 9.765248869093025e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error": 0.0037258794623743485,
+          "max_bbox_error_m": 1.1185094131327226e-05
+        },
+        "errors": []
+      },
+      "step": {
+        "path": "step/Z-VarillaACME.step",
+        "sha256": "12af58c73409431686b089cc4d64160dbc7ec5d73115a0eea6d51bc0ae95ef56"
+      },
+      "stl": {
+        "path": "stl/Z-VarillaACME.stl",
+        "sha256": "e68bb666b6b6d8f8b4218a3bfda7958e1bb4b286f2006326fce551218590631f"
+      },
+      "source_unchanged": true,
+      "elapsed_seconds": 1.018
+    }
+  ],
+  "previous_report": {
+    "path": "history/informe-20261016T200201499128Z-be8366177ae5.json",
+    "sha256": "be8366177ae51468371671628b0fcc40d18a5dad02ae6f6b47a62cb378b16fe3"
+  },
+  "retained_from_previous_report": [
+    "Modelos3D/0-6203-2RS.SLDPRT",
+    "Modelos3D/0-Bancada.SLDPRT",
+    "Modelos3D/0-ElevadorM2.SLDPRT",
+    "Modelos3D/0-PlatinaSuperior.SLDPRT",
+    "Modelos3D/0-SoporteMotores.SLDPRT",
+    "Modelos3D/0-Torre.SLDPRT",
+    "Modelos3D/2GT_20Teet_5Bore.SLDPRT",
+    "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+    "Modelos3D/2GT_60Teet_10Bore.SLDPRT",
+    "Modelos3D/2GT_60Teet_8Bore.SLDPRT",
+    "Modelos3D/2GT_80Teet_10Bore.SLDPRT",
+    "Modelos3D/2GT_80Teet_16Bore.SLDPRT",
+    "Modelos3D/2GT_80Teet_40Bore.SLDPRT",
+    "Modelos3D/2GT_80Teet_8Bore.SLDPRT",
+    "Modelos3D/A-Brazo.SLDPRT",
+    "Modelos3D/A-BridaEje.SLDPRT",
+    "Modelos3D/A-CarretelInf.SLDPRT",
+    "Modelos3D/A-CarretelSup.SLDPRT",
+    "Modelos3D/A-Eje.SLDPRT",
+    "Modelos3D/A-EjeInterior.SLDPRT",
+    "Modelos3D/B-Antebrazo.SLDPRT",
+    "Modelos3D/B-Eje.SLDPRT",
+    "Modelos3D/B-ExtensorM3.SLDPRT",
+    "Modelos3D/B-SoporteEjeFijo.SLDPRT",
+    "Modelos3D/B-SoporteM3.SLDPRT",
+    "Modelos3D/B-SoporteRuleman.SLDPRT",
+    "Modelos3D/BorneraX4.SLDPRT",
+    "Modelos3D/BorneraX6.SLDPRT",
+    "Modelos3D/KY-003.SLDPRT",
+    "Modelos3D/NEMA17.SLDPRT",
+    "Modelos3D/NEMA23.SLDPRT",
+    "Modelos3D/R-Bancada.SLDPRT",
+    "Modelos3D/R-CarretelInf.SLDPRT",
+    "Modelos3D/R-CarretelSup.SLDPRT",
+    "Modelos3D/R-ContraBancada.SLDPRT",
+    "Modelos3D/Z-608zz.SLDPRT",
+    "Modelos3D/Z-6907-2RS.SLDPRT",
+    "Modelos3D/Z-AcopleFlex.SLDPRT",
+    "Modelos3D/Z-BridaACME.SLDPRT",
+    "Modelos3D/Z-BujeExterior.SLDPRT",
+    "Modelos3D/Z-BujeInterior.SLDPRT",
+    "Modelos3D/Z-Cuerpo.SLDPRT",
+    "Modelos3D/Z-Piston.SLDPRT",
+    "Modelos3D/Z-SoporteM4.SLDPRT",
+    "Modelos3D/Z-SoporteRuleman.SLDPRT",
+    "Modelos3D/Z-TuercaACME.SLDPRT",
+    "Modelos3D/Z-VarillaACME.SLDPRT"
+  ],
+  "summary": {
+    "kernel_validated": 47,
+    "failed": 3
+  }
+}

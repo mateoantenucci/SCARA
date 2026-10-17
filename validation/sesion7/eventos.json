@@ -1,0 +1,110 @@
+[
+  {
+    "first_observed_utc": "2026-10-17T23:11:42.499871+00:00",
+    "trial_at_observation": "1bdfc033-e0a1-4fd6-9af8-cb4500fec567",
+    "event": {
+      "event": "accepted",
+      "id": "db530bc2-f250-4561-a23a-43e1872ea55f",
+      "mode": "IDLE"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:13.183566+00:00",
+    "trial_at_observation": "10bbd24f-e536-4ffd-936c-b3368b0fb955",
+    "event": {
+      "event": "accepted",
+      "id": "78812365-2080-43d6-b81c-9ce78c8fd4e7",
+      "message": "Recarga del ensayo; no es homing del robot fisico"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:21.420934+00:00",
+    "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+    "event": {
+      "event": "accepted",
+      "id": "2bc048b0-6f6b-4408-933e-5da00440e229",
+      "mode": "IDLE"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:25.009302+00:00",
+    "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+    "event": {
+      "event": "accepted",
+      "id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+      "mode": "MOVING"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:26.275662+00:00",
+    "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+    "event": {
+      "event": "completed",
+      "id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+      "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:38.822318+00:00",
+    "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+    "event": {
+      "event": "accepted",
+      "id": "232a329e-6307-4bac-8365-d5426e0575de",
+      "message": "Recarga del ensayo; no es homing del robot fisico"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:44.320287+00:00",
+    "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+    "event": {
+      "event": "accepted",
+      "id": "ddc9359a-804d-4d7f-83eb-a97e74b7b925",
+      "mode": "IDLE"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:54.959317+00:00",
+    "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+    "event": {
+      "event": "accepted",
+      "id": "203a8fff-7a65-4f0e-bc09-85f6032a882d",
+      "mode": "FAULT"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:14:58.631395+00:00",
+    "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+    "event": {
+      "event": "rejected",
+      "id": "5e50faae-ab87-41ad-91db-f2394cc46345",
+      "message": "Primero quitar las fallas inyectadas"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:15:02.746082+00:00",
+    "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+    "event": {
+      "event": "accepted",
+      "id": "f26097a3-949c-4dce-9f9f-b8d13a00de6e",
+      "mode": "STOPPED"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:15:10.899631+00:00",
+    "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+    "event": {
+      "event": "accepted",
+      "id": "4023a1bf-a74d-431a-94f0-82248c660e50",
+      "mode": "IDLE"
+    }
+  },
+  {
+    "first_observed_utc": "2026-10-17T23:15:14.803689+00:00",
+    "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+    "event": {
+      "event": "accepted",
+      "id": "e2c24ad9-44f2-4a13-8d43-8676372ca5bc",
+      "mode": "STOPPED"
+    }
+  }
+]

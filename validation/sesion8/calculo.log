@@ -1,0 +1,60 @@
+0-6203-2RS: computed
+0-Bancada: computed
+0-ElevadorM2: computed
+0-PlatinaSuperior: computed
+0-SoporteMotores: computed
+0-Torre: computed
+2GT_20Teet_5Bore: computed
+2GT_20Teet_635Bore: computed
+2GT_60Teet_10Bore: computed
+2GT_60Teet_8Bore: computed
+2GT_80Teet_10Bore: computed
+2GT_80Teet_16Bore: computed
+2GT_80Teet_40Bore: computed
+2GT_80Teet_8Bore: computed
+A-Brazo: computed
+A-BridaEje: computed
+A-CarretelInf: computed
+A-CarretelSup: computed
+A-Eje: computed
+A-EjeInterior: computed
+B-Antebrazo: computed
+B-CarretelInf: computed
+B-CarretelSup: computed
+B-Eje: computed
+B-ExtensorM3: excluded
+B-SoporteEjeFijo: computed
+B-SoporteM3: computed
+B-SoporteRuleman: computed
+BorneraX4: computed
+BorneraX6: computed
+KY-003: computed
+NEMA17: computed
+NEMA23: computed
+R-Bancada: computed
+R-CarretelInf: computed
+R-CarretelSup: computed
+R-ContraBancada: computed
+Z-608zz: computed
+Z-6907-2RS: computed
+Z-AcopleFlex: computed
+Z-BridaACME: computed
+Z-BujeExterior: computed
+Z-BujeInterior: computed
+Z-Cuerpo: computed
+Z-Piston: computed
+Z-SoporteEfector: computed
+Z-SoporteM4: computed
+Z-SoporteRuleman: computed
+Z-TuercaACME: computed
+Z-VarillaACME: computed
+{
+  "parts": 50,
+  "computed_parts": 49,
+  "computed_solids": 51,
+  "excluded_parts": [
+    "B-ExtensorM3"
+  ],
+  "instances": 39,
+  "computed_instances": 39
+}

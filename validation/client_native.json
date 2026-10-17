@@ -1,0 +1,446 @@
+{
+  "checked_utc": "2026-10-15T01:23:47.735941+00:00",
+  "status": "passed",
+  "webots": "R2025b nightly_13_10_2026 build a459c02c7292d23ae437101c76111ec1668198c8",
+  "model": "CAD articulado parcial, 30 instancias",
+  "method": "Acciones en navegador local mediante interfaz visible; estado observado por API HTTP local. Sin otro cliente TCP.",
+  "steps": [
+    {
+      "action": "reiniciar ensayo, habilitar, enviar destino desde navegador",
+      "target_m": [
+        0.24,
+        0.25,
+        0.035
+      ],
+      "snapshot": {
+        "protocol": "scara-dev/1",
+        "connected": true,
+        "connection_enabled": true,
+        "connection_message": "Conectado. Habilitá explícitamente antes de mover.",
+        "state": {
+          "time": 39.904,
+          "trial_id": "4fc3ecc1-9774-4b57-b0c4-2ebd43c848d4",
+          "mode": "IDLE",
+          "commanded": [
+            0.0008003075216479472,
+            1.6100063731246972,
+            -1.6108066806463452,
+            0.05966685886479947
+          ],
+          "estimated": [
+            0.0008003075216479472,
+            1.6100063731246972,
+            -1.6108066806463452,
+            0.05966685886479947
+          ],
+          "simulated": [
+            0.0008003075216479686,
+            1.6100063731205547,
+            -1.6108066806463448,
+            0.05966833036479936
+          ],
+          "estimated_pose": [
+            0.24,
+            0.25,
+            0.035,
+            0.0
+          ],
+          "simulated_pose": [
+            0.24000000000103477,
+            0.2500000000000414,
+            0.03499852850000011,
+            -4.142020060271534e-12
+          ],
+          "hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "hall_nominal": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "end_hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "faults": {},
+          "payload_mass": 0.0,
+          "reference_valid": true,
+          "effort_available": [
+            0.8,
+            0.8,
+            0.3,
+            8.0
+          ],
+          "effort_feedback": [
+            null,
+            4.141884229619498e-06,
+            -1.045109237460912e-16,
+            -1.4714999999902807
+          ],
+          "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+          "tcp_world": [
+            0.239999448222904,
+            0.24999936008842402,
+            0.03497529169746186
+          ],
+          "tcp_world_yaw": -4.400789609125933e-09,
+          "tool_physics": {
+            "mass": 0.15,
+            "center": [
+              -4.28476698566271e-16,
+              1.90819582357449e-16,
+              0.0994999999999999
+            ],
+            "inertia": [
+              0.0005400125,
+              0.0005400125,
+              9e-05,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+          "protocol": "scara-dev/1"
+        },
+        "responses": [
+          {
+            "event": "accepted",
+            "id": "d1c34ed0-51a2-416a-9178-5bc19e7d4ab4",
+            "message": "Recarga del ensayo; no es homing del robot fisico"
+          },
+          {
+            "event": "accepted",
+            "id": "0c5dcdc9-423a-47a2-a176-37eb4e339e55",
+            "mode": "IDLE"
+          },
+          {
+            "event": "accepted",
+            "id": "3f6179f8-7665-4b4c-897e-b0725a8ddaa4",
+            "mode": "MOVING"
+          },
+          {
+            "event": "completed",
+            "id": "3f6179f8-7665-4b4c-897e-b0725a8ddaa4",
+            "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+          }
+        ],
+        "initial_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ]
+      },
+      "tcp_error_m": 2.472274578410048e-05
+    },
+    {
+      "action": "regresar desde navegador",
+      "target_m": [
+        0.25,
+        0.25,
+        0.03467
+      ],
+      "snapshot": {
+        "protocol": "scara-dev/1",
+        "connected": true,
+        "connection_enabled": true,
+        "connection_message": "Conectado. Habilitá explícitamente antes de mover.",
+        "state": {
+          "time": 58.608000000000004,
+          "trial_id": "4fc3ecc1-9774-4b57-b0c4-2ebd43c848d4",
+          "mode": "IDLE",
+          "commanded": [
+            1.021405182655144e-14,
+            1.5707963267948957,
+            -1.5707963267949059,
+            0.059996858864799475
+          ],
+          "estimated": [
+            1.021405182655144e-14,
+            1.5707963267948957,
+            -1.5707963267949059,
+            0.059996858864799475
+          ],
+          "simulated": [
+            2.7014004418689604e-06,
+            1.5707978012030612,
+            -1.5707963267988327,
+            0.05999833036479948
+          ],
+          "estimated_pose": [
+            0.25,
+            0.25,
+            0.03467,
+            0.0
+          ],
+          "simulated_pose": [
+            0.24999895604693856,
+            0.25000067534792825,
+            0.0346685285,
+            4.175804670270012e-06
+          ],
+          "hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "hall_nominal": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "end_hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "faults": {},
+          "payload_mass": 0.0,
+          "reference_valid": true,
+          "effort_available": [
+            0.8,
+            0.8,
+            0.3,
+            8.0
+          ],
+          "effort_feedback": [
+            null,
+            0.00023363622737429844,
+            2.254860801475672e-06,
+            -1.4715000008343768
+          ],
+          "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+          "tcp_world": [
+            0.24999933756882364,
+            0.24999941393296493,
+            0.03464525518323461
+          ],
+          "tcp_world_yaw": 3.3400434080704825e-07,
+          "tool_physics": {
+            "mass": 0.15,
+            "center": [
+              -4.28476698566271e-16,
+              1.90819582357449e-16,
+              0.0994999999999999
+            ],
+            "inertia": [
+              0.0005400125,
+              0.0005400125,
+              9e-05,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+          "protocol": "scara-dev/1"
+        },
+        "responses": [
+          {
+            "event": "accepted",
+            "id": "d1c34ed0-51a2-416a-9178-5bc19e7d4ab4",
+            "message": "Recarga del ensayo; no es homing del robot fisico"
+          },
+          {
+            "event": "accepted",
+            "id": "0c5dcdc9-423a-47a2-a176-37eb4e339e55",
+            "mode": "IDLE"
+          },
+          {
+            "event": "accepted",
+            "id": "3f6179f8-7665-4b4c-897e-b0725a8ddaa4",
+            "mode": "MOVING"
+          },
+          {
+            "event": "completed",
+            "id": "3f6179f8-7665-4b4c-897e-b0725a8ddaa4",
+            "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+          },
+          {
+            "event": "accepted",
+            "id": "64f821bb-18b3-4e93-9356-7b9a85506fc4",
+            "mode": "MOVING"
+          },
+          {
+            "event": "completed",
+            "id": "64f821bb-18b3-4e93-9356-7b9a85506fc4",
+            "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+          }
+        ],
+        "initial_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ]
+      },
+      "tcp_error_m": 2.476061886112317e-05
+    },
+    {
+      "action": "reiniciar ensayo desde navegador; nueva trial_id; STOPPED, carga cero y referencia válida",
+      "snapshot": {
+        "protocol": "scara-dev/1",
+        "connected": true,
+        "connection_enabled": true,
+        "connection_message": "Conectado. Habilitá explícitamente antes de mover.",
+        "state": {
+          "time": 10.96,
+          "trial_id": "0bf362df-6c58-4305-80ec-0643b6929451",
+          "mode": "STOPPED",
+          "commanded": [
+            0.0,
+            1.5707963267948966,
+            -1.5707963267948966,
+            0.06
+          ],
+          "estimated": [
+            0.0,
+            1.5707963267948966,
+            -1.5707963267948966,
+            0.06
+          ],
+          "simulated": [
+            -2.7013990679346867e-06,
+            1.5707948523790582,
+            -1.570796326790971,
+            0.06000147149999993
+          ],
+          "estimated_pose": [
+            0.25000000000000233,
+            0.24999999999999745,
+            0.03466685886479948,
+            0.0
+          ],
+          "simulated_pose": [
+            0.25000104395281675,
+            0.2499993246480508,
+            0.034665387364799544,
+            -4.1758109807776825e-06
+          ],
+          "hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "hall_nominal": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "end_hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "faults": {},
+          "payload_mass": 0.0,
+          "reference_valid": true,
+          "effort_available": [
+            0.8,
+            0.8,
+            0.3,
+            8.0
+          ],
+          "effort_feedback": [
+            null,
+            -0.0002253461231581348,
+            -2.2548628822281822e-06,
+            -1.4714999991454725
+          ],
+          "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+          "tcp_world": [
+            0.24999950407259583,
+            0.24999930630387332,
+            0.034642114047253925
+          ],
+          "tcp_world_yaw": -3.340240086526917e-07,
+          "tool_physics": {
+            "mass": 0.15,
+            "center": [
+              -4.28476698566271e-16,
+              1.90819582357449e-16,
+              0.0994999999999999
+            ],
+            "inertia": [
+              0.0005400125,
+              0.0005400125,
+              9e-05,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+          "protocol": "scara-dev/1"
+        },
+        "responses": [
+          {
+            "event": "accepted",
+            "id": "d1c34ed0-51a2-416a-9178-5bc19e7d4ab4",
+            "message": "Recarga del ensayo; no es homing del robot fisico"
+          },
+          {
+            "event": "accepted",
+            "id": "0c5dcdc9-423a-47a2-a176-37eb4e339e55",
+            "mode": "IDLE"
+          },
+          {
+            "event": "accepted",
+            "id": "3f6179f8-7665-4b4c-897e-b0725a8ddaa4",
+            "mode": "MOVING"
+          },
+          {
+            "event": "completed",
+            "id": "3f6179f8-7665-4b4c-897e-b0725a8ddaa4",
+            "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+          },
+          {
+            "event": "accepted",
+            "id": "64f821bb-18b3-4e93-9356-7b9a85506fc4",
+            "mode": "MOVING"
+          },
+          {
+            "event": "completed",
+            "id": "64f821bb-18b3-4e93-9356-7b9a85506fc4",
+            "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+          },
+          {
+            "event": "accepted",
+            "id": "867693ca-cbd8-4126-ae79-6eeb92893a69",
+            "message": "Recarga del ensayo; no es homing del robot fisico"
+          }
+        ],
+        "initial_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ]
+      }
+    }
+  ],
+  "sources": {
+    "client/app.py": "06456f601a6c97f5b5686071b8f53d2ce0eee88cdbff99797117626fa12f5dae",
+    "client/index.html": "0799eb40e667a90f4f38aef1c579c3409a17d5ba2708fbf3d36c492831b5b3d5",
+    "config/scara.json": "9cb831cf852f33b8c50c76a089d10f48edb06301149e566219c40c6e03c1823d",
+    "config/cad_integration.json": "33dc31e0356253792a88d634259432d30c9b1235338a9d1ccb0f930e7b3f10c7",
+    "webots/worlds/scara.wbt": "bec5739f1e283fb96f4ff1157bdc011725d1277ddd18a36c10578b84eda4affa",
+    "webots/protos/SCARA.proto": "493b68164b2554fa9bf4c5178859e694bad6ec8d50ec73cb86bf44ea8fd03787",
+    "webots/controllers/scara_bridge/scara_bridge.py": "1e5f4491f013bd34f7ffef195cd2cfa27e8346a34eb73c8752442960adcb114d",
+    "cad/ensambles/integracion_articulada.json": "7c5374bf9fe983fd16350c12610741ee70baa5a8110f1bb65cf966bb1c393c13"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "reviewer": "agente independiente sesion9; distinto de implementadores7/8",
+  "reviewed_utc": "2026-10-17T23:21:25.080017+00:00",
+  "acceptance": "Pedido humano17/10/2026: solo rondaA, sesiones7,8,9; SESIONES.md; entregar/contrato",
+  "base": {
+    "path": ".agent-state/ronda-profesor-20261017/baseline-rondaA.json",
+    "sha256": "1cb9b5144870f1e7839260cea1fb29d7bfa7a633da1a8d63f0a0b6bcd4169cfa"
+  },
+  "verdict": "approved",
+  "findings": [],
+  "integration_authority": "director, único escritor raíz; esta revisión no incorpora archivos",
+  "checks_policy": "Sin nuevas suites, Webots ni CAD nativo; revisión de evidencia existente y comprobaciones locales afectadas",
+  "session": 8,
+  "candidate": {
+    "manifest": "validation/sesion9/manifest_sesion8.json",
+    "sha256": "868e89f2eaf493658183455c33e11c4f2ca2a5113631d8efbfdd94cf2587eed2",
+    "report_json_sha256": "f358ec42f0a017e579e8831f60195ab1bac547ccba23e573df1ad0f74fbca84f"
+  },
+  "scope": [
+    "Todos9archivos de manifiesto y candidatoJSON/CSVcompletos",
+    "Fuente del cálculo existente y scriptverificar_sesion8.py revisados: compuestoBREP usaSTEP/gp_Trsf/copia/VolumeProperties sin combine/placed/read_part",
+    "Identidades50SLDPRT/STEP,680base,217protegidos contrastados; sin ejecutar kernel de nuevo"
+  ],
+  "acceptance_results": [
+    {
+      "criterion": "Alta única de muñeca39",
+      "result": "38ocurrencias anteriores exactamente iguales; una2GT_80Teet_40Bore-registro-R enJSON/CSV/suma. DeltaV9,166651648cm³"
+    },
+    {
+      "criterion": "Grupos no afectados preservados",
+      "result": "base,arm,forearm,tool idénticos completos frente38;49tipos/51sólidos idénticos"
+    },
+    {
+      "criterion": "Suma afectada independiente",
+      "result": "CompuestosBREP6/7revisados,erroresV2,22e−16,c1,67e−16m,J4,37e−15 dentro tolerancias1e−9/1e−10m/1e−9; suma propia adicional por ejes paralelos errorJ1,99e−16"
+    },
+    {
+      "criterion": "Exclusiones y originales",
+      "result": "B-ExtensorM3 sigue única exclusiónBREPinválido;históricos38y680base conservados.217protegidos intactos,cero material/densidad aplicada;física/PROTO/mundo/ZIPsin cambios"
+    }
+  ],
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+    "executable": "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "kernel_distribution": {
+      "cadquery-ocp-novtk": "8.0.1.1.0",
+      "cadquery-ocp-proxy": "8.0.1.1.0"
+    }
+  },
+  "independent_checks": {
+    "manifest_files": 9,
+    "base_files": 680,
+    "protected_files": 217,
+    "previous_instances_equal": 38,
+    "unaffected_groups_equal": 4,
+    "added": [
+      "2GT_80Teet_40Bore-registro-R"
+    ],
+    "source_and_step_hashes_verified": 50,
+    "csv_rows": 145,
+    "wrist_formula_tensor_relative_error": 1.985962994406957e-16,
+    "brep_compound_method_reviewed_without_rerun": true
+  },
+  "limits": [
+    "Se reutiliza corridaOCCT8de sesión8; no rerun por informe",
+    "CompuestoBREP comparte kernel ySTEPcon productor; no certificaSolidWorks",
+    "Sumas aditivas,sin unión/solapamientos ni cuerpos físicos completos",
+    "Sin masas/materiales efectivos ni modificación física/protocolo/homing"
+  ]
+}

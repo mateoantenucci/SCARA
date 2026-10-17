@@ -1,0 +1,454 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-17T18:51:56.646241+00:00",
+  "status": "visual_output_membership_check",
+  "checks": {
+    "output_axes_coincident": true,
+    "shaft_cached_revisions_match": true,
+    "all_shaft_placements_engage_at_set_screw": true,
+    "active_groups_match": true,
+    "active_saved_poses_preserved": true,
+    "protected_inputs_unchanged": true
+  },
+  "sources_sha256": {
+    "tools/check_pulley_mounts.py": "a36e0aab8b74ce03f7087786f85e0ca212f1582454281bd7818c9b89babbb0d3",
+    "tools/check_collisions.py": "4c7c1b2bd4696e587f25085cf8a82b790b6086d17b6f88fcf4d2cb9d7ea22cab",
+    "tools/requirements-cad.txt": "90efabe7cc4d29dabe5130dec0b44b870a24c7c014a296d637404411814bc199",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "tools/registrar_subensambles.py": "845503ef569c2a677cfd7eaefe4a509ea1cf82bd314336366946eeaf4c935351",
+    "cad/ensambles/informe.json": "541de5c1b812d549c0afc9e9a41acb13fff0f4f35769de86517ee68dfe96e6d3",
+    "cad/ensambles/registro_subensambles.json": "fc57d16b85ed3fda3ccb8c8439b8d2669833484a69ab0f159ac7cc7583aeca53",
+    "cad/ensambles/integracion_articulada.json": "71ec250dc82b238240089f12139861fa82552645ebad9329e3763d8009ba133f",
+    "cad/derivados/informe.json": "e8f01f0cc10438967672ec156f19acc5f98b828114c99e673645f2672eae3279",
+    "Modelos3D/0-EnsambleTorre.SLDASM": "d10001043850d71f46f1ca0a53d8cf0dff90c899241f7db75bf61863938e11af",
+    "Modelos3D/0-EnsambleBase.SLDASM": "5558e2f464ae0c64ed8fd842a567cda64f78643f342229058556f31de9c317ea",
+    "Modelos3D/2GT_80Teet_16Bore.SLDPRT": "cf753a7288a8d1636e21c7662990837188679c6deeeacbe7a6771450b5c15746",
+    "cad/derivados/step/2GT_80Teet_16Bore.step": "c72927f9edb8c75986cf0b44724cfcdb908c01a66823dd5851573ec2da582ce6",
+    "Modelos3D/A-BridaEje.SLDPRT": "208eead9ba17df76d6ab435ec1faf4068a2939c0b3eeedb7b9e568e29d220d8b",
+    "cad/derivados/step/A-BridaEje.step": "739817b0ef0ea0cb6ecc8b91ea449daee9a76f96e2b76a9f69dae31e7d01b97f",
+    "Modelos3D/A-Eje.SLDPRT": "11d0824a7e2f383101cddc9ee18b5999b6a770f221a6bae04171b51f94ab9000",
+    "cad/derivados/step/A-Eje.step": "a31fdfcfbb667dd40d718ad4ed3848899dfee34df068d51456a04898cf0cc834",
+    "Modelos3D/A-EnsambleBrazo.SLDASM": "a9296eb37355d898417c4e0fd56fd1e4fdfcec62ae1f948f5b9139fbdfd7ae22",
+    "Modelos3D/2GT_60Teet_8Bore.SLDPRT": "9170edde358c18ed83128338c22d180afafe90ca9f9e2583acd38819149af637",
+    "cad/derivados/step/2GT_60Teet_8Bore.step": "a8c93048980047eb231ad53e7c6a9f1e3ad2bfcbd60c35701991d83d4de3c82a",
+    "Modelos3D/B-SoporteEjeFijo.SLDPRT": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+    "cad/derivados/step/B-SoporteEjeFijo.step": "944f453803c847117dc2299ee9bdb7589b6e2be48d7ae2c57c16bdfff373c6d6",
+    "Modelos3D/B-Eje.SLDPRT": "a93fa00bab44a857a422444804773979e09b4a40e6293327c7fe0c191759edfa",
+    "cad/derivados/step/B-Eje.step": "0c781de53f284b3198e1f5152ebef40fe93fe9fffd34bfc579d98f4a67da2733",
+    "Modelos3D/B-EnsambleAntebrazo.SLDASM": "1c38beb036054dce813e2343aed9b69f2ab85e9adfbd0d6af5782a8442a2feed",
+    "Modelos3D/2GT_20Teet_635Bore.SLDPRT": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+    "cad/derivados/step/2GT_20Teet_635Bore.step": "7dfee691b7d44518a13d3a13f09577d2684323adae4e0f4502209a03ed262634",
+    "Modelos3D/NEMA23.SLDPRT": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+    "cad/derivados/step/NEMA23.step": "91fce9bc605daba76f877f53f5cf5d0387d829082d157ef73ba40f38ce4c8b7d",
+    "Modelos3D/2GT_20Teet_5Bore.SLDPRT": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+    "cad/derivados/step/2GT_20Teet_5Bore.step": "dd6d03d5593d1259403e732c7fd06b3f0fa5ce8ab1c9faecb036080edf8767ab",
+    "Modelos3D/NEMA17.SLDPRT": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+    "cad/derivados/step/NEMA17.step": "c518140415b5025553a38991630df1e97a5f4e75c574d25d7d5e6ca2532bc6f9",
+    "Modelos3D/2GT_80Teet_10Bore.SLDPRT": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+    "cad/derivados/step/2GT_80Teet_10Bore.step": "da202bb84137439e3bf76d8a4f74f31580dd8ebf167649818fdd47c6d4eed2e9",
+    "Modelos3D/A-EjeInterior.SLDPRT": "d8ee48f0fea3937bc23e39950aa8b63e46e11516959ba09e378c3e5b7485e861",
+    "cad/derivados/step/A-EjeInterior.step": "8a027439a2c307c0cc49f0f182d5ca12b341bde8b5602376913ef664c444f560"
+  },
+  "units": {
+    "length": "mm",
+    "matrix_translation": "m"
+  },
+  "outputs": [
+    {
+      "occurrence": "2GT_80Teet_16Bore-registro-1",
+      "expected_group": "arm",
+      "active_group": "arm",
+      "support": "A-BridaEje-1",
+      "measured_bore_diameter_mm": 16.0,
+      "axis_gap_to_support_mm": 6.29392081429202e-13,
+      "bore_span_saved_Z_mm": [
+        277.6319736797806,
+        298.3319736797806
+      ],
+      "pulley_and_support_axes_parallel_to_saved_Z": true,
+      "set_screw_axis_crossing_saved_mm": [
+        -32.666638842818,
+        10.499991056622862,
+        280.83197367978056
+      ],
+      "pulley_to_saved_global": [
+        [
+          0.6048642722146154,
+          0.79632858305996,
+          5.639839928964939e-16,
+          -0.03266663884281801
+        ],
+        [
+          0.7963285830599601,
+          -0.6048642722146154,
+          -1.471601099022237e-16,
+          0.010499991056622865
+        ],
+        [
+          2.2394596560264487e-16,
+          5.381284667067948e-16,
+          -1.0,
+          0.2983319736797806
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "support_from_pulley": [
+        [
+          0.6166029056309037,
+          0.7872743211660898,
+          5.574803689208315e-16,
+          5.474648697560527e-16
+        ],
+        [
+          0.7872743211660899,
+          -0.6166029056309036,
+          -1.4853061339281375e-16,
+          3.1564486313365366e-16
+        ],
+        [
+          2.2680967747756237e-16,
+          5.304743867987179e-16,
+          -1.0,
+          0.13631060216805618
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "active_saved_pose_max_error": 0.0,
+      "shaft_placements": [
+        {
+          "assembly": "0-EnsambleBase",
+          "stamp": "144",
+          "cached_bbox_matches_current_geometry": true,
+          "shaft_to_saved_global": [
+            [
+              -0.989492234131016,
+              0.14458602489317904,
+              5.639839928964938e-16,
+              -0.032666638842818
+            ],
+            [
+              0.14458602489317904,
+              0.989492234131016,
+              -1.4716010990222369e-16,
+              0.010499991056622865
+            ],
+            [
+              -5.793350764588887e-16,
+              -6.40695822858301e-17,
+              -0.9999999999999999,
+              0.2911463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "sections": [
+            {
+              "shaft_span_saved_Z_mm": [
+                269.1463715117246,
+                290.6463715117246
+              ],
+              "engagement_mm": 13.014397831944052,
+              "axis_gap_mm": 2.161031364628563e-14,
+              "axis_parallel_to_saved_Z": true,
+              "set_screw_on_shaft": true
+            },
+            {
+              "shaft_span_saved_Z_mm": [
+                151.64637151172465,
+                215.14637151172462
+              ],
+              "engagement_mm": 0,
+              "axis_gap_mm": 8.788928253162695e-14,
+              "axis_parallel_to_saved_Z": true,
+              "set_screw_on_shaft": false
+            }
+          ]
+        },
+        {
+          "assembly": "A-EnsambleBrazo",
+          "stamp": "144",
+          "cached_bbox_matches_current_geometry": true,
+          "shaft_to_saved_global": [
+            [
+              -0.9935971185372249,
+              0.11298126408623782,
+              5.855656257147419e-16,
+              -0.03266663884281859
+            ],
+            [
+              -0.11298126408623782,
+              -0.9935971185372249,
+              7.511821888344707e-16,
+              0.010499991056622667
+            ],
+            [
+              6.666858316781996e-16,
+              6.802145137237152e-16,
+              0.9999999999999999,
+              0.15813190096117163
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "sections": [
+            {
+              "shaft_span_saved_Z_mm": [
+                158.63190096117162,
+                180.13190096117162
+              ],
+              "engagement_mm": 0,
+              "axis_gap_mm": 5.960755884576759e-13,
+              "axis_parallel_to_saved_Z": true,
+              "set_screw_on_shaft": false
+            },
+            {
+              "shaft_span_saved_Z_mm": [
+                234.13190096117162,
+                297.6319009611716
+              ],
+              "engagement_mm": 19.999927281391024,
+              "axis_gap_mm": 5.05884472412605e-13,
+              "axis_parallel_to_saved_Z": true,
+              "set_screw_on_shaft": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "occurrence": "2GT_60Teet_8Bore-registro-1",
+      "expected_group": "forearm",
+      "active_group": "forearm",
+      "support": "B-SoporteEjeFijo-registro-1",
+      "measured_bore_diameter_mm": 8.0,
+      "axis_gap_to_support_mm": 2.381537440797818e-12,
+      "bore_span_saved_Z_mm": [
+        126.09928104408402,
+        146.399281044084
+      ],
+      "pulley_and_support_axes_parallel_to_saved_Z": true,
+      "set_screw_axis_crossing_saved_mm": [
+        -28.960536631236327,
+        -239.4725370467618,
+        128.899281044084
+      ],
+      "pulley_to_saved_global": [
+        [
+          -0.9999819129238229,
+          0.0060144679908340545,
+          -6.848601294012231e-16,
+          -0.028960536631236315
+        ],
+        [
+          0.0060144679908340545,
+          0.9999819129238229,
+          -6.971370810356217e-16,
+          -0.2394725370467618
+        ],
+        [
+          6.806548336247788e-16,
+          -7.012435411906038e-16,
+          -0.9999999999999999,
+          0.146399281044084
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "support_from_pulley": [
+        [
+          -0.9997848019549789,
+          -0.02074487357986441,
+          -3.0453299349738277e-16,
+          2.758172765207781e-16
+        ],
+        [
+          3.0395897671902046e-16,
+          3.082342986842651e-17,
+          -0.9999999999999999,
+          -0.06862209046764035
+        ],
+        [
+          0.02074487357986441,
+          -0.9997848019549789,
+          -2.451120618106754e-17,
+          0.016999999999997628
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "active_saved_pose_max_error": 0.0,
+      "shaft_placements": [
+        {
+          "assembly": "A-EnsambleBrazo",
+          "stamp": "115",
+          "cached_bbox_matches_current_geometry": true,
+          "shaft_to_saved_global": [
+            [
+              -0.9910472987751764,
+              0.13351124143841636,
+              5.733246906941765e-16,
+              -0.028960536631236336
+            ],
+            [
+              -0.13351124143841633,
+              -0.9910472987751764,
+              1.5768198261012773e-15,
+              -0.23947253704676183
+            ],
+            [
+              7.787150585410655e-16,
+              1.4861577381109372e-15,
+              1.0,
+              0.11322137151172457
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "sections": [
+            {
+              "shaft_span_saved_Z_mm": [
+                113.22137151172457,
+                243.22137151172458
+              ],
+              "engagement_mm": 20.299999999999983,
+              "axis_gap_mm": 1.7866300027947316e-13,
+              "axis_parallel_to_saved_Z": true,
+              "set_screw_on_shaft": true
+            }
+          ]
+        },
+        {
+          "assembly": "B-EnsambleAntebrazo",
+          "stamp": "115",
+          "cached_bbox_matches_current_geometry": true,
+          "shaft_to_saved_global": [
+            [
+              -0.9996419493929843,
+              0.02675767205483625,
+              -3.84805409893761e-16,
+              -0.028960536631236634
+            ],
+            [
+              0.02675767205483625,
+              0.9996419493929843,
+              -8.685162935089762e-16,
+              -0.23947253704676405
+            ],
+            [
+              3.614281559271705e-16,
+              -8.785018176857466e-16,
+              -1.0,
+              0.24002137151172437
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "sections": [
+            {
+              "shaft_span_saved_Z_mm": [
+                110.02137151172437,
+                240.02137151172437
+              ],
+              "engagement_mm": 20.299999999999983,
+              "axis_gap_mm": 2.3872147553559163e-12,
+              "axis_parallel_to_saved_Z": true,
+              "set_screw_on_shaft": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "held_pinions": [
+    {
+      "occurrence": "2GT_20Teet_635Bore-registro-1",
+      "motor": "NEMA23-registro-2",
+      "axis_gap_mm": 3.573304158885344e-13,
+      "bore_span_saved_Z_mm": [
+        280.01750267564415,
+        297.01750267564415
+      ],
+      "motor_shaft_span_saved_Z_mm": [
+        274.7463715117246,
+        296.74637151172453
+      ],
+      "engagement_mm": 16.72886883608038,
+      "status": "held: requires its own rotor coordinate and phase"
+    },
+    {
+      "occurrence": "2GT_20Teet_635Bore-registro-2",
+      "motor": "NEMA23-registro-1",
+      "axis_gap_mm": 1.0658141036401503e-14,
+      "bore_span_saved_Z_mm": [
+        304.1463715117246,
+        321.1463715117246
+      ],
+      "motor_shaft_span_saved_Z_mm": [
+        299.1463715117246,
+        321.1463715117246
+      ],
+      "engagement_mm": 17.0,
+      "status": "held: requires its own rotor coordinate and phase"
+    },
+    {
+      "occurrence": "2GT_20Teet_5Bore-registro-1",
+      "motor": "NEMA17-1",
+      "axis_gap_mm": 5.192434156951983e-13,
+      "bore_span_saved_Z_mm": [
+        210.52137151172442,
+        227.52137151172442
+      ],
+      "motor_shaft_span_saved_Z_mm": [
+        225.0213715117242,
+        238.02137151172417
+      ],
+      "engagement_mm": 2.5000000000002274,
+      "status": "held: requires its own rotor coordinate and phase"
+    }
+  ],
+  "held_inner_output": {
+    "occurrence": "2GT_80Teet_10Bore-registro-1",
+    "measured_bore_diameter_mm": 9.5,
+    "measured_inner_shaft_diameter_mm": 9.5,
+    "reason": "Axis remains at J1; elbow transmission rotation needs an auxiliary rotor, not forearm parenting"
+  },
+  "limitations": [
+    "Visual grouping only; no additional mass, motor law, angular zero or certified mate",
+    "Saved angular phases retained; radial set screws on round shafts do not establish an indexed phase",
+    "NEMA17 cached geometry differs by 3 mm; its retained pinion position is not corrected here"
+  ]
+}

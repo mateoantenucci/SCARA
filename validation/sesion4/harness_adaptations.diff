@@ -1,0 +1,48 @@
+--- check_simulation original
++++ check_simulation paths only
+@@ -15,7 +15,8 @@
+ import sys
+ import time
+ 
+-ROOT = Path(__file__).resolve().parents[1]
++ROOT = Path('/private/tmp/scara-sesion4-final-20261017/SCARA minima39')
++HARNESS_ROOT = Path('/private/tmp/scara-sesion5-20261017/SCARA QA completa')
+ sys.path.insert(0, str(ROOT))
+ from scara.dynamics import box_with_payload
+ from scara.kinematics import forward, inverse, load_config
+@@ -137,7 +138,9 @@
+                  "webots/worlds/scara.wbt", "webots/controllers/scara_bridge/scara_bridge.py",
+                  "config/cad_integration.json", "scara/frames.py", "tools/integrate_cad.py",
+                  "cad/ensambles/integracion_articulada.json", "scara/collisions.py"):
+-        report["sources"][name] = hashlib.sha256((ROOT/name).read_bytes()).hexdigest()
++        source = ROOT/name if (ROOT/name).is_file() else HARNESS_ROOT/name
++        report.setdefault("source_paths", {})[name] = str(source)
++        report["sources"][name] = hashlib.sha256(source.read_bytes()).hexdigest()
+     bench = Bench(args.host, args.port, report)
+ 
+     def passed(name, **evidence):
+
+--- supplement original
++++ supplement paths only
+@@ -7,11 +7,13 @@
+ import sys
+ from tools.check_simulation import Bench, load_config
+ 
+-ROOT = Path(__file__).resolve().parent
++ROOT = Path('/private/tmp/scara-sesion4-final-20261017/SCARA minima39')
++HARNESS = Path('/private/tmp/scara-sesion4-final-20261017/harness')
++OUTPUT = Path('/private/tmp/scara-sesion4-final-20261017/evidence/final39_supplement.json')
+ report = dict(status='running',started_utc=datetime.now(timezone.utc).isoformat(),
+               platform=platform.platform(),python=sys.version,protocol='scara-dev/1',
+               tolerances={'joint_rad':.005,'slider_m':.0005},checks=[],requests=[],events=[])
+-report['sources'] = {p:hashlib.sha256((ROOT/p).read_bytes()).hexdigest() for p in (
++report['sources'] = {p:hashlib.sha256((ROOT/p if (ROOT/p).is_file() else HARNESS/p).read_bytes()).hexdigest() for p in (
+     'scara/runtime.py','scara/transport.py','webots/controllers/scara_bridge/scara_bridge.py',
+     'webots/protos/SCARA.proto','webots/worlds/scara.wbt','config/scara.json',
+     'cad/ensambles/integracion_articulada.json','tools/check_simulation.py','check_sesion4.py')}
+@@ -84,4 +86,4 @@
+     raise
+ finally:
+     bench.close()
+-    (ROOT/'validation/sesion4_supplement.json').write_text(json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
++    OUTPUT.write_text(json.dumps(report,ensure_ascii=False,indent=2,allow_nan=False)+'\n')

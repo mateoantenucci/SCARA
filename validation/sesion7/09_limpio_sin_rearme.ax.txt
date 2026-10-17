@@ -1,0 +1,4 @@
+Browser tab: 1497285515, Title: "SCARA · laboratorio virtual", URL: "http://127.0.0.1:8765/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~			351 text · t = 28.9 s
+The focused UI element is 158 button Limpiar fallas

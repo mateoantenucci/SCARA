@@ -1,0 +1,84 @@
+{
+  "reviewer": "agente independiente sesion9; distinto de implementadores7/8",
+  "reviewed_utc": "2026-10-17T23:21:25.080017+00:00",
+  "acceptance": "Pedido humano17/10/2026: solo rondaA, sesiones7,8,9; SESIONES.md; entregar/contrato",
+  "base": {
+    "path": ".agent-state/ronda-profesor-20261017/baseline-rondaA.json",
+    "sha256": "1cb9b5144870f1e7839260cea1fb29d7bfa7a633da1a8d63f0a0b6bcd4169cfa"
+  },
+  "verdict": "approved",
+  "findings": [],
+  "integration_authority": "director, único escritor raíz; esta revisión no incorpora archivos",
+  "checks_policy": "Sin nuevas suites, Webots ni CAD nativo; revisión de evidencia existente y comprobaciones locales afectadas",
+  "session": 7,
+  "candidate": {
+    "manifest": "validation/sesion9/manifest_sesion7.json",
+    "sha256": "c1e7043a338170f1a15cddeecdf3f5dbdf35ff26d0b8fa18b73e2f9530b3b1ab",
+    "report_sha256": "e4111445fae9f61cee516e7bde52cbdc8ebfd1218f95c5d2fe4edae7c8fcae9a"
+  },
+  "scope": [
+    "Todos33archivos manifiesto verificados porSHA256 y15PNG vistos directamente con view_image",
+    "Informe,identidad,8pasos,eventos,AX,telemetría2162muestras y log completos; fuente cliente inspeccionada para frontera preTCP",
+    "ZIP52y51fuentes comunes comprobadas; extracción intacta"
+  ],
+  "acceptance_results": [
+    {
+      "criterion": "Recorrido renderizado y simulador coinciden",
+      "result": "15capturas reales másAX/eventos/estado:conexión detenida,rearme explícito,movimiento,llegada,rechazo,Hall,limpieza,rearme,detención; mundo propio y consola9000"
+    },
+    {
+      "criterion": "Fin de consignas distinto de llegada",
+      "result": "Evento completed delIDa6ce9629; estado posterior13,554s frente11,502s; errorXYZ0,0014715mm yTCPmundo0,0043774mm,tolerancias declaradas aprobadas"
+    },
+    {
+      "criterion": "Rechazo no inicia movimiento",
+      "result": "UIrechazo soporte/torre;91muestrasIDLE/consigna idéntica/sin nuevoIDmovimiento;validate_path anterior a pending.put_nowait en cliente. Rechazo local,no TCP"
+    },
+    {
+      "criterion": "Hall y limpiar no rearma",
+      "result": "Falla inyectada HallJ1FAULT;rearme rechazado;76muestrasSTOPPED conHallinactivo/fallas vacías antes de rearme explícito"
+    },
+    {
+      "criterion": "CierreSTOPPED/procesos propios",
+      "result": "Última muestraSTOPPED,carga0,referencia válida;capturas coinciden. Cierre propio y puertos libres registrados por ejecutor; ajeno19051preservado"
+    }
+  ],
+  "environment": {
+    "os": "macOS27.0.1",
+    "os_build": "26A434",
+    "architecture": "arm64",
+    "client_python": "3.15.0",
+    "controller_python": "3.9.6 (/Library/Developer/CommandLineTools/usr/bin/python3)",
+    "chrome": "155.0.8059.85",
+    "webots": "R2025b Nightly Build14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+    "webots_executable_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+    "webots_observability_adaptation": {
+      "reason": "CUA macOS seleccionaba el Webots ajeno por bundleID y no exponía selector PID/ventana; se clonó el app instalado a tmp",
+      "only_metadata_changed": {
+        "CFBundleIdentifier": "local.scara.sesion7.webots",
+        "CFBundleName": "Webots Sesion7"
+      },
+      "source_and_copy_executable_identical": true,
+      "installed_application_modified": false,
+      "product_modified": false
+    }
+  },
+  "independent_checks": {
+    "manifest_files": 33,
+    "archive_files": 52,
+    "common_files": 51,
+    "samples": 2162,
+    "arrival_xyz_error_m": 1.4715000048390635e-06,
+    "arrival_tcp_world_error_m": 4.377374708732996e-06,
+    "rejection_samples": 91,
+    "clear_without_rearm_samples": 76,
+    "last_mode": "STOPPED",
+    "all_15_png_visually_reviewed": true
+  },
+  "limits": [
+    "Revisión independiente de evidencia guardada; no nueva ejecución visual por reviewer",
+    "No pcap ni medición continua; TCP se correlaciona por eventos delbridge y consola",
+    "15imágenes no certifican cada una de39piezas; identidad por hashes",
+    "Física/Hall/TCPprovisionales; no hardware,homing,Windows niWebotsLinux; app temporal solo metadata para observabilidad"
+  ]
+}

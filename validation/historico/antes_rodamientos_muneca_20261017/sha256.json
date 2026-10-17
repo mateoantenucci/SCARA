@@ -1,0 +1,22 @@
+{
+  "README.md": "ff75026e8cc7c1242206953231e8bf998b04107fd661dce4ca3dfe51a7729130",
+  "tools/integrate_cad.py": "0afeba5ddcfae7c1f15900fdc9072df6e49b364221c785dea947cb2c19a9bd76",
+  "tools/check_cad_motion.py": "c21bd01f906d5d327c41c252ab7a4a8cb390275ef16f1794a28a8a094b6e2120",
+  "config/cad_integration.json": "166422832b5d7bf09f2e882c0fc7988dc9da23e9d624ebb0e44132175ebcecae",
+  "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+  "tests/test_cad_integration.py": "9b40954bb994c461aa31c28327fc447ff6e105c08f3a7791353e7d4f4e036aee",
+  "docs/CHECKPOINT_CONTINUAR.md": "dd1cb6c8aae2eb692fe611d7301f8d5b423cbf1f8dbca16399a34f91cb96e300",
+  "docs/PLAN_GEMELO_DIGITAL.md": "c43d436d42ea1b349c32bff89ae5a4a926766cd1d23c14c9c4ec7858af77a3f0",
+  "docs/INTEGRACION_CAD_CRITERIOS.md": "35a6965b91741c1ed732902ca1a99e7a61b812ad0d8ac327207f736249a7d016",
+  "docs/PROPIEDADES_GEOMETRICAS_CAD.md": "a3a52ee8c244245aa915d5c8eaf89a2d7504af28a179005e24e19da8afc47b4f",
+  "docs/DATOS_PARA_EL_PROFESOR.md": "1f2e4626d55673c9ffd486c044e2ebe5943dffdb934ed63918102a34698961ae",
+  "docs/COLISIONES_Y_RECORRIDOS.md": "ecc09a4059cbdeb43ffc20d0a12fa9e7362b2315cc1047c6d22cc2f282defb22",
+  "docs/PROCESO_Y_ARCHIVOS.md": "cda4e8e0249422864eb77ce94ff193f9015245e69a84deb4bcfc7388ca3dfad7",
+  "docs/MONTAJE_Y_AUTOCOLISIONES.md": "87a56c750f1dc8688e84eddb710082d1111bede6cd5b46a97b1e6752c957c5ca",
+  "docs/VALIDACION_WEBOTS.md": "7344d6b08fe186f31c10ba0432a5c2dc3472fd7a707b7bc24c2b7a544323999a",
+  "webots/protos/SCARA.proto": "ff33b74546069e84961f07b0dc27012d937c9bef444541366098a267508c2078",
+  "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+  "cad/propiedades/propiedades_geometricas.json": "59e52f1b41e836844a4eb7f87abe12847e8d8ae499ed3c24d355ad23992eee35",
+  "cad/propiedades/propiedades_geometricas.csv": "9825aed9f1c34b70a7713c6503987323a3b1760e660f7fb11ac33dbf09f0b8d7",
+  "cad/ensambles/integracion_articulada.json": "50012030877ff706695f0ad644baef86604762168d31af94969bbcb54f1c2331"
+}

@@ -1,0 +1,278 @@
+{
+  "created_utc": "2026-10-16T19:51:33.005538+00:00",
+  "status": "passed",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "webots_version": "R2025b Nightly Build14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+  "binary_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+  "change": "Paso numérico del banco 16->2 ms; mismos topes, geometría, masas y prestaciones provisionales",
+  "unchanged_parameters": {
+    "geometry": true,
+    "limits": true,
+    "body_properties": true,
+    "initial_positions": true,
+    "max_effort": true,
+    "max_velocity": true,
+    "max_acceleration": true,
+    "environment": true,
+    "collision_check": true
+  },
+  "per_step_checks": [
+    {
+      "report": "j4_stops_after_initial.json",
+      "target": [
+        0,
+        1.5707963267948966,
+        -1.5707963267948966,
+        0.12
+      ],
+      "payload_kg": 0.0,
+      "error_m": 0.00017398158637817185,
+      "amplitude_m": 0.00017401100094417699,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_initial.json",
+      "target": [
+        0,
+        1.5707963267948966,
+        -1.5707963267948966,
+        0.119
+      ],
+      "payload_kg": 0.0,
+      "error_m": 1.4714999994058786e-06,
+      "amplitude_m": 9.260481270700893e-10,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_initial.json",
+      "target": [
+        0,
+        1.5707963267948966,
+        -1.5707963267948966,
+        0.0
+      ],
+      "payload_kg": 0.0,
+      "error_m": 1.471992306129044e-06,
+      "amplitude_m": 4.923057239647477e-10,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_initial.json",
+      "target": [
+        0,
+        1.5707963267948966,
+        -1.5707963267948966,
+        0.06
+      ],
+      "payload_kg": 0.0,
+      "error_m": 1.4715000000165013e-06,
+      "amplitude_m": 1.1102230246251565e-16,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_initial.json",
+      "target": [
+        0,
+        1.5707963267948966,
+        -1.5707963267948966,
+        0.12
+      ],
+      "payload_kg": 0.0,
+      "error_m": 0.00017398158619505444,
+      "amplitude_m": 0.00017401100076115672,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_folded.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.12
+      ],
+      "payload_kg": 0.0,
+      "error_m": 0.00017400238596579354,
+      "amplitude_m": 0.00017403167380092288,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_folded.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.119
+      ],
+      "payload_kg": 0.0,
+      "error_m": 1.4714999987397448e-06,
+      "amplitude_m": 1.2538456384270091e-09,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_folded.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.0
+      ],
+      "payload_kg": 0.0,
+      "error_m": 1.4721148224386416e-06,
+      "amplitude_m": 6.14820472311095e-10,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_folded.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.06
+      ],
+      "payload_kg": 0.0,
+      "error_m": 1.471499999378123e-06,
+      "amplitude_m": 0.0,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_folded.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.12
+      ],
+      "payload_kg": 0.0,
+      "error_m": 0.00017400238596583517,
+      "amplitude_m": 0.00017403167380099227,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_payload025.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.12
+      ],
+      "payload_kg": 0.25,
+      "error_m": 4.0870386253055724e-05,
+      "amplitude_m": 4.0891566841616545e-05,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_payload025.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.119
+      ],
+      "payload_kg": 0.25,
+      "error_m": 3.923999998711736e-06,
+      "amplitude_m": 1.2790212222668629e-09,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_payload025.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.0
+      ],
+      "payload_kg": 0.25,
+      "error_m": 3.9246530163794535e-06,
+      "amplitude_m": 6.530147533823083e-10,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_payload025.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.06
+      ],
+      "payload_kg": 0.25,
+      "error_m": 3.923999999100314e-06,
+      "amplitude_m": 0.0,
+      "samples": 1000
+    },
+    {
+      "report": "j4_stops_after_payload025.json",
+      "target": [
+        -1.0471975511965976,
+        2.0943951023931953,
+        0,
+        0.12
+      ],
+      "payload_kg": 0.25,
+      "error_m": 4.08703862530696e-05,
+      "amplitude_m": 4.089156684165818e-05,
+      "samples": 1000
+    }
+  ],
+  "total_scenarios": 15,
+  "sample_count": 15000,
+  "max_error_m": 0.00017400238596583517,
+  "max_amplitude_m": 0.00017403167380099227,
+  "source_review": {
+    "WbMotor": {
+      "url": "https://github.com/cyberbotics/webots/blob/a459c02c7292d23ae437101c76111ec1668198c8/src/webots/nodes/WbMotor.cpp",
+      "local_sha256": "33ff2daa0eb2c4bba669c1258a17f61131ea288f666a99776618f83445b8dcb1"
+    },
+    "WbSliderJoint": {
+      "url": "https://github.com/cyberbotics/webots/blob/a459c02c7292d23ae437101c76111ec1668198c8/src/webots/nodes/WbSliderJoint.cpp",
+      "local_sha256": "6686ee1c924a30a884d61ced4b94a5df2891b4d6943e6fb1727fca3a095c3673"
+    },
+    "ode-joint": {
+      "url": "https://github.com/cyberbotics/webots/blob/a459c02c7292d23ae437101c76111ec1668198c8/src/ode/ode/src/joints/joint.cpp",
+      "local_sha256": "1ca200fdd92e1670d875c8b587a9cb511c1df4799af9f54c2c99f588b9637c9c"
+    },
+    "ode-slider": {
+      "url": "https://github.com/cyberbotics/webots/blob/a459c02c7292d23ae437101c76111ec1668198c8/src/ode/ode/src/joints/slider.cpp",
+      "local_sha256": "c65b8a60ce74d25407a244f0af7e70d698dcf4c606dc84147712956633354390"
+    }
+  },
+  "sources_sha256": {
+    "config/scara.json": "47ace4ebd70baf64956255b446079b930078f15afc1153ddc8b6c4109a684a61",
+    "tools/generate_world.py": "168e01f570e97d3055365d5c327d3221c9b2269d87e9981dcae2a8b7cd0baa3f",
+    "tools/check_joint_stops.py": "70dace79d8786c72d198ae7989027f2416edc7ce3fc9f2214c552067a6206882",
+    "tools/check_collisions_native.py": "fff28200be5cc16e0ca5bf0a2c560532d050c733b5123bfcf91780ef21ccaf69",
+    "webots/controllers/scara_bridge/scara_bridge.py": "bd1d225a863c14d9371a6f28644cf2c6c9d6730cb78041e0ef946826ab7e30ba",
+    "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+    "webots/protos/SCARA.proto": "200719964099a2f6f042421f50fa40a8c7f4876b2cc7ae0df65e981340f499ce",
+    "scara/dynamics.py": "a36d385afe96d44097fa066ce0bc84e5b86c5c139fafd9a76b8436401209cb16",
+    "scara/collisions.py": "d322e655a32a5e5a604f33adb9e4789fdf71bfa675837adbc35abd8ba21545d7",
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde"
+  },
+  "artifact_sha256": {
+    "j4_stops_before_every_step.json": "4a54d03b6c517c9628a50fe0270eee8c2280add6621196a5bf8b3b3842dfe707",
+    "j4_stops_after_initial.json": "a1e055a46b87f13fe72a649e3c4441a3fd47f65252c938622f80ff84dcf2853d",
+    "j4_stops_after_folded.json": "0044713db72f0890b10834d716249e76f8bd471d79f3171bb03698ad6ef4f667",
+    "j4_stops_after_payload025.json": "92b952a98bade9d5e8f872cec8773328e1c7625d9b036bdefa530d90b88fee13",
+    "j4_tests.json": "1b0938c956c1195b089a1837f2aa23f5f4b2858b199844754e7e3b3cd5c949aa",
+    "collisions_native_j4.json": "3d657de245346b01ec29d428dd063eb086bb1e13b35b13274be4508e411837cf",
+    "simulation_j4.json": "6ee46ef5cf708ad8c3235e409ca436273ce527895f2cb61ee8ee18d5786de5e7",
+    "cad_motion_j4.json": "308c7aad64e81c384c1fdce962d053477d99ad46ad59ac977dea34fc7eaf540b",
+    "j4_timestep_cost.json": "cf9f9d9143b1bc1d70142b9dc70edb0f7fe37261f254a590cadd8e10d32dadde"
+  },
+  "isolated_execution": {
+    "root": "/private/tmp/scara-tope-j4-20261016",
+    "controller_tcp": 19011,
+    "application_port": 19013,
+    "world_sha256": "670f99a8dc792466af35257e8bfcc83e3ea16beee09358bc8b36c0413f3db9f8",
+    "root_differences": "Solo controllerArgs --port19011 en mundo; demás fuentes coinciden",
+    "restored_initial_trial": true,
+    "closed_at_utc": "2026-10-16T19:52:30.953609+00:00"
+  },
+  "limitations": [
+    "Criterio error y amplitud <0.5mm; residuo no cero",
+    "Ventanas finitas2s tras1s asentamiento",
+    "Build y poses/carga ensayadas; no precisión ni validación física real",
+    "No se evaluaron todos los topes rotativos ni todas las masas posibles"
+  ],
+  "original_cad_unchanged": true,
+  "user_session": "No se conectó ni movió la copia que ya estaba abierta en TCP19001; el diagnóstico usóTCP19011"
+}

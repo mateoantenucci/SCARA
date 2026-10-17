@@ -1,0 +1,3880 @@
+{
+  "status": "passed",
+  "started_utc": "2026-10-17T22:47:31.775688+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+  "note": "Rechazo preventivo real en Runtime Webots; sin choque físico provocado ni observación visual de UI",
+  "checks": [
+    {
+      "name": "professor_demo_collision_rejected_before_motion",
+      "status": "passed",
+      "nominal_joints": [
+        0.0008003075216479472,
+        1.6100063731246972,
+        -1.6108066806463452,
+        0.05966685886479947
+      ],
+      "rejected_joints": [
+        3.7626928461875764e-08,
+        2.3561944791716787,
+        -2.356194516798607,
+        0.059999958864799474
+      ],
+      "nominal_final_joint_errors": [
+        5.116174233614837e-09,
+        2.51185531707776e-07,
+        2.563231542573874e-07,
+        1.4736339693718903e-06
+      ],
+      "client_guard_message": "Recorrido rechazado: Z-SoporteEfector-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)",
+      "native_event": {
+        "event": "rejected",
+        "id": "smoke-4",
+        "message": "Recorrido rechazado: Z-SoporteEfector-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)"
+      },
+      "unchanged_samples": 6,
+      "final_state": {
+        "time": 2.454,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.3660727361829265e-07,
+          1.5707961430760586,
+          -1.5707963267944367,
+          0.0600014714999999
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.25000013008151606,
+          0.2499999158481452,
+          0.03466538736479957,
+          -5.203256516761456e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.0002235787657758824,
+          -2.2451885370180943e-06,
+          -1.4714999951839078
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992876200364,
+          0.24999991927019186,
+          0.03466247819992904
+        ],
+        "tcp_world_yaw": -4.766033471829203e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "id": "smoke-1",
+      "command": "reset_trial"
+    },
+    {
+      "id": "smoke-2",
+      "command": "rearm"
+    },
+    {
+      "positions": [
+        0.0008003075216479472,
+        1.6100063731246972,
+        -1.6108066806463452,
+        0.05966685886479947
+      ],
+      "speed": 0.3,
+      "id": "smoke-3",
+      "command": "move_joints"
+    },
+    {
+      "positions": [
+        3.7626928461875764e-08,
+        2.3561944791716787,
+        -2.356194516798607,
+        0.059999958864799474
+      ],
+      "speed": 0.3,
+      "id": "smoke-4",
+      "command": "move_joints"
+    },
+    {
+      "id": "smoke-5",
+      "command": "reset_trial"
+    }
+  ],
+  "events": [
+    {
+      "event": "state",
+      "state": {
+        "time": 456.274,
+        "trial_id": "fa1f7db7-a330-4f80-a29b-19b722b62ec6",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.3660991065222827e-07,
+          1.570796143074314,
+          -1.570796326794436,
+          0.06000147149999993
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.25000013008261146,
+          0.24999991584748596,
+          0.034665387364799544,
+          -5.203300326162008e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357868897224364,
+          -2.245187770059313e-06,
+          -1.471499995183711
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992887614464,
+          0.24999991920113412,
+          0.034662478199929014
+        ],
+        "tcp_world_yaw": -5.222931669182607e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "accepted",
+      "id": "smoke-1",
+      "message": "Recarga del ensayo; no es homing del robot fisico"
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 0.806,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.366068255955768e-07,
+          1.570796143076352,
+          -1.5707963267944367,
+          0.060001471071635504
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2500001300813307,
+          0.2499999158482572,
+          0.03466538779316397,
+          -5.203249102692098e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357879750425325,
+          -2.2451888625854435e-06,
+          -1.4715000010009283
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2499999287415711,
+          0.2499999192825471,
+          0.03466247862829111
+        ],
+        "tcp_world_yaw": -4.684238483759974e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 0.934,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.3660686318832925e-07,
+          1.570796143076328,
+          -1.5707963267944363,
+          0.06000147138243592
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.25000013008134614,
+          0.24999991584824782,
+          0.03466538748236356,
+          -5.203249715535208e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357879436856083,
+          -2.2451888300495536e-06,
+          -1.4714999967800475
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992874328128,
+          0.24999991928151288,
+          0.03466247831749242
+        ],
+        "tcp_world_yaw": -4.691080997790191e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.062,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.366069000349955e-07,
+          1.5707961430763047,
+          -1.5707963267944376,
+          0.06000147146773466
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2500001300813612,
+          0.2499999158482386,
+          0.03466538739706482,
+          -5.203250330598763e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357879127970286,
+          -2.2451888027331747e-06,
+          -1.4714999956220445
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2499999287449698,
+          0.24999991928049184,
+          0.03466247823219412
+        ],
+        "tcp_world_yaw": -4.688138090875846e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.192,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.3661319484863203e-07,
+          1.5707965105165687,
+          -1.5707963267953626,
+          0.060001471491321956
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24999986991627146,
+          0.2500000841532623,
+          0.03466538737347752,
+          5.203344008997135e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.0002246150565728181,
+          2.245188781999798e-06,
+          -1.4715000049336422
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2499999262088714,
+          0.24999992090920592,
+          0.03466247820867138
+        ],
+        "tcp_world_yaw": 5.697261696879908e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.32,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.366131512923285e-07,
+          1.5707965105165402,
+          -1.570796326795363,
+          0.06000147149761825
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24999986991628945,
+          0.2500000841532514,
+          0.03466538736718122,
+          5.203343285131723e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.00022461505416706548,
+          2.2451887537250868e-06,
+          -1.4715000048481492
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2499999262105169,
+          0.24999992090821085,
+          0.03466247820237506
+        ],
+        "tcp_world_yaw": 5.690679207171049e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.45,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.366070090475214e-07,
+          1.5707961430762327,
+          -1.5707963267944363,
+          0.06000147149935908
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2500001300814064,
+          0.24999991584821135,
+          0.03466538736544039,
+          -5.203252126939617e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357878355781197,
+          -2.2451887191084765e-06,
+          -1.4714999951925836
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992874995816,
+          0.24999991927747553,
+          0.03466247820056981
+        ],
+        "tcp_world_yaw": -4.717810387261707e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "accepted",
+      "id": "smoke-2",
+      "mode": "IDLE"
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.456,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.3661310566742213e-07,
+          1.5707965105165105,
+          -1.5707963267953626,
+          0.060001471499396886
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24999986991630832,
+          0.25000008415324004,
+          0.03466538736540259,
+          5.203342534620958e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.00022461505071266538,
+          2.2451887239268497e-06,
+          -1.4715000048239852
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992621224246,
+          0.2499999209071675,
+          0.03466247820059645
+        ],
+        "tcp_world_yaw": 5.683776400931495e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "accepted",
+      "id": "smoke-3",
+      "mode": "MOVING"
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.584,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.366130633465524e-07,
+          1.5707965105164827,
+          -1.5707963267953624,
+          0.06000147149983465
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2499998699163258,
+          0.25000008415322944,
+          0.03466538736496483,
+          5.203341837400899e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.00022461504809342535,
+          2.245188701662168e-06,
+          -1.4715000048180196
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992621384517,
+          0.24999992090619827,
+          0.03466247820015875
+        ],
+        "tcp_world_yaw": 5.67734603224321e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.714,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          1.0399228873260078e-05,
+          1.5713058237506106,
+          -1.571316222979484,
+          0.05999567115037865
+        ],
+        "estimated": [
+          1.0399228873260078e-05,
+          1.5713058237506106,
+          -1.571316222979484,
+          0.05999567115037865
+        ],
+        "simulated": [
+          2.6298705542986606e-06,
+          1.5709282105299538,
+          -1.5709309142348806,
+          0.060000350910177816
+        ],
+        "estimated_pose": [
+          0.24987002594619268,
+          0.25000256602071114,
+          0.03467118771442083,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24996637159783636,
+          0.25000065520589726,
+          0.03466650795462166,
+          -7.383437261587744e-08
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.0031927830354771983,
+          -3.705380266255397e-05,
+          -1.4715965055927052
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24996630820556043,
+          0.2500005697475198,
+          0.03466359879110173
+        ],
+        "tcp_world_yaw": -9.561721252671709e-08,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.842,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          6.691400514244993e-05,
+          1.5740746931363068,
+          -1.5741416071414491,
+          0.05997214594761265
+        ],
+        "estimated": [
+          6.691400514244993e-05,
+          1.5740746931363068,
+          -1.5741416071414491,
+          0.05997214594761265
+        ],
+        "simulated": [
+          2.929191583939104e-05,
+          1.5722328657187996,
+          -1.5722621938849928,
+          0.05998926627899921
+        ],
+        "estimated_pose": [
+          0.24916368091354033,
+          0.2500153296400005,
+          0.03469471291718682,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24963354231404689,
+          0.250007054396498,
+          0.03467759258580026,
+          -3.625035382981423e-08
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.006654235261967885,
+          -0.00018496176318946015,
+          -1.4717160750032547
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2496334783247705,
+          0.2500069745059888,
+          0.034674683552818275
+        ],
+        "tcp_world_yaw": -3.820045721287952e-08,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.972,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.00018323777521225078,
+          1.5797738278942832,
+          -1.5799570656694957,
+          0.05992372426999045
+        ],
+        "estimated": [
+          0.00018323777521225078,
+          1.5797738278942832,
+          -1.5799570656694957,
+          0.05992372426999045
+        ],
+        "simulated": [
+          0.00010439926368464136,
+          1.5759118975903073,
+          -1.576016317507861,
+          0.05995800812715815
+        ],
+        "estimated_pose": [
+          0.24770984311592872,
+          0.25003531962481146,
+          0.03474313459480902,
+          -2.220446049250313e-16
+        ],
+        "simulated_pose": [
+          0.24869501204924468,
+          0.2500226938126779,
+          0.03470885073764132,
+          -2.065386905947264e-08
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.007196817484494743,
+          -0.0003909605339816738,
+          -1.4717601448866975
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24869494865857594,
+          0.25002261717939406,
+          0.034705942121615596
+        ],
+        "tcp_world_yaw": -2.120010672729813e-08,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.1,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.00034055855527008043,
+          1.5874815588700038,
+          -1.5878221174252738,
+          0.05985823691439097
+        ],
+        "estimated": [
+          0.00034055855527008043,
+          1.5874815588700038,
+          -1.5878221174252738,
+          0.05985823691439097
+        ],
+        "simulated": [
+          0.00022806200588325296,
+          1.5819703150854993,
+          -1.5821983909143622,
+          0.0599065338913566
+        ],
+        "estimated_pose": [
+          0.24574374348334554,
+          0.2500489058191391,
+          0.03480862195040851,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24714954268825767,
+          0.25004076483316273,
+          0.03476032497344288,
+          -1.3822979649802392e-08
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.004952558407673111,
+          -0.0005603786048658945,
+          -1.47171937367553
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24714947686503855,
+          0.25004069250232047,
+          0.03475741706509916
+        ],
+        "tcp_world_yaw": -1.4033650910806502e-08,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.228,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.000509949623376824,
+          1.5957806582145198,
+          -1.5962906078378967,
+          0.05978772510337399
+        ],
+        "estimated": [
+          0.000509949623376824,
+          1.5957806582145198,
+          -1.5962906078378967,
+          0.05978772510337399
+        ],
+        "simulated": [
+          0.00038341787230973437,
+          1.5895815692567397,
+          -1.589964993819705,
+          0.059841866202175756
+        ],
+        "estimated_pose": [
+          0.24362708763662402,
+          0.2500462470049613,
+          0.034879133761425485,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24520811000513892,
+          0.2500499261796911,
+          0.03482499266262372,
+          -6.690655585117611e-09
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.001039050317649224,
+          -0.0006324002455871143,
+          -1.4716173018585996
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.245208039853056,
+          0.2500498563675637,
+          0.03482208565409392
+        ],
+        "tcp_world_yaw": -6.8469674003447e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.358,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.0006591972771443883,
+          1.6030928566639235,
+          -1.6037520539410681,
+          0.059725598319035185
+        ],
+        "estimated": [
+          0.0006591972771443883,
+          1.6030928566639235,
+          -1.6037520539410681,
+          0.059725598319035185
+        ],
+        "simulated": [
+          0.0005436298470908303,
+          1.5974307406885007,
+          -1.5979743689706218,
+          0.059775177051274386
+        ],
+        "estimated_pose": [
+          0.24176250517128528,
+          0.25002905160012073,
+          0.03494126054576429,
+          -2.220446049250313e-16
+        ],
+        "simulated_pose": [
+          0.24320628854871862,
+          0.2500435823805522,
+          0.03489168181352509,
+          1.5649697093778059e-09
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.0032363777507141826,
+          -0.0005795402852087356,
+          -1.471487536697146
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24320621375805268,
+          0.2500435112122238,
+          0.0348887757392658
+        ],
+        "tcp_world_yaw": 1.4644306773823348e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.486,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.0007565610592148253,
+          1.607863070990993,
+          -1.608619632050208,
+          0.059685069047462715
+        ],
+        "estimated": [
+          0.0007565610592148253,
+          1.607863070990993,
+          -1.608619632050208,
+          0.059685069047462715
+        ],
+        "simulated": [
+          0.0006731056239105139,
+          1.6037740657007058,
+          -1.6044471625280199,
+          0.05972128204235126
+        ],
+        "estimated_pose": [
+          0.24054635656483503,
+          0.25001033626217906,
+          0.03498178981733676,
+          -2.220446049250313e-16
+        ],
+        "simulated_pose": [
+          0.24158881987382702,
+          0.25002674233268285,
+          0.03494557682244821,
+          8.796596340232554e-09
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.006247028648988477,
+          -0.0004203137132233903,
+          -1.4713792398576602
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2415887420218906,
+          0.2500266671459774,
+          0.034942671506225736
+        ],
+        "tcp_world_yaw": 8.714839499256835e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.616,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "MOVING",
+        "commanded": [
+          0.0007967160845505144,
+          1.6098304152445426,
+          -1.6106271313290932,
+          0.059668353859410016
+        ],
+        "estimated": [
+          0.0007967160845505144,
+          1.6098304152445426,
+          -1.6106271313290932,
+          0.059668353859410016
+        ],
+        "simulated": [
+          0.0007549306693442301,
+          1.6077828901716518,
+          -1.608537808270854,
+          0.05968722171871997
+        ],
+        "estimated_pose": [
+          0.24004485228354822,
+          0.25000089359328015,
+          0.03499850500538946,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24056679507862178,
+          0.2500107012369385,
+          0.034979637146079504,
+          1.2570142038370591e-08
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.006498351133653325,
+          -0.0002119952503186116,
+          -1.4713431822112448
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2405667173527915,
+          0.2500106225485805,
+          0.03497673230667167
+        ],
+        "tcp_world_yaw": 1.2494277363364207e-08,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "completed",
+      "id": "smoke-3",
+      "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.744,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0007875663425894834,
+          1.609381894380293,
+          -1.610169450660183,
+          0.059673636063179256
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2401591820362852,
+          0.2500031361384943,
+          0.03499322280162022,
+          1.0062699784540996e-08
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.002828422543203386,
+          -6.502352704268596e-05,
+          -1.471427958546411
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24015910900152856,
+          0.25000305633966313,
+          0.03499031813908185
+        ],
+        "tcp_world_yaw": 9.978561549317164e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.874,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0007968815982925233,
+          1.6098384115165438,
+          -1.61063528839567,
+          0.059669757383983404
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2400428134228367,
+          0.2500008537122472,
+          0.03499710148081607,
+          4.719166390998453e-09
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.0007603494355673764,
+          -1.7488930386769775e-05,
+          -1.4714806237532805
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24004274327063935,
+          0.25000077383209235,
+          0.03499419686362812
+        ],
+        "tcp_world_yaw": 4.655445420610847e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.0020000000000002,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0007993675352286408,
+          1.6099602757328757,
+          -1.610759641429464,
+          0.05966872200846601
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24001175013248652,
+          0.25000023509714364,
+          0.03499813685633346,
+          1.8386403510817217e-09
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.0002083020173674876,
+          -4.799875091556598e-06,
+          -1.4714946822122288
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24001168074919185,
+          0.2500001552191504,
+          0.03499523225125076
+        ],
+        "tcp_world_yaw": 1.772055610278774e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.132,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008000547725439673,
+          1.609993974636595,
+          -1.6107940287664482,
+          0.05966843570117266
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2400031603294432,
+          0.2500000633041127,
+          0.034998423163626814,
+          6.42690789476319e-10
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -5.564666491536199e-05,
+          -1.290989369207362e-06,
+          -1.4714985697287613
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24000309115870067,
+          0.24999998342849356,
+          0.03499551856189165
+        ],
+        "tcp_world_yaw": 5.746967717042822e-10,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.2600000000000002,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008002381737157386,
+          1.6100029703350436,
+          -1.610803208292607,
+          0.059668359274237935
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000086735363665,
+          0.2500000173826146,
+          0.03499849959056154,
+          2.1615242928874068e-10
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -1.489660462040967e-05,
+          -3.543148467335761e-07,
+          -1.4714996074634747
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24000079823962844,
+          0.24999993750775956,
+          0.034995594989719964
+        ],
+        "tcp_world_yaw": 1.4763487312229196e-10,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.39,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008002888749689403,
+          1.6100054579001801,
+          -1.6108057467064256,
+          0.059668338140274106
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000023328468809,
+          0.25000000467686,
+          0.03499852072452537,
+          6.872347135811196e-11
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -3.6281265414234988e-06,
+          -9.529762611125965e-08,
+          -1.4714998944232538
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24000016418636796,
+          0.24999992480222602,
+          0.034995616123930956
+        ],
+        "tcp_world_yaw": 2.2845878105752477e-14,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.5180000000000002,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008003024054737135,
+          1.6100061219391655,
+          -1.610806424323191,
+          0.05966833249876884
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000006402517043,
+          0.2500000012839452,
+          0.03499852636603063,
+          2.1448176568128474e-11
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -6.200974395558813e-07,
+          -2.6154640314438406e-08,
+          -1.4714999710243382
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999999493103796,
+          0.24999992140937105,
+          0.034995621765502166
+        ],
+        "tcp_world_yaw": -4.7310868016157907e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.648,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.000800306145981076,
+          1.6100063055647325,
+          -1.610806611704514,
+          0.0596683309387512
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000001722039072,
+          0.25000000034543357,
+          0.034998527926048274,
+          6.199707414111799e-12
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          2.1170295089525456e-07,
+          -7.034633982278301e-09,
+          -1.4714999922070413
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999994812741632,
+          0.24999992047087605,
+          0.03499562332553807
+        ],
+        "tcp_world_yaw": -6.244423160847912e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "rejected",
+      "id": "smoke-4",
+      "message": "Recorrido rechazado: Z-SoporteEfector-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)"
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.684,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008003065654507852,
+          1.6100063261612978,
+          -1.6108066327224406,
+          0.05966833076377153
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000001197050289,
+          0.25000000024014263,
+          0.034998528101027944,
+          4.3078873801505324e-12
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          3.050016975685493e-07,
+          -4.890017424563947e-09,
+          -1.4714999945824874
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999994287765836,
+          0.24999992036558694,
+          0.034995623500519796
+        ],
+        "tcp_world_yaw": -6.447320268725018e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.8120000000000003,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008003072592918562,
+          1.6100063602351251,
+          -1.6108066674934578,
+          0.059668330474296837
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000000328540314,
+          0.2500000000659292,
+          0.03499852839050264,
+          9.592326932761353e-13
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          4.5935051652788026e-07,
+          -1.3420755249575987e-09,
+          -1.4714999985129662
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999993419277355,
+          0.2499999201913765,
+          0.034995623789997876
+        ],
+        "tcp_world_yaw": -6.768060896466464e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 3.942,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.000800307451104132,
+          1.610006369657502,
+          -1.6108066771086853,
+          0.059668330394249396
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000000088374107,
+          0.25000000001774114,
+          0.03499852847055008,
+          -7.926992395823618e-14
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          5.020319783717795e-07,
+          -3.609686265136662e-10,
+          -1.4714999996001399
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999993179117085,
+          0.2499999201431893,
+          0.03499562387004615
+        ],
+        "tcp_world_yaw": -6.871748322715689e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 4.07,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.000800307502292528,
+          1.6100063721727433,
+          -1.610806679675422,
+          0.059668330372881266
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000000024263687,
+          0.25000000000487416,
+          0.03499852849191821,
+          -3.8613556796462944e-13
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          5.134266896977908e-07,
+          -9.90687669168201e-11,
+          -1.4714999998895868
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999993115008256,
+          0.24999992013032257,
+          0.03499562389141456
+        ],
+        "tcp_world_yaw": -6.917293929115375e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 4.198,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008003075163373134,
+          1.6100063728630556,
+          -1.6108066803798715,
+          0.05966833036701701
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.2400000000666857,
+          0.25000000000134187,
+          0.03499852849778246,
+          -4.785061236134425e-13
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          5.165525769081926e-07,
+          -2.718995095394006e-11,
+          -1.4714999999697
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2399999309741357,
+          0.24999992012679034,
+          0.03499562389727884
+        ],
+        "tcp_world_yaw": -6.911654145824413e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 4.3260000000000005,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008003075201908436,
+          1.6100063730525132,
+          -1.61080668057321,
+          0.059668330365407383
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000000001839586,
+          0.25000000000037215,
+          0.03499852849939209,
+          -5.060396546241464e-13
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          5.174108050688929e-07,
+          -7.463142808250782e-12,
+          -1.4714999999915843
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999993092584698,
+          0.24999992012582056,
+          0.03499562389888855
+        ],
+        "tcp_world_yaw": -6.914403702056387e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 4.456,
+        "trial_id": "06994747-bca8-415e-8b14-4c9c96f3697d",
+        "mode": "IDLE",
+        "commanded": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "estimated": [
+          0.0008003075216479472,
+          1.6100063731246972,
+          -1.6108066806463452,
+          0.05966685886479947
+        ],
+        "simulated": [
+          0.0008003075212561505,
+          1.6100063731049037,
+          -1.6108066806266752,
+          0.05966833036496227
+        ],
+        "estimated_pose": [
+          0.24,
+          0.25,
+          0.035,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24000000000504235,
+          0.2500000000001039,
+          0.03499852849983721,
+          -5.153655280309977e-13
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          5.176481517041822e-07,
+          -2.0050969749884925e-12,
+          -1.471499999997651
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.23999993091249378,
+          0.24999992012555242,
+          0.03499562389933367
+        ],
+        "tcp_world_yaw": -6.930128629694017e-11,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "accepted",
+      "id": "smoke-5",
+      "message": "Recarga del ensayo; no es homing del robot fisico"
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.808,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.3661299066254397e-07,
+          1.5707965105164354,
+          -1.5707963267953626,
+          0.060001471499983056
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24999986991635584,
+          0.2500000841532113,
+          0.03466538736481642,
+          5.20334063391914e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.00022461504440187034,
+          2.245188658211253e-06,
+          -1.4715000048160096
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992621660125,
+          0.2499999209045318,
+          0.03466247820001034
+        ],
+        "tcp_world_yaw": 5.6663221334157874e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 1.938,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.366071403113963e-07,
+          1.5707961430761457,
+          -1.5707963267944367,
+          0.06000147149999549
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.250000130081461,
+          0.24999991584817854,
+          0.034665387364803985,
+          -5.203254314078976e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357877447293974,
+          -2.245188625664269e-06,
+          -1.4714999951839867
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992875596383,
+          0.24999991927384402,
+          0.034662478199933455
+        ],
+        "tcp_world_yaw": -4.732046676861958e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.068,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.3661290847259976e-07,
+          1.570796510516382,
+          -1.5707963267953626,
+          0.060001471499999015
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24999986991638976,
+          0.25000008415319075,
+          0.03466538736480046,
+          5.203339277226604e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.00022461503939717465,
+          2.245188610024016e-06,
+          -1.4715000048157945
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992621972372,
+          0.24999992090264364,
+          0.03466247819999438
+        ],
+        "tcp_world_yaw": 5.6538314700486716e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.196,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          3.3661286885618347e-07,
+          1.5707965105163562,
+          -1.570796326795363,
+          0.060001471499999987
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.24999986991640608,
+          0.2500000841531808,
+          0.03466538736479949,
+          5.203338619974573e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          0.0002246150369131431,
+          2.245188586409857e-06,
+          -1.4715000048157718
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.2499999262212314,
+          0.24999992090173195,
+          0.03466247819999341
+        ],
+        "tcp_world_yaw": 5.647781852634485e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.326,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.3660724117700966e-07,
+          1.5707961430760806,
+          -1.5707963267944371,
+          0.060001471499999876
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.25000013008150246,
+          0.24999991584815331,
+          0.0346653873647996,
+          -5.203255977193066e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.00022357876799826591,
+          -2.245188561217739e-06,
+          -1.4714999951838799
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992876053426,
+          0.2499999192710803,
+          0.03466247819992904
+        ],
+        "tcp_world_yaw": -4.760155949181636e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    },
+    {
+      "event": "state",
+      "state": {
+        "time": 2.454,
+        "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+        "mode": "STOPPED",
+        "commanded": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "estimated": [
+          0.0,
+          1.5707963267948966,
+          -1.5707963267948966,
+          0.06
+        ],
+        "simulated": [
+          -3.3660727361829265e-07,
+          1.5707961430760586,
+          -1.5707963267944367,
+          0.0600014714999999
+        ],
+        "estimated_pose": [
+          0.25000000000000233,
+          0.24999999999999745,
+          0.03466685886479948,
+          0.0
+        ],
+        "simulated_pose": [
+          0.25000013008151606,
+          0.2499999158481452,
+          0.03466538736479957,
+          -5.203256516761456e-07
+        ],
+        "hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "hall_nominal": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "end_hall": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "faults": {},
+        "payload_mass": 0.0,
+        "reference_valid": true,
+        "effort_available": [
+          0.8,
+          0.8,
+          0.3,
+          8.0
+        ],
+        "effort_feedback": [
+          null,
+          -0.0002235787657758824,
+          -2.2451885370180943e-06,
+          -1.4714999951839078
+        ],
+        "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+        "tcp_world": [
+          0.24999992876200364,
+          0.24999991927019186,
+          0.03466247819992904
+        ],
+        "tcp_world_yaw": -4.766033471829203e-09,
+        "tool_physics": {
+          "mass": 0.15,
+          "center": [
+            -4.28476698566271e-16,
+            1.90819582357449e-16,
+            0.0994999999999999
+          ],
+          "inertia": [
+            0.0005400125,
+            0.0005400125,
+            9e-05,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+        "protocol": "scara-dev/1"
+      }
+    }
+  ],
+  "inputs": {
+    "nominal_mm": [
+      240,
+      250,
+      35
+    ],
+    "nominal_yaw_deg": null,
+    "rejected_mm": [
+      73.2233,
+      176.7767,
+      34.6669
+    ],
+    "rejected_yaw_deg": 0,
+    "speed": 0.3
+  },
+  "tolerances": {
+    "joint_rad": 0.005,
+    "slider_m": 0.0005
+  },
+  "source_imports": {
+    "scara.kinematics": "/private/tmp/scara-sesion4-final-20261017/SCARA minima39/scara/kinematics.py",
+    "scara.collisions": "/private/tmp/scara-sesion4-final-20261017/SCARA minima39/scara/collisions.py",
+    "scara.dynamics": "/private/tmp/scara-sesion4-final-20261017/SCARA minima39/scara/dynamics.py"
+  },
+  "sources": {
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+    "scara/kinematics.py": "9ac6bb81fc5511d90b79e0aec77eb59464c80df4ee559a3b1cf3bba6550b41a9",
+    "scara/collisions.py": "25cad1ea1031e727ac50daaa4244b352f83138c8da5c0ec5e0c7293e2eab33ec",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+    "webots/worlds/scara.wbt": "eb037da9e5a1d87792f41bb0e34428619ff59f9f3b0d9f8ad2c5f4fada6f5e6b",
+    "cad/ensambles/integracion_articulada.json": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475"
+  }
+}

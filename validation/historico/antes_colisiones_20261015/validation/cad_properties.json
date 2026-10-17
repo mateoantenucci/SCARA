@@ -1,0 +1,84 @@
+{
+  "created_utc": "2026-10-15T20:15:30.912311+00:00",
+  "purpose": "Validación del precálculo geométrico del punto 1; no ensayo nativo de Webots",
+  "passed": true,
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "kernel_distribution": {
+    "cadquery-ocp-novtk": "8.0.1.1.0",
+    "cadquery-ocp-proxy": "8.0.1.1.0"
+  },
+  "tests": {
+    "command": "python -m unittest discover -v (Python CAD con OCP)",
+    "run": 21,
+    "skipped": 0,
+    "errors": 0,
+    "failures": 0,
+    "passed": true,
+    "log": "test_fragmented_state_and_reconnect_do_not_replay_reset_trial (client.test_app.LinkTest.test_fragmented_state_and_reconnect_do_not_replay_reset_trial) ... ok\ntest_reject_nonfinite_json_and_oversize_frames (client.test_app.LinkTest.test_reject_nonfinite_json_and_oversize_frames) ... ok\ntest_saved_assembly_and_joint_lines_survive_articulation (tests.test_cad_integration.CADIntegrationTests.test_saved_assembly_and_joint_lines_survive_articulation) ... ok\ntest_displaced_box_uses_si_units_and_central_tensor (tests.test_cad_properties.CADPropertyKernelTests.test_displaced_box_uses_si_units_and_central_tensor) ... ok\ntest_face_without_closed_shell_is_rejected (tests.test_cad_properties.CADPropertyKernelTests.test_face_without_closed_shell_is_rejected) ... ok\ntest_placed_sum_matches_independent_occt_compound_integration (tests.test_cad_properties.CADPropertyKernelTests.test_placed_sum_matches_independent_occt_compound_integration) ... ok\ntest_empty_sum_and_scaled_placement_are_rejected (tests.test_cad_properties.CADPropertyMathTests.test_empty_sum_and_scaled_placement_are_rejected) ... ok\ntest_rotation_and_aggregation_match_direct_volume_quadrature (tests.test_cad_properties.CADPropertyMathTests.test_rotation_and_aggregation_match_direct_volume_quadrature) ... ok\ntest_inverse_reconstructs_poses_and_preserves_heading (tests.test_kinematics.KinematicsTests.test_inverse_reconstructs_poses_and_preserves_heading) ... ok\ntest_omitted_orientation_does_not_allow_a_full_turn_during_motion (tests.test_kinematics.KinematicsTests.test_omitted_orientation_does_not_allow_a_full_turn_during_motion) ... ok\ntest_payload_changes_mass_center_and_inertia (tests.test_kinematics.KinematicsTests.test_payload_changes_mass_center_and_inertia) ... ok\ntest_quintic_respects_velocity_acceleration_and_endpoints (tests.test_kinematics.KinematicsTests.test_quintic_respects_velocity_acceleration_and_endpoints) ... ok\ntest_unreachable_nonfinite_and_limits_are_rejected (tests.test_kinematics.KinematicsTests.test_unreachable_nonfinite_and_limits_are_rejected) ... ok\ntest_disconnect_cancels_trajectory_without_advancing_estimate (tests.test_runtime.RuntimeTests.test_disconnect_cancels_trajectory_without_advancing_estimate) ... ok\ntest_effort_loss_persists_when_stopped_and_rearm_is_explicit (tests.test_runtime.RuntimeTests.test_effort_loss_persists_when_stopped_and_rearm_is_explicit) ... ok\ntest_hall_injection_does_not_change_physical_reference (tests.test_runtime.RuntimeTests.test_hall_injection_does_not_change_physical_reference) ... ok\ntest_known_overload_latches_reference_and_cannot_be_removed_to_restart_motion (tests.test_runtime.RuntimeTests.test_known_overload_latches_reference_and_cannot_be_removed_to_restart_motion) ... ok\ntest_motion_rejection_does_not_replace_accepted_motion (tests.test_runtime.RuntimeTests.test_motion_rejection_does_not_replace_accepted_motion) ... ok\ntest_invalid_json_and_oversized_frame_do_not_reach_runtime (tests.test_transport.TransportTests.test_invalid_json_and_oversized_frame_do_not_reach_runtime) ... ok\ntest_send_failure_discards_commands_from_lost_connection (tests.test_transport.TransportTests.test_send_failure_discards_commands_from_lost_connection) ... ok\ntest_stream_fragmentation_and_multiple_frames (tests.test_transport.TransportTests.test_stream_fragmentation_and_multiple_frames) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 0.830s\n\nOK\n"
+  },
+  "independent_body_check": {
+    "method": "Releer STEP, transformar BREP con gp_Trsf y sumar como compound; integrar directamente con BRepGProp. No usa combine/placed del cálculo.",
+    "volume_relative_tolerance": 1e-09,
+    "centroid_tolerance_m": 1e-10,
+    "tensor_max_relative_tolerance": 1e-09,
+    "bodies": [
+      {
+        "group": "base",
+        "relative_volume_error": 2.220446049250313e-16,
+        "centroid_error_m": 5.020289903673658e-16,
+        "relative_tensor_max_error": 2.7093887960580276e-15,
+        "passed": true
+      },
+      {
+        "group": "arm",
+        "relative_volume_error": 1.7763568394002505e-15,
+        "centroid_error_m": 1.9438142684013395e-16,
+        "relative_tensor_max_error": 7.297782298028824e-15,
+        "passed": true
+      },
+      {
+        "group": "forearm",
+        "relative_volume_error": 6.661338147750939e-16,
+        "centroid_error_m": 8.334374639345403e-17,
+        "relative_tensor_max_error": 1.6106424773638245e-15,
+        "passed": true
+      },
+      {
+        "group": "wrist",
+        "relative_volume_error": 2.220446049250313e-16,
+        "centroid_error_m": 2.4065903913389767e-18,
+        "relative_tensor_max_error": 2.4019936236982205e-15,
+        "passed": true
+      },
+      {
+        "group": "tool",
+        "relative_volume_error": 4.440892098500626e-16,
+        "centroid_error_m": 4.175336988080628e-17,
+        "relative_tensor_max_error": 2.997569879696492e-15,
+        "passed": true
+      }
+    ]
+  },
+  "geometry_summary": {
+    "parts": 50,
+    "computed_parts": 46,
+    "computed_solids": 48,
+    "excluded_parts": [
+      "B-CarretelInf",
+      "B-CarretelSup",
+      "B-ExtensorM3",
+      "Z-SoporteEfector"
+    ],
+    "instances": 30,
+    "computed_instances": 27
+  },
+  "original_and_active_physics_inputs_unchanged": true,
+  "protected_file_count": 217,
+  "artifact_sha256": {
+    "cad/propiedades/propiedades_geometricas.json": "f13257b82cb1bfad260cab980db66f75c28aa47b50e30d19a08608c4b19b7c24",
+    "cad/propiedades/propiedades_geometricas.csv": "4bf9d908d0413150e69e597cae5d59fee24f9b5997f2c3ab5c6e968f5f0fd438",
+    "tools/calcular_propiedades_cad.py": "c3dea02608b263f267c7de401a5ab5d851f173652d47402b036bf6be1786df8a",
+    "tests/test_cad_properties.py": "80cec16152b47a50534655bcfb004ab70b257937d52e49ac2b9779577b37521f"
+  },
+  "webots_native_reexecuted": false
+}

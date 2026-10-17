@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "completed_utc": "2026-10-17T22:59:49.239291+00:00",
+  "status": "bounded_cleanup_complete_external_resource_retained",
+  "previous_session6_tmp_removal": {
+    "path": "/private/tmp/scara-sesion6-20261017",
+    "status": "removed_and_absence_verified_before_this_cleanup",
+    "files": 11,
+    "bytes": 86631,
+    "durable_manifest_reviews_and_selective_backup_preserved": true
+  },
+  "authorization": "Director explicitly authorized exact round session2/session5 and verified session4 paths; no other rounds or project sources modified",
+  "removed": [
+    {
+      "path": "/private/tmp/scara-sesion2-20261017",
+      "before": {
+        "exists": true,
+        "files": 412,
+        "bytes": 61137181,
+        "owner_uid": 501,
+        "symlinks": 0
+      },
+      "process_check": "lsof +D returned1,empty stdout/stderr immediately before cleanup; owner confirmed native processes closed",
+      "reason": "340 product/tool/test sources identical to root; audit, reports, reviews and approved changes durable; no consumers remain",
+      "after": {
+        "exists": false
+      }
+    },
+    {
+      "path": "/private/tmp/scara-sesion4-20261017",
+      "before": {
+        "exists": true,
+        "files": 355,
+        "bytes": 60994871,
+        "owner_uid": 501,
+        "symlinks": 0
+      },
+      "process_check": "lsof +D returned1,empty stdout/stderr immediately before cleanup; owner confirmed native processes closed",
+      "reason": "331 source files identical to root;7 older source versions byte-identical in existing session1/session2 rollback archives; test world exactly reconstructible by documented port19141; baseline reports and checker durable",
+      "after": {
+        "exists": false
+      }
+    },
+    {
+      "path": "/private/tmp/scara-sesion4-final-20261017",
+      "before": {
+        "exists": true,
+        "files": 67,
+        "bytes": 7377863,
+        "owner_uid": 501,
+        "symlinks": 0
+      },
+      "process_check": "lsof +D returned1,empty stdout/stderr immediately before cleanup; owner confirmed native processes closed",
+      "reason": "Final runtime retained by session5 ZIP; port19141 world exactly reconstructible; all4 harness scripts, original checkers, adaptation diff, reports and independent review durable in validation/sesion4",
+      "after": {
+        "exists": false
+      }
+    }
+  ],
+  "retained": [
+    {
+      "path": "/private/tmp/scara-sesion5-20261017",
+      "reason": "External Docker Virtualization resource retains open read handles; not stopped or modified",
+      "resource": {
+        "pid": 95792,
+        "executable": "/System/Library/Frameworks/Virtualization.framework/Versions/A/XPCServices/com.apple.Virtualization.VirtualMachine.xpc/Contents/MacOS/com.apple.Virtualization.VirtualMachine"
+      },
+      "owner_uid": 501,
+      "symlinks": 0,
+      "next_action": "After Docker releases this path, check lsof/ownership/symlinks again and remove only this exact consumed round directory; no automation created"
+    },
+    {
+      "paths": "Session1/session3 temporary directories",
+      "reason": "Outside authorized cleanup inventory; not touched"
+    }
+  ],
+  "removed_files": 834,
+  "removed_bytes": 129509915,
+  "preserved": [
+    "All7 approved candidate files and20 referenced evidence files byte-identical",
+    "Session4 and6 independent reviews",
+    "Session5 executable ZIP/manifests/logs/scripts",
+    "All existing selective rollback snapshots and protected source originals"
+  ],
+  "verification": "No software/native/conversion tests rerun; only ownership,symlink,open-handle and existing-hash inspection",
+  "not_retained": "Disposable caches, one-off metadata/review-generation helpers and superseded draft documentation; no unique runtime or native checker required for reproduction lost",
+  "root_write_ownership": "Released to director"
+}

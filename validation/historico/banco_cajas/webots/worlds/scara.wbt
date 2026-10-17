@@ -1,0 +1,26 @@
+#VRML_SIM R2025a utf8
+EXTERNPROTO "../protos/SCARA.proto"
+WorldInfo { basicTimeStep 16 }
+Viewpoint { orientation -0.247320324917239 0.12594159147589 0.960713990956388 2.23162100538708 position 0.95 -0.95 0.85 }
+Background { skyColor [ 0.9 0.93 0.97 ] }
+DirectionalLight { direction -0.4 0.5 -1 intensity 1 castShadows TRUE }
+DirectionalLight { direction 0.5 -0.5 -1 intensity 0.5 }
+Solid {
+  name "suelo_de_ensayo"
+  translation 0 0 -0.205
+  children [ Shape {
+    appearance PBRAppearance { baseColor 0.78 0.8 0.83 roughness 0.9 metalness 0 }
+    geometry Box { size 2 2 0.01 }
+  } ]
+  boundingObject Box { size 2 2 0.01 }
+}
+Solid {
+  name "pedestal_de_ensayo"
+  translation 0 0 -0.1
+  children [ Shape {
+    appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.9 metalness 0 }
+    geometry Box { size 0.32 0.32 0.2 }
+  } ]
+  boundingObject Box { size 0.32 0.32 0.2 }
+}
+DEF SCARA SCARA { }

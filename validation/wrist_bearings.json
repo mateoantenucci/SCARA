@@ -1,0 +1,132 @@
+{
+  "status": "passed",
+  "created_utc": "2026-10-17T18:40:59.668671+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "scope": "Correct provisional wrist cap placement from a coherent saved subassembly and add two axisymmetric bearing visuals",
+  "before_instances": 34,
+  "instances": 36,
+  "added_visual_bearings": [
+    "Z-6907-2RS-registro-1",
+    "Z-6907-2RS-registro-2"
+  ],
+  "all_bearing_visuals": 6,
+  "cap_correction": {
+    "instance": "R-ContraBancada-1",
+    "formula": "T_global_Bancada * inverse(T_Rrot_Bancada) * T_Rrot_Contra",
+    "source_assembly": "Modelos3D/R-EnsambleRotacion.SLDASM",
+    "anchor": "R-Bancada-1",
+    "shared_anchor_count": 1,
+    "global_registration_not_a_whole_subassembly_merge": true,
+    "original_global_pose_preserved": true,
+    "candidate_pose_max_difference": 0.0,
+    "diagnosis_checks_passed": 17,
+    "original_to_candidate": [
+      [
+        -1.0000000000000004,
+        1.0408340855877381e-17,
+        -2.362367862075396e-15,
+        6.572064273041067e-16
+      ],
+      [
+        1.7347234759786172e-17,
+        1.0000000000000002,
+        3.0680314460184805e-16,
+        -7.399873345527294e-17
+      ],
+      [
+        2.3196537973314005e-15,
+        3.045616341727206e-16,
+        -0.9999999999999999,
+        0.04759999999999989
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "existing_poses_unchanged": 33,
+  "physics_config_byte_identical": true,
+  "original_files_checked": 152,
+  "originals_unchanged": true,
+  "properties_summary": {
+    "parts": 50,
+    "computed_parts": 49,
+    "computed_solids": 51,
+    "excluded_parts": [
+      "B-ExtensorM3"
+    ],
+    "instances": 36,
+    "computed_instances": 36
+  },
+  "software_tests": {
+    "status": "passed",
+    "tests_run": 33,
+    "skipped": 0
+  },
+  "native_CAD": {
+    "status": "passed",
+    "snapshots": 11,
+    "instance_comparisons": 396,
+    "arrivals": 6
+  },
+  "native_collisions": {
+    "status": "passed",
+    "checks": 6
+  },
+  "internal_audit": {
+    "status": "interferences_found",
+    "summary": {
+      "instances": 36,
+      "poses": 41,
+      "bbox_candidates": 926,
+      "confirmed_intersections": 4,
+      "initial_envelope_overlaps_without_CAD_volume": 18
+    },
+    "checks_passed": 6
+  },
+  "external_audit": {
+    "status": "passed",
+    "summary": {
+      "poses": 11,
+      "movable_instances": 26,
+      "valid_movable_instances": 26,
+      "excluded_movable_instances": 0,
+      "confirmed_intersections": 8
+    }
+  },
+  "baseline_regression": {
+    "command": "python3 -B -m unittest tests.test_cad_integration.CADIntegrationTests.test_wrist_cap_and_bearings_use_the_coherent_housing_assembly -v",
+    "before": "FAILED: cap orientation differed by 180 degrees (matrix difference 2.0)",
+    "after": "passed",
+    "snapshot": "validation/historico/antes_rodamientos_muneca_20261017"
+  },
+  "limitations": [
+    "Provisional visual mounting correction; not official mechanical revision approval",
+    "All six bearings are simplified visuals; separate races and material properties are not modeled",
+    "One shared housing anchor; seat axes, four fastening holes and contact face provide separate geometric checks",
+    "Full internal collision protection, omitted components and hardware validation remain incomplete",
+    "Native validation on macOS; Windows/Linux pending"
+  ],
+  "sources_sha256": {
+    "config/cad_integration.json": "2cc6ada073a706e53926ef829429d6a4c2c096a376c6725c72b8532d10dcbe6e",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "tools/integrate_cad.py": "2b669648ea1c0f6ddc91ccae2d850f5791dd40ebd53115cb5ce45d8ad5ee31d0",
+    "tools/check_wrist_bearings.py": "f5ec3f34c0c02c79a5772bada95c706b8da6373a8989a00f04e2f520d15dc279",
+    "tools/check_cad_motion.py": "f339427494ee344b73b9f5b7e54bafea1bafc8726df4cb305d6eb012e948b004",
+    "tests/test_cad_integration.py": "e241d7112491a6a5ed04e6228d7012b1b6f45d4e1b28346564ab95d5dd479472",
+    "cad/ensambles/integracion_articulada.json": "c895764471763b44814227a79e0d1343fac89197cfebcbbeeb7e080930fe4c45",
+    "cad/propiedades/propiedades_geometricas.json": "5dad0ded82a6d71660a094a4456553b4a383f8b3b3f720b29683f72076057e62",
+    "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+    "webots/protos/SCARA.proto": "245a1032cea57b5a485f008f187355a4419a58ef3eec8f985ccc03fb72634856",
+    "validation/wrist_bearing_diagnosis.json": "f58f9396e3d9c3a2a391ffc3ac1c40e25309d4a299f218f2a98d43124d06ad15",
+    "validation/wrist_bearing_drawings.json": "1db3eb56238663222948315577d6e7154be3c9dde0b7054598c5845d5704740c",
+    "validation/wrist_bearing_tests.json": "a1fcfea0616833aae0e74fec6072fe7880a0506dbaffd25504ef1b65dd64aae1",
+    "validation/cad_motion_wrist.json": "cad36ff26e56d1e645439cd36db8255627c45b31fa340d74a993c8c16d306980",
+    "validation/collisions_native_wrist.json": "9e2be6454c2d53881550e9e7e9667f2be3bdd5a01c9512ace9733c8b4de80e4c",
+    "validation/self_collisions_wrist.json": "b2099cb413f7379075b0b43d15f3e35e689293c53f096768216123b6b0f02450",
+    "validation/collisions_wrist.json": "bd238e1d81c6c424072573747c831fbc589e771551e1db50c6bc9e4d1d4121fe"
+  }
+}

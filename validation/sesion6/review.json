@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-17T22:54:52.214688+00:00",
+  "reviewer": "sesion_2_choques",
+  "independence": "Independent of session6 author. Session2 artifacts already have independent session3 approval; exact prior review4 bytes are preserved,not represented as a second independent review of that review. Root is read-only during this review.",
+  "status": "approved_no_blocking_findings",
+  "findings": [],
+  "candidate_manifest_sha256": "a132a016da64f1dc190d7a35890c924463cba93205e544780c7719bc05be4f29",
+  "base_files_sha256": {
+    "README.md": "fc4d4e40190a10d23b7c371bcfa4701cc899d9859b1d29aaea7a24bdb60f5414",
+    "docs/VALIDACION_WEBOTS.md": "047800876dd63e348c61f22fae8b880b677098d680962afe771b3b5581c0edda",
+    "docs/DATOS_PARA_EL_PROFESOR.md": "35bb1d3a78c340b480e523896bc3e87a95738fa5517bbe7c802ab7e9784b1b3e",
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": "f1901d5678c0e2cf12ce110022e912eb084ca0be6cb51e81dd421624344766d7",
+    ".agent-state/ronda-profesor-20261017/estado.md": "34bb9e4688a5c435fbee3f86c27d800cad7ae998c1823d6adec4d9339469dd1c"
+  },
+  "candidate_files_sha256": {
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": "90ddee494625381de0b709a690b7b6328716d163a60362a89cfa727b68bdd21f",
+    ".agent-state/ronda-profesor-20261017/estado.md": "e8a9be8a4eb7979dff6202a5772b4e75d3870254a652a5de770fd83b626b4992",
+    "README.md": "5897c07be11d463224fd73071c124cde02315d4e38e8f7a7cd5ee9dbb4abe30c",
+    "docs/DATOS_PARA_EL_PROFESOR.md": "fea2ac3c61d10b78356b42f099f1a8c5cec1ea402e7b757d4dcb989a16d0da20",
+    "docs/VALIDACION_WEBOTS.md": "43eb9ed876ea0eb687aee000509e0e8561870be7c4deddf06de7a6e058d2f666",
+    "validation/sesion4/review.json": "67274ea32454406c5111fe63b1462dc51d8171ca6a48fb682b02e4647d6d59c5",
+    "validation/sesion6/consolidado.json": "28080e530afe8215b99270ec230a9519ea0020ac2de8594b2fb19b023e49213a"
+  },
+  "scope": "Three existing user-facing documents,private agenda/state,consolidated evidence and exact review4; no product/model/config/physics changes.",
+  "verified": {
+    "candidate_hashes": 7,
+    "base_hashes": 5,
+    "identity_source_hashes": 14,
+    "evidence_hashes": 20,
+    "sessions": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "local_markdown_links_resolved": 70,
+    "local_fragment_targets_inspected": [
+      "docs/PROCESO_Y_ARCHIVOS.md#9-mapa-de-archivos-para-explorar",
+      "docs/PROPIEDADES_GEOMETRICAS_CAD.md#materiales-nominales-ya-localizados"
+    ],
+    "retired_guides_not_reintroduced_or_linked": true,
+    "OCP_suite": {
+      "passed": 36,
+      "skipped": 0,
+      "python": "3.12.14",
+      "platform": "macOS27.0.1arm64"
+    },
+    "available_software_platforms": [
+      {
+        "name": "macos_python39",
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+        "discovered": 36,
+        "passed": 33,
+        "skipped_OCP": 3,
+        "http_without_Webots": 5
+      },
+      {
+        "name": "macos_python315",
+        "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+        "python": "3.15.0 (main, Oct  9 2026, 11:16:41) [Clang 21.0.0 (clang-2100.3.34.2)]",
+        "discovered": 36,
+        "passed": 33,
+        "skipped_OCP": 3,
+        "http_without_Webots": 5
+      },
+      {
+        "name": "linux_python312",
+        "platform": "Linux-7.0.14-linuxkit-aarch64-with-glibc2.41",
+        "python": "3.12.15 (main, Oct  6 2026, 02:08:11) [GCC 14.2.0]",
+        "discovered": 36,
+        "passed": 33,
+        "skipped_OCP": 3,
+        "http_without_Webots": 5
+      }
+    ],
+    "native_Webots_platform": "macOS27.0.1arm64 only",
+    "windows_execution": "pending",
+    "native_Linux_Webots": "pending",
+    "visual_instances": 39,
+    "geometric_precalculation_instances": 38,
+    "precalculation_computed_part_types": 49,
+    "precalculation_solids": 51,
+    "exact_review4_preserved": true,
+    "zip": {
+      "sha256": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+      "crc_ok": true,
+      "files": 52,
+      "STL": 35,
+      "all_archived_hashes_match": true,
+      "root_product_sources_match": 51
+    },
+    "demo": {
+      "nominal_xyz_mm": [
+        240,
+        250,
+        35
+      ],
+      "rejected_xyz_mm": [
+        73.2233,
+        176.7767,
+        34.6669
+      ],
+      "rejected_yaw_deg": 0,
+      "speed": 0.3,
+      "native_reachable_solution_and_tower_rejection_backed_by_report": true,
+      "unchanged_samples": 6,
+      "Hall_J1_active_fault_explicit_clear_and_rearm": true,
+      "explicit_stop_at_end": true,
+      "no_new_browser_visual_QA_claim": true
+    },
+    "meeting_date_local": "2026-10-20",
+    "timezone": "America/Argentina/Tucuman",
+    "questions_each_unblock_concrete_decision": true,
+    "technical_vs_provisional_vs_professor_scope_preserved": true,
+    "no_new_unit_native_or_HTTP_execution": true
+  },
+  "resolved_preliminary_comments": [
+    {
+      "issue": "README first-run step referred to README inside minimal ZIP,which contains LEEME instead.",
+      "resolution": "Step now identifies client/scara/webots folders only."
+    },
+    {
+      "issue": "Demo ended with implicit stopped state after clearing Hall and rearming.",
+      "resolution": "Now explicitly instructs Detener movimiento at the end."
+    }
+  ],
+  "observations": [
+    "VALIDACION is the current evidence matrix; historical35/34passes are labelled and not added to current36tests.",
+    "Each of six sessions has checked result,limits and external next decisions; session6 preparation does not claim professor approval or sent questions.",
+    "CAD finite sampling and pair exclusions remain separate from continuous nominal guard coverage; no blanket collision-free guarantee or internal physical contact validation.",
+    "Nominal materials/transmission arithmetic remain separate from effective physical properties; no unsupported masses/inertias/efforts applied.",
+    "Homing/protocol/autonomous diagnosis remain pending; reference reset and Hall injection retain simulation scope.",
+    "Existing guides and document ownership preserved; only the current summary/questions/operation surfaces are edited; retired guide copies stay historical/private.",
+    "All checks reused existing execution evidence and hash identity; no shared Webots instance or ports used."
+  ],
+  "integration_condition": "Single assigned writer copies these exact seven candidate files plus this exact review. Immediately recheck five base files before overwriting, preserve concurrent contributions,and verify final root hashes. Append integration evidence without changing reviewed product sources.",
+  "limitations": [
+    "No human or physical robot acceptance.",
+    "No native Windows/LinuxWebots and no newly observed rendered browser UI.",
+    "Changing source/model/config/executable after identity check requires reassessing affected validations."
+  ]
+}

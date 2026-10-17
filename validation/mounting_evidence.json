@@ -1,0 +1,1016 @@
+{
+  "status": "read_only_review_recommendation",
+  "date_local": "2026-10-16",
+  "repo_files_modified": false,
+  "input_sha256": {
+    "cad/ensambles/registro_subensambles.json": "fc57d16b85ed3fda3ccb8c8439b8d2669833484a69ab0f159ac7cc7583aeca53",
+    "cad/ensambles/integracion_articulada.json": "91e9e0f55a920bec7f5885844932d4d2a231ce92f0fe9a03cabed6ec5c517a72",
+    "config/cad_integration.json": "33dc31e0356253792a88d634259432d30c9b1235338a9d1ccb0f930e7b3f10c7",
+    "cad/derivados/informe.json": "e8f01f0cc10438967672ec156f19acc5f98b828114c99e673645f2672eae3279"
+  },
+  "method": "Exact registered matrices retained; analytic BREP symmetry and cylindrical seat intervals independently measured using OCP. No CAD repair or reconversion.",
+  "decision": "Add four bearings as simplified visuals only. Retain two wrist bearings and six pulleys.",
+  "symmetry": {
+    "0-6203-2RS": {
+      "step": "cad/derivados/step/0-6203-2RS.step",
+      "step_sha256": "a7150e212c04792c69a0d301fb7441daa0d5e67ae1f1c3b09b40c30790441969",
+      "solid_count_from_conversion_report": 1,
+      "plane_faces": 6,
+      "cylinder_faces": 6,
+      "cylinder_radii_mm": [
+        20.0,
+        8.5,
+        18.000000000000004,
+        10.5,
+        18.000000000000004,
+        10.5
+      ],
+      "plane_z_mm": [
+        0.0,
+        12.0,
+        12.0,
+        0.0,
+        11.5,
+        0.5
+      ],
+      "all_cylinders_coaxial_local_z": true,
+      "all_cylinders_full_2pi": true,
+      "all_plane_normals_parallel_local_z": true,
+      "edge_occurrences": {
+        "full_coaxial_circles": 24,
+        "degree1_2pole_straight_local_z_seams": 12
+      },
+      "all_boundaries_axisymmetric": true,
+      "axisymmetric_about_local_z": true,
+      "scope": "Analytic BREP symmetry; the STL has finite tessellation. Internal races are not separate solids."
+    },
+    "Z-608zz": {
+      "step": "cad/derivados/step/Z-608zz.step",
+      "step_sha256": "aa5f0ccb12440d7270369381516d47c6c4356b9c2e54a12e2d5a84ba7968d18f",
+      "solid_count_from_conversion_report": 1,
+      "plane_faces": 6,
+      "cylinder_faces": 6,
+      "cylinder_radii_mm": [
+        11.0,
+        4.0,
+        9.999999999999998,
+        5.0,
+        9.999999999999998,
+        5.0
+      ],
+      "plane_z_mm": [
+        0.0,
+        7.0,
+        7.0,
+        0.0,
+        6.500000000000001,
+        0.5
+      ],
+      "all_cylinders_coaxial_local_z": true,
+      "all_cylinders_full_2pi": true,
+      "all_plane_normals_parallel_local_z": true,
+      "edge_occurrences": {
+        "full_coaxial_circles": 24,
+        "degree1_2pole_straight_local_z_seams": 12
+      },
+      "all_boundaries_axisymmetric": true,
+      "axisymmetric_about_local_z": true,
+      "scope": "Analytic BREP symmetry; the STL has finite tessellation. Internal races are not separate solids."
+    },
+    "Z-6907-2RS": {
+      "step": "cad/derivados/step/Z-6907-2RS.step",
+      "step_sha256": "c8ca82d62e37b6b2490ad9c627797199300b800e7d83ca21a1f542bc374125ea",
+      "solid_count_from_conversion_report": 1,
+      "plane_faces": 6,
+      "cylinder_faces": 6,
+      "cylinder_radii_mm": [
+        27.5,
+        17.500000000000004,
+        26.500000000000004,
+        18.500000000000007,
+        26.500000000000004,
+        18.500000000000007
+      ],
+      "plane_z_mm": [
+        0.0,
+        10.0,
+        10.0,
+        0.0,
+        9.5,
+        0.5
+      ],
+      "all_cylinders_coaxial_local_z": true,
+      "all_cylinders_full_2pi": true,
+      "all_plane_normals_parallel_local_z": true,
+      "edge_occurrences": {
+        "full_coaxial_circles": 24,
+        "degree1_2pole_straight_local_z_seams": 12
+      },
+      "all_boundaries_axisymmetric": true,
+      "axisymmetric_about_local_z": true,
+      "scope": "Analytic BREP symmetry; the STL has finite tessellation. Internal races are not separate solids."
+    }
+  },
+  "recommended_visual_additions": [
+    {
+      "occurrence": "0-6203-2RS-registro-1",
+      "group": "base",
+      "visual_support_housing": "0-Bancada-registro-1",
+      "transform_part_to_saved_global_m": [
+        [
+          -0.989913840422089,
+          -0.14167070459622527,
+          5.639839928964938e-16,
+          -0.032666638842817966
+        ],
+        [
+          -0.14167070459622527,
+          0.989913840422089,
+          -1.4716010990222369e-16,
+          0.010499991056622854
+        ],
+        [
+          -5.374472838864465e-16,
+          -2.2557583920488567e-16,
+          -0.9999999999999999,
+          0.22714637151172465
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_housing_from_part_m": [
+        [
+          0.989913840422089,
+          0.1416707045962253,
+          -4.08451355799543e-33,
+          -2.9153940110672506e-18
+        ],
+        [
+          -0.1416707045962253,
+          0.989913840422089,
+          -1.0760581607994014e-31,
+          3.6090315946916185e-19
+        ],
+        [
+          1.232595164407831e-32,
+          -8.628166150854817e-32,
+          0.9999999999999999,
+          0.04599999999999994
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_body_from_part_m": [
+        [
+          0.1269802492513681,
+          -0.9919052456258413,
+          1.5550466812640569e-16,
+          -3.049318610115481e-16
+        ],
+        [
+          0.9919052456258413,
+          0.1269802492513681,
+          -5.617404564216498e-16,
+          -5.890199352570624e-16
+        ],
+        [
+          5.374472838864465e-16,
+          2.2557583920488567e-16,
+          0.9999999999999999,
+          0.20123749999999993
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "seat": {
+        "outer_radius_mm": 20,
+        "housing_axis": "local Z",
+        "housing_axial_interval_mm": [
+          46,
+          60
+        ],
+        "bearing_axial_interval_in_housing_mm": [
+          45.999999999999936,
+          57.999999999999936
+        ],
+        "max_axis_offset_m": 2.937647584425609e-18,
+        "outer_nominal_radius_matches_housing": true,
+        "protrusion_mm": 6.394884621840902e-14,
+        "recess_mm": 2.000000000000064
+      },
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "0-6203-2RS-1",
+          "basename": "0-6203-2RS.SLDPRT",
+          "source_cache_stamp": "194",
+          "cached_identity": [
+            "0-6203-2rs.sldprt",
+            "Predeterminado",
+            "194",
+            "1744950815"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.989913840422089,
+              -0.14167070459622527,
+              5.639839928964938e-16,
+              -0.032666638842817966
+            ],
+            [
+              -0.14167070459622527,
+              0.989913840422089,
+              -1.4716010990222369e-16,
+              0.010499991056622854
+            ],
+            [
+              -5.374472838864465e-16,
+              -2.2557583920488567e-16,
+              -0.9999999999999999,
+              0.22714637151172465
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-6203-2RS.SLDPRT",
+          "local_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-6203-2RS.stl",
+            "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "0-6203-2RS-1",
+          "basename": "0-6203-2RS.SLDPRT",
+          "source_cache_stamp": "194",
+          "cached_identity": [
+            "0-6203-2rs.sldprt",
+            "Predeterminado",
+            "194",
+            "1744950815"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.989913840422089,
+              -0.14167070459622527,
+              5.639839928964938e-16,
+              -0.032666638842817966
+            ],
+            [
+              -0.14167070459622527,
+              0.989913840422089,
+              -1.4716010990222369e-16,
+              0.010499991056622854
+            ],
+            [
+              -5.374472838864465e-16,
+              -2.2557583920488567e-16,
+              -0.9999999999999999,
+              0.22714637151172465
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-6203-2RS.SLDPRT",
+          "local_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-6203-2RS.stl",
+            "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ],
+      "mesh_sha_verified": true,
+      "source_sha_verified": true,
+      "visual_only": true,
+      "no_added_mass": true,
+      "no_race_motion_claim": true
+    },
+    {
+      "occurrence": "0-6203-2RS-registro-2",
+      "group": "base",
+      "visual_support_housing": "0-Bancada-registro-1",
+      "transform_part_to_saved_global_m": [
+        [
+          -1.0,
+          2.775557561562891e-17,
+          5.639839928964939e-16,
+          -0.032666638842817994
+        ],
+        [
+          2.775557561562891e-17,
+          1.0,
+          -1.471601099022237e-16,
+          0.01049999105662286
+        ],
+        [
+          -5.639839928964939e-16,
+          -1.471601099022236e-16,
+          -1.0,
+          0.2731463715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_housing_from_part_m": [
+        [
+          1.0,
+          8.299594637774293e-32,
+          -4.084513557995431e-33,
+          -1.1030820686770312e-18
+        ],
+        [
+          8.299594637774293e-32,
+          1.0,
+          -1.0760581607994014e-31,
+          -1.2042914681026993e-18
+        ],
+        [
+          -4.084513557995431e-33,
+          -1.0760581607994014e-31,
+          1.0,
+          -1.9968641246945184e-17
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_body_from_part_m": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          -3.1056971230847275e-16
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -5.613456748043699e-16
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.15523749999999997
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "seat": {
+        "outer_radius_mm": 20,
+        "housing_axis": "local Z",
+        "housing_axial_interval_mm": [
+          0,
+          12
+        ],
+        "bearing_axial_interval_in_housing_mm": [
+          -1.9968641246945186e-14,
+          11.999999999999979
+        ],
+        "max_axis_offset_m": 1.6331282835043169e-18,
+        "outer_nominal_radius_matches_housing": true,
+        "protrusion_mm": 1.9968641246945186e-14,
+        "recess_mm": 2.1316282072803006e-14
+      },
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "0-6203-2RS-2",
+          "basename": "0-6203-2RS.SLDPRT",
+          "source_cache_stamp": "194",
+          "cached_identity": [
+            "0-6203-2rs.sldprt",
+            "Predeterminado",
+            "194",
+            "1744950815"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -1.0,
+              2.775557561562891e-17,
+              5.639839928964939e-16,
+              -0.032666638842817994
+            ],
+            [
+              2.775557561562891e-17,
+              1.0,
+              -1.471601099022237e-16,
+              0.01049999105662286
+            ],
+            [
+              -5.639839928964939e-16,
+              -1.471601099022236e-16,
+              -1.0,
+              0.2731463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-6203-2RS.SLDPRT",
+          "local_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-6203-2RS.stl",
+            "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "0-6203-2RS-2",
+          "basename": "0-6203-2RS.SLDPRT",
+          "source_cache_stamp": "194",
+          "cached_identity": [
+            "0-6203-2rs.sldprt",
+            "Predeterminado",
+            "194",
+            "1744950815"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -1.0,
+              2.775557561562891e-17,
+              5.639839928964939e-16,
+              -0.032666638842817994
+            ],
+            [
+              2.775557561562891e-17,
+              1.0,
+              -1.471601099022237e-16,
+              0.01049999105662286
+            ],
+            [
+              -5.639839928964939e-16,
+              -1.471601099022236e-16,
+              -1.0,
+              0.2731463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-6203-2RS.SLDPRT",
+          "local_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-6203-2RS.stl",
+            "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ],
+      "mesh_sha_verified": true,
+      "source_sha_verified": true,
+      "visual_only": true,
+      "no_added_mass": true,
+      "no_race_motion_claim": true
+    },
+    {
+      "occurrence": "Z-608zz-registro-1",
+      "group": "arm",
+      "visual_support_housing": "B-SoporteRuleman-registro-1",
+      "transform_part_to_saved_global_m": [
+        [
+          -0.9998901124135379,
+          -0.01482440884632897,
+          -7.213474259428649e-16,
+          -0.02896053663123633
+        ],
+        [
+          -0.01482440884632897,
+          0.9998901124135379,
+          8.407151266562033e-15,
+          -0.23947253704676172
+        ],
+        [
+          5.966371112067787e-16,
+          8.416920974162747e-15,
+          -1.0,
+          0.12572137151172308
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_housing_from_part_m": [
+        [
+          -1.0000000000000004,
+          -1.0408340855861428e-16,
+          9.848240567896613e-17,
+          3.681603461339993e-18
+        ],
+        [
+          1.0408340855860883e-16,
+          -1.0000000000000004,
+          -9.10382880192629e-15,
+          -9.88769469605781e-17
+        ],
+        [
+          9.848240567896851e-17,
+          -9.103828801926285e-15,
+          1.0,
+          -0.0004999999999985091
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_body_from_part_m": [
+        [
+          1.2825851491982009e-15,
+          -1.0000000000000002,
+          -8.41692097416275e-15,
+          0.24999999999999986
+        ],
+        [
+          1.0000000000000002,
+          1.2825851491982009e-15,
+          5.9663711120679e-16,
+          -3.0373273340877615e-16
+        ],
+        [
+          -5.966371112067787e-16,
+          -8.416920974162747e-15,
+          1.0,
+          0.011300000000001309
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "seat": {
+        "outer_radius_mm": 11,
+        "housing_axis": "local Z",
+        "housing_axial_interval_mm": [
+          0,
+          6.5
+        ],
+        "bearing_axial_interval_in_housing_mm": [
+          -0.49999999999850914,
+          6.50000000000149
+        ],
+        "max_axis_offset_m": 1.6266248651465202e-16,
+        "outer_nominal_radius_matches_housing": true,
+        "protrusion_mm": 0.49999999999850914,
+        "recess_mm": 0
+      },
+      "registration_evidence": [
+        {
+          "source_assembly": "A-EnsambleBrazo",
+          "source_instance": "Z-608zz-1",
+          "basename": "Z-608zz.SLDPRT",
+          "source_cache_stamp": "119",
+          "cached_identity": [
+            "z-608zz.sldprt",
+            "Predeterminado",
+            "119",
+            "1744950815"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.9998901124135379,
+              -0.01482440884632897,
+              -7.213474259428649e-16,
+              -0.02896053663123633
+            ],
+            [
+              -0.01482440884632897,
+              0.9998901124135379,
+              8.407151266562033e-15,
+              -0.23947253704676172
+            ],
+            [
+              5.966371112067787e-16,
+              8.416920974162747e-15,
+              -1.0,
+              0.12572137151172308
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "A-EnsambleBrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/Z-608zz.SLDPRT",
+          "local_sha256": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/Z-608zz.stl",
+            "sha256": "0b8926526636d1f0878de2724e85540a324d44caf6e91066c9419605920b3e8b"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ],
+      "mesh_sha_verified": true,
+      "source_sha_verified": true,
+      "visual_only": true,
+      "no_added_mass": true,
+      "no_race_motion_claim": true
+    },
+    {
+      "occurrence": "Z-608zz-registro-2",
+      "group": "arm",
+      "visual_support_housing": "B-SoporteRuleman-registro-2",
+      "transform_part_to_saved_global_m": [
+        [
+          -0.9998901124135379,
+          -0.01482440884632897,
+          -4.639791955104681e-16,
+          -0.028960536631236312
+        ],
+        [
+          -0.01482440884632897,
+          0.9998901124135379,
+          -8.952053510257702e-15,
+          -0.2394725370467616
+        ],
+        [
+          5.966371112067787e-16,
+          -8.944191573413138e-15,
+          -1.0,
+          0.155321371511726
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_housing_from_part_m": [
+        [
+          1.0000000000000004,
+          1.3010426069825484e-16,
+          -3.971622199852531e-17,
+          -3.509412603125495e-18
+        ],
+        [
+          1.3010426069826078e-16,
+          -1.0000000000000004,
+          8.534839501805894e-15,
+          -2.0389155075896994e-16
+        ],
+        [
+          -3.971622199852556e-17,
+          -8.53483950180589e-15,
+          -1.0,
+          0.006500000000001441
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "transform_body_from_part_m": [
+        [
+          1.2825851491982009e-15,
+          -1.0000000000000002,
+          8.94419157341314e-15,
+          0.24999999999999975
+        ],
+        [
+          1.0000000000000002,
+          1.2825851491982009e-15,
+          5.966371112067678e-16,
+          -3.228146916445209e-16
+        ],
+        [
+          -5.966371112067787e-16,
+          8.944191573413138e-15,
+          1.0,
+          -0.01830000000000165
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "seat": {
+        "outer_radius_mm": 11,
+        "housing_axis": "local Z",
+        "housing_axial_interval_mm": [
+          0,
+          6.5
+        ],
+        "bearing_axial_interval_in_housing_mm": [
+          -0.4999999999985589,
+          6.5000000000014415
+        ],
+        "max_axis_offset_m": 2.0392175079602615e-16,
+        "outer_nominal_radius_matches_housing": true,
+        "protrusion_mm": 0.4999999999985589,
+        "recess_mm": 0
+      },
+      "registration_evidence": [
+        {
+          "source_assembly": "A-EnsambleBrazo",
+          "source_instance": "Z-608zz-2",
+          "basename": "Z-608zz.SLDPRT",
+          "source_cache_stamp": "119",
+          "cached_identity": [
+            "z-608zz.sldprt",
+            "Predeterminado",
+            "119",
+            "1744950815"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.9998901124135379,
+              -0.01482440884632897,
+              -4.639791955104681e-16,
+              -0.028960536631236312
+            ],
+            [
+              -0.01482440884632897,
+              0.9998901124135379,
+              -8.952053510257702e-15,
+              -0.2394725370467616
+            ],
+            [
+              5.966371112067787e-16,
+              -8.944191573413138e-15,
+              -1.0,
+              0.155321371511726
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "A-EnsambleBrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/Z-608zz.SLDPRT",
+          "local_sha256": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/Z-608zz.stl",
+            "sha256": "0b8926526636d1f0878de2724e85540a324d44caf6e91066c9419605920b3e8b"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ],
+      "mesh_sha_verified": true,
+      "source_sha_verified": true,
+      "visual_only": true,
+      "no_added_mass": true,
+      "no_race_motion_claim": true
+    }
+  ],
+  "withheld_candidates": [
+    {
+      "occurrence": "Z-6907-2RS-registro-1",
+      "reason": "Fits R-Bancada but current global R-ContraBancada bearing seats are axially displaced by 3 mm. Do not alter saved poses to make fit.",
+      "transform_R_Bancada_from_part_m": [
+        [
+          -0.07217371770726991,
+          -0.997392076603936,
+          -9.840681929992529e-16,
+          -3.38491473972292e-17
+        ],
+        [
+          -1.675404313341087e-14,
+          2.1990046081310725e-15,
+          -1.0,
+          0.020000000000007963
+        ],
+        [
+          0.9973920766039361,
+          -0.07217371770726994,
+          -1.686906021016881e-14,
+          -0.019999999999993745
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bearing_interval_in_R_Bancada_y_mm": [
+        10.000000000007963,
+        20.00000000000796
+      ],
+      "R_Bancada_seat_y_mm": [
+        10,
+        20
+      ],
+      "transform_R_ContraBancada_from_part_m": [
+        [
+          0.07217371770726992,
+          0.9973920766039363,
+          -4.621957482832936e-16,
+          6.426342212218106e-16
+        ],
+        [
+          0.9973920766039364,
+          -0.07217371770726995,
+          -1.65629155019411e-14,
+          5.924639925764498e-15
+        ],
+        [
+          -1.655307907255866e-14,
+          7.344168106686791e-16,
+          -1.0,
+          0.04380000000000786
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bearing_interval_in_R_ContraBancada_z_mm": [
+        33.800000000007856,
+        43.80000000000786
+      ],
+      "R_ContraBancada_seat_z_mm": [
+        30.8,
+        40.8
+      ],
+      "axial_displacement_mm": 3
+    },
+    {
+      "occurrence": "Z-6907-2RS-registro-2",
+      "reason": "Fits R-Bancada but current global R-ContraBancada bearing seats are axially displaced by 3 mm. Do not alter saved poses to make fit.",
+      "transform_R_Bancada_from_part_m": [
+        [
+          -0.13944607981924037,
+          -0.9902296656953106,
+          -9.840681929992527e-16,
+          -6.586432081166488e-17
+        ],
+        [
+          -1.656701940072098e-14,
+          3.326777834317812e-15,
+          -0.9999999999999999,
+          -0.0069999999999920326
+        ],
+        [
+          0.9902296656953107,
+          -0.1394460798192404,
+          -1.6869060210168806e-14,
+          -0.019999999999994206
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bearing_interval_in_R_Bancada_y_mm": [
+        -16.99999999999203,
+        -6.999999999992032
+      ],
+      "R_Bancada_seat_y_mm": [
+        -17,
+        -7
+      ],
+      "transform_R_ContraBancada_from_part_m": [
+        [
+          0.13944607981924037,
+          0.9902296656953108,
+          -4.621957482832935e-16,
+          6.356002682216176e-16
+        ],
+        [
+          0.9902296656953109,
+          -0.1394460798192404,
+          -1.6562915501941096e-14,
+          5.470377870998909e-15
+        ],
+        [
+          -1.6465541665634044e-14,
+          1.851953695814654e-15,
+          -0.9999999999999999,
+          0.016800000000007864
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bearing_interval_in_R_ContraBancada_z_mm": [
+        6.8000000000078655,
+        16.800000000007863
+      ],
+      "R_ContraBancada_seat_z_mm": [
+        3.8,
+        13.8
+      ],
+      "axial_displacement_mm": 3
+    },
+    {
+      "occurrence": "2GT_20Teet_5Bore-registro-1",
+      "reason": "Pulley motion requires rotor/transmission membership and phase; placement alone does not justify attaching it rigidly to a support."
+    },
+    {
+      "occurrence": "2GT_20Teet_635Bore-registro-1",
+      "reason": "Pulley motion requires rotor/transmission membership and phase; placement alone does not justify attaching it rigidly to a support."
+    },
+    {
+      "occurrence": "2GT_20Teet_635Bore-registro-2",
+      "reason": "Pulley motion requires rotor/transmission membership and phase; placement alone does not justify attaching it rigidly to a support."
+    },
+    {
+      "occurrence": "2GT_60Teet_8Bore-registro-1",
+      "reason": "Pulley motion requires rotor/transmission membership and phase; placement alone does not justify attaching it rigidly to a support."
+    },
+    {
+      "occurrence": "2GT_80Teet_10Bore-registro-1",
+      "reason": "Pulley motion requires rotor/transmission membership and phase; placement alone does not justify attaching it rigidly to a support."
+    },
+    {
+      "occurrence": "2GT_80Teet_16Bore-registro-1",
+      "reason": "Pulley motion requires rotor/transmission membership and phase; placement alone does not justify attaching it rigidly to a support."
+    }
+  ],
+  "z_internals": {
+    "status": "withheld",
+    "assemblies": [
+      "Z-EnsambleEfector",
+      "Z-EnsambleM4"
+    ],
+    "reason": "Not globally registered; shared components have different cache stamps. Do not bridge revisions or duplicate global pieces."
+  },
+  "pdfs_visually_reviewed": [
+    "Modelos3D/0-EnsambleTorre.PDF",
+    "Modelos3D/A-EnsambleBrazo.PDF",
+    "Modelos3D/R-EnsambleRotacion.PDF"
+  ],
+  "user_doc_suggested_text": "Se sumaron cuatro rodamientos como visuales simplificados: dos en la base y dos en el codo. No agregan masa ni representan el giro interno. Los dos de la muñeca siguen pendientes porque sus alojamientos difieren 3 mm; las poleas esperan la transmisión confirmada."
+}

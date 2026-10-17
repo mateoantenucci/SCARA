@@ -1,0 +1,181 @@
+{
+  "created_utc": "2026-10-17T22:43:34.605424+00:00",
+  "reviewer": "sesion_3_fisica",
+  "independence": "Not implementer of candidate2; reviewer is only reader of current root39 and candidate2. Evidence written only to reviewer tmp.",
+  "status": "approved_no_blocking_findings",
+  "base_sha256": {
+    "tools/check_self_collisions.py": "20752a44ee7fec80b8ce1b9f6fb82808e8a35e52dc19e10e23311c2d6d81b2af",
+    "tests/test_collisions.py": "e6c301e201a71cf734d15d02dd924dec9627bb60f5ae79fe20bc2360f753f746",
+    "cad/ensambles/integracion_articulada.json": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475",
+    "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4"
+  },
+  "candidate_sha256": {
+    "tools/check_self_collisions.py": "e73d986b98ca3c51dd659a858e17ce497735ecb4b3a220b089df4d63c216e3c6",
+    "tests/test_collisions.py": "dfc34955865bc4d461c449ccc550a99cb3d8781ac7b336d615d7ddb489eda435",
+    "validation/self_collisions_sesion2.json": "d1bcc7a365f8ad829ff62a7721ae86dfdd824f16f40aa2de1b7565a834fea400",
+    "validation/sesion2/python_tests.txt": "2ae262741ce5fa0fd55c084ef904d38ab31a482e7b8f30e952ee7238be619323",
+    "validation/sesion2/known_solids_check.json": "9b91a215019598572d45abc00b00f8f1a73a5b2237c36400fbb745d1bbb0859b"
+  },
+  "findings": [],
+  "scope": "Extended offline CAD sampling/pair-coverage reporting and four Runtime rejection regression cases. No product collision-policy/geometry change.",
+  "verified": {
+    "preserved_model_config_originals_compared": 299,
+    "model_differences": [],
+    "41_baseline_named_samples_preserved": true,
+    "all_samples_inside_joint_limits": true,
+    "95_named_samples_78_distinct_poses": true,
+    "six_paths_each_nine_samples": true,
+    "741_pairs_158_same_body_excluded_583_cross_body": true,
+    "pair_and_sample_counters_consistent": true,
+    "audit_source_hashes_matched": true,
+    "candidate_and_base_code_fingerprints_stable_during_review": true,
+    "added_runtime_test_repeated": {
+      "tests": 1,
+      "subcases": 4,
+      "passed": true
+    },
+    "independent_BREP_geometry_oracle": {
+      "method": "Direct STEP reader + independently assembled gp_Trsf and BRepAlgoAPI_Common on tower/effector; no CollisionChecker oracle for geometry. Runtime endpoint attainment explicitly checked before each crossing.",
+      "known_invasions": [
+        {
+          "j1_deg": 0,
+          "j2_deg": 135,
+          "volume_mm3": 219.78584965031658
+        },
+        {
+          "j1_deg": 0,
+          "j2_deg": -135,
+          "volume_mm3": 193.00830884335159
+        },
+        {
+          "j1_deg": 45,
+          "j2_deg": 135,
+          "volume_mm3": 179.79468617383415
+        },
+        {
+          "j1_deg": -45,
+          "j2_deg": -135,
+          "volume_mm3": 198.86366829566165
+        }
+      ],
+      "clear_endpoints": [
+        {
+          "j1_deg": -90,
+          "j2_deg": -135,
+          "volume_mm3": 0
+        },
+        {
+          "j1_deg": -90,
+          "j2_deg": 135,
+          "volume_mm3": 0
+        },
+        {
+          "j1_deg": 90,
+          "j2_deg": -135,
+          "volume_mm3": 0
+        },
+        {
+          "j1_deg": 90,
+          "j2_deg": 135,
+          "volume_mm3": 0
+        }
+      ],
+      "runtime_cases": [
+        {
+          "j2_deg": -135,
+          "start_j1_deg": -90,
+          "at_start_before_crossing": true,
+          "mode_before_crossing": "IDLE",
+          "rejection": {
+            "event": "rejected",
+            "id": null,
+            "message": "Recorrido rechazado: Z-Piston-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)"
+          }
+        },
+        {
+          "j2_deg": -135,
+          "start_j1_deg": 90,
+          "at_start_before_crossing": true,
+          "mode_before_crossing": "IDLE",
+          "rejection": {
+            "event": "rejected",
+            "id": null,
+            "message": "Recorrido rechazado: Z-Piston-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)"
+          }
+        },
+        {
+          "j2_deg": 135,
+          "start_j1_deg": -90,
+          "at_start_before_crossing": true,
+          "mode_before_crossing": "IDLE",
+          "rejection": {
+            "event": "rejected",
+            "id": null,
+            "message": "Recorrido rechazado: Z-Piston-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)"
+          }
+        },
+        {
+          "j2_deg": 135,
+          "start_j1_deg": 90,
+          "at_start_before_crossing": true,
+          "mode_before_crossing": "IDLE",
+          "rejection": {
+            "event": "rejected",
+            "id": null,
+            "message": "Recorrido rechazado: Z-Piston-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)"
+          }
+        }
+      ]
+    },
+    "full_suite_evidence_inspected": {
+      "tests": 36,
+      "failures": 0,
+      "skips": 0,
+      "rerun_by_reviewer": false
+    },
+    "audit_summary": {
+      "instances": 39,
+      "poses": 95,
+      "distinct_poses": 78,
+      "sampled_paths": 6,
+      "bbox_candidates": 2566,
+      "confirmed_intersections": 8,
+      "initial_envelope_overlaps_without_CAD_volume": 23
+    },
+    "audit_checks_passed": true,
+    "eight_observations_are_four_known_distinct_intrusions": true,
+    "all_eight_candidate_hashes_matched": true,
+    "native_reuse_sources_match_current39_and_copy": true,
+    "report_clarifies_robot_internal_CAD_excludes_pedestal_floor": true
+  },
+  "limits": [
+    "CAD coverage is finite sampling, not continuous swept CAD or whole workspace certification.",
+    "Same-body pairs158 and omitted parts/transmissions/cables/tool are outside exact CAD checks.",
+    "741 is all recorded instance-pairs;583are cross-body candidates; AABB disjointness avoids exact Common calls when possible.",
+    "Volume threshold0.001mm3 filters numerical residuals, not a physical clearance.",
+    "Continuous guard remains existing conservative envelopes only for environment and tool/payload versus fixed base; it does not cover every internal pair.",
+    "Guard diagnosis can reject earlier by piston envelope while positive BREP pair is tower/effector support; neither is mislabelled as the other.",
+    "Payload variants0/0.25kg affect guard cube presence only, not CAD payload geometry or validated force.",
+    "Twenty-three initial false envelope overlaps remain; selfCollision staysFALSE. No new contact-geometry or physical-contact validation is claimed.",
+    "Native checks from session1 can be reused only because their listed source hashes remain unchanged; reviewer did not launch shared Webots."
+  ],
+  "recommendation": "Integrate only two reviewed files plus current audit evidence under assigned writer; repeat relevant tests on combined final state after later session4 integration. Keep docs under their external single writer.",
+  "completed_utc": "2026-10-17T22:43:47.400767+00:00",
+  "candidate_manifest": {
+    "path": "/private/tmp/scara-sesion2-20261017/candidate-manifest.json",
+    "sha256": "292979f3a1646a018cb665811f1b744fed2c7e7b81cffd5b01a99371e88cf6fa",
+    "files": {
+      "tools/check_self_collisions.py": "e73d986b98ca3c51dd659a858e17ce497735ecb4b3a220b089df4d63c216e3c6",
+      "tests/test_collisions.py": "dfc34955865bc4d461c449ccc550a99cb3d8781ac7b336d615d7ddb489eda435",
+      "validation/sesion2/INFORME.md": "7582601e488589eb999db3e54570cd19cd1319a939d0ef1b0c04ccafcf68b6b8",
+      "validation/sesion2/audit.log": "4ec415fd58b6a36481e724a368d69c90a5db2e6c45504beb7ef3185156acf49a",
+      "validation/sesion2/execution.json": "b8c5db9a873b9143ddd406369a3e9beccde39a86e022eda6fb2ea30e1b765e8b",
+      "validation/sesion2/known_solids_check.json": "9b91a215019598572d45abc00b00f8f1a73a5b2237c36400fbb745d1bbb0859b",
+      "validation/sesion2/python_tests.txt": "2ae262741ce5fa0fd55c084ef904d38ab31a482e7b8f30e952ee7238be619323",
+      "validation/sesion2/self_collisions.json": "d1bcc7a365f8ad829ff62a7721ae86dfdd824f16f40aa2de1b7565a834fea400"
+    }
+  },
+  "closing_documentation_reviewed": true,
+  "closing_documentation_findings": []
+}

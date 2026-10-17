@@ -1,0 +1,139 @@
+{
+  "created_utc": "2026-10-17T22:51:39.018603+00:00",
+  "reviewer": "sesion_2_choques",
+  "independence": "Not implementer of session4; read-only root and all execution snapshots; writes only own tmp. No new Webots tests or shared-port use.",
+  "status": "approved_no_blocking_findings",
+  "findings": [],
+  "reviewed_integration_sha256": "68510e6b2f65ed21f2d683efd235e86efa4198a287093914c5d31f6bb8e27b6b",
+  "reviewed_execution_sha256": "064bf3343f5b98a28ad46c8ad0e8471a271c20120b915de491074537da1de021",
+  "reviewed_files_sha256": {
+    "validation/sesion4/execution_before.json": "01c025003b64d993f5217743e25212883fe6909d008131dcdbbf51a4810dc6fd",
+    "validation/sesion4/baseline_sources.json": "6869af0062436ef8bad6ee8dc5fd56f08a2ca365042c67c50fed1056e77c5de0",
+    "validation/sesion4/candidate_manifest_original.json": "02f101f7b2fe2dc7041fd9c7179748c67141a7d9c3f4ab3bc7cd0e2dcce6b825",
+    "validation/sesion4/final39_demo_collision.json": "922fba407d5264f28146c64669e9637478cdddcd66170c2a60ca6384a7b7336c",
+    "validation/sesion4/check_simulation_original.py": "46ff949a3581757c94c246fc3a7b153fcaa9e01cd7b3f28f2e81b32b84911009",
+    "validation/sesion4/check_sesion4.py": "07ebf94f33c6272c36e28e04e5f7ca22e1fc4a5ebf84be1408dc6f27fe855222",
+    "validation/sesion4/final39_execution.json": "064bf3343f5b98a28ad46c8ad0e8471a271c20120b915de491074537da1de021",
+    "validation/sesion4/sesion4_python_tests.txt": "db029ccd6f47524c04a16a9e68705b3e92b3b07d71969d33768d5b4254003fff",
+    "validation/sesion4/webots_console_tail.txt": "830f462437aa2565faab11a5bc94a7b1a007cedb364e772fac3b029c93a6fcda",
+    "validation/sesion4/final39_simulation.json": "7c0dc706090b0c7f04b414537c3d0b6af7be6122d39bed0bba5e82a9cd6d1c69",
+    "validation/sesion4/check_sesion4_original.py": "07ebf94f33c6272c36e28e04e5f7ca22e1fc4a5ebf84be1408dc6f27fe855222",
+    "validation/sesion4/final39_stability.json": "46938c6b185d5ae7199267aaefbf28dcaeaea5c26e6080dce14544fef64ab31c",
+    "validation/sesion4/sesion4_execution.json": "6120c3ee1be426bc774056fe89320751dbdc60b3ddb64b2d24d3c7f22f252308",
+    "validation/sesion4/final39_supplement.json": "cbd05c72c46150702890e5db24da5dd20828ef8a1bf5d6f4d8a9a321efc3d313",
+    "validation/sesion4/harness_adaptations.diff": "587951ae93cf5f5ab56e478c7e7d33d3795cad34ee2c42a4ef76fbbe3e8332d9",
+    "validation/sesion4/sesion4_simulation_baseline.json": "ab29ccb1a6814a715e702cc7a3b2c520b3f4a2d9a9fbce1cf7ff565a139240a6",
+    "validation/sesion4/sesion4_supplement.json": "699e48e00eb013a811ce40c962bfdab9b46a6a42cb911cc260ef4ed84f7250f1",
+    "validation/sesion4/final39_harness/check_demo39.py": "054081b135f8a4ca58278fd9431d35c968427495969ea4ad7de038dff3142523",
+    "validation/sesion4/final39_harness/check_final_stability.py": "f516793c4e5eee9e7dc93bd4ea10859da005b23f8cd17567c3626f1dc5cfbe5d",
+    "validation/sesion4/final39_harness/check_sesion4.py": "450583c4e82d0ac5dacf7d470512b9594387109f86e605f9d1a0aefbdcb4df65",
+    "validation/sesion4/final39_harness/tools/check_simulation.py": "0a699b727cdd4d1d338ddb01a1f9b2b6c4676878eea80cdaf20399caffefc79d"
+  },
+  "baseline38": {
+    "instances": 38,
+    "original_manifest_entries": 7,
+    "original_manifest_hashes_preserved": true,
+    "executed_sources_still_match_snapshot": true,
+    "unit_suite": "34 passed,0skips",
+    "native_checks": 15,
+    "proposed_homing_not_implemented": true
+  },
+  "final39": {
+    "instances": 39,
+    "native_checks": 16,
+    "breakdown": "9 smoke +6 supplement +1 reachable collision-rejection demonstration",
+    "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+    "webots_version": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+    "controller_python": "/Library/Developer/CommandLineTools/usr/bin/python3 (Python3.9.6)",
+    "checker_python": "/Library/Developer/CommandLineTools/usr/bin/python3 -B -S (Python3.9.6; sin paquetes de sitio)",
+    "runtime_recorded_files": 52,
+    "runtime_product_source_files": 51,
+    "metadata_files": 1,
+    "all_runtime_hashes_match_execution_snapshot": true,
+    "root_product_runtime_matches_except_controller_port": true,
+    "world_difference_exactly_controllerArgs_port19141": true,
+    "only_generated_extra": "webots/worlds/.scara.wbproj",
+    "symlinks": 0,
+    "independently_resolved_local_assets": 64,
+    "final_stability_samples": 12,
+    "simulated_stability_duration_s": 1.4279999999999973,
+    "max_joint_errors": [
+      3.3660991065049275e-07,
+      1.8372058252502654e-07,
+      4.667377595524158e-13,
+      1.4715000000442569e-06
+    ],
+    "final_state_STOPPED_payload0_reference_valid_no_faults": true
+  },
+  "checker_review": {
+    "assertions": [
+      {
+        "original": "check_simulation_original.py",
+        "adapted": "final39_harness/tools/check_simulation.py",
+        "count": 21,
+        "assertion_AST_identical": true
+      },
+      {
+        "original": "check_sesion4_original.py",
+        "adapted": "final39_harness/check_sesion4.py",
+        "count": 12,
+        "assertion_AST_identical": true
+      }
+    ],
+    "total_assertions": 33,
+    "full_text_diffs_inspected": true,
+    "changes_limited_to_root_harness_paths_hash_provenance_import_resolution_and_output": true,
+    "no_product_changes": true
+  },
+  "result_reports": {
+    "sesion4_simulation_baseline.json": {
+      "checks": 9,
+      "status": "passed",
+      "requests": 23,
+      "events": 139,
+      "sha256": "ab29ccb1a6814a715e702cc7a3b2c520b3f4a2d9a9fbce1cf7ff565a139240a6"
+    },
+    "sesion4_supplement.json": {
+      "checks": 6,
+      "status": "passed",
+      "requests": 19,
+      "events": 154,
+      "sha256": "699e48e00eb013a811ce40c962bfdab9b46a6a42cb911cc260ef4ed84f7250f1"
+    },
+    "final39_simulation.json": {
+      "checks": 9,
+      "status": "passed",
+      "requests": 23,
+      "events": 139,
+      "sha256": "7c0dc706090b0c7f04b414537c3d0b6af7be6122d39bed0bba5e82a9cd6d1c69"
+    },
+    "final39_supplement.json": {
+      "checks": 6,
+      "status": "passed",
+      "requests": 19,
+      "events": 154,
+      "sha256": "cbd05c72c46150702890e5db24da5dd20828ef8a1bf5d6f4d8a9a321efc3d313"
+    },
+    "final39_demo_collision.json": {
+      "checks": 1,
+      "status": "passed",
+      "requests": 5,
+      "events": 44,
+      "sha256": "922fba407d5264f28146c64669e9637478cdddcd66170c2a60ca6384a7b7336c"
+    }
+  },
+  "observations": [
+    "Full hashes checked across all22 integrated evidence files; baseline38 report identity preserved alongside final39.",
+    "Native demo inputs are kinematically reachable; client guard rejects tower risk and direct Runtime TCP request is also rejected, with6unchanged post-rejection samples. This is preventive rejection,not a physical collision.",
+    "Hall remains simulated logical regions; effort-loss and overload are injected/known-load cases. Reference reset is simulation reset,not homing.",
+    "The current source5 LEEME metadata changed after snapshot; final4 isolated runtime snapshot retained its original bytes. All product files remain identical; packaging5 closes separately.",
+    "No native checks rerun: inspection of hashes,requests/events,assertions,final-state samples and preserved executable harness is sufficient for this review."
+  ],
+  "limitations": [
+    "Only macOS native Webots. Linux software evidence and Windows/native Linux remain separate.",
+    "No rendered browser UI observation or physical robot validation.",
+    "No complete workspace collision guarantee,physical Hall calibration,physical homing or official professor protocol.",
+    "Integration.json pending-review label is historical; this approved independent report supersedes that pending gate."
+  ],
+  "recommendation": "Accept session4 final39 evidence. Integrate this exact review through the single final writer; do not modify runtime or replay native tests for unchanged sources."
+}

@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "platform": "Linux-7.0.14-linuxkit-aarch64-with-glibc2.41",
+  "python": "3.12.15 (main, Oct  6 2026, 02:08:11) [GCC 14.2.0]",
+  "executable": "/usr/local/bin/python",
+  "cwd": "/work/SCARA copia limpia",
+  "command": [
+    "/usr/local/bin/python",
+    "-S",
+    "-B",
+    "-m",
+    "client.app",
+    "--port",
+    "37675",
+    "--webots-port",
+    "45527"
+  ],
+  "no_site_packages": true,
+  "checks": [
+    "GET / sirve exactamente index.html UTF-8 de la copia",
+    "GET /api/state inicia sin conexión y devuelve configuración de la copia",
+    "POST de movimiento sin Webots se rechaza y no se guarda",
+    "Desconectar/reconectar HTTP funciona sin habilitar movimiento",
+    "Ruta desconocida devuelve 404"
+  ],
+  "output": "Interfaz SCARA: http://127.0.0.1:37675\nProtocolo de desarrollo scara-dev/1; pendiente del protocolo del profesor.\n"
+}

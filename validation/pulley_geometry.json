@@ -1,0 +1,309 @@
+{
+  "created_utc": "2026-10-17T18:46:31.179460+00:00",
+  "status": "geometry_inspected_only",
+  "active_model_modified": false,
+  "method": "Count equally spaced axial cylindrical cuts, cross-check exterior arcs; STEP lengths in mm.",
+  "limitation": "No acredita correas, fijaciones, fases, signos ni revisión mecánica oficial.",
+  "checks": {
+    "eight_pulley_types_inspected": true,
+    "wrist_has_80_periodic_cuts": true,
+    "wrist_cuts_every_4_5_degrees": true,
+    "wrist_has_80_matching_exterior_arcs": true,
+    "seven_other_types_do_not_model_countable_teeth": true,
+    "protected_inputs_unchanged": true
+  },
+  "sources_sha256": {
+    "tools/check_pulley_geometry.py": "189b23842caf6cf9dcdb7108a92b2a51008e43a595e2850175d2f66f5ee379e7",
+    "cad/derivados/informe.json": "e8f01f0cc10438967672ec156f19acc5f98b828114c99e673645f2672eae3279",
+    "Modelos3D/2GT_20Teet_5Bore.SLDPRT": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+    "cad/derivados/step/2GT_20Teet_5Bore.step": "dd6d03d5593d1259403e732c7fd06b3f0fa5ce8ab1c9faecb036080edf8767ab",
+    "Modelos3D/2GT_20Teet_635Bore.SLDPRT": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+    "cad/derivados/step/2GT_20Teet_635Bore.step": "7dfee691b7d44518a13d3a13f09577d2684323adae4e0f4502209a03ed262634",
+    "Modelos3D/2GT_60Teet_10Bore.SLDPRT": "1c7c2bc6126f5b37da5510fbf8362f0ea9fa6d2864239b6c1dcd3dcaa3196395",
+    "cad/derivados/step/2GT_60Teet_10Bore.step": "c3c149fc239fbacec54d60e8321cd6d843e9144b5ad36c15f85723e0860d8e42",
+    "Modelos3D/2GT_60Teet_8Bore.SLDPRT": "9170edde358c18ed83128338c22d180afafe90ca9f9e2583acd38819149af637",
+    "cad/derivados/step/2GT_60Teet_8Bore.step": "a8c93048980047eb231ad53e7c6a9f1e3ad2bfcbd60c35701991d83d4de3c82a",
+    "Modelos3D/2GT_80Teet_10Bore.SLDPRT": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+    "cad/derivados/step/2GT_80Teet_10Bore.step": "da202bb84137439e3bf76d8a4f74f31580dd8ebf167649818fdd47c6d4eed2e9",
+    "Modelos3D/2GT_80Teet_16Bore.SLDPRT": "cf753a7288a8d1636e21c7662990837188679c6deeeacbe7a6771450b5c15746",
+    "cad/derivados/step/2GT_80Teet_16Bore.step": "c72927f9edb8c75986cf0b44724cfcdb908c01a66823dd5851573ec2da582ce6",
+    "Modelos3D/2GT_80Teet_40Bore.SLDPRT": "7652b60cc56bd4c7481448dc077eeeb698a377fe7a4f539a647e8b14d26c1c90",
+    "cad/derivados/step/2GT_80Teet_40Bore.step": "056cb1e3d8c51a271cd5608e0541b31423963b89241c5bb00d6cba3b5ffe99c4",
+    "Modelos3D/2GT_80Teet_8Bore.SLDPRT": "5b3ea76034fd57d2c06b0db4493302670b1e1ae3ecb7eb6fb738be5fa6ea80d8",
+    "cad/derivados/step/2GT_80Teet_8Bore.step": "0973313d4cae80689caf511b1d7a570a7619f2031b42742b9be587998f6d8f24"
+  },
+  "parts": [
+    {
+      "part": "2GT_20Teet_5Bore",
+      "step": "cad/derivados/step/2GT_20Teet_5Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 4,
+        "GeomAbs_Cylinder": 6,
+        "GeomAbs_Cone": 3
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 2.5,
+          "width_mm": 17.0,
+          "faces": 1
+        },
+        {
+          "radius_mm": 6.1,
+          "width_mm": 9.8,
+          "faces": 1
+        },
+        {
+          "radius_mm": 8.0,
+          "width_mm": 1.2,
+          "faces": 1
+        },
+        {
+          "radius_mm": 8.0,
+          "width_mm": 6.5,
+          "faces": 1
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    },
+    {
+      "part": "2GT_20Teet_635Bore",
+      "step": "cad/derivados/step/2GT_20Teet_635Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 4,
+        "GeomAbs_Cylinder": 6,
+        "GeomAbs_Cone": 3
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 3.175,
+          "width_mm": 17.0,
+          "faces": 1
+        },
+        {
+          "radius_mm": 6.1,
+          "width_mm": 9.8,
+          "faces": 1
+        },
+        {
+          "radius_mm": 8.0,
+          "width_mm": 1.2,
+          "faces": 1
+        },
+        {
+          "radius_mm": 8.0,
+          "width_mm": 6.5,
+          "faces": 1
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    },
+    {
+      "part": "2GT_60Teet_10Bore",
+      "step": "cad/derivados/step/2GT_60Teet_10Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 5,
+        "GeomAbs_Cylinder": 7
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 4.75,
+          "width_mm": 20.3,
+          "faces": 1
+        },
+        {
+          "radius_mm": 12.5,
+          "width_mm": 6.5,
+          "faces": 1
+        },
+        {
+          "radius_mm": 18.9,
+          "width_mm": 10.8,
+          "faces": 1
+        },
+        {
+          "radius_mm": 21.0,
+          "width_mm": 1.5,
+          "faces": 2
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    },
+    {
+      "part": "2GT_60Teet_8Bore",
+      "step": "cad/derivados/step/2GT_60Teet_8Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 5,
+        "GeomAbs_Cylinder": 7
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 4.0,
+          "width_mm": 20.3,
+          "faces": 1
+        },
+        {
+          "radius_mm": 12.5,
+          "width_mm": 6.5,
+          "faces": 1
+        },
+        {
+          "radius_mm": 18.9,
+          "width_mm": 10.8,
+          "faces": 1
+        },
+        {
+          "radius_mm": 21.0,
+          "width_mm": 1.5,
+          "faces": 2
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    },
+    {
+      "part": "2GT_80Teet_10Bore",
+      "step": "cad/derivados/step/2GT_80Teet_10Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 5,
+        "GeomAbs_Cylinder": 7
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 4.75,
+          "width_mm": 20.7,
+          "faces": 1
+        },
+        {
+          "radius_mm": 15.0,
+          "width_mm": 6.5,
+          "faces": 1
+        },
+        {
+          "radius_mm": 25.2,
+          "width_mm": 11.2,
+          "faces": 1
+        },
+        {
+          "radius_mm": 27.55,
+          "width_mm": 1.5,
+          "faces": 2
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    },
+    {
+      "part": "2GT_80Teet_16Bore",
+      "step": "cad/derivados/step/2GT_80Teet_16Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 5,
+        "GeomAbs_Cylinder": 7
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 8.0,
+          "width_mm": 20.7,
+          "faces": 1
+        },
+        {
+          "radius_mm": 15.0,
+          "width_mm": 6.5,
+          "faces": 1
+        },
+        {
+          "radius_mm": 25.2,
+          "width_mm": 11.2,
+          "faces": 1
+        },
+        {
+          "radius_mm": 27.55,
+          "width_mm": 1.5,
+          "faces": 2
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    },
+    {
+      "part": "2GT_80Teet_40Bore",
+      "step": "cad/derivados/step/2GT_80Teet_40Bore.step",
+      "surfaces": {
+        "GeomAbs_Cylinder": 165,
+        "GeomAbs_Plane": 3
+      },
+      "periodic_cut_patterns": [
+        {
+          "cuts": 80,
+          "cut_radius_mm": 0.75,
+          "centers_radius_mm": 25.2,
+          "width_mm": 10.0,
+          "angular_gap_range_deg": [
+            4.499999999999173,
+            4.500000000000057
+          ]
+        }
+      ],
+      "geometry_tooth_count": 80,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 20.0,
+          "width_mm": 12.0,
+          "faces": 2
+        },
+        {
+          "radius_mm": 25.2,
+          "width_mm": 10.0,
+          "faces": 80
+        },
+        {
+          "radius_mm": 27.55,
+          "width_mm": 2.0,
+          "faces": 1
+        }
+      ],
+      "limitation": null
+    },
+    {
+      "part": "2GT_80Teet_8Bore",
+      "step": "cad/derivados/step/2GT_80Teet_8Bore.step",
+      "surfaces": {
+        "GeomAbs_Plane": 5,
+        "GeomAbs_Cylinder": 7
+      },
+      "periodic_cut_patterns": [],
+      "geometry_tooth_count": null,
+      "concentric_surfaces": [
+        {
+          "radius_mm": 4.0,
+          "width_mm": 20.7,
+          "faces": 1
+        },
+        {
+          "radius_mm": 15.0,
+          "width_mm": 6.5,
+          "faces": 1
+        },
+        {
+          "radius_mm": 25.2,
+          "width_mm": 11.2,
+          "faces": 1
+        },
+        {
+          "radius_mm": 27.55,
+          "width_mm": 1.5,
+          "faces": 2
+        }
+      ],
+      "limitation": "Sin ranuras periódicas contables; no se deducen dientes del nombre ni del diámetro."
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "status": "passed_available_platform_scope",
+  "created_utc": "2026-10-17T22:46:01.646155+00:00",
+  "source": "/Users/mateoantenucci/Developer/SCARA",
+  "runtime_snapshot": "snapshot.json",
+  "source_root_match": "final_root_match.json",
+  "package": {
+    "path": "SCARA-ejecucion.zip",
+    "sha256": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+    "files": 52,
+    "bytes_uncompressed": 6546305,
+    "stl_meshes": 35,
+    "relative_assets_checked": 64,
+    "exact_case_names_checked": true,
+    "zip_crc_and_contents_match_manifest": true,
+    "embedded_instructions": "LEEME.txt",
+    "qa_tools_and_original_cad_included": false,
+    "archive_size_bytes": 1743294
+  },
+  "software_checks": [
+    {
+      "name": "macos_python39",
+      "status": "passed",
+      "platform": "macOS-27.0.1-arm64-arm-64bit",
+      "python": "3.9.6 (default, Aug 25 2026, 21:26:21) \n[Clang 21.0.0 (clang-2100.3.34.2)]",
+      "executable": "/Library/Developer/CommandLineTools/usr/bin/python3",
+      "root": "/private/tmp/scara-sesion5-20261017/SCARA copia limpia",
+      "site_packages_disabled": true,
+      "unit_tests": {
+        "discovered": 36,
+        "passed": 33,
+        "skipped": 3,
+        "reason": "Tres tests geométricos requieren OCP",
+        "evidence": "macos_python39_unittest.txt"
+      },
+      "http_checks": {
+        "passed": 5,
+        "evidence": "macos_python39_http.json",
+        "backend": "Sin Webots; órdenes rechazadas y no encoladas"
+      },
+      "real_execution": true,
+      "webots_executed": false
+    },
+    {
+      "name": "macos_python315",
+      "status": "passed",
+      "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+      "python": "3.15.0 (main, Oct  9 2026, 11:16:41) [Clang 21.0.0 (clang-2100.3.34.2)]",
+      "executable": "/opt/homebrew/bin/python3",
+      "root": "/private/tmp/scara-sesion5-20261017/SCARA copia limpia",
+      "site_packages_disabled": true,
+      "unit_tests": {
+        "discovered": 36,
+        "passed": 33,
+        "skipped": 3,
+        "reason": "Tres tests geométricos requieren OCP",
+        "evidence": "macos_python315_unittest.txt"
+      },
+      "http_checks": {
+        "passed": 5,
+        "evidence": "macos_python315_http.json",
+        "backend": "Sin Webots; órdenes rechazadas y no encoladas"
+      },
+      "real_execution": true,
+      "webots_executed": false
+    },
+    {
+      "name": "linux_python312",
+      "status": "passed",
+      "platform": "Linux-7.0.14-linuxkit-aarch64-with-glibc2.41",
+      "python": "3.12.15 (main, Oct  6 2026, 02:08:11) [GCC 14.2.0]",
+      "executable": "/usr/local/bin/python",
+      "root": "/work/SCARA copia limpia",
+      "site_packages_disabled": true,
+      "unit_tests": {
+        "discovered": 36,
+        "passed": 33,
+        "skipped": 3,
+        "reason": "Tres tests geométricos requieren OCP",
+        "evidence": "linux_python312_unittest.txt"
+      },
+      "http_checks": {
+        "passed": 5,
+        "evidence": "linux_python312_http.json",
+        "backend": "Sin Webots; órdenes rechazadas y no encoladas"
+      },
+      "real_execution": true,
+      "webots_executed": false
+    }
+  ],
+  "linux_execution": {
+    "type": "Contenedor Docker local",
+    "external_network": false,
+    "webots": false,
+    "image": "python:3.12-slim",
+    "image_identity": "linux_image.txt",
+    "downloaded": false,
+    "volume_access": "solo lectura",
+    "container_cleanup": "docker run --rm; no puertos publicados"
+  },
+  "windows_execution": {
+    "status": "pending",
+    "reason": "Sin runtime Windows disponible para esta ronda"
+  },
+  "linux_webots_execution": {
+    "status": "pending",
+    "reason": "Sin Webots ni escritorio Linux en el contenedor"
+  },
+  "macos_webots_execution": {
+    "status": "passed",
+    "owner": "Sesión4",
+    "instances": 39,
+    "checks_passed": 16,
+    "groups": {
+      "smoke": 9,
+      "supplement": 6,
+      "collision_rejection_demo": 1
+    },
+    "execution_evidence": "validation/sesion4/final39_execution.json",
+    "execution_evidence_sha256": "064bf3343f5b98a28ad46c8ad0e8471a271c20120b915de491074537da1de021",
+    "webots_version": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+    "controller_python": "/Library/Developer/CommandLineTools/usr/bin/python3 (Python3.9.6)",
+    "checker_python": "/Library/Developer/CommandLineTools/usr/bin/python3 -B -S (Python3.9.6; sin paquetes de sitio)",
+    "tested_copy": "/private/tmp/scara-sesion4-final-20261017/SCARA minima39",
+    "runtime_source_hashes_match_package_except_test_port": true,
+    "world_test_port": 19141,
+    "world_delivered_port": 9000,
+    "only_change_after_native_test": "LEEME.txt: registrar resultado nativo y alcance",
+    "stable_stopped_samples": 12,
+    "payload_mass_final": 0,
+    "reference_valid_final": true,
+    "own_application_closed": true,
+    "ports_released": true,
+    "browser_visual_observation": false
+  },
+  "limitations": [
+    "Las pruebas TCP de client.test_app usan un servidor simulado, no Webots.",
+    "Los cinco controles HTTP arrancan un proceso real client.app sin controlador Webots; no son QA visual de navegador.",
+    "Los tres tests con OCP omitidos no forman parte de la ejecución normal; sesión2 los comprobó aparte con el entorno CAD.",
+    "Las propiedades físicas, el protocolo y partes mecánicas siguen provisionales; no se valida hardware."
+  ],
+  "sandbox": {
+    "first_mac_attempt": "EPERM en bind loopback; no era fallo del proyecto",
+    "action": "Mismos ensayos repetidos con escalación local aprobada",
+    "evidence": "macos_python39_unittest_sandbox.txt"
+  },
+  "changes_to_project": "Solo paquete y evidencia bajo validation/sesion5; sin cambiar runtime, modelo, configuración, README o docs.",
+  "next_actions": [
+    "Editor6: incorporar el aporte en las guías existentes.",
+    "Integrante con Windows o Linux escritorio: ejecutar guía del LEEME y guardar resultado real.",
+    "Usuario: QA visual de navegador o comparación física si se requiere; no se afirma realizada."
+  ],
+  "completed_utc": "2026-10-17T22:50:21.653433+00:00",
+  "review_file": "review.json",
+  "http_reproduction_script": "check_http.py"
+}

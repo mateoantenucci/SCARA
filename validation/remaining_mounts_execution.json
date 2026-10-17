@@ -1,0 +1,30 @@
+{
+  "created_utc": "2026-10-17T22:36:07.914611+00:00",
+  "root": "/private/tmp/scara-montaje-restante-native-20261017",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "tcp_port": 19211,
+  "application_port": 19213,
+  "world_change": "Solo controllerArgs --port",
+  "binary_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+  "executed_files_sha256": {
+    "scara/kinematics.py": "9ac6bb81fc5511d90b79e0aec77eb59464c80df4ee559a3b1cf3bba6550b41a9",
+    "scara/transport.py": "090c4588e846d36de6de330ea0cf888481dcdac3792f2342e90ac94619fb8d0b",
+    "scara/__init__.py": "e2e675f363668029dc114ec40f778f6bffbbdc4bb17838bcf4ed3e68580d8a47",
+    "scara/collisions.py": "25cad1ea1031e727ac50daaa4244b352f83138c8da5c0ec5e0c7293e2eab33ec",
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "scara/dynamics.py": "a36d385afe96d44097fa066ce0bc84e5b86c5c139fafd9a76b8436401209cb16",
+    "config/cad_integration.json": "f974033cc568cec76d0be0b380df7195cbe90c0966766144701e2ad02c5654b5",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+    "webots/worlds/scara_cad_inspeccion.wbt": "220ecac06476fc389a48127d4588e709606b36a90f299d3425ee34780f14e5c9",
+    "webots/worlds/.scara_cad_inspeccion.wbproj": "d7d2b03f52a41ad685f3c9ed11f32dd11c4eb6569479fc9b4a5e1f196d23c313",
+    "webots/worlds/scara.wbt": "45306d1a00b595ba6ee0c9241409e6a4fd2082ab28f41e978da9826de84737cf",
+    "webots/worlds/.scara.wbproj": "6864490dd26441f894a556836c15f880a425c3c2f69ebe7ab3068776d1f9d721",
+    "webots/controllers/scara_bridge/scara_bridge.py": "bd1d225a863c14d9371a6f28644cf2c6c9d6730cb78041e0ef946826ab7e30ba"
+  },
+  "manifest_sha256": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475",
+  "version": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+  "own_application_closed_after_tests": true,
+  "last_trial": "STOPPED initial pose, zero payload, valid reference after reset"
+}

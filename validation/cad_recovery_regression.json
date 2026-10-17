@@ -1,0 +1,603 @@
+{
+  "created_utc": "2026-10-16T20:02:19.708170+00:00",
+  "converter_revision": "fa954124f4f126e0c465c8f96454978ac80b812e",
+  "converter_original_tree_sha256": "5abed6e10f5eea683f2b208c848c7f3f165cb22c6d414035fd00e41ac8481104",
+  "converter_source_sha256": {
+    "sldprt2step.py": "e66a95874bc397f7d6c97e436b18adbcf9f02e0ae67ea3c96b8a82c70f5937cd",
+    "sldprt2step_lib/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sldprt2step_lib/container/__init__.py": "a21b93d0ec428b2f5986f8b176462c592c06fc85e34863a9f15f6881d716aea3",
+    "sldprt2step_lib/container/blobs.py": "beb19d8d0690ad126ff0cf1bf5351c6000bfcc019676ca781ffa6ec78fae2740",
+    "sldprt2step_lib/container/container.py": "d176b370112b9d8cc5da4f024fb5dce93db4ba26cccd9a425c401f740cdda5db",
+    "sldprt2step_lib/container/ole_cfb.py": "f424c28e34acb4b60e2d22d6a8b5e169a969cd614e369662a11bb1f0ccc97e44",
+    "sldprt2step_lib/container/sw3d.py": "2766e14280c2106b9ef081ebb45327c10c69bcd5c70d1449dc56d599fe20f8b4",
+    "sldprt2step_lib/jscompat.py": "8fce540f02f8af658fa21a72f094a66eb6e4547c3a1a778524778b899f217c6d",
+    "sldprt2step_lib/step/__init__.py": "23f61d78f0384b522390496a7008a4a89f19c796df88132495c55da0f7354c76",
+    "sldprt2step_lib/step/convert.py": "ededc74715b8f1747a7de0daaa0a475ca82ec7bdf875d6bdc2836b122384ab00",
+    "sldprt2step_lib/step/mapper.py": "d801bc74a540d282a141dcc9004420c9e96369be992d3ea82b5a6acc2b29a258",
+    "sldprt2step_lib/xt/__init__.py": "cc91a30380b54d1b5a3fbc86f2c1019798d8f5ea40c3174d0f85e393cdbef252",
+    "sldprt2step_lib/xt/geom.py": "eeff4d61f37147f88834d5dff94a0442879d891830cb4d74da4f6f5b0428e526",
+    "sldprt2step_lib/xt/reader.py": "a369e59e944bbbb9ea80c9f64b139822bdd4699cdc5f0f4deef4414942ad57db",
+    "sldprt2step_lib/xt/schema.py": "7f875436998c040db38c6e61c7231b93042f3e674009c6366cf22ed9e7694883",
+    "tests/fuzz.py": "f4ac6c9cf29c16a23e737e4156492901d1ee0613bd2cd8f7277df7eb5406d7a2",
+    "tests/gate.py": "094425e81e6fc32e8d1d01b1ab49be2cff971c3528d8cac6951343be293195f4"
+  },
+  "pipeline_sha256": "e8dfd765ae74abab569efc2c9982e5870756f0a223e6dd62742f00d077547520",
+  "patch_sha256": {
+    "ole_ministreams.py": "85886233f45ee9e43bec5bec11bd8ec5b176f96a21511ab18ca7855ff7fa003c",
+    "intersection_precision.py": "253e49676dc5fe23d6fc1e1af91015985db49afdd1ab0217303d00aebf967fb2"
+  },
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "kernel_distribution": {
+    "cadquery-ocp-novtk": "8.0.1.1.0",
+    "cadquery-ocp-proxy": "8.0.1.1.0"
+  },
+  "timeout_seconds_per_worker": 90,
+  "intermediate_files_retained": false,
+  "parts": [
+    {
+      "source": "Modelos3D/B-CarretelInf.SLDPRT",
+      "source_sha256": "a937c813349b4f3730047cbdbc7490acc6eda49c62a35317a457527982d37eaf",
+      "baseline": {
+        "conversion_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "-c",
+          "import json,runpy,sys\nsys.path.insert(0,sys.argv[3])\nrunpy.run_path(sys.argv[4])['install']()\nfrom sldprt2step import run_conversion\nresult=run_conversion(sys.argv[1],sys.argv[2])\nprint(json.dumps(result))\nsys.exit((2 if result.get('warnings') else 0) if result.get('ok') else 1)\n",
+          "/Users/mateoantenucci/Developer/SCARA/Modelos3D/B-CarretelInf.SLDPRT",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-baseline.step",
+          "/private/tmp/scara-cad-piloto-20261014/sldprt2step-fa954124f4f126e0c465c8f96454978ac80b812e",
+          "/Users/mateoantenucci/Developer/SCARA/tools/patches/ole_ministreams.py"
+        ],
+        "conversion_returncode": 2,
+        "conversion": {
+          "ok": true,
+          "warnings": [
+            "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+          ],
+          "solids": 1,
+          "faces": 25,
+          "bodies": [
+            "Body"
+          ]
+        },
+        "kernel_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_worker",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-baseline.step",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-baseline.stl",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-baseline.json"
+        ],
+        "kernel_returncode": 0,
+        "geometry": {
+          "valid": true,
+          "solids": 0,
+          "faces": 25,
+          "solid_volumes_mm3": [],
+          "solid_validity": [],
+          "volume_mm3": 12725.69395481094,
+          "bbox_mm": [
+            [
+              -35.00000010000001,
+              -35.00000010000001,
+              -1e-07
+            ],
+            [
+              35.00000010000001,
+              35.000000100000015,
+              14.0000001
+            ]
+          ],
+          "dimensions_mm": [
+            70.00000020000002,
+            70.00000020000002,
+            14.000000199999999
+          ],
+          "volume_centroid_mm": [
+            0.005655739013586189,
+            0.5036471595568269,
+            4.24810596422096
+          ],
+          "explicit_repair": false,
+          "step_importer": "OCCT STEPControl_Reader",
+          "input_unit": "mm (declared in generated STEP)",
+          "stl_unit": "m",
+          "scale_mm_to_m": 0.001,
+          "linear_tessellation_mm": 0.05,
+          "angular_tessellation_rad": 0.3,
+          "mass_kg": null,
+          "errors": [
+            "missing solid or nonpositive/nonfinite solid volume"
+          ]
+        },
+        "step_sha256": "9b912c639ff1265da94d0752f8588affb0e09e1120e70f8cb2a994abc6ea396e",
+        "stl_sha256": null
+      },
+      "candidate": {
+        "conversion_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_convert-worker",
+          "/Users/mateoantenucci/Developer/SCARA/Modelos3D/B-CarretelInf.SLDPRT",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-candidate.step",
+          "/private/tmp/scara-cad-piloto-20261014/sldprt2step-fa954124f4f126e0c465c8f96454978ac80b812e"
+        ],
+        "conversion_returncode": 2,
+        "conversion": {
+          "ok": true,
+          "warnings": [
+            "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+          ],
+          "solids": 1,
+          "faces": 25,
+          "bodies": [
+            "Body"
+          ]
+        },
+        "kernel_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_worker",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-candidate.step",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-candidate.stl",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelInf-candidate.json"
+        ],
+        "kernel_returncode": 0,
+        "geometry": {
+          "valid": true,
+          "solids": 1,
+          "faces": 25,
+          "solid_volumes_mm3": [
+            12725.752427807656
+          ],
+          "solid_validity": [
+            true
+          ],
+          "volume_mm3": 12725.752427807656,
+          "bbox_mm": [
+            [
+              -35.00000010000001,
+              -35.00000010000001,
+              -1e-07
+            ],
+            [
+              35.00000010000001,
+              35.00000010000001,
+              14.0000001
+            ]
+          ],
+          "dimensions_mm": [
+            70.00000020000002,
+            70.00000020000002,
+            14.000000199999999
+          ],
+          "volume_centroid_mm": [
+            0.005655840471061389,
+            0.503661577057253,
+            4.24811495945914
+          ],
+          "explicit_repair": false,
+          "step_importer": "OCCT STEPControl_Reader",
+          "input_unit": "mm (declared in generated STEP)",
+          "stl_unit": "m",
+          "scale_mm_to_m": 0.001,
+          "linear_tessellation_mm": 0.05,
+          "angular_tessellation_rad": 0.3,
+          "mass_kg": null,
+          "mesh": {
+            "triangles": 8290,
+            "bbox_m": [
+              [
+                -0.03499998897314072,
+                -0.03500000014901161,
+                0.0
+              ],
+              [
+                0.03500000014901161,
+                0.034999996423721313,
+                0.014000000432133675
+              ]
+            ],
+            "signed_volume_m3": 1.2706912305566061e-05,
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0,
+            "webots_r2025a_shadow_triangle_limit": 21845,
+            "within_shadow_limit": true,
+            "relative_volume_error": 0.0014804721644927632,
+            "max_bbox_error_m": 1.1126859295051972e-08
+          },
+          "errors": []
+        },
+        "step_sha256": "01a1eee8c95fe665a8bd05c19c73f7601e55205e95e2fdce62eadb3135fcee6d",
+        "stl_sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+      },
+      "max_bbox_change_mm": 7.105427357601002e-15,
+      "checks": {
+        "baseline_reproduces_failure": true,
+        "candidate_passes_original_gate": true,
+        "candidate_one_valid_solid": true,
+        "bbox_preserved_within_1e_6_mm": true,
+        "source_unchanged": true
+      }
+    },
+    {
+      "source": "Modelos3D/B-CarretelSup.SLDPRT",
+      "source_sha256": "f470bd3408e498096b28f2c40a2c9e7ef8c29bce4642f21e1dc584bb2b81bc5b",
+      "baseline": {
+        "conversion_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "-c",
+          "import json,runpy,sys\nsys.path.insert(0,sys.argv[3])\nrunpy.run_path(sys.argv[4])['install']()\nfrom sldprt2step import run_conversion\nresult=run_conversion(sys.argv[1],sys.argv[2])\nprint(json.dumps(result))\nsys.exit((2 if result.get('warnings') else 0) if result.get('ok') else 1)\n",
+          "/Users/mateoantenucci/Developer/SCARA/Modelos3D/B-CarretelSup.SLDPRT",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-baseline.step",
+          "/private/tmp/scara-cad-piloto-20261014/sldprt2step-fa954124f4f126e0c465c8f96454978ac80b812e",
+          "/Users/mateoantenucci/Developer/SCARA/tools/patches/ole_ministreams.py"
+        ],
+        "conversion_returncode": 2,
+        "conversion": {
+          "ok": true,
+          "warnings": [
+            "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+          ],
+          "solids": 1,
+          "faces": 25,
+          "bodies": [
+            "Body"
+          ]
+        },
+        "kernel_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_worker",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-baseline.step",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-baseline.stl",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-baseline.json"
+        ],
+        "kernel_returncode": 0,
+        "geometry": {
+          "valid": true,
+          "solids": 0,
+          "faces": 25,
+          "solid_volumes_mm3": [],
+          "solid_validity": [],
+          "volume_mm3": 12725.69395481094,
+          "bbox_mm": [
+            [
+              -35.00000010000001,
+              -35.00000010000001,
+              -1e-07
+            ],
+            [
+              35.00000010000001,
+              35.000000100000015,
+              14.0000001
+            ]
+          ],
+          "dimensions_mm": [
+            70.00000020000002,
+            70.00000020000002,
+            14.000000199999999
+          ],
+          "volume_centroid_mm": [
+            0.005655739013586189,
+            0.5036471595568269,
+            4.24810596422096
+          ],
+          "explicit_repair": false,
+          "step_importer": "OCCT STEPControl_Reader",
+          "input_unit": "mm (declared in generated STEP)",
+          "stl_unit": "m",
+          "scale_mm_to_m": 0.001,
+          "linear_tessellation_mm": 0.05,
+          "angular_tessellation_rad": 0.3,
+          "mass_kg": null,
+          "errors": [
+            "missing solid or nonpositive/nonfinite solid volume"
+          ]
+        },
+        "step_sha256": "704c6006a6ae921fde6b574adfda97792730aa93e5c30a482e25b1c420861c33",
+        "stl_sha256": null
+      },
+      "candidate": {
+        "conversion_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_convert-worker",
+          "/Users/mateoantenucci/Developer/SCARA/Modelos3D/B-CarretelSup.SLDPRT",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-candidate.step",
+          "/private/tmp/scara-cad-piloto-20261014/sldprt2step-fa954124f4f126e0c465c8f96454978ac80b812e"
+        ],
+        "conversion_returncode": 2,
+        "conversion": {
+          "ok": true,
+          "warnings": [
+            "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+          ],
+          "solids": 1,
+          "faces": 25,
+          "bodies": [
+            "Body"
+          ]
+        },
+        "kernel_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_worker",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-candidate.step",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-candidate.stl",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/B-CarretelSup-candidate.json"
+        ],
+        "kernel_returncode": 0,
+        "geometry": {
+          "valid": true,
+          "solids": 1,
+          "faces": 25,
+          "solid_volumes_mm3": [
+            12725.752427807656
+          ],
+          "solid_validity": [
+            true
+          ],
+          "volume_mm3": 12725.752427807656,
+          "bbox_mm": [
+            [
+              -35.00000010000001,
+              -35.00000010000001,
+              -1e-07
+            ],
+            [
+              35.00000010000001,
+              35.00000010000001,
+              14.0000001
+            ]
+          ],
+          "dimensions_mm": [
+            70.00000020000002,
+            70.00000020000002,
+            14.000000199999999
+          ],
+          "volume_centroid_mm": [
+            0.005655840471061389,
+            0.503661577057253,
+            4.24811495945914
+          ],
+          "explicit_repair": false,
+          "step_importer": "OCCT STEPControl_Reader",
+          "input_unit": "mm (declared in generated STEP)",
+          "stl_unit": "m",
+          "scale_mm_to_m": 0.001,
+          "linear_tessellation_mm": 0.05,
+          "angular_tessellation_rad": 0.3,
+          "mass_kg": null,
+          "mesh": {
+            "triangles": 8290,
+            "bbox_m": [
+              [
+                -0.03499998897314072,
+                -0.03500000014901161,
+                0.0
+              ],
+              [
+                0.03500000014901161,
+                0.034999996423721313,
+                0.014000000432133675
+              ]
+            ],
+            "signed_volume_m3": 1.2706912305566061e-05,
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0,
+            "webots_r2025a_shadow_triangle_limit": 21845,
+            "within_shadow_limit": true,
+            "relative_volume_error": 0.0014804721644927632,
+            "max_bbox_error_m": 1.1126859295051972e-08
+          },
+          "errors": []
+        },
+        "step_sha256": "0d326cc0c64ab626fe390af85c4114a236464b783a8cafae0601613513c880ed",
+        "stl_sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+      },
+      "max_bbox_change_mm": 7.105427357601002e-15,
+      "checks": {
+        "baseline_reproduces_failure": true,
+        "candidate_passes_original_gate": true,
+        "candidate_one_valid_solid": true,
+        "bbox_preserved_within_1e_6_mm": true,
+        "source_unchanged": true
+      }
+    },
+    {
+      "source": "Modelos3D/Z-SoporteEfector.SLDPRT",
+      "source_sha256": "e28bbbcbdc55730b57c1332a735f0108f83657879813b28a23e761ac07cf1a62",
+      "baseline": {
+        "conversion_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "-c",
+          "import json,runpy,sys\nsys.path.insert(0,sys.argv[3])\nrunpy.run_path(sys.argv[4])['install']()\nfrom sldprt2step import run_conversion\nresult=run_conversion(sys.argv[1],sys.argv[2])\nprint(json.dumps(result))\nsys.exit((2 if result.get('warnings') else 0) if result.get('ok') else 1)\n",
+          "/Users/mateoantenucci/Developer/SCARA/Modelos3D/Z-SoporteEfector.SLDPRT",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-baseline.step",
+          "/private/tmp/scara-cad-piloto-20261014/sldprt2step-fa954124f4f126e0c465c8f96454978ac80b812e",
+          "/Users/mateoantenucci/Developer/SCARA/tools/patches/ole_ministreams.py"
+        ],
+        "conversion_returncode": 2,
+        "conversion": {
+          "ok": true,
+          "warnings": [
+            "cliff_edge_blend: cliff-edge blends built as rolling-ball blends between a face and the cliff edge curve",
+            "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (3 occurrences)",
+            "rolling_ball_blend: exact rolling-ball blend surfaces approximated by interpolating rational B-spline surfaces (exact circular cross-sections)"
+          ],
+          "solids": 1,
+          "faces": 48,
+          "bodies": [
+            "Body"
+          ]
+        },
+        "kernel_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_worker",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-baseline.step",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-baseline.stl",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-baseline.json"
+        ],
+        "kernel_returncode": 0,
+        "geometry": {
+          "valid": false,
+          "solids": 1,
+          "faces": 50,
+          "solid_volumes_mm3": [
+            22339.163839132278
+          ],
+          "solid_validity": [
+            false
+          ],
+          "volume_mm3": 22339.163839132278,
+          "bbox_mm": [
+            [
+              -30.0000001,
+              -30.0000001,
+              -1e-07
+            ],
+            [
+              30.0000001,
+              30.0000001,
+              19.00000010000001
+            ]
+          ],
+          "dimensions_mm": [
+            60.0000002,
+            60.0000002,
+            19.00000020000001
+          ],
+          "volume_centroid_mm": [
+            -0.0016451709499292603,
+            0.03540897458265645,
+            6.965993701448168
+          ],
+          "explicit_repair": false,
+          "step_importer": "OCCT STEPControl_Reader",
+          "input_unit": "mm (declared in generated STEP)",
+          "stl_unit": "m",
+          "scale_mm_to_m": 0.001,
+          "linear_tessellation_mm": 0.05,
+          "angular_tessellation_rad": 0.3,
+          "mass_kg": null,
+          "errors": [
+            "BRepCheck_Analyzer.IsValid() is false",
+            "an individual solid failed BRepCheck_Analyzer"
+          ]
+        },
+        "step_sha256": "30398fd31dc2028669d7091c6f52a9778d634e70a3b8b18afb05f8bc814b74a7",
+        "stl_sha256": null
+      },
+      "candidate": {
+        "conversion_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_convert-worker",
+          "/Users/mateoantenucci/Developer/SCARA/Modelos3D/Z-SoporteEfector.SLDPRT",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-candidate.step",
+          "/private/tmp/scara-cad-piloto-20261014/sldprt2step-fa954124f4f126e0c465c8f96454978ac80b812e"
+        ],
+        "conversion_returncode": 2,
+        "conversion": {
+          "ok": true,
+          "warnings": [
+            "cliff_edge_blend: cliff-edge blends built as rolling-ball blends between a face and the cliff edge curve",
+            "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (3 occurrences)",
+            "rolling_ball_blend: exact rolling-ball blend surfaces approximated by interpolating rational B-spline surfaces (exact circular cross-sections)"
+          ],
+          "solids": 1,
+          "faces": 48,
+          "bodies": [
+            "Body"
+          ]
+        },
+        "kernel_command": [
+          "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+          "/Users/mateoantenucci/Developer/SCARA/tools/convertir_cad.py",
+          "--_worker",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-candidate.step",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-candidate.stl",
+          "/var/folders/yc/tf8yxbwn0hz64zgd8bkrbv_h0000gn/T/scara-intersection-regression-yfykhmt2/Z-SoporteEfector-candidate.json"
+        ],
+        "kernel_returncode": 0,
+        "geometry": {
+          "valid": true,
+          "solids": 1,
+          "faces": 49,
+          "solid_volumes_mm3": [
+            22148.1569853383
+          ],
+          "solid_validity": [
+            true
+          ],
+          "volume_mm3": 22148.1569853383,
+          "bbox_mm": [
+            [
+              -30.0000001,
+              -30.0000001,
+              -1e-07
+            ],
+            [
+              30.0000001,
+              30.0000001,
+              19.00000010000001
+            ]
+          ],
+          "dimensions_mm": [
+            60.0000002,
+            60.0000002,
+            19.00000020000001
+          ],
+          "volume_centroid_mm": [
+            5.0895384002154205e-06,
+            -0.06231569345714889,
+            6.938092202085742
+          ],
+          "explicit_repair": false,
+          "step_importer": "OCCT STEPControl_Reader",
+          "input_unit": "mm (declared in generated STEP)",
+          "stl_unit": "m",
+          "scale_mm_to_m": 0.001,
+          "linear_tessellation_mm": 0.05,
+          "angular_tessellation_rad": 0.3,
+          "mass_kg": null,
+          "mesh": {
+            "triangles": 6188,
+            "bbox_m": [
+              [
+                -0.029975034296512604,
+                -0.029993757605552673,
+                0.0
+              ],
+              [
+                0.029999999329447746,
+                0.029993757605552673,
+                0.01899999938905239
+              ]
+            ],
+            "signed_volume_m3": 2.2123256745045557e-05,
+            "boundary_edges": 0,
+            "nonmanifold_edges": 0,
+            "webots_r2025a_shadow_triangle_limit": 21845,
+            "within_shadow_limit": true,
+            "relative_volume_error": 0.0011242578923937874,
+            "max_bbox_error_m": 2.4965803487396465e-05
+          },
+          "errors": []
+        },
+        "step_sha256": "269f273b7c5495cd9ef5d28b36a3e0a8e27aaf84a9eb63b808b4fe1f0f4e1043",
+        "stl_sha256": "ab8d05b92dd68fefb42c9d0e57c1c8487871a70f1229fb91d6a1da5354c4b0b9"
+      },
+      "max_bbox_change_mm": 0.0,
+      "checks": {
+        "baseline_reproduces_failure": true,
+        "candidate_passes_original_gate": true,
+        "candidate_one_valid_solid": true,
+        "bbox_preserved_within_1e_6_mm": true,
+        "source_unchanged": true
+      }
+    }
+  ],
+  "passed": true
+}

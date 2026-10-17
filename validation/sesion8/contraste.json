@@ -1,0 +1,1353 @@
+{
+  "created_utc": "2026-10-17T23:12:51.593443+00:00",
+  "passed": true,
+  "environment": {
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+    "executable": "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "kernel_distribution": {
+      "cadquery-ocp-novtk": "8.0.1.1.0",
+      "cadquery-ocp-proxy": "8.0.1.1.0"
+    }
+  },
+  "tolerance_source": "validation/cad_properties.json: independent_body_check (v=1e-9, centroid=1e-10 m, tensor=1e-9); metadata docs/PROPIEDADES_GEOMETRICAS_CAD.md step1 (abs/rel=1e-12)",
+  "tolerances": {
+    "volume_relative": 1e-09,
+    "centroid_m": 1e-10,
+    "tensor_max_relative": 1e-09
+  },
+  "historical_sha256": "4e6e020a38d267d10946b908b7dbf255069c5f82881aae36c5f0b20e216db2e8",
+  "current_sha256": "f358ec42f0a017e579e8831f60195ab1bac547ccba23e573df1ad0f74fbca84f",
+  "historical_summary": {
+    "parts": 50,
+    "computed_parts": 49,
+    "computed_solids": 51,
+    "excluded_parts": [
+      "B-ExtensorM3"
+    ],
+    "instances": 38,
+    "computed_instances": 38
+  },
+  "current_summary": {
+    "parts": 50,
+    "computed_parts": 49,
+    "computed_solids": 51,
+    "excluded_parts": [
+      "B-ExtensorM3"
+    ],
+    "instances": 39,
+    "computed_instances": 39
+  },
+  "parts_and_solids_unchanged": [
+    {
+      "name": "0-6203-2RS",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "0-Bancada",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "0-ElevadorM2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "0-PlatinaSuperior",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "0-SoporteMotores",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "0-Torre",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        },
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        },
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_20Teet_5Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_20Teet_635Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_60Teet_10Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_60Teet_8Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_80Teet_10Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_80Teet_16Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_80Teet_40Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "2GT_80Teet_8Bore",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A-Brazo",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A-BridaEje",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A-CarretelInf",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A-CarretelSup",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A-Eje",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "A-EjeInterior",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-Antebrazo",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-CarretelInf",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-CarretelSup",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-Eje",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-SoporteEjeFijo",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-SoporteM3",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "B-SoporteRuleman",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "BorneraX4",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "BorneraX6",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "KY-003",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "NEMA17",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "NEMA23",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "R-Bancada",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "R-CarretelInf",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "R-CarretelSup",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "R-ContraBancada",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-608zz",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-6907-2RS",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-AcopleFlex",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-BridaACME",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-BujeExterior",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-BujeInterior",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-Cuerpo",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-Piston",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-SoporteEfector",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-SoporteM4",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-SoporteRuleman",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-TuercaACME",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "name": "Z-VarillaACME",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true,
+      "solids": [
+        {
+          "volume_relative": 0.0,
+          "centroid_m": 0.0,
+          "tensor_max_relative": 0.0,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "previous_instances_unchanged": [
+    {
+      "name": "0-Torre-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "A-CarretelInf-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "0-Bancada-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "0-ElevadorM2-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "0-PlatinaSuperior-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "0-SoporteMotores-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "NEMA23-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "NEMA23-registro-2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "0-6203-2RS-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "0-6203-2RS-registro-2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "A-Brazo-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "A-BridaEje-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "A-CarretelSup-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-CarretelSup-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-SoporteRuleman-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-SoporteRuleman-registro-2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-608zz-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-608zz-registro-2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "2GT_80Teet_16Bore-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-Antebrazo-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-CarretelInf-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "NEMA17-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "R-Bancada-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "R-ContraBancada-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "R-CarretelInf-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-SoporteEjeFijo-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "B-SoporteM3-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-6907-2RS-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-6907-2RS-registro-2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "2GT_60Teet_8Bore-registro-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-BujeExterior-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-Cuerpo-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-SoporteM4-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-SoporteRuleman-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "NEMA17-2",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "R-CarretelSup-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-Piston-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "name": "Z-SoporteEfector-1",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    }
+  ],
+  "unaffected_bodies": [
+    {
+      "group": "base",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "group": "arm",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "group": "forearm",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    },
+    {
+      "group": "tool",
+      "volume_relative": 0.0,
+      "centroid_m": 0.0,
+      "tensor_max_relative": 0.0,
+      "passed": true
+    }
+  ],
+  "added_instances": [
+    "2GT_80Teet_40Bore-registro-R"
+  ],
+  "removed_instances": [],
+  "affected_group": "wrist",
+  "affected_group_before": {
+    "group": "wrist",
+    "included_instances": [
+      "Z-BujeExterior-1",
+      "Z-Cuerpo-1",
+      "Z-SoporteM4-1",
+      "Z-SoporteRuleman-1",
+      "NEMA17-2",
+      "R-CarretelSup-1"
+    ],
+    "missing_instances": [],
+    "properties": {
+      "volume_m3": 0.00019703644990809964,
+      "centroid_m": [
+        1.3789949923088599e-05,
+        -9.364398163727084e-06,
+        0.1459708145885906
+      ],
+      "inertia_per_density_m5": [
+        [
+          1.93928125898179e-06,
+          7.672364054555769e-12,
+          1.7343340926595812e-10
+        ],
+        [
+          7.672364054555769e-12,
+          1.9395060685989376e-06,
+          -1.8529575256481337e-10
+        ],
+        [
+          1.7343340926595812e-10,
+          -1.8529575256481337e-10,
+          6.062109021830607e-08
+        ]
+      ]
+    },
+    "reference_only": true,
+    "uniform_common_density_required": true,
+    "overlaps_checked": false,
+    "complete_robot_body": false,
+    "mass_kg": null
+  },
+  "affected_group_after": {
+    "group": "wrist",
+    "included_instances": [
+      "Z-BujeExterior-1",
+      "Z-Cuerpo-1",
+      "Z-SoporteM4-1",
+      "Z-SoporteRuleman-1",
+      "NEMA17-2",
+      "R-CarretelSup-1",
+      "2GT_80Teet_40Bore-registro-R"
+    ],
+    "missing_instances": [],
+    "properties": {
+      "volume_m3": 0.00020620310155640184,
+      "centroid_m": [
+        1.3176924870413504e-05,
+        -8.948108713106647e-06,
+        0.13941501091564368
+      ],
+      "inertia_per_density_m5": [
+        [
+          2.13224308153811e-06,
+          7.673495164104634e-12,
+          1.5562048578285396e-10
+        ],
+        [
+          7.673495164104634e-12,
+          2.132549673986345e-06,
+          -1.731994571550791e-10
+        ],
+        [
+          1.5562048578285396e-10,
+          -1.731994571550791e-10,
+          6.539719402148716e-08
+        ]
+      ]
+    },
+    "reference_only": true,
+    "uniform_common_density_required": true,
+    "overlaps_checked": false,
+    "complete_robot_body": false,
+    "mass_kg": null
+  },
+  "unique_new_instance": {
+    "instance_name": "2GT_80Teet_40Bore-registro-R",
+    "source": "Modelos3D/2GT_80Teet_40Bore.SLDPRT",
+    "source_sha256": "7652b60cc56bd4c7481448dc077eeeb698a377fe7a4f539a647e8b14d26c1c90",
+    "group": "wrist",
+    "body_from_piece": [
+      [
+        -1.0000000000000004,
+        -2.7755575615628914e-17,
+        1.723932245074956e-15,
+        -1.0885389811754465e-16
+      ],
+      [
+        6.938893903907228e-17,
+        -1.0000000000000004,
+        -7.599627825990314e-16,
+        2.0816681711721685e-17
+      ],
+      [
+        1.723932245074956e-15,
+        -7.599627825990327e-16,
+        1.0,
+        -0.007000000000000228
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "disposition": "accepted_mesh",
+    "attachment_status": "registered_mount_visual_only",
+    "status": "computed",
+    "errors": [],
+    "properties": {
+      "volume_m3": 9.166651648302224e-06,
+      "centroid_m": [
+        -9.778731879849362e-17,
+        2.812866028927003e-17,
+        -0.0015014689040286347
+      ],
+      "inertia_per_density_m5": [
+        [
+          2.4671124987782155e-09,
+          6.462508635275366e-25,
+          3.8713796280207115e-24
+        ],
+        [
+          6.462508635275366e-25,
+          2.5488944323095226e-09,
+          -1.712331660057304e-24
+        ],
+        [
+          3.8713796280207115e-24,
+          -1.7123316600573045e-24,
+          4.776101369409432e-09
+        ]
+      ]
+    }
+  },
+  "volume_delta_m3": 9.1666516483022e-06,
+  "independent_method": "Releer STEP, transferir mm, transformar cada BREP con gp_Trsf (traslaciones convertidas m→mm), construir compuesto de copias y volver a integrar por BRepGProp.VolumeProperties(OnlyClosed=True, SkipShared=True, UseTriangulation=False). Sin importar calculador/productor ni usar combine/placed/read_part; misma librería CAD y mismos STEP, no equivalencia independiente con SolidWorks.",
+  "independent_affected_group": [
+    {
+      "version": "historical38",
+      "instances": [
+        "Z-BujeExterior-1",
+        "Z-Cuerpo-1",
+        "Z-SoporteM4-1",
+        "Z-SoporteRuleman-1",
+        "NEMA17-2",
+        "R-CarretelSup-1"
+      ],
+      "properties": {
+        "volume_m3": 0.0001970364499080997,
+        "centroid_m": [
+          1.378994992308589e-05,
+          -9.364398163727443e-06,
+          0.1459708145885906
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.93928125898179e-06,
+            7.672364054556115e-12,
+            1.7343340926595295e-10
+          ],
+          [
+            7.672364054556115e-12,
+            1.939506068598933e-06,
+            -1.8529575256487647e-10
+          ],
+          [
+            1.7343340926595295e-10,
+            -1.8529575256487647e-10,
+            6.06210902183062e-08
+          ]
+        ]
+      },
+      "volume_relative": 2.220446049250313e-16,
+      "centroid_m": 2.732515684719239e-18,
+      "tensor_max_relative": 2.4019936236982205e-15,
+      "passed": true
+    },
+    {
+      "version": "current39",
+      "instances": [
+        "Z-BujeExterior-1",
+        "Z-Cuerpo-1",
+        "Z-SoporteM4-1",
+        "Z-SoporteRuleman-1",
+        "NEMA17-2",
+        "R-CarretelSup-1",
+        "2GT_80Teet_40Bore-registro-R"
+      ],
+      "properties": {
+        "volume_m3": 0.00020620310155640187,
+        "centroid_m": [
+          1.317692487041081e-05,
+          -8.948108713106938e-06,
+          0.13941501091564384
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.1322430815381044e-06,
+            7.673495164105004e-12,
+            1.5562048578284954e-10
+          ],
+          [
+            7.673495164105004e-12,
+            2.1325496739863356e-06,
+            -1.7319945715514036e-10
+          ],
+          [
+            1.5562048578284954e-10,
+            -1.7319945715514036e-10,
+            6.53971940214872e-08
+          ]
+        ]
+      },
+      "volume_relative": 2.220446049250313e-16,
+      "centroid_m": 1.6655549042969072e-16,
+      "tensor_max_relative": 4.3691185876953055e-15,
+      "passed": true
+    }
+  ],
+  "exclusions": [
+    {
+      "name": "B-ExtensorM3",
+      "errors": [
+        "BREP global nulo o inválido"
+      ]
+    }
+  ],
+  "unchanged": {
+    "baseline_files": 680,
+    "baseline_differences": [],
+    "protected_files": 217,
+    "protected_differences": [],
+    "historical_json_and_csv": true,
+    "modelos3d_files": 152,
+    "active_physics": true,
+    "proto": true,
+    "world": true,
+    "zip": true
+  },
+  "limits": [
+    "No material or density assigned",
+    "Additive volumes, not boolean unions",
+    "No overlap correction or complete assembly claim",
+    "Commercial internals and printed infill not inferred from envelope",
+    "Converted BREP validity does not certify equivalence to SolidWorks"
+  ],
+  "suite_reexecuted": false,
+  "webots_reexecuted": false
+}

@@ -1,0 +1,144 @@
+{
+  "scope": "Solo documentos locales y lectura visual de planos; sin leer matrices CAD, cambiar colocaciones ni editar el repositorio. Sin consulta a fabricantes.",
+  "sources": [
+    {
+      "path": "/Users/mateoantenucci/Developer/SCARA/Modelos3D/R-Bancada.PDF",
+      "sha256": "207143cd2a4c940b6929cb14dd9099f347d5f6a157dc5922ce3d9f21e750fa5c"
+    },
+    {
+      "path": "/Users/mateoantenucci/Developer/SCARA/Modelos3D/R-ContraBancada.PDF",
+      "sha256": "f8a43d9046d361867c131593e7b62685bcaaf45eefca853e7791a869bca1b207"
+    },
+    {
+      "path": "/Users/mateoantenucci/Developer/SCARA/Modelos3D/R-EnsambleRotacion.PDF",
+      "sha256": "ee443fd8f71e7fa09d98738a5f41d25329b3770afac2018006eb57820d1c65fa"
+    },
+    {
+      "path": "/Users/mateoantenucci/Developer/SCARA/Modelos3D/Z-BujeExterior.PDF",
+      "sha256": "f14bc2b17c4a79f592162f7f96cbdcfeddc998be3eeeda17a4a79e6000997c04"
+    },
+    {
+      "path": "/Users/mateoantenucci/Developer/SCARA/Modelos3D/Z-Vs2.PDF",
+      "sha256": "997a71c7db32afc7ffc13371ff19cb3bc7c58bd8cbc1207bef2850e8e3bff600"
+    },
+    {
+      "path": "/Users/mateoantenucci/Developer/SCARA/00-SCARA-Master.pdf",
+      "sha256": "7ec2ec12c7d6f3beda713966946a5ad096e314851224d2d84e738d4a1511d3e6"
+    }
+  ],
+  "revisions": {
+    "R-Bancada.PDF": "Metadatos de exportacion SolidWorks: 2026-04-28. Sin indice de revision aprobado visible.",
+    "R-ContraBancada.PDF": "Metadatos de exportacion SolidWorks: 2026-04-28. Sin indice de revision aprobado visible.",
+    "R-EnsambleRotacion.PDF": "Metadatos de exportacion SolidWorks: 2026-05-13, posterior al maestro.",
+    "Z-BujeExterior.PDF": "Metadatos de exportacion SolidWorks: 2026-05-13; buje cilindrico largo.",
+    "Z-Vs2.PDF": "Metadatos de exportacion SolidWorks: 2026-04-21.",
+    "00-SCARA-Master.pdf": "Metadatos de generacion LibreOffice: 2026-05-02. p22 muestra un buje cuadrado corto; p26 repite el rodamiento con contradiccion de diametro."
+  },
+  "observed_dimensions_mm": {
+    "bearing_drawing": {
+      "inner_diameter": 35,
+      "outer_diameter_graphic": 55,
+      "axial_width": 10,
+      "contradictory_text": "35x50x10mm",
+      "sources": [
+        "Z-Vs2.PDF p1",
+        "00-SCARA-Master.pdf p26"
+      ],
+      "maker": "No indicado; 6907/2RS no identifica marca."
+    },
+    "housings": {
+      "seat_radius": 27.5,
+      "shoulder_bore_radius": 20,
+      "outer_radii_called_out": [
+        30,
+        35
+      ],
+      "axial_total": 47.6,
+      "counter_housing_stack": [
+        3.8,
+        10,
+        17,
+        10,
+        6.8
+      ],
+      "mounting_holes_diameter": 5,
+      "mounting_hole_centers": [
+        78,
+        28
+      ],
+      "mounting_overall_width": 90,
+      "sources": [
+        "R-Bancada.PDF p1 secciones A-A/B-B",
+        "R-ContraBancada.PDF p1 seccion A-A"
+      ],
+      "note": "La contra bancada cota directamente 10/17/10. La bancada muestra escalones parciales 5+5 y 8+2, bordes 3,8/6,8 y zona central 17."
+    },
+    "assembly": {
+      "bearing_graphic_diameters": [
+        35,
+        55
+      ],
+      "bearing_widths": [
+        10,
+        10
+      ],
+      "bearing_outer_face_span": 37,
+      "housing_from_bushing_end": 14.2,
+      "bearing_outer_face_from_bushing_end": 18,
+      "source": "R-EnsambleRotacion.PDF p1",
+      "note": "18 - 14,2 = 3,8, coherente con el margen axial del alojamiento. El vano entre rodamientos de 17 resulta de 37 - 10 - 10 y coincide con los planos de piezas."
+    },
+    "bushing_later_drawing": {
+      "neck_diameter": 35,
+      "intermediate_diameter": 40,
+      "flange_diameter": 44,
+      "flange_width": 3,
+      "axial_chain": [
+        28,
+        3,
+        14,
+        34
+      ],
+      "axial_total": 79,
+      "source": "Z-BujeExterior.PDF p1",
+      "note": "La cota de 3 mm del resalte es otra referencia; no demuestra ser la causa del desfase de la contra bancada."
+    },
+    "bushing_master_p22": {
+      "axial_total": 25,
+      "outer_square": 30,
+      "inner_square": 20,
+      "intermediate_square": 22.6,
+      "note": "Geometria visualmente distinta del buje cilindrico de 79 mm. No es solo una diferencia de cota pequena."
+    }
+  },
+  "supports_and_fixing": {
+    "observed": "Alojamiento partido semicilindrico con dos zonas para rodamientos, rebordes axiales y cuatro agujeros de cierre/alineacion. La seccion de ensamble muestra los rodamientos entre bancada/contra bancada y el cuello del buje exterior.",
+    "kinematic_inference": "El alojamiento sostiene el diametro exterior; el buje de cuello 35 pasa por el diametro interior. Esto sustenta roles conceptuales de aro exterior unido al alojamiento y aro interior solidario al conjunto Z, pendiente de confirmar ajuste/fijacion real.",
+    "ring_geometry_limit": "Los PDF no definen superficies de separacion de aros, bolas, jaula, sellos ni sus propiedades. No justifican cortar arbitrariamente el solido simplificado ni asignar masas/inercia a partes inventadas.",
+    "missing": "No hay ajuste/tolerancia normalizada, clase de rodamiento, precarga, torque, tornillo especifico de cierre ni marca del fabricante en estas hojas. PLA/30% y acero son rotulos documentales; la masa aparece desconocida."
+  },
+  "three_mm_explanation": {
+    "observed_asymmetry_mm": 3.0,
+    "derivation": "6,8 - 3,8 = 3,0. Desde una cara axial, los asientos ocupan [3,8;13,8] y [30,8;40,8] mm dentro de 47,6 mm. Al invertir axialmente la misma pieza, pasan a [6,8;16,8] y [33,8;43,8], desplazados ambos +3 mm.",
+    "assessment": "Hipotesis documental fuerte y verificable: una inversion axial de una mitad puede explicar el desfase uniforme de 3 mm sin cambiar su geometria. No se inspeccionaron matrices y no se autoriza aqui una correccion de pose.",
+    "revision_alternative": "Las revisiones mixtas estan demostradas en el buje maestro vs plano suelto; son una posibilidad general, pero los PDF de ambos alojamientos coinciden en el stack asimetrico y no prueban que otra revision sea la causa del desfase."
+  },
+  "master_limit": "p9 declara explicitamente que la vista del montaje de J4 omite los rodamientos y la polea de J3. Esa ilustracion no sirve para certificar los asientos ausentes.",
+  "pngs": [
+    "/private/tmp/scara-rodamientos-planos-20261017/Maestro-p22.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/Maestro-p26.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/Maestro-p9.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-Bancada-cotas.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-Bancada-detalle.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-Bancada.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-ContraBancada-cotas.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-ContraBancada-detalle.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-ContraBancada.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-EnsambleRotacion-detalle.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/R-EnsambleRotacion.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/Z-BujeExterior-cotas.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/Z-BujeExterior.png",
+    "/private/tmp/scara-rodamientos-planos-20261017/Z-Vs2.png"
+  ],
+  "repo_modified": false
+}

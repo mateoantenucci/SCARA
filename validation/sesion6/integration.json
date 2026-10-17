@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "integrated_utc": "2026-10-17T22:55:39.073490+00:00",
+  "status": "integrated_verified",
+  "writer": "sesion6_profesor, exclusive final turn authorized by director",
+  "candidate_manifest": "validation/sesion6/candidate_manifest.json",
+  "candidate_manifest_sha256": "a132a016da64f1dc190d7a35890c924463cba93205e544780c7719bc05be4f29",
+  "candidate_files_sha256": {
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": "90ddee494625381de0b709a690b7b6328716d163a60362a89cfa727b68bdd21f",
+    ".agent-state/ronda-profesor-20261017/estado.md": "e8a9be8a4eb7979dff6202a5772b4e75d3870254a652a5de770fd83b626b4992",
+    "README.md": "5897c07be11d463224fd73071c124cde02315d4e38e8f7a7cd5ee9dbb4abe30c",
+    "docs/DATOS_PARA_EL_PROFESOR.md": "fea2ac3c61d10b78356b42f099f1a8c5cec1ea402e7b757d4dcb989a16d0da20",
+    "docs/VALIDACION_WEBOTS.md": "43eb9ed876ea0eb687aee000509e0e8561870be7c4deddf06de7a6e058d2f666",
+    "validation/sesion4/review.json": "67274ea32454406c5111fe63b1462dc51d8171ca6a48fb682b02e4647d6d59c5",
+    "validation/sesion6/consolidado.json": "28080e530afe8215b99270ec230a9519ea0020ac2de8594b2fb19b023e49213a"
+  },
+  "independent_review": {
+    "path": "validation/sesion6/review.json",
+    "sha256": "24acff123af86e8162e09fa3d1a15b46fbf967ec81dc2980f32bd5f16da17279"
+  },
+  "review4_exact_copy": {
+    "path": "validation/sesion4/review.json",
+    "sha256": "67274ea32454406c5111fe63b1462dc51d8171ca6a48fb682b02e4647d6d59c5"
+  },
+  "base_files_matched_before_copy": {
+    "README.md": "fc4d4e40190a10d23b7c371bcfa4701cc899d9859b1d29aaea7a24bdb60f5414",
+    "docs/VALIDACION_WEBOTS.md": "047800876dd63e348c61f22fae8b880b677098d680962afe771b3b5581c0edda",
+    "docs/DATOS_PARA_EL_PROFESOR.md": "35bb1d3a78c340b480e523896bc3e87a95738fa5517bbe7c802ab7e9784b1b3e",
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": "f1901d5678c0e2cf12ce110022e912eb084ca0be6cb51e81dd421624344766d7",
+    ".agent-state/ronda-profesor-20261017/estado.md": "34bb9e4688a5c435fbee3f86c27d800cad7ae998c1823d6adec4d9339469dd1c"
+  },
+  "selective_rollback_archive": {
+    "path": ".agent-state/ronda-profesor-20261017/antes-sesion6.tar.gz",
+    "sha256": "517f89dcce9feb120f57daee4d44ce7c4d3edbb9fcf87246dad8fde6671db00d",
+    "files": 5,
+    "source_bytes": 39085
+  },
+  "verification": {
+    "candidate_files_match": 7,
+    "source_model_files_unchanged": 14,
+    "evidence_hashes_match": 20,
+    "local_links_resolved": 70,
+    "package_sha256": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+    "new_software_or_native_tests_rerun": false,
+    "reason_no_rerun": "Only reviewed docs/private coordination/evidence plus byte-exact review4; runtime, model, configuration and executable package unchanged"
+  },
+  "resources": {
+    "own_processes_started_by_session6": 0,
+    "webots_final_trial": "STOPPED, payload0, simulation reference valid; native session4 own application closed and ports released",
+    "session6_tmp": {
+      "path": "/private/tmp/scara-sesion6-20261017",
+      "status": "removed_after_durable_copy_and_verification",
+      "removed_utc": "2026-10-17T22:55:54.677620+00:00",
+      "files": 11,
+      "bytes": 86631,
+      "ownership": "Created only by session6; no own running processes or symlinks; review5/manifest/backup and candidate outputs preserved durably"
+    },
+    "other_sessions_tmp": "Owners/director may retire only own consumed copies; preserve durable snapshots/manifests/reviews and sources needed for rollback"
+  },
+  "remaining": "Decisions and next actions by responsible owner are in consolidado.json; native Windows/LinuxWebots and physical/browser QA are not claimed"
+}

@@ -1,0 +1,13 @@
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:9000; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:9000; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:9000; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+

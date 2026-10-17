@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "prepared_utc": "2026-10-17T23:21:25.080017+00:00",
+  "timezone": "America/Argentina/Tucuman",
+  "meeting_date_local": "2026-10-20",
+  "status": "results_independently_reviewed",
+  "authorization": "Solo ronda A: sesiones 7, 8 y 9; pedido humano del 17/10/2026",
+  "identity": {
+    "scheme": "SHA-256 per source and evidence file; no Git revision available in this workspace",
+    "source_root": "/Users/mateoantenucci/Developer/SCARA",
+    "visual_instances": 39,
+    "geometric_precalculation_instances": 39,
+    "active_physics": "unchanged provisional body properties",
+    "protocol": "scara-dev/1 provisional",
+    "sources_sha256": {
+      "cad/ensambles/integracion_articulada.json": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475",
+      "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+      "config/cad_integration.json": "f974033cc568cec76d0be0b380df7195cbe90c0966766144701e2ad02c5654b5",
+      "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+      "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+      "webots/controllers/scara_bridge/scara_bridge.py": "bd1d225a863c14d9371a6f28644cf2c6c9d6730cb78041e0ef946826ab7e30ba",
+      "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+      "scara/collisions.py": "25cad1ea1031e727ac50daaa4244b352f83138c8da5c0ec5e0c7293e2eab33ec",
+      "scara/kinematics.py": "9ac6bb81fc5511d90b79e0aec77eb59464c80df4ee559a3b1cf3bba6550b41a9",
+      "scara/transport.py": "090c4588e846d36de6de330ea0cf888481dcdac3792f2342e90ac94619fb8d0b",
+      "client/app.py": "2c787b00e2ec1998477bc2588e61ab026eb06930c1dff3bc369e6c7a1a0a91be",
+      "client/index.html": "0799eb40e667a90f4f38aef1c579c3409a17d5ba2708fbf3d36c492831b5b3d5",
+      "tools/check_self_collisions.py": "e73d986b98ca3c51dd659a858e17ce497735ecb4b3a220b089df4d63c216e3c6",
+      "tests/test_collisions.py": "dfc34955865bc4d461c449ccc550a99cb3d8781ac7b336d615d7ddb489eda435"
+    },
+    "roundA_baseline": {
+      "path": ".agent-state/ronda-profesor-20261017/baseline-rondaA.json",
+      "sha256": "1cb9b5144870f1e7839260cea1fb29d7bfa7a633da1a8d63f0a0b6bcd4169cfa"
+    },
+    "candidate_manifests": {
+      "session7": {
+        "path": "validation/sesion9/manifest_sesion7.json",
+        "sha256": "c1e7043a338170f1a15cddeecdf3f5dbdf35ff26d0b8fa18b73e2f9530b3b1ab"
+      },
+      "session8": {
+        "path": "validation/sesion9/manifest_sesion8.json",
+        "sha256": "868e89f2eaf493658183455c33e11c4f2ca2a5113631d8efbfdd94cf2587eed2"
+      }
+    },
+    "historical_geometric_precalculation_instances": 38
+  },
+  "sessions": [
+    {
+      "session": 7,
+      "result": "Ocho pasos renderizados aprobados, paquete final intacto, STOPPED/carga0/referencia válida",
+      "report": "validation/sesion7/informe.json",
+      "narrative_and_captures": "validation/sesion7/INFORME.md",
+      "review": "validation/sesion9/review7.json",
+      "environment": {
+        "os": "macOS27.0.1",
+        "os_build": "26A434",
+        "architecture": "arm64",
+        "client_python": "3.15.0",
+        "controller_python": "3.9.6 (/Library/Developer/CommandLineTools/usr/bin/python3)",
+        "chrome": "155.0.8059.85",
+        "webots": "R2025b Nightly Build14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+        "webots_executable_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+        "webots_observability_adaptation": {
+          "reason": "CUA macOS seleccionaba el Webots ajeno por bundleID y no exponía selector PID/ventana; se clonó el app instalado a tmp",
+          "only_metadata_changed": {
+            "CFBundleIdentifier": "local.scara.sesion7.webots",
+            "CFBundleName": "Webots Sesion7"
+          },
+          "source_and_copy_executable_identical": true,
+          "installed_application_modified": false,
+          "product_modified": false
+        }
+      },
+      "observed": {
+        "manifest_files": 33,
+        "archive_files": 52,
+        "common_files": 51,
+        "samples": 2162,
+        "arrival_xyz_error_m": 1.4715000048390635e-06,
+        "arrival_tcp_world_error_m": 4.377374708732996e-06,
+        "rejection_samples": 91,
+        "clear_without_rearm_samples": 76,
+        "last_mode": "STOPPED",
+        "all_15_png_visually_reviewed": true
+      },
+      "limits": [
+        "Simulador con física/TCP/Hall provisionales; ninguna QA física experimental.",
+        "No Windows ni Webots Linux nativo.",
+        "Una instancia y cliente propios ensayados; existía otro mundo ajeno en19051, aislado y preservado.",
+        "No barrido general de autocolisión, homing ni evidencia de detección autónoma Hall.",
+        "El selector Hall Activo queda como formulario después de limpiar; la señal de estado observada pasa Inactivo.",
+        "Setup adicional clonó solo metadata del app para observabilidad; el ejecutable Webots usado conserva identidad y build."
+      ]
+    },
+    {
+      "session": 8,
+      "result": "39/39 con alta única polea muñeca, comparación38y4grupos, compuestoBREPafectado y fuentes preservadas",
+      "report": "cad/propiedades/propiedades_geometricas_39.json",
+      "csv": "cad/propiedades/propiedades_geometricas_39.csv",
+      "evidence": "validation/sesion8/contraste.json",
+      "review": "validation/sesion9/review8.json",
+      "environment": {
+        "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+        "executable": "/private/tmp/scara-cad-piloto-20261014/venv/bin/python",
+        "platform": "macOS-27.0.1-arm64-arm-64bit",
+        "kernel_distribution": {
+          "cadquery-ocp-novtk": "8.0.1.1.0",
+          "cadquery-ocp-proxy": "8.0.1.1.0"
+        }
+      },
+      "observed": {
+        "manifest_files": 9,
+        "base_files": 680,
+        "protected_files": 217,
+        "previous_instances_equal": 38,
+        "unaffected_groups_equal": 4,
+        "added": [
+          "2GT_80Teet_40Bore-registro-R"
+        ],
+        "source_and_step_hashes_verified": 50,
+        "csv_rows": 145,
+        "wrist_formula_tensor_relative_error": 1.985962994406957e-16,
+        "brep_compound_method_reviewed_without_rerun": true
+      },
+      "limits": [
+        "No material or density assigned",
+        "Additive volumes, not boolean unions",
+        "No overlap correction or complete assembly claim",
+        "Commercial internals and printed infill not inferred from envelope",
+        "Converted BREP validity does not certify equivalence to SolidWorks"
+      ]
+    },
+    {
+      "session": 9,
+      "result": "Revisión independiente completa7/8aprobada; documentación y estado candidatos",
+      "checks": "validation/sesion9/checks_revision.json",
+      "documents": [
+        "docs/VALIDACION_WEBOTS.md",
+        "docs/DATOS_PARA_EL_PROFESOR.md",
+        "docs/PROPIEDADES_GEOMETRICAS_CAD.md"
+      ],
+      "historical_records_preserved": [
+        "validation/sesion6/consolidado.json",
+        "cad/propiedades/propiedades_geometricas.json",
+        "cad/propiedades/propiedades_geometricas.csv"
+      ]
+    }
+  ],
+  "demo_package": {
+    "path": "validation/sesion5/SCARA-ejecucion.zip",
+    "sha256": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+    "files": 52,
+    "product_sources_unchanged": true,
+    "rebuilt": false,
+    "reason": "Solo informes/documentación; contenido entregado idéntico"
+  },
+  "independent_review": {
+    "reviewer": "sesion9",
+    "authors_reviewed": [
+      "sesion7",
+      "sesion8"
+    ],
+    "findings": [],
+    "scope": "Candidatos completos,evidencia,aceptación,estándares y fuentes;15PNGvistos y correlación propia;scriptCADrevisado y sumas locales",
+    "reviewed_candidate_sha256": {
+      "7": "c1e7043a338170f1a15cddeecdf3f5dbdf35ff26d0b8fa18b73e2f9530b3b1ab",
+      "8": "868e89f2eaf493658183455c33e11c4f2ca2a5113631d8efbfdd94cf2587eed2"
+    },
+    "documentation_reviewer": "director, antes de incorporación9"
+  },
+  "integration": {
+    "owner": "director",
+    "order": [
+      7,
+      8,
+      9
+    ],
+    "record": "validation/sesion9/integration.json",
+    "status": "recorded_separately_by_director",
+    "precondition": "Comprobar SHA manifiestos/destinos/base documental y revisar candidato9"
+  },
+  "cleanup": {
+    "owner": "director",
+    "record": "validation/sesion9/cleanup.json",
+    "status_at_preparation": "pending_integration_verification",
+    "session7_processes": "Ejecutor cerró propios despuésSTOPPED; puertos8765/9000/1237libres; ajeno19051preservado",
+    "retained_until_integration": "/private/tmp/scara-rondaA-20261017-01/sesion7, sesion8 y sesion9; no atribuir retirada antes de registro"
+  },
+  "remaining_decisions": [
+    {
+      "priority": 1,
+      "owner": "Professor/design authority",
+      "question": "Official mechanical revision/configuration, M3/shafts/vertical discrepancies, fixtures/phases/belts",
+      "unblocks": "Complete evidence-based assembly/transmission",
+      "next_action": "Llevar tabla de discrepancias a reunión; registrar revisión/configuración elegida y las piezas/fijaciones confirmadas antes de incorporar CAD retenido."
+    },
+    {
+      "priority": 2,
+      "owner": "Professor/design authority and team measurement",
+      "question": "Confirm nominal materials, current printed/commercial parts, exact motors/driver current/voltage/microstep/curves, mass/distribution/payload",
+      "unblocks": "Apply supported mass/inertia/effort",
+      "next_action": "Confirmar nominales por pieza y códigos completos; obtener curvas/configuración del driver o plan de medición y luego calcular propiedades/esfuerzos aplicables."
+    },
+    {
+      "priority": 3,
+      "owner": "Professor/design authority",
+      "question": "Zeros, signs, stops, TCP, Hall geometry/polarity and safe homing sequence including J4 hold",
+      "unblocks": "Implement bounded homing and reference recovery",
+      "next_action": "Acordar mapa Hall/imán, ceros/TCP, sentido y secuencia segura de J4; fijar límites/abortos y solo después implementar homing."
+    },
+    {
+      "priority": 4,
+      "owner": "Professor",
+      "question": "Official TCP message examples/framing/units/states/completion/cancel/reconnect/liveness",
+      "unblocks": "Adapt interpreter and kinematic boundary",
+      "next_action": "Obtener ejemplos oficiales de ida/vuelta; adaptar framing/intérprete y ejecutar casos de fragmentación/reconexión con resultados esperados acordados."
+    },
+    {
+      "priority": 5,
+      "owner": "Professor",
+      "question": "Task, required faults/collision coverage/tolerances/deliveryOS/acceptance",
+      "unblocks": "Final acceptance suite",
+      "next_action": "Acordar tarea, fallas, cobertura/tolerancias y sistemas requeridos; convertir el acuerdo en la batería de aceptación."
+    },
+    {
+      "priority": 6,
+      "owner": "Team member with target runtime",
+      "question": "Execute native Windows and Linuxdesktop/Webots with versions and outputs",
+      "unblocks": "Claim those target platforms",
+      "next_action": "Ejecutar LEEME del paquete final en equipo Windows o Linux con Webots; registrar versiones, comandos, consola y resultados."
+    }
+  ],
+  "verification_policy": "Reutilizar evidencia válida porhash. Solo comprobaciones afectadas: identidades,datos crudos,JSON/CSV,suma muñeca y enlaces/doc. Sin nueva suite,nativo ni reconstrucciónZIP por informes.",
+  "roundB": {
+    "authorized": false,
+    "started": false,
+    "next_action": "Esperar pedido humano explícito y alcance concreto; no ejecutar10/11por arrastre"
+  },
+  "limits": [
+    "Ninguna QA física experimental; robot real no disponible",
+    "Física/materiales/TCP/Hall siguen provisionales; sinhoming ni autocolisión general",
+    "Windows y WebotsLinuxnativo pendientes; Linuxcontenedor conserva alcance de software",
+    "CompuestoBREP mismoSTEP/kernel,no certificaciónSolidWorks; sumas aditivas,sin solapamientos auditados",
+    "Revisión de evidencia visual guardada,no video/medicióncontinua ni segunda ejecución por reviewer",
+    "Registro6histórico intacto; el nuevo conocimiento solo tiene la identidad/entorno aquí declarados"
+  ]
+}

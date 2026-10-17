@@ -1,0 +1,5 @@
+The following is a diff from the previous accessibility tree for Window: "/private/tmp/scara-rondaA-20261017-01/sesion7/extraido/SCARA/webots/worlds/scara.wbt (webots) - Webots R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8" with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 92-93
+~	12 text - 0:01:28:810 0.96x
++			92 column
+The focused UI element is 0 standard window Secondary Actions: Raise, /private/tmp/scara-rondaA-20261017-01/sesion7/extraido/SCARA/webots/worlds/scara.wbt (webots) - Webots R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8

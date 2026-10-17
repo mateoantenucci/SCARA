@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-17",
+  "session": 3,
+  "status": "documentary_preparation_no_active_physics_change",
+  "method": "pypdf text extraction, targeted PDF page rendering and visual inspection, native G-code header/footer review, rational arithmetic for nominal geometry/impulse relations; no robot, Webots or physical measurements.",
+  "local_sources": {
+    "00-SCARA-Master.pdf": {
+      "sha256": "7ec2ec12c7d6f3beda713966946a5ad096e314851224d2d84e738d4a1511d3e6",
+      "pages_1_based": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/B-Antebrazo.PDF": {
+      "sha256": "a36fd13ad6eed0f2d83f306b49e3eac07dac29a01dcaa460586b1d99daac4420",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-Cuerpo.PDF": {
+      "sha256": "c95acce2e8074d4f60c1d821d75af9eb5f565bcb14d92ac13b8beb9f8eb62c51",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-Piston.PDF": {
+      "sha256": "25d950264ce17be34d42fa0f045568e8189cca7e5d9180c418d46df690924e57",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/B-SoporteRuleman.PDF": {
+      "sha256": "cda21b96cb7ac5ef18180a0312e2b3299138614ee0bbc846c8b618c1c401b8a0",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/R-Bancada.PDF": {
+      "sha256": "207143cd2a4c940b6929cb14dd9099f347d5f6a157dc5922ce3d9f21e750fa5c",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/R-ContraBancada.PDF": {
+      "sha256": "f8a43d9046d361867c131593e7b62685bcaaf45eefca853e7791a869bca1b207",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-BujeExterior.PDF": {
+      "sha256": "f14bc2b17c4a79f592162f7f96cbdcfeddc998be3eeeda17a4a79e6000997c04",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-BujeInterior.PDF": {
+      "sha256": "9958f2b2e7e3ed44717d25edbc74786f3c755311454436975bcc04e983676cd3",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-SoporteEfector.PDF": {
+      "sha256": "e8b8179cba6b2f71890b2db323815483ab21b3f4a19c32c03e7c972d3cb498c7",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/2GT_Vs1.PDF": {
+      "sha256": "9df692d6573a97fb039709889498e77d00326cecfc99d5736be8b6b2e84e7534",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/2GT_Vs2.PDF": {
+      "sha256": "9648372780b115d884c243203c67c4cc4fdacc5d9a4e936faa9c48674083ca19",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/2GT_80Teet40Bore.PDF": {
+      "sha256": "fd3d7010abcfb796594afc51534a8a47c38a9bff187f7b9f5f5cb5818cb60e87",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-VarillaACME.PDF": {
+      "sha256": "1ec8e6b10c092eda0bf95e9ddca16db6b7981edeff54a96488eec947515b24ad",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-Vs1.PDF": {
+      "sha256": "dffa7af2623e1dd3b6add51225ef63e75f134d518ceb5305a130d792f5e95b87",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/Z-Vs2.PDF": {
+      "sha256": "997a71c7db32afc7ffc13371ff19cb3bc7c58bd8cbc1207bef2850e8e3bff600",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/NEMA23.PDF": {
+      "sha256": "631fd96ec52401d5d37602c8b4447f9380691a7415299a84dc605dadccb4403c",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/NEMA17.PDF": {
+      "sha256": "abe03de67df151d98d977525a2736069175f34bb3964878d3fbee3b60f7867cd",
+      "pages_1_based": [
+        1
+      ],
+      "unchanged_from_initial_read": true
+    },
+    "Modelos3D/A-CarretelInf.gcode": {
+      "sha256": "4e5fd4758eade34f70db393dca6d1c57f1e8dc7b024ea4a50e1d2153eab178cc",
+      "pages_1_based": null,
+      "unchanged_from_initial_read": true
+    }
+  },
+  "external_primary_catalogs": [
+    {
+      "url": "https://product.minebeamitsumi.com/en/resource/pdf/rotary/Minebea_HB_SteppingMT_Catalog_rev5.3.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "fd37b3b573be6fccce2caf4d362019f035c6a2f5cdf2f58c244ced41072d4448",
+      "bytes": 5966782,
+      "pdf_pages": 90,
+      "visual_table_review_pdf_pages_1_based": [
+        30,
+        44
+      ],
+      "searched_exact_models": {
+        "23KM-K381-P1": {
+          "literal": 0,
+          "whitespace_hyphen_insensitive": 0
+        }
+      },
+      "result": "exact_model_not_located_in_consulted_source",
+      "limits": "Text extraction and targeted visual family table review, not exhaustive OCR nor evidence that an exact historical/OEM datasheet does not exist. No family motor properties applied."
+    },
+    {
+      "url": "https://www.aspina-group.com/en/contact/pdf/ASPINA_motor_catalog.pdf",
+      "retrieved_date": "2026-10-17",
+      "sha256": "606f76ca3d4403e07f6a1d20e62db2bc77d8e495f73525e8beefa2e3ba1b891b",
+      "bytes": 10139527,
+      "pdf_pages": 98,
+      "visual_table_review_pdf_pages_1_based": [
+        20,
+        22,
+        24,
+        26
+      ],
+      "searched_exact_models": {
+        "STP-42D221-03": {
+          "literal": 0,
+          "whitespace_hyphen_insensitive": 0
+        },
+        "42D265": {
+          "literal": 0,
+          "whitespace_hyphen_insensitive": 0
+        }
+      },
+      "result": "exact_model_not_located_in_consulted_source",
+      "limits": "Text extraction and targeted visual family table review, not exhaustive OCR nor evidence that an exact historical/OEM datasheet does not exist. No family motor properties applied."
+    }
+  ],
+  "external_primary_table_url": "https://product.minebeamitsumi.com/en/product/category/rotary/steppingmotor/hybrid/parts/23KMK5618.html",
+  "exact_model_searches": {
+    "date": "2026-10-17",
+    "queries": [
+      "\"23KM-K381-P1\" datasheet",
+      "\"23KM-K381\" site:minebeamitsumi.com",
+      "\"STP-42D221-03\" site:aspina-group.com",
+      "\"STP-42D221-03\" site:epson.com",
+      "\"42D265\" site:canon.com"
+    ],
+    "result": "Exact manufacturer datasheets not located in consulted searches/catalogs; commercial/research references did not replace exact manufacturer provenance."
+  },
+  "material_indications": [
+    {
+      "material_nominal": "steel",
+      "elements": [
+        "L0 sheet",
+        "ACME screw",
+        "ACME collars",
+        "608zz",
+        "6907",
+        "flexible coupling"
+      ],
+      "limits": "Not every part in base/wrist group; unspecified grade; bearing CAD not homogeneous filled steel"
+    },
+    {
+      "material_nominal": "aluminium",
+      "elements": [
+        "L1 tube",
+        "L2 tube",
+        "L3 tube",
+        "L4 tube",
+        "pulleys identified in 2GT_Vs1/Vs2"
+      ],
+      "limits": "Unspecified alloy and density; current revision not confirmed"
+    },
+    {
+      "material_nominal": "PLA",
+      "infill_percent_nominal": 30,
+      "elements": [
+        "B-SoporteRuleman",
+        "R-Bancada",
+        "R-ContraBancada",
+        "Z-BujeExterior",
+        "Z-BujeInterior",
+        "Z-SoporteEfector"
+      ],
+      "limits": "No uniform effective density, per-piece finished mass or tensor inferred"
+    },
+    {
+      "material_nominal": "PLA",
+      "infill_percent_nominal": null,
+      "elements": [
+        "2GT_80Teet40Bore drawing"
+      ],
+      "limits": "60 versus 80 tooth revision discrepancy; not all pulleys share this material"
+    },
+    {
+      "material_nominal": "bronze",
+      "elements": [
+        "ACME nut"
+      ],
+      "limits": "Unspecified grade and mass"
+    }
+  ],
+  "gcode_fields": {
+    "applyToModels": {
+      "line_1_based": 5,
+      "value": "A-CarretelInf,A-CarretelSup"
+    },
+    "printMaterial": {
+      "line_1_based": 9,
+      "value": ""
+    },
+    "profileName": {
+      "line_1_based": 6,
+      "value": "Tronxy X3-2019-09-18 (modified)"
+    },
+    "layerHeight": {
+      "line_1_based": 28,
+      "value": "0.3"
+    },
+    "topSolidLayers": {
+      "line_1_based": 29,
+      "value": "3"
+    },
+    "bottomSolidLayers": {
+      "line_1_based": 30,
+      "value": "3"
+    },
+    "perimeterOutlines": {
+      "line_1_based": 31,
+      "value": "3"
+    },
+    "internalInfillPattern": {
+      "line_1_based": 67,
+      "value": "Rectilinear"
+    },
+    "infillPercentage": {
+      "line_1_based": 69,
+      "value": "30"
+    },
+    "filamentDiameters": {
+      "line_1_based": 166,
+      "value": "1.75|1.75|1.75|1.75|1.75|1.75"
+    },
+    "filamentDensities": {
+      "line_1_based": 168,
+      "value": "1.25|1.25|1.25|1.25|1.25|1.25"
+    },
+    "useSkirt": {
+      "line_1_based": 49,
+      "value": "1"
+    },
+    "skirtLayers": {
+      "line_1_based": 51,
+      "value": "1"
+    },
+    "skirtOutlines": {
+      "line_1_based": 52,
+      "value": "3"
+    },
+    "skirtOffset": {
+      "line_1_based": 53,
+      "value": "2.5"
+    },
+    "extrusionMultiplier": {
+      "line_1_based": 17,
+      "value": "0.99"
+    }
+  },
+  "gcode_build_summary_lines_1_based": {
+    "filament_length_mm": {
+      "line": 134773,
+      "value": 11162.5
+    },
+    "plastic_volume_mm3": {
+      "line": 134774,
+      "value": 26848.88
+    },
+    "plastic_weight_g": {
+      "line": 134775,
+      "value": 33.56
+    }
+  },
+  "nominal_calculations": {
+    "driver_input": {
+      "value": 400,
+      "unit": "impulses_per_motor_revolution",
+      "source": "00-SCARA-Master.pdf",
+      "page": 14,
+      "status": "documented_not_verified_current"
+    },
+    "rotary_isolated_4_to_1": {
+      "impulses_per_output_rev": 1600,
+      "degrees_per_impulse": 0.225,
+      "impulses_per_degree": "40/9",
+      "impulses_for_270_deg": 1200,
+      "impulses_for_300_deg": "4000/3",
+      "degrees_at_1333_impulses": 299.925,
+      "degrees_at_1334_impulses": 300.15,
+      "M2_condition": "arm held stationary; no general coupled motor-to-elbow transform or torque map inferred"
+    },
+    "vertical_8mm_lead": {
+      "mm_per_impulse": 0.02,
+      "impulses_per_mm": 50,
+      "impulses_for_120mm": 6000
+    },
+    "at_hypothetical_1000_motor_rpm": {
+      "rotary_output_rpm": 250,
+      "rotary_output_deg_s": 1500,
+      "vertical_mm_s": 133.33333333333334,
+      "status": "unloaded_nominal_calculation_not_speed_limit_or_measured_performance"
+    },
+    "master_inconsistent_units": {
+      "4.44_deg_s_in_rpm": 0.74,
+      "266_rpm_in_deg_s": 1596,
+      "relation": "not equivalent; 4.444... numerically corresponds to impulses/degree for 400x4/360"
+    },
+    "ideal_work_conversion": {
+      "isolated_4_to_1_torque_gain": "T_output = 4 * efficiency * T_motor",
+      "screw_force_newtons_per_nm_at_efficiency_one": 785.3981633974482,
+      "screw_formula": "F = 2*pi*efficiency*T_screw/0.008",
+      "limits": "Efficiency, torque-speed curve, friction and loads unknown; no available torque, force, self-locking or power-off holding certified."
+    },
+    "gcode_estimate_crosscheck": {
+      "volume_cm3": 26.84888,
+      "profile_density_g_cm3": 1.25,
+      "product_g": 33.5611,
+      "summary_weight_g": 33.56,
+      "summary_weight_rounding_decimals": 2,
+      "agreement": true,
+      "applies_to": [
+        "A-CarretelInf",
+        "A-CarretelSup"
+      ],
+      "not_a_measured_mass": true
+    }
+  },
+  "physical_application": {
+    "new_masses": false,
+    "new_center_of_mass": false,
+    "new_inertias": false,
+    "new_motor_effort_limits": false,
+    "reason": "Revision/material process, per-instance group membership, exact commercial properties and driver/curve unknown. No native CAD volume mapped to solid-density infill."
+  },
+  "remaining_decisions": [
+    "current revision and per-piece material map",
+    "finished printed part masses/process/inserts; current G-code traceability",
+    "complete motor and driver models, wiring and regulated phase current, torque-speed curves",
+    "belt routing, fixation, signs/zeros, effective screw advance, load and power-off holding"
+  ],
+  "review_limits": "The numeric checks validate document arithmetic only. Catalog absence is bounded to the named fetched bytes and consulted searches. Materials remain source declarations, not applied or measured properties."
+}

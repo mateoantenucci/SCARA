@@ -1,0 +1,46 @@
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py --port 19141
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:19141; habilitar desde la interfaz
+INFO: scara_bridge: Terminating.
+

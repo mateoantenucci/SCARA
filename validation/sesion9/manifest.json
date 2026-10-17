@@ -1,0 +1,67 @@
+{
+  "session": 9,
+  "created_utc": "2026-10-17T23:21:25.080017+00:00",
+  "status": "candidate_awaiting_director_document_review_and_sequential_integration",
+  "candidate_root": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato",
+  "common_project_write_owner": "director only",
+  "files": {
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/.agent-state/ronda-profesor-20261017/SESIONES.md",
+      "sha256": "cd61d53e1a16f8e493f0c2e04421b317d8b43d84cbdd7348532f4e1fd65727c7",
+      "expected_existing_sha256": "0b0f3e8158331018be8b7cb49bd922197c6cdcab036d98cd8b005dd778479dcf"
+    },
+    ".agent-state/ronda-profesor-20261017/estado.md": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/.agent-state/ronda-profesor-20261017/estado.md",
+      "sha256": "7ed417e8f8a5cc06fd80da6707b7b3ed31ca133adcbc1e19b8cf2d0fca307889",
+      "expected_existing_sha256": "eb683e31d10c6aba764a06bdc99a279f480bbe3f4e8e7dba1b3f68da234332b0"
+    },
+    "docs/DATOS_PARA_EL_PROFESOR.md": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/docs/DATOS_PARA_EL_PROFESOR.md",
+      "sha256": "0f68baadae63555074b124c39cda3eab49a3036f47bff121b3fa159a995dd155",
+      "expected_existing_sha256": "fea2ac3c61d10b78356b42f099f1a8c5cec1ea402e7b757d4dcb989a16d0da20"
+    },
+    "docs/PROPIEDADES_GEOMETRICAS_CAD.md": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/docs/PROPIEDADES_GEOMETRICAS_CAD.md",
+      "sha256": "407456a8359ac7d7afbbfd13599a4a590c64badaacae624148834fc690d3e72f",
+      "expected_existing_sha256": "f4656eb596ff0baf91f7da7cc349d7b59e263697f116b83436abb7e62a1c8d4a"
+    },
+    "docs/VALIDACION_WEBOTS.md": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/docs/VALIDACION_WEBOTS.md",
+      "sha256": "b5cdbe45ecc35e744a807ae1ff50261ca8ba162b464207e35c1a97f651581008",
+      "expected_existing_sha256": "43eb9ed876ea0eb687aee000509e0e8561870be7c4deddf06de7a6e058d2f666"
+    },
+    "validation/sesion9/checks_revision.json": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/validation/sesion9/checks_revision.json",
+      "sha256": "0e66f52640daa32f2d972cd0def6e233dfead715d80d445ef38b9633deb50b5c",
+      "expected_existing_sha256": null
+    },
+    "validation/sesion9/consolidado.json": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/validation/sesion9/consolidado.json",
+      "sha256": "4738e55bff17dd9cab2fc18a1e7f7b53dbf1ccb055f1457b9d52b91f4d8d809e",
+      "expected_existing_sha256": null
+    },
+    "validation/sesion9/manifest_sesion7.json": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/validation/sesion9/manifest_sesion7.json",
+      "sha256": "c1e7043a338170f1a15cddeecdf3f5dbdf35ff26d0b8fa18b73e2f9530b3b1ab",
+      "expected_existing_sha256": null
+    },
+    "validation/sesion9/manifest_sesion8.json": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/validation/sesion9/manifest_sesion8.json",
+      "sha256": "868e89f2eaf493658183455c33e11c4f2ca2a5113631d8efbfdd94cf2587eed2",
+      "expected_existing_sha256": null
+    },
+    "validation/sesion9/review7.json": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/validation/sesion9/review7.json",
+      "sha256": "f10fbbd3a8351c2cdfb84b03c2589bb2263cc7c4dcf9869b37a400b03521d196",
+      "expected_existing_sha256": null
+    },
+    "validation/sesion9/review8.json": {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion9/candidato/validation/sesion9/review8.json",
+      "sha256": "a3bf67285c4771d298caa0d87106f5957f46631f3eec8021af58cedcfb4ad2eb",
+      "expected_existing_sha256": null
+    }
+  },
+  "product_changes": [],
+  "copy_manifest_to": "validation/sesion9/manifest.json",
+  "root_read_only": true
+}

@@ -1,0 +1,6082 @@
+{
+  "created_utc": "2026-10-17T18:36:35.740711+00:00",
+  "schema_version": 1,
+  "status": "geometric_precalculation_not_applied_to_physics",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "kernel_distribution": {
+    "cadquery-ocp-novtk": "8.0.1.1.0",
+    "cadquery-ocp-proxy": "8.0.1.1.0"
+  },
+  "method": "OCCT BRepGProp.VolumeProperties: OnlyClosed=True, SkipShared=True, UseTriangulation=False; per-solid addition",
+  "units": {
+    "step_transfer": "mm",
+    "volume": "m^3",
+    "centroid": "m",
+    "inertia_per_density": "m^5",
+    "density_when_known": "kg/m^3",
+    "resulting_inertia": "kg*m^2"
+  },
+  "tensor_convention": "central; axes parallel to stated frame; off-diagonal = -integral(x_i*x_j dV)",
+  "frames": {
+    "parts": "piece local",
+    "solids": "piece local",
+    "instances": "body local",
+    "bodies": "body local"
+  },
+  "assumptions": [
+    "No material or density assigned",
+    "Additive volumes, not boolean unions",
+    "No overlap correction or complete assembly claim",
+    "Commercial internals and printed infill not inferred from envelope",
+    "Converted BREP validity does not certify equivalence to SolidWorks"
+  ],
+  "summary": {
+    "parts": 50,
+    "computed_parts": 49,
+    "computed_solids": 51,
+    "excluded_parts": [
+      "B-ExtensorM3"
+    ],
+    "instances": 36,
+    "computed_instances": 36
+  },
+  "protected_inputs_sha256": {
+    "Modelos3D/0-6203-2RS.SLDPRT": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+    "Modelos3D/0-Bancada.PDF": "fb4e90488cd43b2fd3157128d2be2b34820c04122afadc3ac44e2e0a2b407ec9",
+    "Modelos3D/0-Bancada.SLDDRW": "6c8166e1b0ea6926e6515b2258770669f2e753bf93aa273655587bc2180dabe1",
+    "Modelos3D/0-Bancada.SLDPRT": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+    "Modelos3D/0-ElevadorM2.PDF": "e7cb89b0e9c16c4726a2f2bc19e9e3f89ffec405b6a468172f2d669c7e888205",
+    "Modelos3D/0-ElevadorM2.SLDDRW": "cf42e9a9ead5dcf05e1487310b8ac677baa8b4d7cb0e42ce2c6521b4b95d81c4",
+    "Modelos3D/0-ElevadorM2.SLDPRT": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+    "Modelos3D/0-EnsambleBase.PDF": "a817455b51ca7d0678b5e968dbb20c1220ebb08000bedfe5be6a023ed8344e1f",
+    "Modelos3D/0-EnsambleBase.SLDASM": "5558e2f464ae0c64ed8fd842a567cda64f78643f342229058556f31de9c317ea",
+    "Modelos3D/0-EnsambleBase.SLDDRW": "948ff9152e7472dc5e5cbfcffe37f40ec0c01a0ce8e31bc9b3e6eb89bdee81a9",
+    "Modelos3D/0-EnsambleColision.SLDASM": "c903eb41ac79f023fc2013e8760f12b6a06520435035fba3ce0d4d8e544cf474",
+    "Modelos3D/0-EnsambleTorre.PDF": "fa47b5f9267f23bc876b63301073fada0d929fc3c4b476e2ab40dec2c5632c05",
+    "Modelos3D/0-EnsambleTorre.SLDASM": "d10001043850d71f46f1ca0a53d8cf0dff90c899241f7db75bf61863938e11af",
+    "Modelos3D/0-EnsambleTorre.SLDDRW": "f96e6b705460e89164ac8c340aa4d578c5253e82c893efa2506553b2117658d9",
+    "Modelos3D/0-PlatinaSuperior.PDF": "d420fdb6437df967b241ee93beaf8d38de740789dcfef178ba1e408866c8d220",
+    "Modelos3D/0-PlatinaSuperior.SLDDRW": "180c9d54123b2b57793e0d859eed40943bc54b431481e45651529672b7cfc23e",
+    "Modelos3D/0-PlatinaSuperior.SLDPRT": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+    "Modelos3D/0-SoporteMotores.PDF": "4908d6ad2f73a146411aa98e7ebdb3cc907f2acd155cf408ec4cd3c259feb23e",
+    "Modelos3D/0-SoporteMotores.SLDDRW": "463da5cf4ca3c569644de88b72e2737268d92b6df52481dc666c668395800cc4",
+    "Modelos3D/0-SoporteMotores.SLDPRT": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+    "Modelos3D/0-Torre.PDF": "39347bee0c331785811e9177106af0ec6a94575bcdcacbe5b8fd75389c5e6d8b",
+    "Modelos3D/0-Torre.SLDDRW": "c4baaf843b60742ef76880d959ec7ae91ced5d507c346db20970c803c1854d0e",
+    "Modelos3D/0-Torre.SLDPRT": "fd94227671db45086676cdf6400add36907ed54e42645c7f0be022c91325f2ff",
+    "Modelos3D/0-Vs1.PDF": "975409ee4bd95eccae6199241de80d3ec40b6313d5c149109f96ebc8e7e785dc",
+    "Modelos3D/0-Vs1.SLDDRW": "8685aaf8f63079697cf5e6808b1a1ee95c3ae5f3f0a554cca46fe7b2758be0c4",
+    "Modelos3D/2GT_20Teet_5Bore.SLDPRT": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+    "Modelos3D/2GT_20Teet_635Bore.SLDPRT": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+    "Modelos3D/2GT_60Teet_10Bore.SLDPRT": "1c7c2bc6126f5b37da5510fbf8362f0ea9fa6d2864239b6c1dcd3dcaa3196395",
+    "Modelos3D/2GT_60Teet_8Bore.SLDPRT": "9170edde358c18ed83128338c22d180afafe90ca9f9e2583acd38819149af637",
+    "Modelos3D/2GT_80Teet40Bore.PDF": "fd3d7010abcfb796594afc51534a8a47c38a9bff187f7b9f5f5cb5818cb60e87",
+    "Modelos3D/2GT_80Teet40Bore.SLDDRW": "598ba7f28205daf7bde5d8a69d7c2a5fff37f34080e4f3e762dc1d2009b48861",
+    "Modelos3D/2GT_80Teet_10Bore.SLDPRT": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+    "Modelos3D/2GT_80Teet_16Bore.SLDPRT": "cf753a7288a8d1636e21c7662990837188679c6deeeacbe7a6771450b5c15746",
+    "Modelos3D/2GT_80Teet_40Bore.SLDPRT": "7652b60cc56bd4c7481448dc077eeeb698a377fe7a4f539a647e8b14d26c1c90",
+    "Modelos3D/2GT_80Teet_40Bore.STL": "6251644a7a9b0453e0f223e30085668df13b723d1ca9921475f0b4236fffa032",
+    "Modelos3D/2GT_80Teet_8Bore.SLDPRT": "5b3ea76034fd57d2c06b0db4493302670b1e1ae3ecb7eb6fb738be5fa6ea80d8",
+    "Modelos3D/2GT_Vs1.PDF": "9df692d6573a97fb039709889498e77d00326cecfc99d5736be8b6b2e84e7534",
+    "Modelos3D/2GT_Vs1.SLDDRW": "cacdf02cfbdd6df293982d6294a5974412006db29febb5a4fe86094a9bc71c17",
+    "Modelos3D/2GT_Vs2.PDF": "9648372780b115d884c243203c67c4cc4fdacc5d9a4e936faa9c48674083ca19",
+    "Modelos3D/2GT_Vs2.SLDDRW": "ac9bb8d938f0ffe4ff7b4047e331c9fcc47e91aa64f78cc1521886390785b095",
+    "Modelos3D/A-Brazo.PDF": "c4c8adaade0a5dcc9ef416fc40059284e3823e900855873c20699cc6910a5c98",
+    "Modelos3D/A-Brazo.SLDDRW": "c452726245bd4fb1b4959d604ae6183a6a9baa4c18fc75793883fa696829b9cb",
+    "Modelos3D/A-Brazo.SLDPRT": "3465c2fede70b9befc81f6f723a73551b294f24aee7b0663001d43057c3d0b6c",
+    "Modelos3D/A-BridaEje.PDF": "6c3e208a6d1613d000a5497d6e692527ad4f920feab6c2f4954917cdc21d6e5e",
+    "Modelos3D/A-BridaEje.SLDDRW": "67af3a868097c4975ec33549b29b14bbdbb0f41be05e0c05c265f95264ef9305",
+    "Modelos3D/A-BridaEje.SLDPRT": "208eead9ba17df76d6ab435ec1faf4068a2939c0b3eeedb7b9e568e29d220d8b",
+    "Modelos3D/A-CarretelInf.SLDPRT": "4d22c619cbc9afe94af2b2b317c936ceb8eee41785c7bd2ca9a56aeebebe13ba",
+    "Modelos3D/A-CarretelInf.STL": "c91c2c0d70df1674c3bf010ae8dfd24bfb96ee237b065ce304d793a5ecbe9cf8",
+    "Modelos3D/A-CarretelInf.gcode": "4e5fd4758eade34f70db393dca6d1c57f1e8dc7b024ea4a50e1d2153eab178cc",
+    "Modelos3D/A-CarretelSup.SLDPRT": "724e621b00264214b071c7cec7ff35d340c10a05d0458d8a7f5fca50af40914f",
+    "Modelos3D/A-CarretelSup.STL": "6498c36acb2879b652a5fe2e7671bee580af7079100249bebd25ed73b72d7771",
+    "Modelos3D/A-Carreteles.PDF": "651953fe560b7bf33ef2f457561f0211d8686d60bc301d9b87ecd257a2a5b5cb",
+    "Modelos3D/A-Carreteles.SLDDRW": "857ad469581470574ad3fe2125a38593354698d3adb84b2de19beb8b54f72638",
+    "Modelos3D/A-Eje.PDF": "4879758bb6053831e67d537f1625e9aca6e0810e7fc5d4d554b01e8a41ab2b69",
+    "Modelos3D/A-Eje.SLDDRW": "cfad7e8ea770dc990927c387b1643ff125c1aaaac3452152501c413b8c576285",
+    "Modelos3D/A-Eje.SLDPRT": "11d0824a7e2f383101cddc9ee18b5999b6a770f221a6bae04171b51f94ab9000",
+    "Modelos3D/A-EjeInterior.PDF": "6c07e9b8767691863b8b5a0eff315ac54941e175576da9e1421ea6fda215b97d",
+    "Modelos3D/A-EjeInterior.SLDDRW": "7e49e772c8f215ed774ef86fc890d1d957f48f1785638ba31add01ddf73e72db",
+    "Modelos3D/A-EjeInterior.SLDPRT": "d8ee48f0fea3937bc23e39950aa8b63e46e11516959ba09e378c3e5b7485e861",
+    "Modelos3D/A-EnsambleBrazo.PDF": "20b7355697f42c7a59bd264692d877cd9932932fa2ae1b70dd4befd424a1254d",
+    "Modelos3D/A-EnsambleBrazo.SLDASM": "a9296eb37355d898417c4e0fd56fd1e4fdfcec62ae1f948f5b9139fbdfd7ae22",
+    "Modelos3D/A-EnsambleBrazo.SLDDRW": "2556e1e24a48f2e144ba5a74262377d13199aeb907a62abf7ba53c73db575e7d",
+    "Modelos3D/A-EnsambleCarretel.PDF": "e8c4423bfe0b481633f021961e4449649f7d32353099f96c9acc5edaa0f2d825",
+    "Modelos3D/A-EnsambleCarretel.SLDASM": "30ed11ca9ba5ebad8393d2b6bd304952887bb502ead411f162fa291057602e10",
+    "Modelos3D/A-EnsambleCarretel.SLDDRW": "895ea02c006f812586927359072e34f896923492b53d15c4617c71e909d8a0b5",
+    "Modelos3D/B-Antebrazo.PDF": "a36fd13ad6eed0f2d83f306b49e3eac07dac29a01dcaa460586b1d99daac4420",
+    "Modelos3D/B-Antebrazo.SLDDRW": "6be8b0733117d128f49fb05d98701592bf7b7bee0b65e2e2f1593d9f757bdc58",
+    "Modelos3D/B-Antebrazo.SLDPRT": "12c370a6136c7e357c23bfddec99d4ada03d69969b0c4db15456ed232470d8ce",
+    "Modelos3D/B-CarretelInf.SLDPRT": "a937c813349b4f3730047cbdbc7490acc6eda49c62a35317a457527982d37eaf",
+    "Modelos3D/B-CarretelSup.SLDPRT": "f470bd3408e498096b28f2c40a2c9e7ef8c29bce4642f21e1dc584bb2b81bc5b",
+    "Modelos3D/B-Eje.SLDPRT": "a93fa00bab44a857a422444804773979e09b4a40e6293327c7fe0c191759edfa",
+    "Modelos3D/B-EnsambleAntebrazo.PDF": "578dd43fa550fb0b3a7c4b126c8a1fc727da63199c1eb309d237b5c1aa418929",
+    "Modelos3D/B-EnsambleAntebrazo.SLDASM": "1c38beb036054dce813e2343aed9b69f2ab85e9adfbd0d6af5782a8442a2feed",
+    "Modelos3D/B-EnsambleAntebrazo.SLDDRW": "947717950ec566125a39e9c77a2d173dcd7e8fff6a9498053017a7fe52f50383",
+    "Modelos3D/B-ExtensorM3.PDF": "2435f593453e52e6e558fef660b6e9275e9a1afeaacfbbff1079ce45d489a383",
+    "Modelos3D/B-ExtensorM3.SLDDRW": "fd553e690ac3bf333fb434c04d11140cc37d353bdb370a2630a65d4aa841576b",
+    "Modelos3D/B-ExtensorM3.SLDPRT": "2439f98e8ab45f98226f2146007136e7442e9552f7291909445b3c7cb51d8c94",
+    "Modelos3D/B-SoporteEjeFijo.PDF": "69e11b349c337123c81d6ea3094142141827e7fe673e077e8fa57636c3a0562a",
+    "Modelos3D/B-SoporteEjeFijo.SLDDRW": "8eaa806301ee7ba0edce8c9a1d135f4f96bd291978174e2b80458b1abad2efc6",
+    "Modelos3D/B-SoporteEjeFijo.SLDPRT": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+    "Modelos3D/B-SoporteM3.PDF": "bdf3722a18020f9e343a0e742eeae0777c390b8d10d0c90f475aa4535ab75c24",
+    "Modelos3D/B-SoporteM3.SLDDRW": "484aa7fe68ff357e30416fe43289d9e29e1117a938395bafd504de257394adfd",
+    "Modelos3D/B-SoporteM3.SLDPRT": "6b1e7eb5bccbd0c2f88fad4a66b16c48dfff06a394005d4fe1b0647fa37b8135",
+    "Modelos3D/B-SoporteRuleman.PDF": "cda21b96cb7ac5ef18180a0312e2b3299138614ee0bbc846c8b618c1c401b8a0",
+    "Modelos3D/B-SoporteRuleman.SLDDRW": "4ab5a174155e4f09c39d5217bb6ad938e65b5100aab94300ae11a7876dd32f5a",
+    "Modelos3D/B-SoporteRuleman.SLDPRT": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+    "Modelos3D/B-Vs1.PDF": "4689135d8996012179fb011e98d90b99c72042dac2e7446e880c2ba46dcb7b94",
+    "Modelos3D/B-Vs1.SLDDRW": "c14eed620a9d3ef6383f5647c4b49b71cb3c873a3da338aedceb0e3ef9313306",
+    "Modelos3D/BorneraX4.SLDPRT": "777f0bb4c22f6f324db2ad6773c2c1ff3c2c3a7e1e54d08152ee15d636d1082f",
+    "Modelos3D/BorneraX6.SLDPRT": "04ac74f2ac6eeed22166e3db68dc8cd215f46fbc8d76fa8bf873691d54c779f4",
+    "Modelos3D/KY-003.PDF": "aec7e1106ba1f22c3e4b056682b75f36fe6b932b9f59b2c0a2eb23ef2c819c83",
+    "Modelos3D/KY-003.SLDDRW": "2958aa26f8c49b14373f7c570f9322737dc15831134aa09508968447ff94520a",
+    "Modelos3D/KY-003.SLDPRT": "f4dc8c5b2fcebf24fc16a6664c45eef1ca69a4bced5ba8ed1b2808f4344ec094",
+    "Modelos3D/NEMA17.PDF": "abe03de67df151d98d977525a2736069175f34bb3964878d3fbee3b60f7867cd",
+    "Modelos3D/NEMA17.SLDDRW": "8b4aa305197679afdca298e74acecc345f728d2a576cfed3d3f80e1135d3961f",
+    "Modelos3D/NEMA17.SLDPRT": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+    "Modelos3D/NEMA23.PDF": "631fd96ec52401d5d37602c8b4447f9380691a7415299a84dc605dadccb4403c",
+    "Modelos3D/NEMA23.SLDDRW": "1617d4d48e5fc09771bd649632753d1c6a23d88f780d34d7220c940d2dfc600a",
+    "Modelos3D/NEMA23.SLDPRT": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+    "Modelos3D/R-Bancada.PDF": "207143cd2a4c940b6929cb14dd9099f347d5f6a157dc5922ce3d9f21e750fa5c",
+    "Modelos3D/R-Bancada.SLDDRW": "895773481066140ca583d37acde9b3c09d7105ce081e098e42b4d394e388e5b3",
+    "Modelos3D/R-Bancada.SLDPRT": "142b7025e8e5aa78bcd99d926460960d4733b04a96e766522c1096475149d31c",
+    "Modelos3D/R-CarretelInf.SLDPRT": "64541bc13b13a388b14236e65d4dc2d8fac748b3e9681bf884bff2882763b2c3",
+    "Modelos3D/R-CarretelSup.SLDPRT": "da9dcc5e2862c373070e67306f165e324c042da2ebbede433a2a216e8705d0c1",
+    "Modelos3D/R-ContraBancada.PDF": "f8a43d9046d361867c131593e7b62685bcaaf45eefca853e7791a869bca1b207",
+    "Modelos3D/R-ContraBancada.SLDDRW": "67fec740c34d3a2d7224727635d803604fc8b45c1813c494dfa3dec142628401",
+    "Modelos3D/R-ContraBancada.SLDPRT": "010f3d820c0e69d6b8f39b89eb7fb42ceb869a09106a0d36a9be997ff008b71e",
+    "Modelos3D/R-EnsambleCarretel.PDF": "3cc3e2ffe40b13d9607ced90aa1b7030f4d331119c209d0ff2dae14a63cc3302",
+    "Modelos3D/R-EnsambleCarretel.SLDASM": "61afb0fbe906e535630be3673bc9c49ae866308010869f5e026c64c754d0717d",
+    "Modelos3D/R-EnsambleCarretel.SLDDRW": "5be7cbbb2e48a68212131872f71c060f844d45384a334b059eef7aa6f1e865ba",
+    "Modelos3D/R-EnsambleRotacion.PDF": "ee443fd8f71e7fa09d98738a5f41d25329b3770afac2018006eb57820d1c65fa",
+    "Modelos3D/R-EnsambleRotacion.SLDASM": "f3691f0425d30c01f244aacdce4e9a7abec2a311cd696852d4b3a81b71179d0b",
+    "Modelos3D/R-EnsambleRotacion.SLDDRW": "d1c9f09725fcda01a1f524479a7d1e1dec6f150b8567350c4350babf50a3da44",
+    "Modelos3D/Z-608zz.SLDPRT": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+    "Modelos3D/Z-6907-2RS.SLDPRT": "ffad950d435c7adda8d5addd482bb20fcd00cb3ec95eff544001603f35e8e8fa",
+    "Modelos3D/Z-AcopleFlex.SLDPRT": "7a534620cfec214ae1593b3bfbd0873c0fe17aafeb083ddb8a2d55701ac0ce53",
+    "Modelos3D/Z-BridaACME.SLDPRT": "5b46f5a58c491ba8b6276925cbf84123bda7919e574f18a95c5e62122d0eb288",
+    "Modelos3D/Z-BujeExterior.PDF": "f14bc2b17c4a79f592162f7f96cbdcfeddc998be3eeeda17a4a79e6000997c04",
+    "Modelos3D/Z-BujeExterior.SLDDRW": "304647556037cba5c1fd48ee840beaa77d9c304e8b2670f7a801306b4aba4a7b",
+    "Modelos3D/Z-BujeExterior.SLDPRT": "ed4d66fb189feb52c9d3d94714475d08da3dd05d25b13f597ac419d466ab2790",
+    "Modelos3D/Z-BujeInterior.PDF": "9958f2b2e7e3ed44717d25edbc74786f3c755311454436975bcc04e983676cd3",
+    "Modelos3D/Z-BujeInterior.SLDDRW": "c29d8e751f8e5d123c7d8cd20b73f1af75961638dc010af31cee9e4cfc7b3e37",
+    "Modelos3D/Z-BujeInterior.SLDPRT": "a8fa4a5e821b31f9ef6b3d2878d73fec4415969b2481eb63e2a802a182ff9547",
+    "Modelos3D/Z-Cuerpo.PDF": "c95acce2e8074d4f60c1d821d75af9eb5f565bcb14d92ac13b8beb9f8eb62c51",
+    "Modelos3D/Z-Cuerpo.SLDDRW": "54052c31c75406ac380b704baa10cf6e2ab904110620d6fcc71892cd3fdde3bb",
+    "Modelos3D/Z-Cuerpo.SLDPRT": "e3f1fc239fcf450806833f2213d44b76337858e126df9fe3bc99b3cb1408309a",
+    "Modelos3D/Z-EnsambleEfector.PDF": "c6c9f9a079e760fd543be12eb7331fdbd9d74c3f37a567dd3d842ca36fffd2d4",
+    "Modelos3D/Z-EnsambleEfector.SLDASM": "2ab12acab70c21f12ce78de1e0ef64e13b30e4f217c27b0a96ea7700804add45",
+    "Modelos3D/Z-EnsambleEfector.SLDDRW": "a39a173becbb72248c9d4cb6143604ee7e5dab5129a71635a80a596872d48a22",
+    "Modelos3D/Z-EnsambleM4.PDF": "440869c53ec67faf68f891ae64fcb6164d05d8cbbdbd0522f40195bd12abdd13",
+    "Modelos3D/Z-EnsambleM4.SLDASM": "8ab94d39896002d5904ad48ca5feb4ad091c6ec3e1ba5feb5f8141c0f0714620",
+    "Modelos3D/Z-EnsambleM4.SLDDRW": "a7a1d0251fb77cba27f5909c5458b6a41818210b934aed6e7a404b580f49ec7f",
+    "Modelos3D/Z-Piston.PDF": "25d950264ce17be34d42fa0f045568e8189cca7e5d9180c418d46df690924e57",
+    "Modelos3D/Z-Piston.SLDDRW": "4bd22e96dae6f6dc7461247bdd05de3c29626fc8800321bf34c1530f5cb0aeaa",
+    "Modelos3D/Z-Piston.SLDPRT": "9daee92ea9d50c3f3d0db4d1f55bc49165789efad022cfc00dd8108a8a261e8c",
+    "Modelos3D/Z-SoporteEfector.PDF": "e8b8179cba6b2f71890b2db323815483ab21b3f4a19c32c03e7c972d3cb498c7",
+    "Modelos3D/Z-SoporteEfector.SLDDRW": "0a2f90fdd3099cc3f8cd2ae80e7703435818b5c19cfd8b9f47de05546ddef5fe",
+    "Modelos3D/Z-SoporteEfector.SLDPRT": "e28bbbcbdc55730b57c1332a735f0108f83657879813b28a23e761ac07cf1a62",
+    "Modelos3D/Z-SoporteM4.PDF": "7a52fffb2399af987d237fef7599935ae2607444e7022892c3c0834f47ffd280",
+    "Modelos3D/Z-SoporteM4.SLDDRW": "7a59ebd867a216c573e953851d84098406abf668e0d0e8e47c251e0d5199cc6f",
+    "Modelos3D/Z-SoporteM4.SLDPRT": "89b47ec55d4ed5e62665c11cd19e1e23931e9c4fdfcdc50856ec96968ce1636a",
+    "Modelos3D/Z-SoporteRuleman.PDF": "ccd9f7e1cfaf10cc5fadc43cb221fc2efb581174658699cef27127fb3f98e240",
+    "Modelos3D/Z-SoporteRuleman.SLDDRW": "61bfacefd79e4b81eae0c492cd219c1b5dd13fb6647db2603190a32a14e52d10",
+    "Modelos3D/Z-SoporteRuleman.SLDPRT": "5c5d2923eeda77663c858ab739024197898eabaf7a4061b33fa3922f7722e5a6",
+    "Modelos3D/Z-TuercaACME.SLDPRT": "f30046870bc161d83abd8d72488ea43b1a348ed000db10ebafc4a5feadc35d13",
+    "Modelos3D/Z-VarillaACME.PDF": "1ec8e6b10c092eda0bf95e9ddca16db6b7981edeff54a96488eec947515b24ad",
+    "Modelos3D/Z-VarillaACME.SLDDRW": "bd356b0186e6f61b88939c65975f84ddfd37767d990aa73176d3a668d168f418",
+    "Modelos3D/Z-VarillaACME.SLDPRT": "2fa6450e36dc00b89c599e91b2690b84348df990cc8ebb239f30faef3d3bee24",
+    "Modelos3D/Z-Vs1.PDF": "dffa7af2623e1dd3b6add51225ef63e75f134d518ceb5305a130d792f5e95b87",
+    "Modelos3D/Z-Vs1.SLDDRW": "8a22a737896d39be86948fead6dc81067d0d183cdbf8c5c7ecf2745ccee4602b",
+    "Modelos3D/Z-Vs2.PDF": "997a71c7db32afc7ffc13371ff19cb3bc7c58bd8cbc1207bef2850e8e3bff600",
+    "Modelos3D/Z-Vs2.SLDDRW": "8f14050d7244ea9be6e7163f91a3eb2a9d90a07b3d81e12cd0d667e331f2c691",
+    "cad/derivados/informe.json": "e8f01f0cc10438967672ec156f19acc5f98b828114c99e673645f2672eae3279",
+    "cad/derivados/step/0-6203-2RS.step": "a7150e212c04792c69a0d301fb7441daa0d5e67ae1f1c3b09b40c30790441969",
+    "cad/derivados/step/0-Bancada.step": "9329ad8231093d0da547086e8dff49a3dc13e599b6f2191f8629240d6900d5a5",
+    "cad/derivados/step/0-ElevadorM2.step": "6779b0cf347f1ac69121c3d7be085949067e3f42caf4f9211b9b9c7c5e0342ff",
+    "cad/derivados/step/0-PlatinaSuperior.step": "2c3549e449e02fc3f21b373688193f016c1858580894d98d7827a9f12b838c5f",
+    "cad/derivados/step/0-SoporteMotores.step": "68719fd360164dbdbd7a16bf1bd725b7cfd80a72ad324a2da8fc9e2784089215",
+    "cad/derivados/step/0-Torre.step": "5645cfedfce3ba8235655667d94065563690c423de68ef12d4890a746c34e5a8",
+    "cad/derivados/step/2GT_20Teet_5Bore.step": "dd6d03d5593d1259403e732c7fd06b3f0fa5ce8ab1c9faecb036080edf8767ab",
+    "cad/derivados/step/2GT_20Teet_635Bore.step": "7dfee691b7d44518a13d3a13f09577d2684323adae4e0f4502209a03ed262634",
+    "cad/derivados/step/2GT_60Teet_10Bore.step": "c3c149fc239fbacec54d60e8321cd6d843e9144b5ad36c15f85723e0860d8e42",
+    "cad/derivados/step/2GT_60Teet_8Bore.step": "a8c93048980047eb231ad53e7c6a9f1e3ad2bfcbd60c35701991d83d4de3c82a",
+    "cad/derivados/step/2GT_80Teet_10Bore.step": "da202bb84137439e3bf76d8a4f74f31580dd8ebf167649818fdd47c6d4eed2e9",
+    "cad/derivados/step/2GT_80Teet_16Bore.step": "c72927f9edb8c75986cf0b44724cfcdb908c01a66823dd5851573ec2da582ce6",
+    "cad/derivados/step/2GT_80Teet_40Bore.step": "056cb1e3d8c51a271cd5608e0541b31423963b89241c5bb00d6cba3b5ffe99c4",
+    "cad/derivados/step/2GT_80Teet_8Bore.step": "0973313d4cae80689caf511b1d7a570a7619f2031b42742b9be587998f6d8f24",
+    "cad/derivados/step/A-Brazo.step": "0ee05855061f8a008a7d8ff5c6335b41076980e7e65227c0f4b9091e091ec809",
+    "cad/derivados/step/A-BridaEje.step": "739817b0ef0ea0cb6ecc8b91ea449daee9a76f96e2b76a9f69dae31e7d01b97f",
+    "cad/derivados/step/A-CarretelInf.step": "c42706b7a029a91416cfe235108e4f743e390324a1a1f2cd823996ac2f939e3c",
+    "cad/derivados/step/A-CarretelSup.step": "5a377c4df3120be3f2a2148e5d8e5ffbda8309046bf146fae18277431be556b2",
+    "cad/derivados/step/A-Eje.step": "a31fdfcfbb667dd40d718ad4ed3848899dfee34df068d51456a04898cf0cc834",
+    "cad/derivados/step/A-EjeInterior.step": "8a027439a2c307c0cc49f0f182d5ca12b341bde8b5602376913ef664c444f560",
+    "cad/derivados/step/B-Antebrazo.step": "d4d2ec22f148da9c6042ed3cb7e0cb07e305dd128202c92ad852129a120e0381",
+    "cad/derivados/step/B-CarretelInf.step": "01a1eee8c95fe665a8bd05c19c73f7601e55205e95e2fdce62eadb3135fcee6d",
+    "cad/derivados/step/B-CarretelSup.step": "0d326cc0c64ab626fe390af85c4114a236464b783a8cafae0601613513c880ed",
+    "cad/derivados/step/B-Eje.step": "0c781de53f284b3198e1f5152ebef40fe93fe9fffd34bfc579d98f4a67da2733",
+    "cad/derivados/step/B-ExtensorM3.step": "396d4a85ca1af1354b12853b2818ba778ec34dbc9ee26ffca0f37819f44b8e49",
+    "cad/derivados/step/B-SoporteEjeFijo.step": "944f453803c847117dc2299ee9bdb7589b6e2be48d7ae2c57c16bdfff373c6d6",
+    "cad/derivados/step/B-SoporteM3.step": "d0f72a7f583f6b4c5f240eb68010d8acd990447dfc02a5d5d8857e68cb43eb87",
+    "cad/derivados/step/B-SoporteRuleman.step": "604491002716f6d9ff41906abc2a9895f5a5e66e4c378db3dc99850170b46f7e",
+    "cad/derivados/step/BorneraX4.step": "25e578ddc3990eaf299058ca964d8e4acd8b511d8cd9d3b32b65180ea5ab48ab",
+    "cad/derivados/step/BorneraX6.step": "a586686389678b3d7d12a1e4bae4ccc724dd807d5078dfc07ea5b73dafe55041",
+    "cad/derivados/step/KY-003.step": "1e8e12a67ce29985b58c460ef30c12f6b1124477e4494713c10003301f542262",
+    "cad/derivados/step/NEMA17.step": "c518140415b5025553a38991630df1e97a5f4e75c574d25d7d5e6ca2532bc6f9",
+    "cad/derivados/step/NEMA23.step": "91fce9bc605daba76f877f53f5cf5d0387d829082d157ef73ba40f38ce4c8b7d",
+    "cad/derivados/step/R-Bancada.step": "959a722d9ff724f910bc6e75b58f40b29be9c056f38d3652a1c65681cb10871d",
+    "cad/derivados/step/R-CarretelInf.step": "735859230e4c2592b7a9e6681bad153602d619050b14b69f3ad8b8c8ba237d6a",
+    "cad/derivados/step/R-CarretelSup.step": "e9817a1a2b12e436272cb4f7cb6bcedba74f0fc4a14b4723dc357f4dc6c343f7",
+    "cad/derivados/step/R-ContraBancada.step": "f6aea6ef73e6e5afe78835dce0342ea27cf20928ceaf5a264c72ca7abae9f0a4",
+    "cad/derivados/step/Z-608zz.step": "aa5f0ccb12440d7270369381516d47c6c4356b9c2e54a12e2d5a84ba7968d18f",
+    "cad/derivados/step/Z-6907-2RS.step": "c8ca82d62e37b6b2490ad9c627797199300b800e7d83ca21a1f542bc374125ea",
+    "cad/derivados/step/Z-AcopleFlex.step": "7529b06440c35cb9d395a5f94b65bea92ab2da81e845c35c353ab6680b08f3ed",
+    "cad/derivados/step/Z-BridaACME.step": "dfaa32620985bee36942fb60e8d35212507eba7701f997586cf3532ee498a810",
+    "cad/derivados/step/Z-BujeExterior.step": "5e4189efa3a28149596ee1c8eb29467485654c5cfa7ef0931ef6f12fe7889bcc",
+    "cad/derivados/step/Z-BujeInterior.step": "b4279e268659378f7b2ea163e70ffbad291d19d398b9b7ca4bdd07f334b95d0c",
+    "cad/derivados/step/Z-Cuerpo.step": "d79131aad2aa22def2fd9cf1d809f24a01ad8decf43f1f215e527c0230790ce5",
+    "cad/derivados/step/Z-Piston.step": "341bbfe5c6ebbd029d49105c88d2cfef348c74151e7c3a51a2f5c366664b9029",
+    "cad/derivados/step/Z-SoporteEfector.step": "269f273b7c5495cd9ef5d28b36a3e0a8e27aaf84a9eb63b808b4fe1f0f4e1043",
+    "cad/derivados/step/Z-SoporteM4.step": "e5e59199fb510d339f3635aaa616e330c77dcbec837a1714d660ccf9c34e6b86",
+    "cad/derivados/step/Z-SoporteRuleman.step": "b271c02e03f36fa01f35d2285c2b61ad57de56159b8309cbbd4e843364b0ab89",
+    "cad/derivados/step/Z-TuercaACME.step": "1fdb85fc5efdf3c2a55447f12fb2f07d5f985b1568d797258535b0a84c92a760",
+    "cad/derivados/step/Z-VarillaACME.step": "12af58c73409431686b089cc4d64160dbc7ec5d73115a0eea6d51bc0ae95ef56",
+    "cad/ensambles/ejes_propuestos.json": "0ca281741ecfcf408115442e79b8be0aec23bac810618ac7fd49ef73f99ba8a9",
+    "cad/ensambles/informe.json": "541de5c1b812d549c0afc9e9a41acb13fff0f4f35769de86517ee68dfe96e6d3",
+    "cad/ensambles/integracion_articulada.json": "c895764471763b44814227a79e0d1343fac89197cfebcbbeeb7e080930fe4c45",
+    "cad/ensambles/registro_subensambles.json": "fc57d16b85ed3fda3ccb8c8439b8d2669833484a69ab0f159ac7cc7583aeca53",
+    "config/cad_integration.json": "2cc6ada073a706e53926ef829429d6a4c2c096a376c6725c72b8532d10dcbe6e",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "tools/calcular_propiedades_cad.py": "c3dea02608b263f267c7de401a5ab5d851f173652d47402b036bf6be1786df8a",
+    "tools/convertir_cad.py": "e8dfd765ae74abab569efc2c9982e5870756f0a223e6dd62742f00d077547520",
+    "tools/integrate_cad.py": "2b669648ea1c0f6ddc91ccae2d850f5791dd40ebd53115cb5ce45d8ad5ee31d0",
+    "tools/registrar_subensambles.py": "845503ef569c2a677cfd7eaefe4a509ea1cf82bd314336366946eeaf4c935351",
+    "tools/requirements-cad.txt": "90efabe7cc4d29dabe5130dec0b44b870a24c7c014a296d637404411814bc199",
+    "webots/protos/SCARA.proto": "245a1032cea57b5a485f008f187355a4419a58ef3eec8f985ccc03fb72634856",
+    "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e"
+  },
+  "protected_inputs_unchanged": true,
+  "parts": [
+    {
+      "name": "0-6203-2RS",
+      "source": "Modelos3D/0-6203-2RS.SLDPRT",
+      "source_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+      "step": "cad/derivados/step/0-6203-2RS.step",
+      "step_sha256": "a7150e212c04792c69a0d301fb7441daa0d5e67ae1f1c3b09b40c30790441969",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.1684368476863839e-05,
+            "centroid_m": [
+              6.932498922559901e-20,
+              8.287520434345254e-21,
+              0.005999999999999998
+            ],
+            "inertia_per_density_m5": [
+              [
+                1.5119197879613774e-09,
+                -1.9284354316030104e-25,
+                1.7053025658242244e-28
+              ],
+              [
+                -1.9284354316030104e-25,
+                1.511919787961348e-09,
+                -3.292130231623028e-26
+              ],
+              [
+                1.7053025658242244e-28,
+                -3.292130231623028e-26,
+                2.771730299763881e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.1684368476863839e-05,
+        "centroid_m": [
+          6.932498922559901e-20,
+          8.287520434345254e-21,
+          0.005999999999999998
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.5119197879613774e-09,
+            -1.9284354316030104e-25,
+            1.7053025658242244e-28
+          ],
+          [
+            -1.9284354316030104e-25,
+            1.511919787961348e-09,
+            -3.292130231623028e-26
+          ],
+          [
+            1.7053025658242244e-28,
+            -3.292130231623028e-26,
+            2.771730299763881e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "0-Bancada",
+      "source": "Modelos3D/0-Bancada.SLDPRT",
+      "source_sha256": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+      "step": "cad/derivados/step/0-Bancada.step",
+      "step_sha256": "9329ad8231093d0da547086e8dff49a3dc13e599b6f2191f8629240d6900d5a5",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 0.00011540280709103163,
+            "centroid_m": [
+              4.567498964476857e-16,
+              -1.0780087236862195e-16,
+              0.02977461299744552
+            ],
+            "inertia_per_density_m5": [
+              [
+                6.428654782981349e-08,
+                -4.184403223917457e-23,
+                -1.3225341196217785e-23
+              ],
+              [
+                -4.184403223917457e-23,
+                6.428654782981352e-08,
+                8.578314113439326e-24
+              ],
+              [
+                -1.3225341196217785e-23,
+                8.578314113439326e-24,
+                6.939664923553014e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 0.00011540280709103163,
+        "centroid_m": [
+          4.567498964476857e-16,
+          -1.0780087236862195e-16,
+          0.02977461299744552
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.428654782981349e-08,
+            -4.184403223917457e-23,
+            -1.3225341196217785e-23
+          ],
+          [
+            -4.184403223917457e-23,
+            6.428654782981352e-08,
+            8.578314113439326e-24
+          ],
+          [
+            -1.3225341196217785e-23,
+            8.578314113439326e-24,
+            6.939664923553014e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "0-ElevadorM2",
+      "source": "Modelos3D/0-ElevadorM2.SLDPRT",
+      "source_sha256": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+      "step": "cad/derivados/step/0-ElevadorM2.step",
+      "step_sha256": "6779b0cf347f1ac69121c3d7be085949067e3f42caf4f9211b9b9c7c5e0342ff",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 3.51207243475574e-05,
+            "centroid_m": [
+              0.012900133709264924,
+              -8.921915387900384e-18,
+              0.008499999999999992
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.1449856325197906e-08,
+                -5.387271813374863e-24,
+                -2.3283064365386967e-24
+              ],
+              [
+                -5.387271813374863e-24,
+                1.6817418759600607e-08,
+                -4.512831173102953e-25
+              ],
+              [
+                -2.3283064365386967e-24,
+                -4.512831173102953e-25,
+                4.6575626862057875e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 3.51207243475574e-05,
+        "centroid_m": [
+          0.012900133709264924,
+          -8.921915387900384e-18,
+          0.008499999999999992
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.1449856325197906e-08,
+            -5.387271813374863e-24,
+            -2.3283064365386967e-24
+          ],
+          [
+            -5.387271813374863e-24,
+            1.6817418759600607e-08,
+            -4.512831173102953e-25
+          ],
+          [
+            -2.3283064365386967e-24,
+            -4.512831173102953e-25,
+            4.6575626862057875e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "0-PlatinaSuperior",
+      "source": "Modelos3D/0-PlatinaSuperior.SLDPRT",
+      "source_sha256": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+      "step": "cad/derivados/step/0-PlatinaSuperior.step",
+      "step_sha256": "2c3549e449e02fc3f21b373688193f016c1858580894d98d7827a9f12b838c5f",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 4.921555892011468e-05,
+            "centroid_m": [
+              6.375538122425312e-19,
+              2.5132556076807027e-18,
+              0.0023501510534958453
+            ],
+            "inertia_per_density_m5": [
+              [
+                4.570558022244946e-08,
+                1.7025740817189218e-24,
+                1.0077393513353542e-26
+              ],
+              [
+                1.7025740817189218e-24,
+                4.570558022244851e-08,
+                -3.451138805440183e-28
+              ],
+              [
+                1.0077393513353542e-26,
+                -3.451138805440183e-28,
+                9.122756638311414e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 4.921555892011468e-05,
+        "centroid_m": [
+          6.375538122425312e-19,
+          2.5132556076807027e-18,
+          0.0023501510534958453
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.570558022244946e-08,
+            1.7025740817189218e-24,
+            1.0077393513353542e-26
+          ],
+          [
+            1.7025740817189218e-24,
+            4.570558022244851e-08,
+            -3.451138805440183e-28
+          ],
+          [
+            1.0077393513353542e-26,
+            -3.451138805440183e-28,
+            9.122756638311414e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "0-SoporteMotores",
+      "source": "Modelos3D/0-SoporteMotores.SLDPRT",
+      "source_sha256": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+      "step": "cad/derivados/step/0-SoporteMotores.step",
+      "step_sha256": "68719fd360164dbdbd7a16bf1bd725b7cfd80a72ad324a2da8fc9e2784089215",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.361901993244654e-05,
+            "centroid_m": [
+              -0.010159430220100069,
+              1.1398035671876459e-17,
+              0.0011999999999999984
+            ],
+            "inertia_per_density_m5": [
+              [
+                1.6964800863154663e-08,
+                1.309745917283215e-23,
+                2.910383045673371e-25
+              ],
+              [
+                1.309745917283215e-23,
+                7.700997909386778e-08,
+                -1.527951098978562e-26
+              ],
+              [
+                2.910383045673371e-25,
+                -1.527951098978562e-26,
+                9.395210569788724e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.361901993244654e-05,
+        "centroid_m": [
+          -0.01015943022010007,
+          1.1398035671876459e-17,
+          0.0011999999999999984
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.6964800863154663e-08,
+            1.309745917283215e-23,
+            2.910383045673371e-25
+          ],
+          [
+            1.309745917283215e-23,
+            7.700997909386778e-08,
+            -1.527951098978562e-26
+          ],
+          [
+            2.910383045673371e-25,
+            -1.527951098978562e-26,
+            9.395210569788724e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "0-Torre",
+      "source": "Modelos3D/0-Torre.SLDPRT",
+      "source_sha256": "fd94227671db45086676cdf6400add36907ed54e42645c7f0be022c91325f2ff",
+      "step": "cad/derivados/step/0-Torre.step",
+      "step_sha256": "5645cfedfce3ba8235655667d94065563690c423de68ef12d4890a746c34e5a8",
+      "batch_mesh_status": "failed",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 9.457636133149845e-06,
+            "centroid_m": [
+              7.866306713181604e-17,
+              -0.11863124410556435,
+              0.22080000000000002
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.2099027501833444e-10,
+                -1.4877221794115746e-26,
+                -1.740409061312681e-24
+              ],
+              [
+                -1.4877221794115746e-26,
+                7.212439359489501e-08,
+                -8.940696716308594e-23
+              ],
+              [
+                -1.740409061312681e-24,
+                -8.940696716308594e-23,
+                7.244134861182972e-08
+              ]
+            ]
+          },
+          {
+            "index": 2,
+            "volume_m3": 9.457636133149845e-06,
+            "centroid_m": [
+              3.373968216899762e-17,
+              0.11863124410556425,
+              0.22080000000000005
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.20990275018096e-10,
+                -4.388350720768239e-24,
+                2.6002680897363544e-24
+              ],
+              [
+                -4.388350720768239e-24,
+                7.212439359489472e-08,
+                8.940696716308594e-23
+              ],
+              [
+                2.6002680897363544e-24,
+                8.940696716308594e-23,
+                7.244134861182979e-08
+              ]
+            ]
+          },
+          {
+            "index": 3,
+            "volume_m3": 0.0003738976633641449,
+            "centroid_m": [
+              -1.366811968847733e-15,
+              8.932150015585106e-17,
+              0.10072380487392432
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.899829546801569e-06,
+                -1.1504038411658304e-20,
+                3.3767142837853253e-19
+              ],
+              [
+                -1.1504038411658304e-20,
+                5.876501874233637e-06,
+                -5.940414877177884e-22
+              ],
+              [
+                3.3767142837853253e-19,
+                -5.940414877177884e-22,
+                6.0295041377297355e-06
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 0.0003928129356304446,
+        "centroid_m": [
+          -1.2982890603858597e-15,
+          8.286404111656184e-17,
+          0.10650588004888203
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.426266446168177e-06,
+            -1.145803889812673e-20,
+            3.3459586943281795e-19
+          ],
+          [
+            -1.145803889812673e-20,
+            6.280343915679046e-06,
+            -3.153832826083147e-22
+          ],
+          [
+            3.3459586943281795e-19,
+            -3.153832826083147e-22,
+            6.440588499514348e-06
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_20Teet_5Bore",
+      "source": "Modelos3D/2GT_20Teet_5Bore.SLDPRT",
+      "source_sha256": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+      "step": "cad/derivados/step/2GT_20Teet_5Bore.step",
+      "step_sha256": "dd6d03d5593d1259403e732c7fd06b3f0fa5ce8ab1c9faecb036080edf8767ab",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.351638273599532e-06,
+            "centroid_m": [
+              8.67658534945671e-05,
+              8.675989098286248e-05,
+              0.008190549977758727
+            ],
+            "inertia_per_density_m5": [
+              [
+                1.049381216756343e-10,
+                1.750392476695488e-14,
+                9.570817767369505e-13
+              ],
+              [
+                1.750392476695488e-14,
+                1.0493807339783048e-10,
+                9.572673724761307e-13
+              ],
+              [
+                9.570817767369505e-13,
+                9.572673724761307e-13,
+                7.016378478553249e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.351638273599532e-06,
+        "centroid_m": [
+          8.67658534945671e-05,
+          8.675989098286248e-05,
+          0.008190549977758727
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.049381216756343e-10,
+            1.750392476695488e-14,
+            9.570817767369505e-13
+          ],
+          [
+            1.750392476695488e-14,
+            1.0493807339783048e-10,
+            9.572673724761307e-13
+          ],
+          [
+            9.570817767369505e-13,
+            9.572673724761307e-13,
+            7.016378478553249e-11
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_20Teet_635Bore",
+      "source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+      "source_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+      "step": "cad/derivados/step/2GT_20Teet_635Bore.step",
+      "step_sha256": "7dfee691b7d44518a13d3a13f09577d2684323adae4e0f4502209a03ed262634",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.1438875407764756e-06,
+            "centroid_m": [
+              8.885816160058503e-05,
+              8.885068447068361e-05,
+              0.008086653722094689
+            ],
+            "inertia_per_density_m5": [
+              [
+                9.820681218745173e-11,
+                1.6726429388890545e-14,
+                8.737899268391828e-13
+              ],
+              [
+                1.6726429388890545e-14,
+                9.820675975915837e-11,
+                8.739499120294884e-13
+              ],
+              [
+                8.737899268391828e-13,
+                8.739499120294884e-13,
+                6.844795185507034e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.1438875407764756e-06,
+        "centroid_m": [
+          8.885816160058503e-05,
+          8.885068447068361e-05,
+          0.008086653722094689
+        ],
+        "inertia_per_density_m5": [
+          [
+            9.820681218745173e-11,
+            1.6726429388890545e-14,
+            8.737899268391828e-13
+          ],
+          [
+            1.6726429388890545e-14,
+            9.820675975915837e-11,
+            8.739499120294884e-13
+          ],
+          [
+            8.737899268391828e-13,
+            8.739499120294884e-13,
+            6.844795185507034e-11
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_60Teet_10Bore",
+      "source": "Modelos3D/2GT_60Teet_10Bore.SLDPRT",
+      "source_sha256": "1c7c2bc6126f5b37da5510fbf8362f0ea9fa6d2864239b6c1dcd3dcaa3196395",
+      "step": "cad/derivados/step/2GT_60Teet_10Bore.step",
+      "step_sha256": "c3c149fc239fbacec54d60e8321cd6d843e9144b5ad36c15f85723e0860d8e42",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.7831509837193455e-05,
+            "centroid_m": [
+              4.709426010239871e-05,
+              4.7099829469862774e-05,
+              0.008337154248525118
+            ],
+            "inertia_per_density_m5": [
+              [
+                2.1412887133585274e-09,
+                3.8507100181441116e-14,
+                -7.69506489666291e-12
+              ],
+              [
+                3.8507100181441116e-14,
+                2.1412886372525786e-09,
+                -7.695336940181117e-12
+              ],
+              [
+                -7.69506489666291e-12,
+                -7.695336940181117e-12,
+                3.298532732931504e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.7831509837193455e-05,
+        "centroid_m": [
+          4.709426010239871e-05,
+          4.7099829469862774e-05,
+          0.008337154248525118
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.1412887133585274e-09,
+            3.8507100181441116e-14,
+            -7.69506489666291e-12
+          ],
+          [
+            3.8507100181441116e-14,
+            2.1412886372525786e-09,
+            -7.695336940181117e-12
+          ],
+          [
+            -7.69506489666291e-12,
+            -7.695336940181117e-12,
+            3.298532732931504e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_60Teet_8Bore",
+      "source": "Modelos3D/2GT_60Teet_8Bore.SLDPRT",
+      "source_sha256": "9170edde358c18ed83128338c22d180afafe90ca9f9e2583acd38819149af637",
+      "step": "cad/derivados/step/2GT_60Teet_8Bore.step",
+      "step_sha256": "a8c93048980047eb231ad53e7c6a9f1e3ad2bfcbd60c35701991d83d4de3c82a",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.823061452455085e-05,
+            "centroid_m": [
+              4.832518445781082e-05,
+              4.833313666686573e-05,
+              0.008369019029508394
+            ],
+            "inertia_per_density_m5": [
+              [
+                2.1592158958962774e-09,
+                4.1517143699877533e-14,
+                -8.044817443824091e-12
+              ],
+              [
+                4.1517143699877533e-14,
+                2.159215787017577e-09,
+                -8.045500405793653e-12
+              ],
+              [
+                -8.044817443824091e-12,
+                -8.045500405793653e-12,
+                3.3062239742633905e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.823061452455085e-05,
+        "centroid_m": [
+          4.832518445781082e-05,
+          4.833313666686573e-05,
+          0.008369019029508394
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.1592158958962774e-09,
+            4.1517143699877533e-14,
+            -8.044817443824091e-12
+          ],
+          [
+            4.1517143699877533e-14,
+            2.159215787017577e-09,
+            -8.045500405793653e-12
+          ],
+          [
+            -8.044817443824091e-12,
+            -8.045500405793653e-12,
+            3.3062239742633905e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_80Teet_10Bore",
+      "source": "Modelos3D/2GT_80Teet_10Bore.SLDPRT",
+      "source_sha256": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+      "step": "cad/derivados/step/2GT_80Teet_10Bore.step",
+      "step_sha256": "da202bb84137439e3bf76d8a4f74f31580dd8ebf167649818fdd47c6d4eed2e9",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 3.2365761299184554e-05,
+            "centroid_m": [
+              3.928941978066735e-05,
+              3.9287102928574835e-05,
+              0.008338574694686855
+            ],
+            "inertia_per_density_m5": [
+              [
+                6.0269946233390986e-09,
+                4.8198354306286226e-14,
+                -1.1650500538743341e-11
+              ],
+              [
+                4.8198354306286226e-14,
+                6.026994242207945e-09,
+                -1.164924240984658e-11
+              ],
+              [
+                -1.1650500538743341e-11,
+                -1.164924240984658e-11,
+                1.0282270043463667e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 3.2365761299184554e-05,
+        "centroid_m": [
+          3.928941978066735e-05,
+          3.9287102928574835e-05,
+          0.008338574694686855
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.0269946233390986e-09,
+            4.8198354306286226e-14,
+            -1.1650500538743341e-11
+          ],
+          [
+            4.8198354306286226e-14,
+            6.026994242207945e-09,
+            -1.164924240984658e-11
+          ],
+          [
+            -1.1650500538743341e-11,
+            -1.164924240984658e-11,
+            1.0282270043463667e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_80Teet_16Bore",
+      "source": "Modelos3D/2GT_80Teet_16Bore.SLDPRT",
+      "source_sha256": "cf753a7288a8d1636e21c7662990837188679c6deeeacbe7a6771450b5c15746",
+      "step": "cad/derivados/step/2GT_80Teet_16Bore.step",
+      "step_sha256": "c72927f9edb8c75986cf0b44724cfcdb908c01a66823dd5851573ec2da582ce6",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.9753797335579686e-05,
+            "centroid_m": [
+              3.398900807956908e-05,
+              3.399031550258756e-05,
+              0.008181896283411134
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.869589502898694e-09,
+                3.270759644918039e-14,
+                -9.423660215671e-12
+              ],
+              [
+                3.270759644918039e-14,
+                5.869589098231706e-09,
+                -9.423903329411653e-12
+              ],
+              [
+                -9.423660215671e-12,
+                -9.423903329411653e-12,
+                1.0169103138081676e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.9753797335579686e-05,
+        "centroid_m": [
+          3.398900807956908e-05,
+          3.399031550258756e-05,
+          0.008181896283411134
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.869589502898694e-09,
+            3.270759644918039e-14,
+            -9.423660215671e-12
+          ],
+          [
+            3.270759644918039e-14,
+            5.869589098231706e-09,
+            -9.423903329411653e-12
+          ],
+          [
+            -9.423660215671e-12,
+            -9.423903329411653e-12,
+            1.0169103138081676e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_80Teet_40Bore",
+      "source": "Modelos3D/2GT_80Teet_40Bore.SLDPRT",
+      "source_sha256": "7652b60cc56bd4c7481448dc077eeeb698a377fe7a4f539a647e8b14d26c1c90",
+      "step": "cad/derivados/step/2GT_80Teet_40Bore.step",
+      "step_sha256": "056cb1e3d8c51a271cd5608e0541b31423963b89241c5bb00d6cba3b5ffe99c4",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 9.166651648302224e-06,
+            "centroid_m": [
+              -1.5874842621582602e-18,
+              -1.1490657569450219e-17,
+              0.005498531095971594
+            ],
+            "inertia_per_density_m5": [
+              [
+                2.467112498778213e-09,
+                7.466951501555744e-25,
+                1.0916073957965137e-25
+              ],
+              [
+                7.466951501555744e-25,
+                2.54889443230952e-09,
+                1.9737278714992453e-26
+              ],
+              [
+                1.0916073957965137e-25,
+                1.9737278714992453e-26,
+                4.776101369409432e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 9.166651648302224e-06,
+        "centroid_m": [
+          -1.5874842621582602e-18,
+          -1.1490657569450219e-17,
+          0.005498531095971594
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.467112498778213e-09,
+            7.466951501555744e-25,
+            1.0916073957965137e-25
+          ],
+          [
+            7.466951501555744e-25,
+            2.54889443230952e-09,
+            1.9737278714992453e-26
+          ],
+          [
+            1.0916073957965137e-25,
+            1.9737278714992453e-26,
+            4.776101369409432e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "2GT_80Teet_8Bore",
+      "source": "Modelos3D/2GT_80Teet_8Bore.SLDPRT",
+      "source_sha256": "5b3ea76034fd57d2c06b0db4493302670b1e1ae3ecb7eb6fb738be5fa6ea80d8",
+      "step": "cad/derivados/step/2GT_80Teet_8Bore.step",
+      "step_sha256": "0973313d4cae80689caf511b1d7a570a7619f2031b42742b9be587998f6d8f24",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 3.277310825524493e-05,
+            "centroid_m": [
+              4.005876428476986e-05,
+              4.005867207734612e-05,
+              0.008359341931961485
+            ],
+            "inertia_per_density_m5": [
+              [
+                6.046223971929044e-09,
+                5.0772418451087163e-14,
+                -1.2000882737182238e-11
+              ],
+              [
+                5.0772418451087163e-14,
+                6.046223467725432e-09,
+                -1.2000222295340125e-11
+              ],
+              [
+                -1.2000882737182238e-11,
+                -1.2000222295340125e-11,
+                1.0290120942747424e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 3.277310825524493e-05,
+        "centroid_m": [
+          4.005876428476986e-05,
+          4.005867207734612e-05,
+          0.008359341931961485
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.046223971929044e-09,
+            5.0772418451087163e-14,
+            -1.2000882737182238e-11
+          ],
+          [
+            5.0772418451087163e-14,
+            6.046223467725432e-09,
+            -1.2000222295340125e-11
+          ],
+          [
+            -1.2000882737182238e-11,
+            -1.2000222295340125e-11,
+            1.0290120942747424e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "A-Brazo",
+      "source": "Modelos3D/A-Brazo.SLDPRT",
+      "source_sha256": "3465c2fede70b9befc81f6f723a73551b294f24aee7b0663001d43057c3d0b6c",
+      "step": "cad/derivados/step/A-Brazo.step",
+      "step_sha256": "0ee05855061f8a008a7d8ff5c6335b41076980e7e65227c0f4b9091e091ec809",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 6.9501053162809e-05,
+            "centroid_m": [
+              -8.842902614487757e-18,
+              8.47050949231908e-05,
+              0.15010116227076867
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.424833506273935e-07,
+                -5.87555356823427e-24,
+                6.193944463623492e-23
+              ],
+              [
+                -5.87555356823427e-24,
+                5.42729423679066e-07,
+                7.070467483768552e-10
+              ],
+              [
+                6.193944463623492e-23,
+                7.070467483768552e-10,
+                5.524794574947624e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 6.9501053162809e-05,
+        "centroid_m": [
+          -8.842902614487757e-18,
+          8.47050949231908e-05,
+          0.15010116227076867
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.424833506273935e-07,
+            -5.87555356823427e-24,
+            6.193944463623492e-23
+          ],
+          [
+            -5.87555356823427e-24,
+            5.42729423679066e-07,
+            7.070467483768552e-10
+          ],
+          [
+            6.193944463623492e-23,
+            7.070467483768552e-10,
+            5.524794574947624e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "A-BridaEje",
+      "source": "Modelos3D/A-BridaEje.SLDPRT",
+      "source_sha256": "208eead9ba17df76d6ab435ec1faf4068a2939c0b3eeedb7b9e568e29d220d8b",
+      "step": "cad/derivados/step/A-BridaEje.step",
+      "step_sha256": "739817b0ef0ea0cb6ecc8b91ea449daee9a76f96e2b76a9f69dae31e7d01b97f",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (6 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.5899208160247426e-05,
+            "centroid_m": [
+              0.00010466221738050385,
+              0.00012818901122816053,
+              0.0037906371586191923
+            ],
+            "inertia_per_density_m5": [
+              [
+                4.2811231370321696e-09,
+                2.1372113655833396e-13,
+                -1.032853517356046e-11
+              ],
+              [
+                2.1372113655833396e-13,
+                3.1341963227445827e-09,
+                -9.802543448019753e-12
+              ],
+              [
+                -1.032853517356046e-11,
+                -9.802543448019753e-12,
+                7.051520762473859e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.5899208160247426e-05,
+        "centroid_m": [
+          0.00010466221738050385,
+          0.00012818901122816053,
+          0.0037906371586191928
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.2811231370321696e-09,
+            2.1372113655833396e-13,
+            -1.032853517356046e-11
+          ],
+          [
+            2.1372113655833396e-13,
+            3.1341963227445827e-09,
+            -9.802543448019753e-12
+          ],
+          [
+            -1.032853517356046e-11,
+            -9.802543448019753e-12,
+            7.051520762473859e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "A-CarretelInf",
+      "source": "Modelos3D/A-CarretelInf.SLDPRT",
+      "source_sha256": "4d22c619cbc9afe94af2b2b317c936ceb8eee41785c7bd2ca9a56aeebebe13ba",
+      "step": "cad/derivados/step/A-CarretelInf.step",
+      "step_sha256": "c42706b7a029a91416cfe235108e4f743e390324a1a1f2cd823996ac2f939e3c",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3735971852430576e-05,
+            "centroid_m": [
+              6.475650722447465e-10,
+              0.00027422318992725625,
+              0.004886245933300397
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.467052321105039e-09,
+                1.334235278575375e-16,
+                2.44161307203834e-17
+              ],
+              [
+                1.334235278575375e-16,
+                5.593136434107083e-09,
+                3.6376951546923833e-12
+              ],
+              [
+                2.44161307203834e-17,
+                3.6376951546923833e-12,
+                1.0472646560821001e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3735971852430576e-05,
+        "centroid_m": [
+          6.475650722447465e-10,
+          0.00027422318992725625,
+          0.004886245933300397
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.467052321105039e-09,
+            1.334235278575375e-16,
+            2.44161307203834e-17
+          ],
+          [
+            1.334235278575375e-16,
+            5.593136434107083e-09,
+            3.6376951546923833e-12
+          ],
+          [
+            2.44161307203834e-17,
+            3.6376951546923833e-12,
+            1.0472646560821001e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "A-CarretelSup",
+      "source": "Modelos3D/A-CarretelSup.SLDPRT",
+      "source_sha256": "724e621b00264214b071c7cec7ff35d340c10a05d0458d8a7f5fca50af40914f",
+      "step": "cad/derivados/step/A-CarretelSup.step",
+      "step_sha256": "5a377c4df3120be3f2a2148e5d8e5ffbda8309046bf146fae18277431be556b2",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3647085133646418e-05,
+            "centroid_m": [
+              6.339016814622234e-10,
+              0.0002760092498409001,
+              0.004860442154070876
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.452946751133255e-09,
+                1.318834627630922e-16,
+                2.313768650618753e-17
+              ],
+              [
+                1.318834627630922e-16,
+                5.579037584753499e-09,
+                3.5404978722914497e-12
+              ],
+              [
+                2.313768650618753e-17,
+                3.5404978722914497e-12,
+                1.0448017577602741e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3647085133646418e-05,
+        "centroid_m": [
+          6.339016814622234e-10,
+          0.0002760092498409001,
+          0.004860442154070876
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.452946751133255e-09,
+            1.318834627630922e-16,
+            2.313768650618753e-17
+          ],
+          [
+            1.318834627630922e-16,
+            5.579037584753499e-09,
+            3.5404978722914497e-12
+          ],
+          [
+            2.313768650618753e-17,
+            3.5404978722914497e-12,
+            1.0448017577602741e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "A-Eje",
+      "source": "Modelos3D/A-Eje.SLDPRT",
+      "source_sha256": "11d0824a7e2f383101cddc9ee18b5999b6a770f221a6bae04171b51f94ab9000",
+      "step": "cad/derivados/step/A-Eje.step",
+      "step_sha256": "a31fdfcfbb667dd40d718ad4ed3848899dfee34df068d51456a04898cf0cc834",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.1130771067065428e-05,
+            "centroid_m": [
+              -1.1728739355820477e-18,
+              1.1656357330256948e-19,
+              0.0671001466915117
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.1773508143586814e-08,
+                -7.978195827900608e-26,
+                8.253855436635662e-25
+              ],
+              [
+                -7.978195827900608e-26,
+                3.1773508143586814e-08,
+                2.76397591849145e-25
+              ],
+              [
+                8.253855436635662e-25,
+                2.76397591849145e-25,
+                1.005328347319163e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.1130771067065428e-05,
+        "centroid_m": [
+          -1.1728739355820477e-18,
+          1.1656357330256948e-19,
+          0.0671001466915117
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.1773508143586814e-08,
+            -7.978195827900608e-26,
+            8.253855436635662e-25
+          ],
+          [
+            -7.978195827900608e-26,
+            3.1773508143586814e-08,
+            2.76397591849145e-25
+          ],
+          [
+            8.253855436635662e-25,
+            2.76397591849145e-25,
+            1.005328347319163e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "A-EjeInterior",
+      "source": "Modelos3D/A-EjeInterior.SLDPRT",
+      "source_sha256": "d8ee48f0fea3937bc23e39950aa8b63e46e11516959ba09e378c3e5b7485e861",
+      "step": "cad/derivados/step/A-EjeInterior.step",
+      "step_sha256": "8a027439a2c307c0cc49f0f182d5ca12b341bde8b5602376913ef664c444f560",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3467615006857744e-05,
+            "centroid_m": [
+              4.727238571319924e-19,
+              -3.2373756079174397e-19,
+              0.095
+            ],
+            "inertia_per_density_m5": [
+              [
+                4.0591040911528453e-08,
+                2.0072651727886376e-27,
+                -2.3919710656628026e-25
+              ],
+              [
+                2.0072651727886376e-27,
+                4.0591040911528453e-08,
+                5.169878828456423e-41
+              ],
+              [
+                -2.3919710656628026e-25,
+                5.169878828456423e-41,
+                1.5193153179611473e-10
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3467615006857744e-05,
+        "centroid_m": [
+          4.727238571319924e-19,
+          -3.2373756079174397e-19,
+          0.095
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.0591040911528453e-08,
+            2.0072651727886376e-27,
+            -2.3919710656628026e-25
+          ],
+          [
+            2.0072651727886376e-27,
+            4.0591040911528453e-08,
+            5.169878828456423e-41
+          ],
+          [
+            -2.3919710656628026e-25,
+            5.169878828456423e-41,
+            1.5193153179611473e-10
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-Antebrazo",
+      "source": "Modelos3D/B-Antebrazo.SLDPRT",
+      "source_sha256": "12c370a6136c7e357c23bfddec99d4ada03d69969b0c4db15456ed232470d8ce",
+      "step": "cad/derivados/step/B-Antebrazo.step",
+      "step_sha256": "d4d2ec22f148da9c6042ed3cb7e0cb07e305dd128202c92ad852129a120e0381",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 5.412124884152351e-05,
+            "centroid_m": [
+              2.93873274133531e-18,
+              -4.249062746430706e-05,
+              0.11768420752300887
+            ],
+            "inertia_per_density_m5": [
+              [
+                2.719923909809319e-07,
+                -2.7889023371952323e-24,
+                9.023281180869725e-23
+              ],
+              [
+                -2.7889023371952323e-24,
+                2.723073953272984e-07,
+                1.1340885614936706e-10
+              ],
+              [
+                9.023281180869725e-23,
+                1.1340885614936706e-10,
+                4.307264132412617e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 5.412124884152351e-05,
+        "centroid_m": [
+          2.93873274133531e-18,
+          -4.249062746430706e-05,
+          0.11768420752300887
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.719923909809319e-07,
+            -2.7889023371952323e-24,
+            9.023281180869725e-23
+          ],
+          [
+            -2.7889023371952323e-24,
+            2.723073953272984e-07,
+            1.1340885614936706e-10
+          ],
+          [
+            9.023281180869725e-23,
+            1.1340885614936706e-10,
+            4.307264132412617e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-CarretelInf",
+      "source": "Modelos3D/B-CarretelInf.SLDPRT",
+      "source_sha256": "a937c813349b4f3730047cbdbc7490acc6eda49c62a35317a457527982d37eaf",
+      "step": "cad/derivados/step/B-CarretelInf.step",
+      "step_sha256": "01a1eee8c95fe665a8bd05c19c73f7601e55205e95e2fdce62eadb3135fcee6d",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.2725752427807657e-05,
+            "centroid_m": [
+              5.65584047106139e-06,
+              0.000503661577057253,
+              0.00424811495945914
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.011426783715938e-09,
+                2.0230544829208704e-12,
+                2.337453092880035e-13
+              ],
+              [
+                2.0230544829208704e-12,
+                5.20563624304633e-09,
+                -3.483390338989797e-12
+              ],
+              [
+                2.337453092880035e-13,
+                -3.483390338989797e-12,
+                9.76051669226072e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.2725752427807657e-05,
+        "centroid_m": [
+          5.65584047106139e-06,
+          0.000503661577057253,
+          0.00424811495945914
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.011426783715938e-09,
+            2.0230544829208704e-12,
+            2.337453092880035e-13
+          ],
+          [
+            2.0230544829208704e-12,
+            5.20563624304633e-09,
+            -3.483390338989797e-12
+          ],
+          [
+            2.337453092880035e-13,
+            -3.483390338989797e-12,
+            9.76051669226072e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-CarretelSup",
+      "source": "Modelos3D/B-CarretelSup.SLDPRT",
+      "source_sha256": "f470bd3408e498096b28f2c40a2c9e7ef8c29bce4642f21e1dc584bb2b81bc5b",
+      "step": "cad/derivados/step/B-CarretelSup.step",
+      "step_sha256": "0d326cc0c64ab626fe390af85c4114a236464b783a8cafae0601613513c880ed",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (8 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.2725752427807657e-05,
+            "centroid_m": [
+              5.65584047106139e-06,
+              0.000503661577057253,
+              0.00424811495945914
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.011426783715938e-09,
+                2.0230544829208704e-12,
+                2.337453092880035e-13
+              ],
+              [
+                2.0230544829208704e-12,
+                5.20563624304633e-09,
+                -3.483390338989797e-12
+              ],
+              [
+                2.337453092880035e-13,
+                -3.483390338989797e-12,
+                9.76051669226072e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.2725752427807657e-05,
+        "centroid_m": [
+          5.65584047106139e-06,
+          0.000503661577057253,
+          0.00424811495945914
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.011426783715938e-09,
+            2.0230544829208704e-12,
+            2.337453092880035e-13
+          ],
+          [
+            2.0230544829208704e-12,
+            5.20563624304633e-09,
+            -3.483390338989797e-12
+          ],
+          [
+            2.337453092880035e-13,
+            -3.483390338989797e-12,
+            9.76051669226072e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-Eje",
+      "source": "Modelos3D/B-Eje.SLDPRT",
+      "source_sha256": "a93fa00bab44a857a422444804773979e09b4a40e6293327c7fe0c191759edfa",
+      "step": "cad/derivados/step/B-Eje.step",
+      "step_sha256": "0c781de53f284b3198e1f5152ebef40fe93fe9fffd34bfc579d98f4a67da2733",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 6.53451271946677e-06,
+            "centroid_m": [
+              1.3918324759908726e-19,
+              -1.3243233853209769e-19,
+              0.06500000000000002
+            ],
+            "inertia_per_density_m5": [
+              [
+                9.22891013079356e-09,
+                1.7043710740965174e-27,
+                -5.366018740460276e-26
+              ],
+              [
+                1.7043710740965174e-27,
+                9.22891013079356e-09,
+                -1.9387045606711588e-41
+              ],
+              [
+                -5.366018740460276e-26,
+                -1.9387045606711588e-41,
+                5.227610175573445e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 6.53451271946677e-06,
+        "centroid_m": [
+          1.3918324759908729e-19,
+          -1.3243233853209769e-19,
+          0.06500000000000002
+        ],
+        "inertia_per_density_m5": [
+          [
+            9.22891013079356e-09,
+            1.7043710740965174e-27,
+            -5.366018740460276e-26
+          ],
+          [
+            1.7043710740965174e-27,
+            9.22891013079356e-09,
+            -1.9387045606711588e-41
+          ],
+          [
+            -5.366018740460276e-26,
+            -1.9387045606711588e-41,
+            5.227610175573445e-11
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-ExtensorM3",
+      "source": "Modelos3D/B-ExtensorM3.SLDPRT",
+      "source_sha256": "2439f98e8ab45f98226f2146007136e7442e9552f7291909445b3c7cb51d8c94",
+      "step": "cad/derivados/step/B-ExtensorM3.step",
+      "step_sha256": "396d4a85ca1af1354b12853b2818ba778ec34dbc9ee26ffca0f37819f44b8e49",
+      "batch_mesh_status": "failed",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "excluded",
+      "errors": [
+        "BREP global nulo o inválido"
+      ]
+    },
+    {
+      "name": "B-SoporteEjeFijo",
+      "source": "Modelos3D/B-SoporteEjeFijo.SLDPRT",
+      "source_sha256": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+      "step": "cad/derivados/step/B-SoporteEjeFijo.step",
+      "step_sha256": "944f453803c847117dc2299ee9bdb7589b6e2be48d7ae2c57c16bdfff373c6d6",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 8.343484601812216e-05,
+            "centroid_m": [
+              -3.980108595760932e-10,
+              4.6121977978332396e-10,
+              0.009091589083356447
+            ],
+            "inertia_per_density_m5": [
+              [
+                2.7687338968119497e-08,
+                -8.225563391874679e-18,
+                3.1334742501600784e-16
+              ],
+              [
+                -8.225563391874679e-18,
+                2.669438447280154e-08,
+                -3.0249035892410017e-16
+              ],
+              [
+                3.1334742501600784e-16,
+                -3.0249035892410017e-16,
+                3.066775402222361e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 8.343484601812216e-05,
+        "centroid_m": [
+          -3.980108595760932e-10,
+          4.6121977978332396e-10,
+          0.009091589083356447
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.7687338968119497e-08,
+            -8.225563391874679e-18,
+            3.1334742501600784e-16
+          ],
+          [
+            -8.225563391874679e-18,
+            2.669438447280154e-08,
+            -3.0249035892410017e-16
+          ],
+          [
+            3.1334742501600784e-16,
+            -3.0249035892410017e-16,
+            3.066775402222361e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-SoporteM3",
+      "source": "Modelos3D/B-SoporteM3.SLDPRT",
+      "source_sha256": "6b1e7eb5bccbd0c2f88fad4a66b16c48dfff06a394005d4fe1b0647fa37b8135",
+      "step": "cad/derivados/step/B-SoporteM3.step",
+      "step_sha256": "d0f72a7f583f6b4c5f240eb68010d8acd990447dfc02a5d5d8857e68cb43eb87",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.0470094515679797e-05,
+            "centroid_m": [
+              7.053327662745162e-18,
+              -5.0845050986166905e-18,
+              0.0028636159913673384
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.073364284426783e-09,
+                1.9881554180756206e-24,
+                -2.0600929356473978e-26
+              ],
+              [
+                1.9881554180756206e-24,
+                1.2253531645476302e-08,
+                -3.483414741003583e-27
+              ],
+              [
+                -2.0600929356473978e-26,
+                -3.483414741003583e-27,
+                1.718938573652305e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.0470094515679797e-05,
+        "centroid_m": [
+          7.053327662745162e-18,
+          -5.0845050986166905e-18,
+          0.0028636159913673384
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.073364284426783e-09,
+            1.9881554180756206e-24,
+            -2.0600929356473978e-26
+          ],
+          [
+            1.9881554180756206e-24,
+            1.2253531645476302e-08,
+            -3.483414741003583e-27
+          ],
+          [
+            -2.0600929356473978e-26,
+            -3.483414741003583e-27,
+            1.718938573652305e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "B-SoporteRuleman",
+      "source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+      "source_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+      "step": "cad/derivados/step/B-SoporteRuleman.step",
+      "step_sha256": "604491002716f6d9ff41906abc2a9895f5a5e66e4c378db3dc99850170b46f7e",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.2631939575141737e-05,
+            "centroid_m": [
+              1.8849902684387687e-18,
+              0.0060754845842300705,
+              0.006245688900891832
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.468748609007897e-09,
+                3.579800238904152e-25,
+                1.3295402890957497e-27
+              ],
+              [
+                3.579800238904152e-25,
+                4.892297319623619e-09,
+                -4.871777612737322e-11
+              ],
+              [
+                1.3295402890957497e-27,
+                -4.871777612737322e-11,
+                9.748277502169809e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.2631939575141737e-05,
+        "centroid_m": [
+          1.8849902684387687e-18,
+          0.00607548458423007,
+          0.006245688900891832
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.468748609007897e-09,
+            3.579800238904152e-25,
+            1.3295402890957497e-27
+          ],
+          [
+            3.579800238904152e-25,
+            4.892297319623619e-09,
+            -4.871777612737322e-11
+          ],
+          [
+            1.3295402890957497e-27,
+            -4.871777612737322e-11,
+            9.748277502169809e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "BorneraX4",
+      "source": "Modelos3D/BorneraX4.SLDPRT",
+      "source_sha256": "777f0bb4c22f6f324db2ad6773c2c1ff3c2c3a7e1e54d08152ee15d636d1082f",
+      "step": "cad/derivados/step/BorneraX4.step",
+      "step_sha256": "25e578ddc3990eaf299058ca964d8e4acd8b511d8cd9d3b32b65180ea5ab48ab",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.4411946710584625e-06,
+            "centroid_m": [
+              0.01587500000000003,
+              0.00899999999999998,
+              0.006064589553649968
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.904356220488006e-11,
+                -8.731149137020112e-26,
+                -1.1641532182693482e-25
+              ],
+              [
+                -8.731149137020112e-26,
+                1.5569793801143844e-10,
+                -1.891748979687691e-25
+              ],
+              [
+                -1.1641532182693482e-25,
+                -1.891748979687691e-25,
+                1.6248424798704918e-10
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.4411946710584625e-06,
+        "centroid_m": [
+          0.01587500000000003,
+          0.00899999999999998,
+          0.006064589553649969
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.904356220488006e-11,
+            -8.731149137020112e-26,
+            -1.1641532182693482e-25
+          ],
+          [
+            -8.731149137020112e-26,
+            1.5569793801143844e-10,
+            -1.891748979687691e-25
+          ],
+          [
+            -1.1641532182693482e-25,
+            -1.891748979687691e-25,
+            1.6248424798704918e-10
+          ]
+        ]
+      }
+    },
+    {
+      "name": "BorneraX6",
+      "source": "Modelos3D/BorneraX6.SLDPRT",
+      "source_sha256": "04ac74f2ac6eeed22166e3db68dc8cd215f46fbc8d76fa8bf873691d54c779f4",
+      "step": "cad/derivados/step/BorneraX6.step",
+      "step_sha256": "a586686389678b3d7d12a1e4bae4ccc724dd807d5078dfc07ea5b73dafe55041",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.1701548396465434e-06,
+            "centroid_m": [
+              0.024125000000000025,
+              0.008999999999999961,
+              0.006058560305872904
+            ],
+            "inertia_per_density_m5": [
+              [
+                8.866865096713606e-11,
+                -5.820766091346742e-25,
+                -6.984919309616089e-25
+              ],
+              [
+                -5.820766091346742e-25,
+                4.782822297866938e-10,
+                -8.440110832452775e-25
+              ],
+              [
+                -6.984919309616089e-25,
+                -8.440110832452775e-25,
+                4.884113185068216e-10
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.1701548396465434e-06,
+        "centroid_m": [
+          0.024125000000000025,
+          0.008999999999999961,
+          0.006058560305872904
+        ],
+        "inertia_per_density_m5": [
+          [
+            8.866865096713606e-11,
+            -5.820766091346742e-25,
+            -6.984919309616089e-25
+          ],
+          [
+            -5.820766091346742e-25,
+            4.782822297866938e-10,
+            -8.440110832452775e-25
+          ],
+          [
+            -6.984919309616089e-25,
+            -8.440110832452775e-25,
+            4.884113185068216e-10
+          ]
+        ]
+      }
+    },
+    {
+      "name": "KY-003",
+      "source": "Modelos3D/KY-003.SLDPRT",
+      "source_sha256": "f4dc8c5b2fcebf24fc16a6664c45eef1ca69a4bced5ba8ed1b2808f4344ec094",
+      "step": "cad/derivados/step/KY-003.step",
+      "step_sha256": "1e8e12a67ce29985b58c460ef30c12f6b1124477e4494713c10003301f542262",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 8.23725666117692e-07,
+            "centroid_m": [
+              -1.343493782538321e-18,
+              -0.0008812646819632282,
+              0.0019469171983874482
+            ],
+            "inertia_per_density_m5": [
+              [
+                4.258490517918294e-11,
+                6.38605239242745e-27,
+                -1.5559632064483617e-27
+              ],
+              [
+                6.38605239242745e-27,
+                1.1957776894548404e-11,
+                6.326135480686813e-13
+              ],
+              [
+                -1.5559632064483617e-27,
+                6.326135480686813e-13,
+                5.13107224591373e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 8.23725666117692e-07,
+        "centroid_m": [
+          -1.343493782538321e-18,
+          -0.0008812646819632282,
+          0.0019469171983874482
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.258490517918294e-11,
+            6.38605239242745e-27,
+            -1.5559632064483617e-27
+          ],
+          [
+            6.38605239242745e-27,
+            1.1957776894548404e-11,
+            6.326135480686813e-13
+          ],
+          [
+            -1.5559632064483617e-27,
+            6.326135480686813e-13,
+            5.13107224591373e-11
+          ]
+        ]
+      }
+    },
+    {
+      "name": "NEMA17",
+      "source": "Modelos3D/NEMA17.SLDPRT",
+      "source_sha256": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+      "step": "cad/derivados/step/NEMA17.step",
+      "step_sha256": "c518140415b5025553a38991630df1e97a5f4e75c574d25d7d5e6ca2532bc6f9",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 6.577194303032658e-05,
+            "centroid_m": [
+              1.2822367958158108e-17,
+              -5.079332732000494e-06,
+              0.01933446994671067
+            ],
+            "inertia_per_density_m5": [
+              [
+                1.7442135677020307e-08,
+                1.2774501644860902e-24,
+                8.468135068719313e-25
+              ],
+              [
+                1.2774501644860902e-24,
+                1.743462715334813e-08,
+                -5.198229498779698e-12
+              ],
+              [
+                8.468135068719313e-25,
+                -5.198229498779698e-12,
+                1.8301470450209933e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 6.577194303032658e-05,
+        "centroid_m": [
+          1.2822367958158108e-17,
+          -5.079332732000494e-06,
+          0.01933446994671067
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.7442135677020307e-08,
+            1.2774501644860902e-24,
+            8.468135068719313e-25
+          ],
+          [
+            1.2774501644860902e-24,
+            1.743462715334813e-08,
+            -5.198229498779698e-12
+          ],
+          [
+            8.468135068719313e-25,
+            -5.198229498779698e-12,
+            1.8301470450209933e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "NEMA23",
+      "source": "Modelos3D/NEMA23.SLDPRT",
+      "source_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+      "step": "cad/derivados/step/NEMA23.step",
+      "step_sha256": "91fce9bc605daba76f877f53f5cf5d0387d829082d157ef73ba40f38ce4c8b7d",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 0.0001435098953380928,
+            "centroid_m": [
+              -1.74915142330745e-18,
+              -3.244802640338458e-18,
+              0.02518026605862741
+            ],
+            "inertia_per_density_m5": [
+              [
+                6.362851677796715e-08,
+                5.296897143125535e-24,
+                2.3521775509096502e-24
+              ],
+              [
+                5.296897143125535e-24,
+                6.362851677796718e-08,
+                2.7100247989281034e-24
+              ],
+              [
+                2.3521775509096502e-24,
+                2.7100247989281034e-24,
+                6.599644159855061e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 0.0001435098953380928,
+        "centroid_m": [
+          -1.74915142330745e-18,
+          -3.244802640338458e-18,
+          0.02518026605862741
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.362851677796715e-08,
+            5.296897143125535e-24,
+            2.3521775509096502e-24
+          ],
+          [
+            5.296897143125535e-24,
+            6.362851677796718e-08,
+            2.7100247989281034e-24
+          ],
+          [
+            2.3521775509096502e-24,
+            2.7100247989281034e-24,
+            6.599644159855061e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "R-Bancada",
+      "source": "Modelos3D/R-Bancada.SLDPRT",
+      "source_sha256": "142b7025e8e5aa78bcd99d926460960d4733b04a96e766522c1096475149d31c",
+      "step": "cad/derivados/step/R-Bancada.step",
+      "step_sha256": "959a722d9ff724f910bc6e75b58f40b29be9c056f38d3652a1c65681cb10871d",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 6.899531352805997e-05,
+            "centroid_m": [
+              -7.722991333092608e-18,
+              -0.0005592117257530413,
+              0.007963339789825509
+            ],
+            "inertia_per_density_m5": [
+              [
+                4.008938277961065e-08,
+                3.412085943478417e-24,
+                1.065834867462034e-23
+              ],
+              [
+                3.412085943478417e-24,
+                6.064908593773744e-08,
+                -4.863537393852302e-10
+              ],
+              [
+                1.065834867462034e-23,
+                -4.863537393852302e-10,
+                5.6989627178029696e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 6.899531352805997e-05,
+        "centroid_m": [
+          -7.722991333092608e-18,
+          -0.0005592117257530413,
+          0.007963339789825509
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.008938277961065e-08,
+            3.412085943478417e-24,
+            1.065834867462034e-23
+          ],
+          [
+            3.412085943478417e-24,
+            6.064908593773744e-08,
+            -4.863537393852302e-10
+          ],
+          [
+            1.065834867462034e-23,
+            -4.863537393852302e-10,
+            5.6989627178029696e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "R-CarretelInf",
+      "source": "Modelos3D/R-CarretelInf.SLDPRT",
+      "source_sha256": "64541bc13b13a388b14236e65d4dc2d8fac748b3e9681bf884bff2882763b2c3",
+      "step": "cad/derivados/step/R-CarretelInf.step",
+      "step_sha256": "735859230e4c2592b7a9e6681bad153602d619050b14b69f3ad8b8c8ba237d6a",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3609588603004974e-05,
+            "centroid_m": [
+              5.303021472098553e-06,
+              0.0005739809076965554,
+              0.0050082438761353725
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.794086329316508e-09,
+                2.0296521758998703e-12,
+                2.868672431037764e-13
+              ],
+              [
+                2.0296521758998703e-12,
+                6.00275028155521e-09,
+                -5.044132517232334e-12
+              ],
+              [
+                2.868672431037764e-13,
+                -5.044132517232334e-12,
+                1.128576349682811e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3609588603004974e-05,
+        "centroid_m": [
+          5.303021472098554e-06,
+          0.0005739809076965554,
+          0.0050082438761353725
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.794086329316508e-09,
+            2.0296521758998703e-12,
+            2.868672431037764e-13
+          ],
+          [
+            2.0296521758998703e-12,
+            6.00275028155521e-09,
+            -5.044132517232334e-12
+          ],
+          [
+            2.868672431037764e-13,
+            -5.044132517232334e-12,
+            1.128576349682811e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "R-CarretelSup",
+      "source": "Modelos3D/R-CarretelSup.SLDPRT",
+      "source_sha256": "da9dcc5e2862c373070e67306f165e324c042da2ebbede433a2a216e8705d0c1",
+      "step": "cad/derivados/step/R-CarretelSup.step",
+      "step_sha256": "e9817a1a2b12e436272cb4f7cb6bcedba74f0fc4a14b4723dc357f4dc6c343f7",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (14 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3136720349500833e-05,
+            "centroid_m": [
+              -4.385058489519085e-05,
+              -0.00017793834445818232,
+              0.005265913165095601
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.498299550143806e-09,
+                1.5513271996902068e-11,
+                -2.4560217554329664e-12
+              ],
+              [
+                1.5513271996902068e-11,
+                5.574052825340114e-09,
+                -2.2701412128565526e-11
+              ],
+              [
+                -2.4560217554329664e-12,
+                -2.2701412128565526e-11,
+                1.0582423714720746e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3136720349500833e-05,
+        "centroid_m": [
+          -4.385058489519085e-05,
+          -0.00017793834445818232,
+          0.005265913165095601
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.498299550143806e-09,
+            1.5513271996902068e-11,
+            -2.4560217554329664e-12
+          ],
+          [
+            1.5513271996902068e-11,
+            5.574052825340114e-09,
+            -2.2701412128565526e-11
+          ],
+          [
+            -2.4560217554329664e-12,
+            -2.2701412128565526e-11,
+            1.0582423714720746e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "R-ContraBancada",
+      "source": "Modelos3D/R-ContraBancada.SLDPRT",
+      "source_sha256": "010f3d820c0e69d6b8f39b89eb7fb42ceb869a09106a0d36a9be997ff008b71e",
+      "step": "cad/derivados/step/R-ContraBancada.step",
+      "step_sha256": "f6aea6ef73e6e5afe78835dce0342ea27cf20928ceaf5a264c72ca7abae9f0a4",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 4.54767265671733e-05,
+            "centroid_m": [
+              4.495601353220813e-18,
+              -0.016790354804324708,
+              0.024609546809726393
+            ],
+            "inertia_per_density_m5": [
+              [
+                1.5388793491816797e-08,
+                -8.369298702607713e-25,
+                1.6191239358681853e-25
+              ],
+              [
+                -8.369298702607713e-25,
+                4.101023351941069e-08,
+                -3.920846059878916e-11
+              ],
+              [
+                1.6191239358681853e-25,
+                -3.920846059878916e-11,
+                3.553072531454302e-08
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 4.54767265671733e-05,
+        "centroid_m": [
+          4.495601353220813e-18,
+          -0.016790354804324708,
+          0.02460954680972639
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.5388793491816797e-08,
+            -8.369298702607713e-25,
+            1.6191239358681853e-25
+          ],
+          [
+            -8.369298702607713e-25,
+            4.101023351941069e-08,
+            -3.920846059878916e-11
+          ],
+          [
+            1.6191239358681853e-25,
+            -3.920846059878916e-11,
+            3.553072531454302e-08
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-608zz",
+      "source": "Modelos3D/Z-608zz.SLDPRT",
+      "source_sha256": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+      "step": "cad/derivados/step/Z-608zz.step",
+      "step_sha256": "aa5f0ccb12440d7270369381516d47c6c4356b9c2e54a12e2d5a84ba7968d18f",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.073451151369264e-06,
+            "centroid_m": [
+              1.696295830113875e-19,
+              -2.4508684214901846e-19,
+              0.0035
+            ],
+            "inertia_per_density_m5": [
+              [
+                7.865762606425561e-11,
+                -1.0317273748409584e-26,
+                -6.394884621840902e-28
+              ],
+              [
+                -1.0317273748409584e-26,
+                7.865762606425406e-11,
+                8.377643401519919e-29
+              ],
+              [
+                -6.394884621840902e-28,
+                8.377643401519919e-29,
+                1.4344512056291073e-10
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.073451151369264e-06,
+        "centroid_m": [
+          1.696295830113875e-19,
+          -2.4508684214901846e-19,
+          0.0035
+        ],
+        "inertia_per_density_m5": [
+          [
+            7.865762606425561e-11,
+            -1.0317273748409584e-26,
+            -6.394884621840902e-28
+          ],
+          [
+            -1.0317273748409584e-26,
+            7.865762606425406e-11,
+            8.377643401519919e-29
+          ],
+          [
+            -6.394884621840902e-28,
+            8.377643401519919e-29,
+            1.4344512056291073e-10
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-6907-2RS",
+      "source": "Modelos3D/Z-6907-2RS.SLDPRT",
+      "source_sha256": "ffad950d435c7adda8d5addd482bb20fcd00cb3ec95eff544001603f35e8e8fa",
+      "step": "cad/derivados/step/Z-6907-2RS.step",
+      "step_sha256": "c8ca82d62e37b6b2490ad9c627797199300b800e7d83ca21a1f542bc374125ea",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3006193585861743e-05,
+            "centroid_m": [
+              2.7883716318522457e-18,
+              2.454508004033668e-18,
+              0.005000000000000001
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.5521281275793283e-09,
+                -4.705074778710881e-25,
+                1.7848833522293744e-26
+              ],
+              [
+                -4.705074778710881e-25,
+                3.5521281275792555e-09,
+                -5.891220322977162e-26
+              ],
+              [
+                1.7848833522293744e-26,
+                -5.891220322977162e-26,
+                6.9197191026867164e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3006193585861743e-05,
+        "centroid_m": [
+          2.7883716318522457e-18,
+          2.454508004033668e-18,
+          0.005
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.5521281275793283e-09,
+            -4.705074778710881e-25,
+            1.7848833522293744e-26
+          ],
+          [
+            -4.705074778710881e-25,
+            3.5521281275792555e-09,
+            -5.891220322977162e-26
+          ],
+          [
+            1.7848833522293744e-26,
+            -5.891220322977162e-26,
+            6.9197191026867164e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-AcopleFlex",
+      "source": "Modelos3D/Z-AcopleFlex.SLDPRT",
+      "source_sha256": "7a534620cfec214ae1593b3bfbd0873c0fe17aafeb083ddb8a2d55701ac0ce53",
+      "step": "cad/derivados/step/Z-AcopleFlex.step",
+      "step_sha256": "7529b06440c35cb9d395a5f94b65bea92ab2da81e845c35c353ab6680b08f3ed",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 4.601739551461505e-06,
+            "centroid_m": [
+              0.00012153883712950387,
+              -6.9078728196322e-08,
+              0.012086516233451644
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.8447328799920705e-10,
+                -4.42078534018115e-17,
+                6.167445466051778e-14
+              ],
+              [
+                -4.42078534018115e-17,
+                4.036201521285825e-10,
+                4.998607127264517e-16
+              ],
+              [
+                6.167445466051778e-14,
+                4.998607127264517e-16,
+                2.306955421327597e-10
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 4.601739551461505e-06,
+        "centroid_m": [
+          0.00012153883712950386,
+          -6.9078728196322e-08,
+          0.012086516233451644
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.8447328799920705e-10,
+            -4.42078534018115e-17,
+            6.167445466051778e-14
+          ],
+          [
+            -4.42078534018115e-17,
+            4.036201521285825e-10,
+            4.998607127264517e-16
+          ],
+          [
+            6.167445466051778e-14,
+            4.998607127264517e-16,
+            2.306955421327597e-10
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-BridaACME",
+      "source": "Modelos3D/Z-BridaACME.SLDPRT",
+      "source_sha256": "5b46f5a58c491ba8b6276925cbf84123bda7919e574f18a95c5e62122d0eb288",
+      "step": "cad/derivados/step/Z-BridaACME.step",
+      "step_sha256": "dfaa32620985bee36942fb60e8d35212507eba7701f997586cf3532ee498a810",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3423901503004935e-06,
+            "centroid_m": [
+              0.0004312832648337452,
+              3.186389149662225e-08,
+              0.004304136445461219
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.983808002293106e-11,
+                -1.359313072309e-17,
+                1.7609665796898117e-13
+              ],
+              [
+                -1.359313072309e-17,
+                3.5835846836378714e-11,
+                3.1313068430926964e-17
+              ],
+              [
+                1.7609665796898117e-13,
+                3.1313068430926964e-17,
+                6.378838832943274e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3423901503004935e-06,
+        "centroid_m": [
+          0.00043128326483374513,
+          3.186389149662225e-08,
+          0.004304136445461219
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.983808002293106e-11,
+            -1.359313072309e-17,
+            1.7609665796898117e-13
+          ],
+          [
+            -1.359313072309e-17,
+            3.5835846836378714e-11,
+            3.1313068430926964e-17
+          ],
+          [
+            1.7609665796898117e-13,
+            3.1313068430926964e-17,
+            6.378838832943274e-11
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-BujeExterior",
+      "source": "Modelos3D/Z-BujeExterior.SLDPRT",
+      "source_sha256": "ed4d66fb189feb52c9d3d94714475d08da3dd05d25b13f597ac419d466ab2790",
+      "step": "cad/derivados/step/Z-BujeExterior.step",
+      "step_sha256": "5e4189efa3a28149596ee1c8eb29467485654c5cfa7ef0931ef6f12fe7889bcc",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "tolerant_edge: tolerant edges rebuilt from their fin SP-curves (4 occurrences)",
+        "sp_curve: curves defined in surface parameter space approximated by cubic splines through evaluated points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 3.8989976972366216e-05,
+            "centroid_m": [
+              -5.252429294908399e-10,
+              5.609998879779049e-05,
+              0.041411588867651755
+            ],
+            "inertia_per_density_m5": [
+              [
+                2.9725761841884063e-08,
+                1.6632392794423296e-16,
+                -5.701103605600603e-16
+              ],
+              [
+                1.6632392794423296e-16,
+                2.9563397779116915e-08,
+                -9.311342106440227e-11
+              ],
+              [
+                -5.701103605600603e-16,
+                -9.311342106440227e-11,
+                9.905292846129407e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 3.8989976972366216e-05,
+        "centroid_m": [
+          -5.252429294908399e-10,
+          5.60999887977905e-05,
+          0.041411588867651755
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.9725761841884063e-08,
+            1.6632392794423296e-16,
+            -5.701103605600603e-16
+          ],
+          [
+            1.6632392794423296e-16,
+            2.9563397779116915e-08,
+            -9.311342106440227e-11
+          ],
+          [
+            -5.701103605600603e-16,
+            -9.311342106440227e-11,
+            9.905292846129407e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-BujeInterior",
+      "source": "Modelos3D/Z-BujeInterior.SLDPRT",
+      "source_sha256": "a8fa4a5e821b31f9ef6b3d2878d73fec4415969b2481eb63e2a802a182ff9547",
+      "step": "cad/derivados/step/Z-BujeInterior.step",
+      "step_sha256": "b4279e268659378f7b2ea163e70ffbad291d19d398b9b7ca4bdd07f334b95d0c",
+      "batch_mesh_status": "failed",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (2 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 8.449958364146778e-06,
+            "centroid_m": [
+              -4.107626140913285e-09,
+              1.537464182841664e-08,
+              0.013311312122069263
+            ],
+            "inertia_per_density_m5": [
+              [
+                8.670977556219919e-10,
+                -2.5794802104642562e-17,
+                -1.3518723037623788e-16
+              ],
+              [
+                -2.5794802104642562e-17,
+                8.464142527761248e-10,
+                4.829339139569211e-16
+              ],
+              [
+                -1.3518723037623788e-16,
+                4.829339139569211e-16,
+                8.149509613590097e-10
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 8.449958364146778e-06,
+        "centroid_m": [
+          -4.107626140913285e-09,
+          1.537464182841664e-08,
+          0.013311312122069263
+        ],
+        "inertia_per_density_m5": [
+          [
+            8.670977556219919e-10,
+            -2.5794802104642562e-17,
+            -1.3518723037623788e-16
+          ],
+          [
+            -2.5794802104642562e-17,
+            8.464142527761248e-10,
+            4.829339139569211e-16
+          ],
+          [
+            -1.3518723037623788e-16,
+            4.829339139569211e-16,
+            8.149509613590097e-10
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-Cuerpo",
+      "source": "Modelos3D/Z-Cuerpo.SLDPRT",
+      "source_sha256": "e3f1fc239fcf450806833f2213d44b76337858e126df9fe3bc99b3cb1408309a",
+      "step": "cad/derivados/step/Z-Cuerpo.step",
+      "step_sha256": "d79131aad2aa22def2fd9cf1d809f24a01ad8decf43f1f215e527c0230790ce5",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.153752918860104e-05,
+            "centroid_m": [
+              -4.391750240062167e-18,
+              -2.1114183846452724e-18,
+              0.09517823760652991
+            ],
+            "inertia_per_density_m5": [
+              [
+                6.636496318203137e-08,
+                -1.673470251262186e-25,
+                4.2697437395044095e-25
+              ],
+              [
+                -1.673470251262186e-25,
+                6.635175270638308e-08,
+                -6.016227307851746e-24
+              ],
+              [
+                4.2697437395044095e-25,
+                -6.016227307851746e-24,
+                4.072962605949206e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.153752918860104e-05,
+        "centroid_m": [
+          -4.391750240062167e-18,
+          -2.1114183846452724e-18,
+          0.09517823760652991
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.636496318203137e-08,
+            -1.673470251262186e-25,
+            4.2697437395044095e-25
+          ],
+          [
+            -1.673470251262186e-25,
+            6.635175270638308e-08,
+            -6.016227307851746e-24
+          ],
+          [
+            4.2697437395044095e-25,
+            -6.016227307851746e-24,
+            4.072962605949206e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-Piston",
+      "source": "Modelos3D/Z-Piston.SLDPRT",
+      "source_sha256": "9daee92ea9d50c3f3d0db4d1f55bc49165789efad022cfc00dd8108a8a261e8c",
+      "step": "cad/derivados/step/Z-Piston.step",
+      "step_sha256": "341bbfe5c6ebbd029d49105c88d2cfef348c74151e7c3a51a2f5c366664b9029",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.6148952220392297e-05,
+            "centroid_m": [
+              1.5795751864059906e-18,
+              2.4179132669279232e-18,
+              0.09000000000000001
+            ],
+            "inertia_per_density_m5": [
+              [
+                4.415206427877669e-08,
+                1.3703349566185358e-25,
+                -4.5818637772754265e-25
+              ],
+              [
+                1.3703349566185358e-25,
+                4.414387249739264e-08,
+                5.248987910988495e-25
+              ],
+              [
+                -4.5818637772754265e-25,
+                5.248987910988495e-25,
+                1.9129759663046738e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.6148952220392297e-05,
+        "centroid_m": [
+          1.5795751864059906e-18,
+          2.4179132669279232e-18,
+          0.09000000000000001
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.415206427877669e-08,
+            1.3703349566185358e-25,
+            -4.5818637772754265e-25
+          ],
+          [
+            1.3703349566185358e-25,
+            4.414387249739264e-08,
+            5.248987910988495e-25
+          ],
+          [
+            -4.5818637772754265e-25,
+            5.248987910988495e-25,
+            1.9129759663046738e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-SoporteEfector",
+      "source": "Modelos3D/Z-SoporteEfector.SLDPRT",
+      "source_sha256": "e28bbbcbdc55730b57c1332a735f0108f83657879813b28a23e761ac07cf1a62",
+      "step": "cad/derivados/step/Z-SoporteEfector.step",
+      "step_sha256": "269f273b7c5495cd9ef5d28b36a3e0a8e27aaf84a9eb63b808b4fe1f0f4e1043",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "cliff_edge_blend: cliff-edge blends built as rolling-ball blends between a face and the cliff edge curve",
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (3 occurrences)",
+        "rolling_ball_blend: exact rolling-ball blend surfaces approximated by interpolating rational B-spline surfaces (exact circular cross-sections)",
+        "OCCT and converter report different face counts"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.21481569853383e-05,
+            "centroid_m": [
+              5.089538400215421e-09,
+              -6.231569345714888e-05,
+              0.006938092202085742
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.96763312922338e-09,
+                -5.859927750558057e-16,
+                2.2954358101362693e-16
+              ],
+              [
+                -5.859927750558057e-16,
+                4.126848608351149e-09,
+                4.103672829791602e-12
+              ],
+              [
+                2.2954358101362693e-16,
+                4.103672829791602e-12,
+                6.666242963426027e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.21481569853383e-05,
+        "centroid_m": [
+          5.089538400215421e-09,
+          -6.231569345714888e-05,
+          0.006938092202085742
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.96763312922338e-09,
+            -5.859927750558057e-16,
+            2.2954358101362693e-16
+          ],
+          [
+            -5.859927750558057e-16,
+            4.126848608351149e-09,
+            4.103672829791602e-12
+          ],
+          [
+            2.2954358101362693e-16,
+            4.103672829791602e-12,
+            6.666242963426027e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-SoporteM4",
+      "source": "Modelos3D/Z-SoporteM4.SLDPRT",
+      "source_sha256": "89b47ec55d4ed5e62665c11cd19e1e23931e9c4fdfcdc50856ec96968ce1636a",
+      "step": "cad/derivados/step/Z-SoporteM4.step",
+      "step_sha256": "e5e59199fb510d339f3635aaa616e330c77dcbec837a1714d660ccf9c34e6b86",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (12 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 2.7456826603016944e-05,
+            "centroid_m": [
+              3.214218912885801e-10,
+              1.945892819175087e-13,
+              0.024228891631615793
+            ],
+            "inertia_per_density_m5": [
+              [
+                1.1993215331119178e-08,
+                -1.4557066889375623e-19,
+                -8.563341908517597e-18
+              ],
+              [
+                -1.4557066889375623e-19,
+                1.1663391322452981e-08,
+                7.440232199821723e-16
+              ],
+              [
+                -8.563341908517597e-18,
+                7.440232199821723e-16,
+                7.936285432191473e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 2.7456826603016944e-05,
+        "centroid_m": [
+          3.214218912885801e-10,
+          1.945892819175087e-13,
+          0.024228891631615793
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.1993215331119178e-08,
+            -1.4557066889375623e-19,
+            -8.563341908517597e-18
+          ],
+          [
+            -1.4557066889375623e-19,
+            1.1663391322452981e-08,
+            7.440232199821723e-16
+          ],
+          [
+            -8.563341908517597e-18,
+            7.440232199821723e-16,
+            7.936285432191473e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-SoporteRuleman",
+      "source": "Modelos3D/Z-SoporteRuleman.SLDPRT",
+      "source_sha256": "5c5d2923eeda77663c858ab739024197898eabaf7a4061b33fa3922f7722e5a6",
+      "step": "cad/derivados/step/Z-SoporteRuleman.step",
+      "step_sha256": "b271c02e03f36fa01f35d2285c2b61ad57de56159b8309cbbd4e843364b0ab89",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [
+        "intersection_curve: surface/surface intersection edges approximated by interpolating cubic splines through the XT chart points (4 occurrences)"
+      ],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 3.014345376428802e-05,
+            "centroid_m": [
+              1.6634973867281207e-11,
+              2.9574194397099707e-10,
+              0.010729371964774722
+            ],
+            "inertia_per_density_m5": [
+              [
+                6.233987747811873e-09,
+                -1.5703950890132017e-18,
+                1.7890896817603042e-18
+              ],
+              [
+                -1.5703950890132017e-18,
+                6.090841971405433e-09,
+                2.9678228772939786e-17
+              ],
+              [
+                1.7890896817603042e-18,
+                2.9678228772939786e-17,
+                9.822144314305849e-09
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 3.014345376428802e-05,
+        "centroid_m": [
+          1.6634973867281207e-11,
+          2.9574194397099707e-10,
+          0.010729371964774722
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.233987747811873e-09,
+            -1.5703950890132017e-18,
+            1.7890896817603042e-18
+          ],
+          [
+            -1.5703950890132017e-18,
+            6.090841971405433e-09,
+            2.9678228772939786e-17
+          ],
+          [
+            1.7890896817603042e-18,
+            2.9678228772939786e-17,
+            9.822144314305849e-09
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-TuercaACME",
+      "source": "Modelos3D/Z-TuercaACME.SLDPRT",
+      "source_sha256": "f30046870bc161d83abd8d72488ea43b1a348ed000db10ebafc4a5feadc35d13",
+      "step": "cad/derivados/step/Z-TuercaACME.step",
+      "step_sha256": "1fdb85fc5efdf3c2a55447f12fb2f07d5f985b1568d797258535b0a84c92a760",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 1.3814839534895759e-06,
+            "centroid_m": [
+              -1.337265704975994e-18,
+              -1.3356963917677587e-18,
+              0.0032011700095510975
+            ],
+            "inertia_per_density_m5": [
+              [
+                5.431191070098675e-11,
+                8.878633603077755e-27,
+                3.181069967558263e-27
+              ],
+              [
+                8.878633603077755e-27,
+                5.431191070098589e-11,
+                -4.3969769641873105e-27
+              ],
+              [
+                3.181069967558263e-27,
+                -4.3969769641873105e-27,
+                7.785522632790954e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 1.3814839534895759e-06,
+        "centroid_m": [
+          -1.3372657049759941e-18,
+          -1.3356963917677587e-18,
+          0.003201170009551097
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.431191070098675e-11,
+            8.878633603077755e-27,
+            3.181069967558263e-27
+          ],
+          [
+            8.878633603077755e-27,
+            5.431191070098589e-11,
+            -4.3969769641873105e-27
+          ],
+          [
+            3.181069967558263e-27,
+            -4.3969769641873105e-27,
+            7.785522632790954e-11
+          ]
+        ]
+      }
+    },
+    {
+      "name": "Z-VarillaACME",
+      "source": "Modelos3D/Z-VarillaACME.SLDPRT",
+      "source_sha256": "2fa6450e36dc00b89c599e91b2690b84348df990cc8ebb239f30faef3d3bee24",
+      "step": "cad/derivados/step/Z-VarillaACME.step",
+      "step_sha256": "12af58c73409431686b089cc4d64160dbc7ec5d73115a0eea6d51bc0ae95ef56",
+      "batch_mesh_status": "kernel_validated",
+      "conversion_warnings": [],
+      "density_kg_m3": null,
+      "mass_kg": null,
+      "material_unspecified_label_utf16le_present": true,
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "solids": [
+          {
+            "index": 1,
+            "volume_m3": 9.801769079200152e-06,
+            "centroid_m": [
+              1.855776634654497e-19,
+              -5.1300655963336214e-20,
+              0.09749999999999999
+            ],
+            "inertia_per_density_m5": [
+              [
+                3.109856284603234e-08,
+                -1.6902720720305357e-27,
+                -4.547473508864642e-27
+              ],
+              [
+                -1.6902720720305357e-27,
+                3.109856284603234e-08,
+                1.2924697071141058e-41
+              ],
+              [
+                -4.547473508864642e-27,
+                1.2924697071141058e-41,
+                7.841415263360167e-11
+              ]
+            ]
+          }
+        ],
+        "volume_m3": 9.801769079200152e-06,
+        "centroid_m": [
+          1.855776634654497e-19,
+          -5.1300655963336214e-20,
+          0.09749999999999999
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.109856284603234e-08,
+            -1.6902720720305357e-27,
+            -4.547473508864642e-27
+          ],
+          [
+            -1.6902720720305357e-27,
+            3.109856284603234e-08,
+            1.2924697071141058e-41
+          ],
+          [
+            -4.547473508864642e-27,
+            1.2924697071141058e-41,
+            7.841415263360167e-11
+          ]
+        ]
+      }
+    }
+  ],
+  "instances": [
+    {
+      "instance_name": "0-Torre-1",
+      "source": "Modelos3D/0-Torre.SLDPRT",
+      "source_sha256": "fd94227671db45086676cdf6400add36907ed54e42645c7f0be022c91325f2ff",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.014824408846328917,
+          -0.9998901124135376,
+          0.0,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328917,
+          0.0,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.2216
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "validated_individual_bodies_zero_area_cleanup",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 0.0003928129356304446,
+        "centroid_m": [
+          -3.2224473202264456e-17,
+          1.2894911992287867e-15,
+          0.11509411995111796
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.279936457871077e-06,
+            2.748258211426993e-08,
+            -5.27553459266556e-21
+          ],
+          [
+            2.748258211426993e-08,
+            4.426673903976146e-06,
+            3.34554426129561e-19
+          ],
+          [
+            -5.27553459266556e-21,
+            3.34554426129561e-19,
+            6.440588499514348e-06
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "A-CarretelInf-1",
+      "source": "Modelos3D/A-CarretelInf.SLDPRT",
+      "source_sha256": "4d22c619cbc9afe94af2b2b317c936ceb8eee41785c7bd2ca9a56aeebebe13ba",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.014824408846328917,
+          0.9998901124135376,
+          -1.110101024896546e-16,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          0.014824408846328917,
+          -1.6458400027651226e-18,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          1.110223024625157e-16,
+          1.0,
+          0.2216
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.3735971852430576e-05,
+        "centroid_m": [
+          0.00027419306580260186,
+          4.064549188705836e-06,
+          0.22648624593330038
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.593108729427261e-09,
+            1.868783681930564e-12,
+            3.637295779105711e-12
+          ],
+          [
+            1.868783681930551e-12,
+            5.467080025784862e-09,
+            5.390226678377087e-14
+          ],
+          [
+            3.637295779105711e-12,
+            5.390226678377087e-14,
+            1.0472646560821001e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "0-Bancada-registro-1",
+      "source": "Modelos3D/0-Bancada.SLDPRT",
+      "source_sha256": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+      "group": "base",
+      "body_from_piece": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          -3.1230443578444955e-16
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -5.613727798586821e-16
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.15523749999999997
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 0.00011540280709103163,
+        "centroid_m": [
+          -2.0665636528620969e-16,
+          -1.1980059504371363e-16,
+          0.1850121129974455
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.428654782981352e-08,
+            4.2239230997165564e-23,
+            -7.586668974992281e-24
+          ],
+          [
+            4.2239230997165564e-23,
+            6.42865478298135e-08,
+            -1.6221607027031636e-23
+          ],
+          [
+            -7.58666897499228e-24,
+            -1.6221607027031642e-23,
+            6.939664923553014e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "0-ElevadorM2-registro-1",
+      "source": "Modelos3D/0-ElevadorM2.SLDPRT",
+      "source_sha256": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.014824408846356753,
+          0.9998901124135372,
+          6.199155856039796e-17,
+          0.0008449913042426157
+        ],
+        [
+          -0.9998901124135372,
+          0.014824408846356753,
+          -1.9160066437058753e-16,
+          -0.056993736407571646
+        ],
+        [
+          -1.9249859804513733e-16,
+          -5.91443798737834e-17,
+          1.0,
+          0.1358374999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 3.51207243475574e-05,
+        "centroid_m": [
+          0.0010362281605214192,
+          -0.06989245255227822,
+          0.14433749999999987
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.6820634429406103e-08,
+            -2.1689340037957396e-10,
+            1.317252142810034e-24
+          ],
+          [
+            -2.168934003795739e-10,
+            3.1446640655392406e-08,
+            -5.639176693921926e-25
+          ],
+          [
+            1.3172521428100339e-24,
+            -5.639176693921919e-25,
+            4.6575626862057875e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "0-PlatinaSuperior-registro-1",
+      "source": "Modelos3D/0-PlatinaSuperior.SLDPRT",
+      "source_sha256": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+      "group": "base",
+      "body_from_piece": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          6.976840979944221e-17
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -4.87890977618477e-19
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.21523749999999994
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 4.921555892011468e-05,
+        "centroid_m": [
+          6.761143846860098e-17,
+          -1.207839678739778e-18,
+          0.21758765105349578
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.570558022244852e-08,
+            -1.5660498592642942e-23,
+            7.079077034924404e-24
+          ],
+          [
+            -1.5660498592642942e-23,
+            4.5705580222449464e-08,
+            -2.5561459880869638e-23
+          ],
+          [
+            7.079077034924404e-24,
+            -2.5561459880869638e-23,
+            9.122756638311414e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "0-SoporteMotores-registro-1",
+      "source": "Modelos3D/0-SoporteMotores.SLDPRT",
+      "source_sha256": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.014824408846356836,
+          0.9998901124135372,
+          1.555046681264057e-16,
+          2.5017965130103015e-16
+        ],
+        [
+          -0.9998901124135372,
+          0.014824408846356836,
+          -5.617404564216499e-16,
+          2.1955093992831465e-18
+        ],
+        [
+          -5.639839928964981e-16,
+          -1.4716010990220786e-16,
+          1.0,
+          0.15283749999999996
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.361901993244654e-05,
+        "centroid_m": [
+          -0.0001506075472285347,
+          0.010158313824833348,
+          0.15403749999999997
+        ],
+        "inertia_per_density_m5": [
+          [
+            7.699678337950122e-08,
+            8.900364566377374e-10,
+            3.1256378943361143e-24
+          ],
+          [
+            8.900364566377376e-10,
+            1.6977996577521225e-08,
+            -4.366910884652251e-23
+          ],
+          [
+            3.1256378943361143e-24,
+            -4.36691088465225e-23,
+            9.395210569788724e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "NEMA23-registro-1",
+      "source": "Modelos3D/NEMA23.SLDPRT",
+      "source_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.014824408846357141,
+          -0.9998901124135372,
+          -1.492503277007551e-16,
+          0.0008449913042426222
+        ],
+        [
+          -0.9998901124135372,
+          -0.014824408846357141,
+          -3.751065001364461e-16,
+          -0.05699373640757162
+        ],
+        [
+          3.7285273271019084e-16,
+          1.5479465906141406e-16,
+          -1.0,
+          0.17983749999999993
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 0.0001435098953380928,
+        "centroid_m": [
+          0.0008449913042426217,
+          -0.056993736407571625,
+          0.1546572339413725
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.362851677796718e-08,
+            5.501364171215648e-24,
+            3.028270914592616e-24
+          ],
+          [
+            5.914954477492162e-24,
+            6.362851677796715e-08,
+            3.2803175834340068e-24
+          ],
+          [
+            3.028270914592616e-24,
+            3.2803175834340068e-24,
+            6.599644159855061e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "NEMA23-registro-2",
+      "source": "Modelos3D/NEMA23.SLDPRT",
+      "source_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.014824408846328945,
+          -0.9998901124135376,
+          -1.4943563311620932e-16,
+          -0.0008053998865835302
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328945,
+          1.5239070349104866e-16,
+          0.056128010688208954
+        ],
+        [
+          -1.545892525659674e-16,
+          1.471601099022236e-16,
+          -1.0,
+          0.2042375
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 0.0001435098953380928,
+        "centroid_m": [
+          -0.0008053998865835307,
+          0.05612801068820896,
+          0.17905723394137257
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.362851677796718e-08,
+            5.5013641712156505e-24,
+            3.028709703885334e-24
+          ],
+          [
+            5.7081593243539074e-24,
+            6.362851677796715e-08,
+            2.0312438621760194e-24
+          ],
+          [
+            3.0287097038853326e-24,
+            2.031243862176021e-24,
+            6.599644159855061e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "0-6203-2RS-registro-1",
+      "source": "Modelos3D/0-6203-2RS.SLDPRT",
+      "source_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+      "group": "base",
+      "body_from_piece": [
+        [
+          0.1269802492513681,
+          -0.9919052456258413,
+          1.5550466812640569e-16,
+          -3.049318610115481e-16
+        ],
+        [
+          0.9919052456258413,
+          0.1269802492513681,
+          -5.617404564216498e-16,
+          -5.890199352570624e-16
+        ],
+        [
+          5.374472838864465e-16,
+          2.2557583920488567e-16,
+          0.9999999999999999,
+          0.20123749999999993
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.1684368476863839e-05,
+        "centroid_m": [
+          -3.0399825053337053e-16,
+          -5.923205618237161e-16,
+          0.20723749999999994
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.5119197879613484e-09,
+            3.883088093213532e-24,
+            2.2858288197480098e-25
+          ],
+          [
+            3.883088093213532e-24,
+            1.511919787961377e-09,
+            -7.116977372224837e-25
+          ],
+          [
+            2.2858288197480107e-25,
+            -7.116977372224835e-25,
+            2.77173029976388e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "0-6203-2RS-registro-2",
+      "source": "Modelos3D/0-6203-2RS.SLDPRT",
+      "source_sha256": "a55b9c5d2fa64f9ba3c739f9f0226a6765b279d6cb7ee81b6222b0d9329af931",
+      "group": "base",
+      "body_from_piece": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          -3.1056971230847275e-16
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -5.613456748043699e-16
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.15523749999999997
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.1684368476863839e-05,
+        "centroid_m": [
+          -3.0964599861143658e-16,
+          -5.646469230292212e-16,
+          0.16123749999999998
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.5119197879613482e-09,
+            -2.402185685117354e-25,
+            2.2882157220354153e-25
+          ],
+          [
+            -2.4344974277952066e-25,
+            1.5119197879613776e-09,
+            -7.070279815420171e-25
+          ],
+          [
+            2.2882157220354153e-25,
+            -7.070279815420171e-25,
+            2.771730299763881e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "A-Brazo-1",
+      "source": "Modelos3D/A-Brazo.SLDPRT",
+      "source_sha256": "3465c2fede70b9befc81f6f723a73551b294f24aee7b0663001d43057c3d0b6c",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          1.2825851491982009e-15,
+          5.758855253010222e-16,
+          1.0000000000000002,
+          -0.030000000000000145
+        ],
+        [
+          1.0000000000000002,
+          5.966371112067785e-16,
+          -1.2825851491982009e-15,
+          5.610234499187055e-17
+        ],
+        [
+          -5.966371112067787e-16,
+          1.0,
+          -5.758855253010213e-16,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 6.9501053162809e-05,
+        "centroid_m": [
+          0.12010116227076856,
+          -1.4520754102535492e-16,
+          8.470509492310437e-05
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.5247945749476264e-08,
+            6.872821894256644e-22,
+            7.070467483771361e-10
+          ],
+          [
+            6.872821894256643e-22,
+            5.424833506273938e-07,
+            -6.63558491279578e-24
+          ],
+          [
+            7.070467483771361e-10,
+            -6.635584912795827e-24,
+            5.42729423679066e-07
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "A-BridaEje-1",
+      "source": "Modelos3D/A-BridaEje.SLDPRT",
+      "source_sha256": "208eead9ba17df76d6ab435ec1faf4068a2939c0b3eeedb7b9e568e29d220d8b",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          -1.7631035520437764e-15,
+          -1.0000000000000002,
+          -6.974054733592301e-18,
+          3.7947076036992467e-19
+        ],
+        [
+          -1.0000000000000002,
+          1.7631035520437764e-15,
+          4.2600875008184425e-18,
+          -1.5178830414797066e-18
+        ],
+        [
+          -4.260087500818428e-18,
+          6.974054733592302e-18,
+          -1.0,
+          -0.025000000000000022
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.5899208160247426e-05,
+        "centroid_m": [
+          -0.0001281890112281604,
+          -0.00010466221738050515,
+          -0.028790637158619216
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.1341963227445844e-09,
+            2.1372113656035617e-13,
+            -9.802543448019745e-12
+          ],
+          [
+            2.1372113656035617e-13,
+            4.281123137032171e-09,
+            -1.0328535173560457e-11
+          ],
+          [
+            -9.802543448019745e-12,
+            -1.0328535173560457e-11,
+            7.051520762473859e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "A-CarretelSup-1",
+      "source": "Modelos3D/A-CarretelSup.SLDPRT",
+      "source_sha256": "724e621b00264214b071c7cec7ff35d340c10a05d0458d8a7f5fca50af40914f",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          0.014824408846327684,
+          -0.9998901124135376,
+          0.0,
+          6.987683001669075e-17
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846327684,
+          0.0,
+          -7.426784881525792e-18
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          -0.0397625000000002
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.3647085133646418e-05,
+        "centroid_m": [
+          -0.00027597891045330624,
+          -4.09230779704067e-06,
+          -0.044622942154071074
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.5790098707315596e-09,
+            1.8691484905555195e-12,
+            3.540108472522864e-12
+          ],
+          [
+            1.8691484905555195e-12,
+            5.452974465155196e-09,
+            5.250892312236337e-14
+          ],
+          [
+            3.540108472522864e-12,
+            5.250892312236337e-14,
+            1.0448017577602741e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-CarretelSup-1",
+      "source": "Modelos3D/B-CarretelSup.SLDPRT",
+      "source_sha256": "f470bd3408e498096b28f2c40a2c9e7ef8c29bce4642f21e1dc584bb2b81bc5b",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          0.014824408846327684,
+          -0.9998901124135376,
+          0.0,
+          0.25000000000000105
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846327684,
+          0.0,
+          -2.9636015863587615e-16
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          -0.025000000000000244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.2725752427807657e-05,
+        "centroid_m": [
+          0.24949647761359042,
+          -1.3121704103181862e-05,
+          -0.029248114959459386
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.205533588391596e-09,
+            4.900889353615261e-12,
+            -3.4864726936635357e-12
+          ],
+          [
+            4.900889353615261e-12,
+            5.011529438370672e-09,
+            1.8208042102358622e-13
+          ],
+          [
+            -3.4864726936635357e-12,
+            1.8208042102358622e-13,
+            9.76051669226072e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-SoporteRuleman-registro-1",
+      "source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+      "source_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          -1.1785017406395925e-15,
+          1.0000000000000002,
+          6.869078277635383e-16,
+          0.24999999999999997
+        ],
+        [
+          -1.0000000000000002,
+          -1.1785017406395925e-15,
+          6.951195168857461e-16,
+          -3.0199800993279944e-16
+        ],
+        [
+          6.951195168857464e-16,
+          -6.869078277635371e-16,
+          1.0,
+          0.01179999999999981
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.2631939575141737e-05,
+        "centroid_m": [
+          0.2560754845842301,
+          -3.0670146910757577e-16,
+          0.018045688900891636
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.892297319623621e-09,
+            2.875041470374912e-25,
+            -4.87177761273699e-11
+          ],
+          [
+            2.8750414703748975e-25,
+            5.4687486090078986e-09,
+            3.0308685003904048e-24
+          ],
+          [
+            -4.87177761273699e-11,
+            3.0308685003904048e-24,
+            9.748277502169809e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-SoporteRuleman-registro-2",
+      "source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+      "source_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          1.1524808884999403e-15,
+          1.0000000000000002,
+          -4.093520716072488e-16,
+          0.24999999999999994
+        ],
+        [
+          1.0000000000000002,
+          -1.1524808884999403e-15,
+          -6.363533332053036e-16,
+          -3.163094786096081e-16
+        ],
+        [
+          -6.363533332053035e-16,
+          -4.093520716072479e-16,
+          -1.0,
+          -0.011800000000000144
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.2631939575141737e-05,
+        "centroid_m": [
+          0.25607548458423,
+          -3.254008331631164e-16,
+          -0.018045688900891976
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.892297319623621e-09,
+            1.0533308372819508e-24,
+            4.8717776127375226e-11
+          ],
+          [
+            1.0533308372819501e-24,
+            5.4687486090078986e-09,
+            2.6658166295058765e-24
+          ],
+          [
+            4.8717776127375226e-11,
+            2.6658166295058765e-24,
+            9.748277502169809e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-608zz-registro-1",
+      "source": "Modelos3D/Z-608zz.SLDPRT",
+      "source_sha256": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          1.2825851491982009e-15,
+          -1.0000000000000002,
+          -8.41692097416275e-15,
+          0.24999999999999986
+        ],
+        [
+          1.0000000000000002,
+          1.2825851491982009e-15,
+          5.9663711120679e-16,
+          -3.0373273340877615e-16
+        ],
+        [
+          -5.966371112067787e-16,
+          -8.416920974162747e-15,
+          1.0,
+          0.011300000000001309
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.073451151369264e-06,
+        "centroid_m": [
+          0.24999999999999983,
+          -3.01474873936541e-16,
+          0.014800000000001309
+        ],
+        "inertia_per_density_m5": [
+          [
+            7.865762606425409e-11,
+            1.0317273748410872e-26,
+            -5.453949977432125e-25
+          ],
+          [
+            1.0317273748410861e-26,
+            7.865762606425564e-11,
+            3.801513509781943e-26
+          ],
+          [
+            -5.453949977432124e-25,
+            3.801513509781943e-26,
+            1.4344512056291073e-10
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-608zz-registro-2",
+      "source": "Modelos3D/Z-608zz.SLDPRT",
+      "source_sha256": "178442d2e9ccc0576b6d784b231831f76dcad2c4b65c6ca85477c20d49432198",
+      "group": "arm",
+      "body_from_piece": [
+        [
+          1.2825851491982009e-15,
+          -1.0000000000000002,
+          8.94419157341314e-15,
+          0.24999999999999975
+        ],
+        [
+          1.0000000000000002,
+          1.2825851491982009e-15,
+          5.966371112067678e-16,
+          -3.228146916445209e-16
+        ],
+        [
+          -5.966371112067787e-16,
+          8.944191573413138e-15,
+          1.0,
+          -0.01830000000000165
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.073451151369264e-06,
+        "centroid_m": [
+          0.24999999999999978,
+          -3.205568321722858e-16,
+          -0.014800000000001649
+        ],
+        "inertia_per_density_m5": [
+          [
+            7.865762606425409e-11,
+            1.0317273748412346e-26,
+            5.793879859234199e-25
+          ],
+          [
+            1.0317273748412335e-26,
+            7.865762606425564e-11,
+            3.80151350978178e-26
+          ],
+          [
+            5.793879859234198e-25,
+            3.80151350978178e-26,
+            1.4344512056291073e-10
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-Antebrazo-1",
+      "source": "Modelos3D/B-Antebrazo.SLDPRT",
+      "source_sha256": "12c370a6136c7e357c23bfddec99d4ada03d69969b0c4db15456ed232470d8ce",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -1.942890293094024e-16,
+          -7.397239396076018e-16,
+          -1.0,
+          0.21999999999999995
+        ],
+        [
+          1.0,
+          -3.6142815592717073e-16,
+          -1.942890293094024e-16,
+          6.071532165918825e-17
+        ],
+        [
+          -3.614281559271705e-16,
+          -1.0,
+          7.39723939607602e-16,
+          -1.6653345369377348e-16
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 5.412124884152351e-05,
+        "centroid_m": [
+          0.10231579247699107,
+          4.0804661264960504e-17,
+          4.2490627464227584e-05
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.307264132412617e-08,
+            -1.3466841860552549e-22,
+            1.1340885614953664e-10
+          ],
+          [
+            -1.3466841860552549e-22,
+            2.719923909809319e-07,
+            2.9247878737880024e-24
+          ],
+          [
+            1.1340885614953664e-10,
+            2.9247878737880024e-24,
+            2.723073953272984e-07
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-CarretelInf-1",
+      "source": "Modelos3D/B-CarretelInf.SLDPRT",
+      "source_sha256": "a937c813349b4f3730047cbdbc7490acc6eda49c62a35317a457527982d37eaf",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          0.026757672054836062,
+          -0.9996419493929845,
+          -4.010442786087495e-17,
+          -1.2749535007306703e-15
+        ],
+        [
+          0.9996419493929845,
+          0.026757672054836062,
+          -1.4982644366063097e-15,
+          -2.1167375862170606e-16
+        ],
+        [
+          1.498801083243961e-15,
+          0.0,
+          1.0,
+          0.024999999999999745
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.2725752427807657e-05,
+        "centroid_m": [
+          -0.0005033299036006132,
+          1.9130626699249022e-05,
+          0.029248114959458886
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.205388968621775e-09,
+            -7.214889957513946e-12,
+            3.4883975892945407e-12
+          ],
+          [
+            -7.214889957513946e-12,
+            5.0116740581404945e-09,
+            1.404542003013374e-13
+          ],
+          [
+            3.4883975892945407e-12,
+            1.404542003013374e-13,
+            9.76051669226072e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "NEMA17-1",
+      "source": "Modelos3D/NEMA17.SLDPRT",
+      "source_sha256": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          1.942890293094024e-16,
+          1.0000000000000002,
+          9.765326760303328e-16,
+          0.05299999999999937
+        ],
+        [
+          -1.0000000000000002,
+          1.942890293094024e-16,
+          -8.266105392286918e-17,
+          1.5959455978986625e-16
+        ],
+        [
+          -8.266105392286939e-17,
+          -9.765326760303324e-16,
+          1.0,
+          -0.06299999999999983
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh_cache_differs",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 6.577194303032658e-05,
+        "centroid_m": [
+          0.05299492066726739,
+          1.4517299731024696e-16,
+          -0.04366553005328916
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.7434627153348136e-08,
+            -1.2784792971330058e-24,
+            -5.198229498778852e-12
+          ],
+          [
+            -1.2784792971330058e-24,
+            1.7442135677020314e-08,
+            -9.188569838597993e-25
+          ],
+          [
+            -5.198229498778852e-12,
+            -9.188569838597993e-25,
+            1.8301470450209933e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "R-Bancada-1",
+      "source": "Modelos3D/R-Bancada.SLDPRT",
+      "source_sha256": "142b7025e8e5aa78bcd99d926460960d4733b04a96e766522c1096475149d31c",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -1.942890293094024e-16,
+          1.5094774508989686e-14,
+          -1.0,
+          0.23000000000000334
+        ],
+        [
+          1.0,
+          -3.505099343235967e-16,
+          -1.942890293094024e-16,
+          7.45931094670027e-17
+        ],
+        [
+          -3.505099343235996e-16,
+          -1.0,
+          -1.509477450898968e-14,
+          7.438494264988549e-15
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 6.899531352805997e-05,
+        "centroid_m": [
+          0.22203666021017782,
+          6.551893784135064e-17,
+          0.0005592117257603596
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.698962717802971e-08,
+            -7.545288412610059e-24,
+            -4.863537393852854e-10
+          ],
+          [
+            -7.545288412610059e-24,
+            4.008938277961065e-08,
+            3.699801064262978e-24
+          ],
+          [
+            -4.863537393852854e-10,
+            3.699801064262978e-24,
+            6.064908593773742e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "R-ContraBancada-1",
+      "source": "Modelos3D/R-ContraBancada.SLDPRT",
+      "source_sha256": "010f3d820c0e69d6b8f39b89eb7fb42ceb869a09106a0d36a9be997ff008b71e",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -2.1510571102112408e-16,
+          -1.0,
+          -1.5095432945363814e-14,
+          0.25000000000000344
+        ],
+        [
+          1.0000000000000002,
+          -2.0816681711721685e-16,
+          1.2666138551164465e-15,
+          2.2551405187698492e-17
+        ],
+        [
+          -1.2238997903724532e-15,
+          -1.5093191434934694e-14,
+          0.9999999999999999,
+          -0.023799999999992244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 4.54767265671733e-05,
+        "centroid_m": [
+          0.2667903548043278,
+          6.171299421614055e-17,
+          0.0008095468097343954
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.101023351941069e-08,
+            6.1133442648473235e-24,
+            3.9208460598871774e-11
+          ],
+          [
+            6.1133442648473235e-24,
+            1.5388793491816803e-08,
+            2.6339442131051168e-23
+          ],
+          [
+            3.9208460598871774e-11,
+            2.633944213105117e-23,
+            3.553072531454301e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "R-CarretelInf-1",
+      "source": "Modelos3D/R-CarretelInf.SLDPRT",
+      "source_sha256": "64541bc13b13a388b14236e65d4dc2d8fac748b3e9681bf884bff2882763b2c3",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -2.67841304690819e-15,
+          1.0,
+          -1.47691238616516e-14,
+          0.2500000000000028
+        ],
+        [
+          -1.0,
+          -2.67841304690819e-15,
+          3.505099343236036e-16,
+          -2.1874863032067537e-15
+        ],
+        [
+          3.50509934323564e-16,
+          1.47691238616516e-14,
+          0.9999999999999999,
+          0.025000000000007544
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.3609588603004974e-05,
+        "centroid_m": [
+          0.2505739809076993,
+          -5.3030214742858224e-06,
+          0.030008243876142926
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.00275028155521e-09,
+            -2.029652175900427e-12,
+            -5.044132517310359e-12
+          ],
+          [
+            -2.029652175900427e-12,
+            5.794086329316508e-09,
+            -2.8686724310186793e-13
+          ],
+          [
+            -5.044132517310359e-12,
+            -2.8686724310186793e-13,
+            1.1285763496828106e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-SoporteEjeFijo-registro-1",
+      "source": "Modelos3D/B-SoporteEjeFijo.SLDPRT",
+      "source_sha256": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          1.942890293094024e-16,
+          -7.397239396076018e-16,
+          1.0,
+          -0.017000000000000067
+        ],
+        [
+          -1.0,
+          -3.6142815592717073e-16,
+          1.942890293094024e-16,
+          3.2959746043559335e-17
+        ],
+        [
+          3.614281559271705e-16,
+          -1.0,
+          -7.39723939607602e-16,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 8.343484601812216e-05,
+        "centroid_m": [
+          -0.00790841091664362,
+          3.980108943022351e-10,
+          -4.612197865085902e-10
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.066775402222361e-08,
+            -3.1334742443694577e-16,
+            3.024903559849037e-16
+          ],
+          [
+            -3.1334742443694577e-16,
+            2.7687338968119497e-08,
+            -8.225563750756101e-18
+          ],
+          [
+            3.024903559849037e-16,
+            -8.225563750756101e-18,
+            2.669438447280154e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "B-SoporteM3-registro-1",
+      "source": "Modelos3D/B-SoporteM3.SLDPRT",
+      "source_sha256": "6b1e7eb5bccbd0c2f88fad4a66b16c48dfff06a394005d4fe1b0647fa37b8135",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -1.0,
+          4.718447854656915e-16,
+          -7.397239396076022e-16,
+          0.05299999999999992
+        ],
+        [
+          4.718447854656915e-16,
+          1.0,
+          -1.0136841828944494e-15,
+          4.5102810375396984e-17
+        ],
+        [
+          7.397239396076018e-16,
+          -1.0136841828944498e-15,
+          -1.0,
+          -0.02500000000000005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.0470094515679797e-05,
+        "centroid_m": [
+          0.052999999999999915,
+          3.7115503040447616e-17,
+          -0.02786361599136739
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.073364284426783e-09,
+            1.3997691100065634e-24,
+            8.941910191558397e-24
+          ],
+          [
+            1.3997691100065634e-24,
+            1.2253531645476302e-08,
+            5.0068806359099476e-24
+          ],
+          [
+            8.941910191558397e-24,
+            5.0068806359099476e-24,
+            1.718938573652305e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-6907-2RS-registro-1",
+      "source": "Modelos3D/Z-6907-2RS.SLDPRT",
+      "source_sha256": "ffad950d435c7adda8d5addd482bb20fcd00cb3ec95eff544001603f35e8e8fa",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -0.9973920766039361,
+          0.07217371770727014,
+          1.7742857011791296e-15,
+          0.2499999999999974
+        ],
+        [
+          -0.07217371770727012,
+          -0.997392076603936,
+          -6.335582586756529e-16,
+          2.949029909160572e-17
+        ],
+        [
+          1.723932245074956e-15,
+          -7.599627825990327e-16,
+          1.0,
+          -0.020000000000000212
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.3006193585861743e-05,
+        "centroid_m": [
+          0.2499999999999974,
+          2.367315381602307e-17,
+          -0.015000000000000211
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.5521281275793308e-09,
+            4.755971928616588e-24,
+            5.953014316695745e-24
+          ],
+          [
+            4.704273140332024e-24,
+            3.5521281275792575e-09,
+            -2.076094726076317e-24
+          ],
+          [
+            5.953014316695745e-24,
+            -2.076094726076317e-24,
+            6.9197191026867164e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-6907-2RS-registro-2",
+      "source": "Modelos3D/Z-6907-2RS.SLDPRT",
+      "source_sha256": "ffad950d435c7adda8d5addd482bb20fcd00cb3ec95eff544001603f35e8e8fa",
+      "group": "forearm",
+      "body_from_piece": [
+        [
+          -0.9902296656953109,
+          0.13944607981924056,
+          1.7742857011791292e-15,
+          0.24999999999999745
+        ],
+        [
+          -0.13944607981924056,
+          -0.9902296656953108,
+          -6.335582586756528e-16,
+          6.938893903907228e-18
+        ],
+        [
+          1.6686031212171544e-15,
+          -8.747853681956583e-16,
+          0.9999999999999999,
+          0.006999999999999784
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.3006193585861743e-05,
+        "centroid_m": [
+          0.24999999999999745,
+          9.51748477107266e-19,
+          0.011999999999999783
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.5521281275793316e-09,
+            9.680753258556541e-24,
+            5.949178994307184e-24
+          ],
+          [
+            9.680753258556541e-24,
+            3.55212812757926e-09,
+            -2.0777174126753746e-24
+          ],
+          [
+            5.949178994307184e-24,
+            -2.0777174126753746e-24,
+            6.919719102686715e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-BujeExterior-1",
+      "source": "Modelos3D/Z-BujeExterior.SLDPRT",
+      "source_sha256": "ed4d66fb189feb52c9d3d94714475d08da3dd05d25b13f597ac419d466ab2790",
+      "group": "wrist",
+      "body_from_piece": [
+        [
+          -1.0000000000000004,
+          -2.7755575615628914e-17,
+          1.723932245074956e-15,
+          -1.6197980456933436e-16
+        ],
+        [
+          6.938893903907228e-17,
+          -1.0000000000000004,
+          -7.599627825990314e-16,
+          4.85722573273506e-17
+        ],
+        [
+          1.723932245074956e-15,
+          -7.599627825990327e-16,
+          1.0,
+          -0.038000000000000256
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 3.8989976972366216e-05,
+        "centroid_m": [
+          5.252428389002518e-10,
+          -5.609998879777342e-05,
+          0.0034115888676514994
+        ],
+        "inertia_per_density_m5": [
+          [
+            2.972576184188409e-08,
+            1.6632392686266396e-16,
+            5.701103263934996e-16
+          ],
+          [
+            1.6632392686266396e-16,
+            2.956339777911694e-08,
+            9.311342106441725e-11
+          ],
+          [
+            5.701103263934996e-16,
+            9.311342106441725e-11,
+            9.905292846129407e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-Cuerpo-1",
+      "source": "Modelos3D/Z-Cuerpo.SLDPRT",
+      "source_sha256": "e3f1fc239fcf450806833f2213d44b76337858e126df9fe3bc99b3cb1408309a",
+      "group": "wrist",
+      "body_from_piece": [
+        [
+          -1.0000000000000002,
+          2.914335439641036e-16,
+          1.7138959175774204e-15,
+          -1.6349768761081407e-16
+        ],
+        [
+          -2.914335439641036e-16,
+          -1.0000000000000002,
+          -8.198112699348585e-16,
+          3.469446951953614e-17
+        ],
+        [
+          1.713895917577421e-15,
+          -8.198112699348603e-16,
+          0.9999999999999999,
+          -0.03300000000000025
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.153752918860104e-05,
+        "centroid_m": [
+          4.0196555052934166e-18,
+          -4.122230393818957e-17,
+          0.06217823760652964
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.63649631820314e-08,
+            -1.6349704939058188e-25,
+            -1.0718897985902807e-22
+          ],
+          [
+            -1.6349704939058188e-25,
+            6.635175270638311e-08,
+            5.707308131009504e-23
+          ],
+          [
+            -1.0718897985902807e-22,
+            5.707308131009504e-23,
+            4.0729626059492045e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-SoporteM4-1",
+      "source": "Modelos3D/Z-SoporteM4.SLDPRT",
+      "source_sha256": "89b47ec55d4ed5e62665c11cd19e1e23931e9c4fdfcdc50856ec96968ce1636a",
+      "group": "wrist",
+      "body_from_piece": [
+        [
+          8.049116928532385e-16,
+          -1.0000000000000004,
+          1.7138959175774159e-15,
+          2.671474153004283e-16
+        ],
+        [
+          1.0000000000000004,
+          8.049116928532385e-16,
+          -6.491841799619646e-17,
+          -1.3183898417423734e-16
+        ],
+        [
+          6.491841799619496e-17,
+          1.713895917577416e-15,
+          0.9999999999999999,
+          0.17899999999999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.7456826603016944e-05,
+        "centroid_m": [
+          -1.9428060870349477e-13,
+          3.214217578766948e-10,
+          0.20322889163161556
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.1663391322452991e-08,
+            1.4557093437299115e-19,
+            -7.44023226370044e-16
+          ],
+          [
+            1.4557093437299115e-19,
+            1.1993215331119188e-08,
+            -8.563341645147529e-18
+          ],
+          [
+            -7.44023226370044e-16,
+            -8.563341645147529e-18,
+            7.93628543219147e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-SoporteRuleman-1",
+      "source": "Modelos3D/Z-SoporteRuleman.SLDPRT",
+      "source_sha256": "5c5d2923eeda77663c858ab739024197898eabaf7a4061b33fa3922f7722e5a6",
+      "group": "wrist",
+      "body_from_piece": [
+        [
+          4.440892098500626e-16,
+          1.0000000000000002,
+          1.7138959175774214e-15,
+          2.671474153004283e-16
+        ],
+        [
+          -1.0000000000000002,
+          4.440892098500626e-16,
+          -6.491841799619446e-17,
+          -1.3183898417423734e-16
+        ],
+        [
+          -6.491841799619078e-17,
+          -1.713895917577421e-15,
+          1.0,
+          0.15699999999999975
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 3.014345376428802e-05,
+        "centroid_m": [
+          2.9574222950743924e-10,
+          -1.6635106402799107e-11,
+          0.16772937196477447
+        ],
+        "inertia_per_density_m5": [
+          [
+            6.0908419714054364e-09,
+            1.5703950254437027e-18,
+            2.9678235168003645e-17
+          ],
+          [
+            1.5703950254437027e-18,
+            6.2339877478118765e-09,
+            -1.789089914697742e-18
+          ],
+          [
+            2.9678235168003645e-17,
+            -1.789089914697742e-18,
+            9.822144314305849e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "NEMA17-2",
+      "source": "Modelos3D/NEMA17.SLDPRT",
+      "source_sha256": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+      "group": "wrist",
+      "body_from_piece": [
+        [
+          -5.009881398621019e-15,
+          -1.0000000000000002,
+          -1.6940795528622384e-15,
+          3.2504381131115423e-16
+        ],
+        [
+          -1.0000000000000002,
+          5.009881398621019e-15,
+          8.473478271137358e-17,
+          -1.1796119636642288e-16
+        ],
+        [
+          -8.473478271136465e-17,
+          1.694079552862238e-15,
+          -1.0,
+          0.2629999999999998
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh_cache_differs",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 6.577194303032658e-05,
+        "centroid_m": [
+          5.079332732292785e-06,
+          -1.2917070906937833e-16,
+          0.24366553005328911
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.7434627153348136e-08,
+            1.3155074484095178e-24,
+            -5.19822949877823e-12
+          ],
+          [
+            1.3155074484094943e-24,
+            1.7442135677020314e-08,
+            8.000404748610711e-25
+          ],
+          [
+            -5.19822949877823e-12,
+            8.000404748610711e-25,
+            1.8301470450209933e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "R-CarretelSup-1",
+      "source": "Modelos3D/R-CarretelSup.SLDPRT",
+      "source_sha256": "da9dcc5e2862c373070e67306f165e324c042da2ebbede433a2a216e8705d0c1",
+      "group": "wrist",
+      "body_from_piece": [
+        [
+          -0.09883576595969454,
+          -0.995103759096086,
+          0.0,
+          -4.7704895589362195e-17
+        ],
+        [
+          -0.995103759096086,
+          0.09883576595969454,
+          0.0,
+          7.112366251504909e-17
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.052999999999999436
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh_cache_differs",
+      "attachment_status": "provisional_joint_side",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.3136720349500833e-05,
+        "centroid_m": [
+          0.0001814011216035205,
+          2.6049209299713165e-05,
+          0.047734086834903836
+        ],
+        "inertia_per_density_m5": [
+          [
+            5.576364346577516e-09,
+            7.75971476280869e-12,
+            -2.2833003337336925e-11
+          ],
+          [
+            7.75971476280869e-12,
+            5.495988028906411e-09,
+            -2.002850251596395e-13
+          ],
+          [
+            -2.2833003337336925e-11,
+            -2.002850251596395e-13,
+            1.0582423714720746e-08
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-Piston-1",
+      "source": "Modelos3D/Z-Piston.SLDPRT",
+      "source_sha256": "9daee92ea9d50c3f3d0db4d1f55bc49165789efad022cfc00dd8108a8a261e8c",
+      "group": "tool",
+      "body_from_piece": [
+        [
+          -1.0,
+          0.0,
+          -1.7239322450749577e-15,
+          -5.2258544713801314e-17
+        ],
+        [
+          0.0,
+          1.0,
+          7.599627825990335e-16,
+          2.949029909160572e-17
+        ],
+        [
+          1.723932245074958e-15,
+          7.599627825990335e-16,
+          -0.9999999999999999,
+          0.1989999999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 1.6148952220392297e-05,
+        "centroid_m": [
+          -2.089920219569535e-16,
+          1.0030486279244667e-16,
+          0.1089999999999999
+        ],
+        "inertia_per_density_m5": [
+          [
+            4.415206427877669e-08,
+            -1.3703349566185663e-25,
+            -7.327551272216684e-23
+          ],
+          [
+            -1.3703349566185663e-25,
+            4.414387249739264e-08,
+            3.1569010848318633e-23
+          ],
+          [
+            -7.327551272216684e-23,
+            3.1569010848318633e-23,
+            1.912975966304673e-09
+          ]
+        ]
+      }
+    },
+    {
+      "instance_name": "Z-SoporteEfector-1",
+      "source": "Modelos3D/Z-SoporteEfector.SLDPRT",
+      "source_sha256": "e28bbbcbdc55730b57c1332a735f0108f83657879813b28a23e761ac07cf1a62",
+      "group": "tool",
+      "body_from_piece": [
+        [
+          -1.0,
+          0.0,
+          1.7239322450749575e-15,
+          -4.2739249639378585e-16
+        ],
+        [
+          0.0,
+          -1.0,
+          -3.436291483646e-16,
+          1.8908485888147197e-16
+        ],
+        [
+          1.723932245074958e-15,
+          -3.436291483645999e-16,
+          0.9999999999999999,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "status": "computed",
+      "errors": [],
+      "properties": {
+        "volume_m3": 2.21481569853383e-05,
+        "centroid_m": [
+          -5.089538815647116e-09,
+          6.231569345733558e-05,
+          0.006938092202085741
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.96763312922338e-09,
+            -5.859927750628801e-16,
+            -2.2954357636140656e-16
+          ],
+          [
+            -5.859927750628801e-16,
+            4.126848608351149e-09,
+            -4.103672829792473e-12
+          ],
+          [
+            -2.2954357636140656e-16,
+            -4.103672829792473e-12,
+            6.666242963426025e-09
+          ]
+        ]
+      }
+    }
+  ],
+  "bodies": [
+    {
+      "group": "base",
+      "included_instances": [
+        "0-Torre-1",
+        "A-CarretelInf-1",
+        "0-Bancada-registro-1",
+        "0-ElevadorM2-registro-1",
+        "0-PlatinaSuperior-registro-1",
+        "0-SoporteMotores-registro-1",
+        "NEMA23-registro-1",
+        "NEMA23-registro-2",
+        "0-6203-2RS-registro-1",
+        "0-6203-2RS-registro-2"
+      ],
+      "missing_instances": [],
+      "properties": {
+        "volume_m3": 0.0009402955454039387,
+        "centroid_m": [
+          4.496878622052353e-05,
+          -0.002487439754054395,
+          0.15025622734733116
+        ],
+        "inertia_per_density_m5": [
+          [
+            8.7968125967107e-06,
+            4.4030895975661626e-08,
+            2.740599200853119e-09
+          ],
+          [
+            4.4030895975661626e-08,
+            5.811813584431064e-06,
+            -2.1143337068011026e-07
+          ],
+          [
+            2.740599200853119e-09,
+            -2.1143337068011026e-07,
+            7.976432960112306e-06
+          ]
+        ]
+      },
+      "reference_only": true,
+      "uniform_common_density_required": true,
+      "overlaps_checked": false,
+      "complete_robot_body": false,
+      "mass_kg": null
+    },
+    {
+      "group": "arm",
+      "included_instances": [
+        "A-Brazo-1",
+        "A-BridaEje-1",
+        "A-CarretelSup-1",
+        "B-CarretelSup-1",
+        "B-SoporteRuleman-registro-1",
+        "B-SoporteRuleman-registro-2",
+        "Z-608zz-registro-1",
+        "Z-608zz-registro-2"
+      ],
+      "missing_instances": [],
+      "properties": {
+        "volume_m3": 0.00016118388033753252,
+        "centroid_m": [
+          0.14979214156435994,
+          -1.1706369194409912e-05,
+          -0.008890706672337587
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.3325621203652797e-07,
+            -2.342226550625081e-10,
+            -1.2203075753444627e-07
+          ],
+          [
+            -2.342226550625081e-10,
+            2.027886100810949e-06,
+            -4.8603282086380235e-11
+          ],
+          [
+            -1.2203075753444627e-07,
+            -4.8603282086380235e-11,
+            1.9951879270038124e-06
+          ]
+        ]
+      },
+      "reference_only": true,
+      "uniform_common_density_required": true,
+      "overlaps_checked": false,
+      "complete_robot_body": false,
+      "mass_kg": null
+    },
+    {
+      "group": "forearm",
+      "included_instances": [
+        "B-Antebrazo-1",
+        "B-CarretelInf-1",
+        "NEMA17-1",
+        "R-Bancada-1",
+        "R-ContraBancada-1",
+        "R-CarretelInf-1",
+        "B-SoporteEjeFijo-registro-1",
+        "B-SoporteM3-registro-1",
+        "Z-6907-2RS-registro-1",
+        "Z-6907-2RS-registro-2"
+      ],
+      "missing_instances": [],
+      "properties": {
+        "volume_m3": 0.0003906179007034214,
+        "centroid_m": [
+          0.11982875486282374,
+          4.385689601906719e-07,
+          -0.006715140103858881
+        ],
+        "inertia_per_density_m5": [
+          [
+            3.6423741718001905e-07,
+            2.9490563975689416e-11,
+            -2.4324502034792566e-07
+          ],
+          [
+            2.9490563975689364e-11,
+            4.878267662234567e-06,
+            -6.251559051895169e-12
+          ],
+          [
+            -2.4324502034792566e-07,
+            -6.251559051895169e-12,
+            4.78938547341939e-06
+          ]
+        ]
+      },
+      "reference_only": true,
+      "uniform_common_density_required": true,
+      "overlaps_checked": false,
+      "complete_robot_body": false,
+      "mass_kg": null
+    },
+    {
+      "group": "wrist",
+      "included_instances": [
+        "Z-BujeExterior-1",
+        "Z-Cuerpo-1",
+        "Z-SoporteM4-1",
+        "Z-SoporteRuleman-1",
+        "NEMA17-2",
+        "R-CarretelSup-1"
+      ],
+      "missing_instances": [],
+      "properties": {
+        "volume_m3": 0.00019703644990809964,
+        "centroid_m": [
+          1.3789949923088599e-05,
+          -9.364398163727084e-06,
+          0.1459708145885906
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.93928125898179e-06,
+            7.672364054555769e-12,
+            1.7343340926595812e-10
+          ],
+          [
+            7.672364054555769e-12,
+            1.9395060685989376e-06,
+            -1.8529575256481337e-10
+          ],
+          [
+            1.7343340926595812e-10,
+            -1.8529575256481337e-10,
+            6.062109021830607e-08
+          ]
+        ]
+      },
+      "reference_only": true,
+      "uniform_common_density_required": true,
+      "overlaps_checked": false,
+      "complete_robot_body": false,
+      "mass_kg": null
+    },
+    {
+      "group": "tool",
+      "included_instances": [
+        "Z-Piston-1",
+        "Z-SoporteEfector-1"
+      ],
+      "missing_instances": [],
+      "properties": {
+        "volume_m3": 3.82971092057306e-05,
+        "centroid_m": [
+          -2.943405139050542e-09,
+          3.603869299718277e-05,
+          0.049975096997841244
+        ],
+        "inertia_per_density_m5": [
+          [
+            1.4540415810608014e-07,
+            -5.830307292266098e-16,
+            -5.0808426763896695e-15
+          ],
+          [
+            -5.830307292266098e-16,
+            1.4555514553689245e-07,
+            5.529504410406963e-11
+          ],
+          [
+            -5.0808426763896695e-15,
+            5.529504410406963e-11,
+            8.579255196662608e-09
+          ]
+        ]
+      },
+      "reference_only": true,
+      "uniform_common_density_required": true,
+      "overlaps_checked": false,
+      "complete_robot_body": false,
+      "mass_kg": null
+    }
+  ]
+}

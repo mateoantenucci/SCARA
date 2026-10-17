@@ -1,0 +1,197 @@
+Browser tab: 1497285515, Title: "SCARA · laboratorio virtual", URL: "http://127.0.0.1:8765/".
+0 AXWebArea SCARA · laboratorio virtual, URL: 127.0.0.1:8765/
+	1 container
+		2 text ROBÓTICA · GEMELO DIGITAL DEL DISEÑO
+		3 heading SCARA · laboratorio virtual, Value: 1
+			4 text SCARA · laboratorio virtual
+		5 text Indicá un destino y observá cómo responde el modelo de Webots. No hay hardware físico conectado.
+		6 container Conexión y detención
+			184 text TCP conectado
+			185 text Conectado. Habilitá explícitamente antes de mover.
+			9 button Reconectar, ID: connect
+			10 button Desconectar, ID: disconnect
+			11 button Detener movimiento
+		183 text Recorrido rechazado: Z-SoporteEfector-1 puede tocar 0-Torre-1 (envolventes y margen 1 mm)
+		12 heading 1 · Mover el extremo, Value: 2
+			13 text 1 · Mover el extremo
+		14 text Coordenadas respecto de la base del robot. El movimiento inicial une posiciones articulares; el extremo puede seguir una curva.
+		15 container move-form
+			16 container
+				17 text X · mm
+				18 stepper (settable, float) X · mm, Value: 73.22329711914062, Details: 73,2233, ID: x
+			19 container
+				20 text Y · mm
+				21 stepper (settable, float) Y · mm, Value: 176.77670288085938, Details: 176,7767, ID: y
+			22 container
+				23 text Z · mm
+				24 stepper (settable, float) Z · mm, Value: 34.666900634765625, Details: 34,6669, ID: z
+			25 container
+				26 text Orientación · grados, opcional
+				27 stepper (settable, integer) Orientación · grados, opcional, Value: 0, ID: yaw
+			28 container
+				29 text Velocidad relativa: 
+				30 text 30 %
+			31 slider (settable, integer) Velocidad relativa:, Value: 30, ID: speed
+			32 button Enviar destino
+			33 button Copiar pose estimada, ID: copy-pose
+		34 text Una orden fuera de alcance o de los límites se rechaza. Después de una detención o reconexión, habilitá de nuevo. Si se perdió la referencia, reiniciá el ensayo.
+		35 button Habilitar movimiento
+		36 button Consultar estado
+		37 heading 2 · Observar el estado, Value: 2
+			38 text 2 · Observar el estado
+		39 container
+			186 text En espera
+			187 text · t = 22.5 s
+		42 table Pose del extremo
+			43 row
+				44 cell
+					45 text Extremo
+				46 cell
+					47 text Estimación
+				48 cell
+					49 text Simulador
+			188 container pose-table
+				189 row
+					190 cell
+						191 text X · mm
+					192 cell
+						193 text 240.00
+					194 cell
+						195 text 240.00
+				196 row
+					197 cell
+						198 text Y · mm
+					199 cell
+						200 text 250.00
+					201 cell
+						202 text 250.00
+				203 row
+					204 cell
+						205 text Z · mm
+					206 cell
+						207 text 35.00
+					208 cell
+						209 text 35.00
+				210 row
+					211 cell
+						212 text Orientación · °
+					213 cell
+						214 text 0.00
+					215 cell
+						216 text -0.00
+		79 table Posición de las articulaciones
+			80 row
+				81 cell
+					82 text Eje
+				83 cell
+					84 text Ordenado
+				85 cell
+					86 text Estimado
+				87 cell
+					88 text Simulador
+				89 cell
+					90 text Hall
+			217 container joints-table
+				218 row
+					219 cell
+						220 text J1 · °
+					221 cell
+						222 text 0.05
+					223 cell
+						224 text 0.05
+					225 cell
+						226 text 0.05
+					227 cell
+						228 text Inactivo
+				229 row
+					230 cell
+						231 text J2 · °
+					232 cell
+						233 text 92.25
+					234 cell
+						235 text 92.25
+					236 cell
+						237 text 92.25
+					238 cell
+						239 text Inactivo
+				240 row
+					241 cell
+						242 text J3 · °
+					243 cell
+						244 text -92.29
+					245 cell
+						246 text -92.29
+					247 cell
+						248 text -92.29
+					249 cell
+						250 text Inactivo
+				251 row
+					252 cell
+						253 text J4 · mm
+					254 cell
+						255 text 59.67
+					256 cell
+						257 text 59.67
+					258 cell
+						259 text 59.67
+					260 cell
+						261 text Inactivo
+		136 text La estimación representa lo que conoce el control. La columna «Simulador» es instrumentación de diagnóstico; no equivale a tener encoders en el robot real.
+		137 heading 3 · Ensayar fallas y carga, Value: 2
+			138 text 3 · Ensayar fallas y carga
+		139 container fault-form
+			140 container
+				141 text Eje afectado
+				142 pop up button (collapsed, settable) Eje afectado, Value: J1 · giro del brazo, ID: axis, Secondary Actions: Expand
+					143 menu
+						144 (selected) J1 · giro del brazo
+						145 J2 · giro del antebrazo
+						146 J3 · giro de la muñeca
+						147 J4 · desplazamiento vertical
+			148 container
+				149 text Falla
+				150 pop up button (collapsed, settable) Falla, Value: Pérdida de fuerza del motor, ID: fault-kind, Secondary Actions: Expand
+					151 menu
+						152 (selected) Pérdida de fuerza del motor
+						153 Sensor Hall atascado
+			154 container effort-label
+				155 text Esfuerzo disponible · %
+				156 stepper (settable, integer) Esfuerzo disponible · %, Value: 0, ID: effort
+			157 button Aplicar falla
+			158 button Limpiar fallas
+			159 button Reiniciar ensayo
+		160 text 0 % deja el motor sin fuerza. Esto no retira el brazo: el conjunto conserva su masa y puede moverse por gravedad. El sensor atascado mantiene la lectura elegida.
+		161 text «Reiniciar ensayo» recarga el mundo en su estado inicial: es un reinicio de la simulación, no una búsqueda física de referencia (homing). Luego tenés que habilitar el movimiento.
+		162 container payload-form
+			163 container
+				164 text Carga de ensayo en el extremo · kg
+				165 stepper (settable, integer) Carga de ensayo en el extremo · kg, Value: 0, ID: payload
+			166 button Aplicar carga
+		262 text Carga actual: 0.000 kg
+		168 text Si la carga conocida supera la capacidad estática provisional de J4, se aplica la masa y se invalida la referencia. Para retirarla y continuar hay que reiniciar el ensayo.
+		169 button (collapsed) Fallas informadas por Webots, Secondary Actions: Expand
+			170 text Fallas informadas por Webots
+		171 heading 4 · Respuestas del controlador, Value: 2
+			172 text 4 · Respuestas del controlador
+		173 text «Secuencia terminada» indica que se enviaron todas las consignas. Compará la pose del simulador para evaluar si el extremo llegó físicamente.
+		263 content list responses
+			264 container
+				265 AXListMarker 1. 
+				266 text Secuencia de consignas terminada: Finalizaron las consignas; comprobar llegada en instrumentacion · a6ce9629
+			267 container
+				268 AXListMarker 2. 
+				269 text Orden aceptada · a6ce9629
+			270 container
+				271 AXListMarker 3. 
+				272 text Orden aceptada · 2bc048b0
+			273 container
+				274 AXListMarker 4. 
+				275 text Orden aceptada: Recarga del ensayo; no es homing del robot fisico · 78812365
+			276 container
+				277 AXListMarker 5. 
+				278 text Orden aceptada · db530bc2
+		178 text Contrato provisional 
+		179 text scara-dev/1
+		180 text  · pendiente de reemplazar o adaptar al protocolo del profesor. Una reconexión descarta órdenes pendientes y nunca reenvía un movimiento.
+
+The focused UI element is 32 button Enviar destino

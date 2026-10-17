@@ -1,0 +1,21 @@
+# Estado privado de coordinación y respaldos locales.
+/.agent-state/
+/.agents/
+/.codex/
+/.aws/
+
+# Credenciales y entornos propios de cada equipo.
+.env
+.env.*
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+
+# Archivos del sistema y disposición local de Webots/editor.
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.wbproj
+.vscode/
+.idea/

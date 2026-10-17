@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "added": [
+    "2GT_80Teet_40Bore-registro-R"
+  ],
+  "volume_delta_m3": 9.1666516483022e-06,
+  "independent_checks": [
+    {
+      "version": "historical38",
+      "volume_relative": 2.220446049250313e-16,
+      "centroid_m": 2.732515684719239e-18,
+      "tensor_max_relative": 2.4019936236982205e-15,
+      "passed": true
+    },
+    {
+      "version": "current39",
+      "volume_relative": 2.220446049250313e-16,
+      "centroid_m": 1.6655549042969072e-16,
+      "tensor_max_relative": 4.3691185876953055e-15,
+      "passed": true
+    }
+  ],
+  "baseline_files": 680
+}

@@ -1,0 +1,206 @@
+{
+  "session": 7,
+  "only_destination": "validation/sesion7",
+  "product_changes": [],
+  "files": [
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/01_conectado.ax.txt",
+      "destination": "validation/sesion7/01_conectado.ax.txt",
+      "sha256": "e4d15c6bb1b6561c488520f233abdbb8fb7ccf78c86086a1e7102f8477a31293",
+      "bytes": 1921
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/02_webots_inicial.ax.txt",
+      "destination": "validation/sesion7/02_webots_inicial.ax.txt",
+      "sha256": "b309deb148249b672cca70fd08d9601f948d4568fc96732e0cd3a9e61f6b355a",
+      "bytes": 680
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/03_habilitado.ax.txt",
+      "destination": "validation/sesion7/03_habilitado.ax.txt",
+      "sha256": "a59ae56cdffd42c21aa6b1e20d2fcf99ec2c89008b0dfbd4b4c43b12e4fb52c8",
+      "bytes": 394
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/05_llegada.ax.txt",
+      "destination": "validation/sesion7/05_llegada.ax.txt",
+      "sha256": "ebf87cbdf8384cecd335de767761b7eb9c2835eef427dcfaa5f2cc526e73eb65",
+      "bytes": 346
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/06_choque_rechazado.ax.txt",
+      "destination": "validation/sesion7/06_choque_rechazado.ax.txt",
+      "sha256": "3f2a06f865f80834a122d075b058629302b8b8114112b32d9c546526b67738d9",
+      "bytes": 6957
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/07_Hall_activo.ax.txt",
+      "destination": "validation/sesion7/07_Hall_activo.ax.txt",
+      "sha256": "a2c805bf141532a57c239e2a853969dd3d7e7f7660c26b48b1239871172bec6a",
+      "bytes": 346
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/08_rearme_bloqueado.ax.txt",
+      "destination": "validation/sesion7/08_rearme_bloqueado.ax.txt",
+      "sha256": "677a15cd53a473448a1f39a4794dafa7c12605c95870374144449fd0fe6e35d2",
+      "bytes": 352
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/09_limpio_sin_rearme.ax.txt",
+      "destination": "validation/sesion7/09_limpio_sin_rearme.ax.txt",
+      "sha256": "a645f5d4ad4b38c9d6a50a123b018e9224154371c3569c8a3b235d7bda1bbc85",
+      "bytes": 347
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/10_rearme_explicito.ax.txt",
+      "destination": "validation/sesion7/10_rearme_explicito.ax.txt",
+      "sha256": "778449b6fa3b4e5a23e084df7b277a60c544a1d45408e45024c864cc569dfe2a",
+      "bytes": 352
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/11_STOPPED.ax.txt",
+      "destination": "validation/sesion7/11_STOPPED.ax.txt",
+      "sha256": "d329a802dd263342cc24a3e6d9231f9793a4c2caa148cc89222816b101ebd304",
+      "bytes": 7262
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/11_webots_STOPPED.ax.txt",
+      "destination": "validation/sesion7/11_webots_STOPPED.ax.txt",
+      "sha256": "292cf0994ff1f1f084ce2d025178432aa92b120d776a9d702d5d24f3d7993732",
+      "bytes": 4068
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/INFORME.md",
+      "destination": "validation/sesion7/INFORME.md",
+      "sha256": "2bfa711add3de32d36d187cfe59e5385fb4c4ecd8905676c1db573812177e4b5",
+      "bytes": 7994
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/01_conectado.png",
+      "destination": "validation/sesion7/capturas/01_conectado.png",
+      "sha256": "f9396fb04b0ad7b0a48ea8e4c15b1ef232081af773c59dc11267413016628383",
+      "bytes": 84546
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/02_webots_inicial.png",
+      "destination": "validation/sesion7/capturas/02_webots_inicial.png",
+      "sha256": "9521bf600f66a90dddd105568ff2b67c7b7e4f27ecdaeb31b41b0ea528c758f6",
+      "bytes": 278319
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/03_habilitado.png",
+      "destination": "validation/sesion7/capturas/03_habilitado.png",
+      "sha256": "67d6c87bdec709e3f194968a9569fd33ca4ec327b1f7e8af7e86d58e982dd02a",
+      "bytes": 195257
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/04_webots_movimiento.png",
+      "destination": "validation/sesion7/capturas/04_webots_movimiento.png",
+      "sha256": "37c8887f377b3b3e381931f7b55a22c77caf5c23d7b1875e8d513253e1c7b0a4",
+      "bytes": 269092
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/05_llegada.png",
+      "destination": "validation/sesion7/capturas/05_llegada.png",
+      "sha256": "d2bc17af1dd3a60b4ae4b4ec5d25bfbd5273bf28595a73b2ae89dc2f53fe277b",
+      "bytes": 205716
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/05_webots_llegada.png",
+      "destination": "validation/sesion7/capturas/05_webots_llegada.png",
+      "sha256": "ad3676c11a59a64b690c1d654a0f1ed01b2029babd03001231d4a50e99325335",
+      "bytes": 268748
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/06_choque_rechazado.png",
+      "destination": "validation/sesion7/capturas/06_choque_rechazado.png",
+      "sha256": "f94ed9118735fe098205be0e9feaa7f46ab40d4526842f7bbbd50386ee7c33ce",
+      "bytes": 205207
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/06_webots_sin_movimiento.png",
+      "destination": "validation/sesion7/capturas/06_webots_sin_movimiento.png",
+      "sha256": "1449e7630b473a75b9335600375e3d8d762278678914764fcdf9f6bef81502ee",
+      "bytes": 268872
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/07_Hall_activo.png",
+      "destination": "validation/sesion7/capturas/07_Hall_activo.png",
+      "sha256": "3945fdb3d5d4298c7fa41be2df0b7f5b2a6ab2c8d4c883840dec4a4f3652eeaf",
+      "bytes": 211016
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/08_rearme_bloqueado.png",
+      "destination": "validation/sesion7/capturas/08_rearme_bloqueado.png",
+      "sha256": "cd1139c10e9ee87ae9efe90bba06387855b12d7ec902ae9f1dda576948c5b0d6",
+      "bytes": 214405
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/08_webots_Hall_sin_movimiento.png",
+      "destination": "validation/sesion7/capturas/08_webots_Hall_sin_movimiento.png",
+      "sha256": "9098fcd6b2b3a2463b87edd42d77b201cdd0c9f2a3e80b2fac389badb5a8ca9a",
+      "bytes": 268949
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/09_limpio_sin_rearme.png",
+      "destination": "validation/sesion7/capturas/09_limpio_sin_rearme.png",
+      "sha256": "b454c44b433914633c4a99342263e7281e9c02ac641a2c3b64d4ee35fb6bb5c7",
+      "bytes": 211119
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/10_rearme_explicito.png",
+      "destination": "validation/sesion7/capturas/10_rearme_explicito.png",
+      "sha256": "83db06982cf49ab6d4ecfc1b4fd94da738c0c08416c3704475ec63973f1ade59",
+      "bytes": 211058
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/11_STOPPED.png",
+      "destination": "validation/sesion7/capturas/11_STOPPED.png",
+      "sha256": "fe469c3370f032273344b768ad1093fa38fb095a3b8eb508c8bac6b3d8e3aeed",
+      "bytes": 206681
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/capturas/11_webots_STOPPED.png",
+      "destination": "validation/sesion7/capturas/11_webots_STOPPED.png",
+      "sha256": "cf5ee6f164a0a6bced1d09535898131ac5b46a0775da56a257a4dc430d3833f2",
+      "bytes": 269177
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/estados_clave.json",
+      "destination": "validation/sesion7/estados_clave.json",
+      "sha256": "c6d7ae8e7bb6e024e41fdc584b46ac27609782b47d370808af536991569c0e3e",
+      "bytes": 56797
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/eventos.json",
+      "destination": "validation/sesion7/eventos.json",
+      "sha256": "30d831c3f44bb8d9d33f66e4e2e0e0722fe3b1ff9859e97262675f6efbe796d6",
+      "bytes": 3326
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/identidad.json",
+      "destination": "validation/sesion7/identidad.json",
+      "sha256": "cfa5b3a2f52226bf2c9dc065c74657f3c76f6ebdbed61a1df5de8983ba94009d",
+      "bytes": 6098
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/informe.json",
+      "destination": "validation/sesion7/informe.json",
+      "sha256": "e4111445fae9f61cee516e7bde52cbdc8ebfd1218f95c5d2fe4edae7c8fcae9a",
+      "bytes": 23115
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/telemetria.jsonl",
+      "destination": "validation/sesion7/telemetria.jsonl",
+      "sha256": "bda1467bbd004db41f1dfd1dbdfbbeca579b4ab6a869a6fd7eea3ff93b0dc44c",
+      "bytes": 4077085
+    },
+    {
+      "source": "/private/tmp/scara-rondaA-20261017-01/sesion7/entrega/webots.log",
+      "destination": "validation/sesion7/webots.log",
+      "sha256": "63ef50c0923616c0ba57358a8b0436c6cca52b7d6dcbf45fd7b5c0bef3f7a3fc",
+      "bytes": 970
+    }
+  ],
+  "copy_manifest_to": "validation/sesion7/manifest.json"
+}

@@ -1,0 +1,33 @@
+{
+  "created_utc": "2026-10-17T22:44:25.874342+00:00",
+  "status": "integrated_verified_same_tested_sources",
+  "candidate_manifest_sha256": "292979f3a1646a018cb665811f1b744fed2c7e7b81cffd5b01a99371e88cf6fa",
+  "candidate_files_match": {
+    "tools/check_self_collisions.py": "e73d986b98ca3c51dd659a858e17ce497735ecb4b3a220b089df4d63c216e3c6",
+    "tests/test_collisions.py": "dfc34955865bc4d461c449ccc550a99cb3d8781ac7b336d615d7ddb489eda435",
+    "validation/sesion2/INFORME.md": "7582601e488589eb999db3e54570cd19cd1319a939d0ef1b0c04ccafcf68b6b8",
+    "validation/sesion2/audit.log": "4ec415fd58b6a36481e724a368d69c90a5db2e6c45504beb7ef3185156acf49a",
+    "validation/sesion2/execution.json": "b8c5db9a873b9143ddd406369a3e9beccde39a86e022eda6fb2ea30e1b765e8b",
+    "validation/sesion2/known_solids_check.json": "9b91a215019598572d45abc00b00f8f1a73a5b2237c36400fbb745d1bbb0859b",
+    "validation/sesion2/python_tests.txt": "2ae262741ce5fa0fd55c084ef904d38ab31a482e7b8f30e952ee7238be619323",
+    "validation/sesion2/self_collisions.json": "d1bcc7a365f8ad829ff62a7721ae86dfdd824f16f40aa2de1b7565a834fea400"
+  },
+  "audit_source_files_match_count": 121,
+  "native_reused": {
+    "report": "validation/collisions_native_remaining.json",
+    "checks": 6,
+    "sources_match_count": 13,
+    "rerun": false
+  },
+  "software_validation": {
+    "tests": 36,
+    "skips": 0,
+    "rerun_after_copy": false,
+    "reason": "Identical reviewed candidate bytes and every audit/native input match; evidence suite already passed"
+  },
+  "independent_review": {
+    "path": "validation/sesion2/review.json",
+    "sha256": "9f5ad425ecfbae9cb8e5d514b71697c92cc149e79244627c0ca4f941d4f505cd"
+  },
+  "rollback": "Restore only tools/check_self_collisions.py and tests/test_collisions.py from .agent-state/ronda-profesor-20261017/antes-sesion2.tar.gz; remove only session2 evidence if no consumers need it. Preserve all later/shared changes."
+}

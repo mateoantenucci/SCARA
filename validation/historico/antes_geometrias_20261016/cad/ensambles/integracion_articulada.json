@@ -1,0 +1,4205 @@
+{
+  "status": "articulated_visual_CAD_provisional_physics",
+  "units": "m",
+  "source_assembly": "Modelos3D/0-EnsambleColision.SLDASM",
+  "source_sha256": "c903eb41ac79f023fc2013e8760f12b6a06520435035fba3ce0d4d8e544cf474",
+  "canonical_from_saved": [
+    [
+      0.014824408846328917,
+      -0.9998901124135376,
+      0.0,
+      0.010983100847788764
+    ],
+    [
+      -0.9998901124135376,
+      -0.014824408846328917,
+      0.0,
+      -0.03250739302441211
+    ],
+    [
+      0,
+      0,
+      -1,
+      0.4283838715117246
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  "saved_joint_reference": [
+    1.23401289187085e-15,
+    0.041585817922225043,
+    0.07223652440584213,
+    0.06
+  ],
+  "reference_status": "Convenciones de simulacion provisionales. No son ceros, homing, TCP ni fase de montaje certificados.",
+  "body_defs": {
+    "base": "BASE",
+    "arm": "ARM",
+    "forearm": "FOREARM",
+    "wrist": "WRIST",
+    "tool": "TOOL"
+  },
+  "geometry": {
+    "l1": 0.25000000000000233,
+    "l2": 0.24999999999999747,
+    "shoulder_z": 0.2913625000000002,
+    "elbow_z_offset": -0.07799999999999996,
+    "tool_z_offset": -0.11869564113520076
+  },
+  "reference_body_frames": {
+    "base": [
+      [
+        1.0,
+        -0.0,
+        0,
+        0
+      ],
+      [
+        0.0,
+        1.0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "arm": [
+      [
+        1.0,
+        -1.23401289187085e-15,
+        0,
+        0
+      ],
+      [
+        1.23401289187085e-15,
+        1.0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0.2913625000000002
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "forearm": [
+      [
+        0.9991354344815222,
+        -0.041573832676577445,
+        0.0,
+        0.25000000000000233
+      ],
+      [
+        0.041573832676577445,
+        0.9991354344815222,
+        0.0,
+        3.085032229677154e-16
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.21336250000000023
+      ],
+      [
+        0.0,
+        0.0,
+        0,
+        1.0
+      ]
+    ],
+    "wrist": [
+      [
+        0.9935292277424925,
+        -0.11357673010527625,
+        0.0,
+        0.49978385862038033
+      ],
+      [
+        0.11357673010527625,
+        0.9935292277424925,
+        0.0,
+        0.010393458169144564
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.21336250000000023
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "tool": [
+      [
+        0.9935292277424925,
+        -0.11357673010527625,
+        0.0,
+        0.49978385862038033
+      ],
+      [
+        0.11357673010527625,
+        0.9935292277424925,
+        0.0,
+        0.010393458169144564
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.03466685886479948
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ]
+  },
+  "body_boxes": {
+    "base": {
+      "size": [
+        0.26226357408169665,
+        0.32136748928706316,
+        0.23659999575465918
+      ],
+      "center": [
+        8.326672684688674e-17,
+        0.0,
+        0.11830000178739428
+      ],
+      "bounds": [
+        -0.13113178704084824,
+        -0.16068374464353158,
+        3.910064688694703e-09,
+        0.1311317870408484,
+        0.16068374464353158,
+        0.23659999966472386
+      ]
+    },
+    "arm": {
+      "size": [
+        0.3210288093406029,
+        0.07103001648819059,
+        0.07976250003725312
+      ],
+      "center": [
+        0.12500060357379492,
+        -2.983724378680108e-16,
+        -0.014881249646097515
+      ],
+      "bounds": [
+        -0.035513801096506536,
+        -0.03551500824409559,
+        -0.054762499664724074,
+        0.28551500824409637,
+        0.035515008244094995,
+        0.025000000372529044
+      ]
+    },
+    "forearm": {
+      "size": [
+        0.32092398689969004,
+        0.09000000357627931,
+        0.10200000043214161
+      ],
+      "center": [
+        0.12453800669917002,
+        3.7470027081099033e-16,
+        -0.011999999783929058
+      ],
+      "bounds": [
+        -0.035923986750675006,
+        -0.04500000178813928,
+        -0.06299999999999986,
+        0.28500000014901505,
+        0.04500000178814003,
+        0.039000000432141746
+      ]
+    },
+    "wrist": {
+      "size": [
+        0.07657576707992403,
+        0.07657576707992403,
+        0.30100000000000016
+      ],
+      "center": [
+        -4.85722573273506e-17,
+        6.938893903907228e-17,
+        0.11249999999999977
+      ],
+      "bounds": [
+        -0.03828788353996206,
+        -0.038287883539961945,
+        -0.03800000000000031,
+        0.038287883539961966,
+        0.038287883539962084,
+        0.26299999999999985
+      ]
+    },
+    "tool": {
+      "size": [
+        0.060000000000000026,
+        0.060000000000000005,
+        0.19899999999999998
+      ],
+      "center": [
+        -4.111294638065033e-16,
+        1.8388068845354155e-16,
+        0.09949999999999994
+      ],
+      "bounds": [
+        -0.030000000000000426,
+        -0.02999999999999982,
+        -6.202684180318673e-17,
+        0.029999999999999603,
+        0.030000000000000186,
+        0.19899999999999993
+      ]
+    }
+  },
+  "instances": [
+    {
+      "instance_name": "0-Torre-1",
+      "basename": "0-Torre.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_0_Torre_1",
+      "disposition": "validated_individual_bodies_zero_area_cleanup",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/0-Torre.SLDPRT",
+      "source_sha256": "fd94227671db45086676cdf6400add36907ed54e42645c7f0be022c91325f2ff",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.03266663884281854
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.01049999105662247
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.2067838715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846328917,
+          -0.9998901124135376,
+          0.0,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328917,
+          0.0,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.2216
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846328917,
+          -0.9998901124135376,
+          0.0,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328917,
+          0.0,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.2216
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.1587919294834137,
+        -0.128791943192482,
+        0.0,
+        0.1587919294834137,
+        0.128791943192482,
+        0.2215999960899353
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl",
+          "sha256": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941",
+          "individual_gate_status": "individual_mesh_validated",
+          "zero_area_triangles_removed": 0
+        },
+        {
+          "path": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl",
+          "sha256": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877",
+          "individual_gate_status": "individual_mesh_validated",
+          "zero_area_triangles_removed": 0
+        },
+        {
+          "path": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl",
+          "sha256": "63a3e255774c8618a0b4a9539e586f6a77310b6a0b5649b66eafc113c098ff55",
+          "individual_gate_status": "individual_mesh_validated",
+          "zero_area_triangles_removed": 8
+        }
+      ],
+      "body_report": {
+        "path": "cad/derivados/torre_por_cuerpos/informe.json",
+        "sha256": "ce0a8e2d7fd3b298740f73ab642b354eeb7624349a89a0384bbca08a336f6102",
+        "global_mesh_manifold_validated": false
+      },
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "A-CarretelInf-1",
+      "basename": "A-CarretelInf.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_A_CarretelInf_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "source": "Modelos3D/A-CarretelInf.SLDPRT",
+      "source_sha256": "4d22c619cbc9afe94af2b2b317c936ceb8eee41785c7bd2ca9a56aeebebe13ba",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.03266663884281854
+        ],
+        [
+          0.0,
+          -1.0,
+          1.110223024625157e-16,
+          0.01049999105662247
+        ],
+        [
+          0.0,
+          -1.110223024625157e-16,
+          -1.0,
+          0.2067838715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846328917,
+          0.9998901124135376,
+          -1.110101024896546e-16,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          0.014824408846328917,
+          -1.6458400027651226e-18,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          1.110223024625157e-16,
+          1.0,
+          0.2216
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846328917,
+          0.9998901124135376,
+          -1.110101024896546e-16,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          0.014824408846328917,
+          -1.6458400027651226e-18,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          1.110223024625157e-16,
+          1.0,
+          0.2216
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03499544784426689,
+        -0.03500000014901161,
+        0.0,
+        0.03500000014901161,
+        0.03499886021018028,
+        0.014999999664723873
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/A-CarretelInf.stl",
+          "sha256": "07f5694e603f7165f0733fc8bed1272bcec61c9129bfc7bc8bae58f53290ea93"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "0-Bancada-registro-1",
+      "basename": "0-Bancada.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_0_Bancada_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/0-Bancada.SLDPRT",
+      "source_sha256": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+      "saved_object_to_assembly": [
+        [
+          -1.0,
+          2.775557561562891e-17,
+          5.639839928964939e-16,
+          -0.032666638842817994
+        ],
+        [
+          2.775557561562891e-17,
+          1.0,
+          -1.471601099022237e-16,
+          0.010499991056622861
+        ],
+        [
+          -5.639839928964939e-16,
+          -1.471601099022236e-16,
+          -1.0,
+          0.2731463715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          -3.1230443578444955e-16
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -5.613727798586821e-16
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.15523749999999997
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          -3.1230443578444955e-16
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -5.613727798586821e-16
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.15523749999999997
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.027000000700354576,
+        -0.027000000700354576,
+        0.0,
+        0.027000000700354576,
+        0.027000000700354576,
+        0.05999999865889549
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/0-Bancada.stl",
+          "sha256": "009ba429eb3948aa598a2a61e9d8397731405855e2eca4cef230e80b87781345"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "0-Bancada-1",
+          "basename": "0-Bancada.SLDPRT",
+          "source_cache_stamp": "162",
+          "cached_identity": [
+            "0-bancada.sldprt",
+            "Predeterminado",
+            "162",
+            "1777521085"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -1.0,
+              2.775557561562891e-17,
+              5.639839928964939e-16,
+              -0.032666638842817994
+            ],
+            [
+              2.775557561562891e-17,
+              1.0,
+              -1.471601099022237e-16,
+              0.010499991056622861
+            ],
+            [
+              -5.639839928964939e-16,
+              -1.471601099022236e-16,
+              -1.0,
+              0.2731463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-Bancada.SLDPRT",
+          "local_sha256": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-Bancada.stl",
+            "sha256": "009ba429eb3948aa598a2a61e9d8397731405855e2eca4cef230e80b87781345"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "0-Bancada-1",
+          "basename": "0-Bancada.SLDPRT",
+          "source_cache_stamp": "162",
+          "cached_identity": [
+            "0-bancada.sldprt",
+            "Predeterminado",
+            "162",
+            "1777521085"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -1.0,
+              2.775557561562891e-17,
+              5.639839928964939e-16,
+              -0.032666638842817994
+            ],
+            [
+              2.775557561562891e-17,
+              1.0,
+              -1.471601099022237e-16,
+              0.010499991056622861
+            ],
+            [
+              -5.639839928964939e-16,
+              -1.471601099022236e-16,
+              -1.0,
+              0.2731463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-Bancada.SLDPRT",
+          "local_sha256": "dff99bffc7758c1e8052511b2bd18efbea750fd7a6d4863b8395e893c39a8774",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-Bancada.stl",
+            "sha256": "009ba429eb3948aa598a2a61e9d8397731405855e2eca4cef230e80b87781345"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "0-ElevadorM2-registro-1",
+      "basename": "0-ElevadorM2.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_0_ElevadorM2_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/0-ElevadorM2.SLDPRT",
+      "source_sha256": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          -2.78388423424758e-14,
+          1.9249859804513575e-16,
+          0.024333361157181474
+        ],
+        [
+          -2.78388423424758e-14,
+          -1.0,
+          -5.914437987378887e-17,
+          0.010499991056620674
+        ],
+        [
+          1.9249859804513738e-16,
+          5.914437987378341e-17,
+          -1.0,
+          0.2925463715117247
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846356753,
+          0.9998901124135372,
+          6.199155856039796e-17,
+          0.0008449913042426156
+        ],
+        [
+          -0.9998901124135372,
+          0.014824408846356753,
+          -1.9160066437058753e-16,
+          -0.056993736407571646
+        ],
+        [
+          -1.9249859804513738e-16,
+          -5.914437987378341e-17,
+          1.0,
+          0.1358374999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846356753,
+          0.9998901124135372,
+          6.199155856039796e-17,
+          0.0008449913042426156
+        ],
+        [
+          -0.9998901124135372,
+          0.014824408846356753,
+          -1.9160066437058753e-16,
+          -0.056993736407571646
+        ],
+        [
+          -1.9249859804513738e-16,
+          -5.914437987378341e-17,
+          1.0,
+          0.1358374999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.028200000524520874,
+        -0.03999999910593033,
+        0.0,
+        0.03880000114440918,
+        0.03999999910593033,
+        0.017000000923871994
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/0-ElevadorM2.stl",
+          "sha256": "78bb2f5901ebbfa5227fd60108cc22026126dbecea18cc29f351dde427428870"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "0-ElevadorM2-1",
+          "basename": "0-ElevadorM2.SLDPRT",
+          "source_cache_stamp": "149",
+          "cached_identity": [
+            "0-elevadorm2.sldprt",
+            "Predeterminado",
+            "149",
+            "1777764535"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              -2.78388423424758e-14,
+              1.9249859804513575e-16,
+              0.024333361157181474
+            ],
+            [
+              -2.78388423424758e-14,
+              -1.0,
+              -5.914437987378887e-17,
+              0.010499991056620674
+            ],
+            [
+              1.9249859804513738e-16,
+              5.914437987378341e-17,
+              -1.0,
+              0.2925463715117247
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-ElevadorM2.SLDPRT",
+          "local_sha256": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-ElevadorM2.stl",
+            "sha256": "78bb2f5901ebbfa5227fd60108cc22026126dbecea18cc29f351dde427428870"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "0-ElevadorM2-1",
+          "basename": "0-ElevadorM2.SLDPRT",
+          "source_cache_stamp": "149",
+          "cached_identity": [
+            "0-elevadorm2.sldprt",
+            "Predeterminado",
+            "149",
+            "1777764535"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              -2.78388423424758e-14,
+              1.9249859804513575e-16,
+              0.024333361157181474
+            ],
+            [
+              -2.78388423424758e-14,
+              -1.0,
+              -5.914437987378887e-17,
+              0.010499991056620674
+            ],
+            [
+              1.9249859804513738e-16,
+              5.914437987378341e-17,
+              -1.0,
+              0.2925463715117247
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-ElevadorM2.SLDPRT",
+          "local_sha256": "334216dcc6c777f6fe192ce6b52ee643131b39fe3649d0eda4500e159f923b1d",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-ElevadorM2.stl",
+            "sha256": "78bb2f5901ebbfa5227fd60108cc22026126dbecea18cc29f351dde427428870"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "0-PlatinaSuperior-registro-1",
+      "basename": "0-PlatinaSuperior.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_0_PlatinaSuperior_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/0-PlatinaSuperior.SLDPRT",
+      "source_sha256": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+      "saved_object_to_assembly": [
+        [
+          -1.0,
+          2.775557561562891e-17,
+          5.639839928964939e-16,
+          -0.03266663884281855
+        ],
+        [
+          2.775557561562891e-17,
+          1.0,
+          -1.471601099022237e-16,
+          0.01049999105662247
+        ],
+        [
+          -5.639839928964939e-16,
+          -1.471601099022236e-16,
+          -1.0,
+          0.21314637151172464
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          6.976840979944221e-17
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -4.87890977618477e-19
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.21523749999999994
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -0.014824408846328945,
+          -0.9998901124135376,
+          1.555046681264057e-16,
+          6.976840979944221e-17
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328945,
+          -5.617404564216499e-16,
+          -4.87890977618477e-19
+        ],
+        [
+          5.639839928964939e-16,
+          1.471601099022236e-16,
+          1.0,
+          0.21523749999999994
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.05997508019208908,
+        -0.059993769973516464,
+        0.0,
+        0.05999999865889549,
+        0.059993769973516464,
+        0.004762500058859587
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/0-PlatinaSuperior.stl",
+          "sha256": "0a13e701c3d75c77a44640f83a295635837e78d052117e7706afd5946072e828"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "0-PlatinaSuperior-1",
+          "basename": "0-PlatinaSuperior.SLDPRT",
+          "source_cache_stamp": "202",
+          "cached_identity": [
+            "0-platinasuperior.sldprt",
+            "Predeterminado",
+            "202",
+            "1777654929"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -1.0,
+              2.775557561562891e-17,
+              5.639839928964939e-16,
+              -0.03266663884281855
+            ],
+            [
+              2.775557561562891e-17,
+              1.0,
+              -1.471601099022237e-16,
+              0.01049999105662247
+            ],
+            [
+              -5.639839928964939e-16,
+              -1.471601099022236e-16,
+              -1.0,
+              0.21314637151172464
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-PlatinaSuperior.SLDPRT",
+          "local_sha256": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-PlatinaSuperior.stl",
+            "sha256": "0a13e701c3d75c77a44640f83a295635837e78d052117e7706afd5946072e828"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "0-PlatinaSuperior-1",
+          "basename": "0-PlatinaSuperior.SLDPRT",
+          "source_cache_stamp": "202",
+          "cached_identity": [
+            "0-platinasuperior.sldprt",
+            "Predeterminado",
+            "202",
+            "1777654929"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -1.0,
+              2.775557561562891e-17,
+              5.639839928964939e-16,
+              -0.03266663884281855
+            ],
+            [
+              2.775557561562891e-17,
+              1.0,
+              -1.471601099022237e-16,
+              0.01049999105662247
+            ],
+            [
+              -5.639839928964939e-16,
+              -1.471601099022236e-16,
+              -1.0,
+              0.21314637151172464
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-PlatinaSuperior.SLDPRT",
+          "local_sha256": "a2abe7d047b1f4d46a62e12aaeb11c73431ff75608d130d558b1550e1d284398",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-PlatinaSuperior.stl",
+            "sha256": "0a13e701c3d75c77a44640f83a295635837e78d052117e7706afd5946072e828"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "0-SoporteMotores-registro-1",
+      "basename": "0-SoporteMotores.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_0_SoporteMotores_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/0-SoporteMotores.SLDPRT",
+      "source_sha256": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          -2.792210906932269e-14,
+          5.639839928964939e-16,
+          -0.03266663884281855
+        ],
+        [
+          -2.792210906932269e-14,
+          -1.0,
+          -1.471601099022237e-16,
+          0.01049999105662229
+        ],
+        [
+          5.639839928964981e-16,
+          1.4716010990220786e-16,
+          -1.0,
+          0.2755463715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846356836,
+          0.9998901124135372,
+          1.555046681264057e-16,
+          2.5017965130103015e-16
+        ],
+        [
+          -0.9998901124135372,
+          0.014824408846356836,
+          -5.617404564216499e-16,
+          2.1955093992831465e-18
+        ],
+        [
+          -5.639839928964981e-16,
+          -1.4716010990220786e-16,
+          1.0,
+          0.15283749999999996
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846356836,
+          0.9998901124135372,
+          1.555046681264057e-16,
+          2.5017965130103015e-16
+        ],
+        [
+          -0.9998901124135372,
+          0.014824408846356836,
+          -5.617404564216499e-16,
+          2.1955093992831465e-18
+        ],
+        [
+          -5.639839928964981e-16,
+          -1.4716010990220786e-16,
+          1.0,
+          0.15283749999999996
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.10000000149011612,
+        -0.03999999910593033,
+        0.0,
+        0.10000000149011612,
+        0.03999999910593033,
+        0.002400000113993883
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/0-SoporteMotores.stl",
+          "sha256": "241e242aa526a5b39c97a9a8cca9cf313d67ba0f4574d37ab0d23490b2b1dbef"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "0-SoporteMotores-1",
+          "basename": "0-SoporteMotores.SLDPRT",
+          "source_cache_stamp": "358",
+          "cached_identity": [
+            "0-soportemotores.sldprt",
+            "Predeterminado",
+            "358",
+            "1777752642"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              -2.792210906932269e-14,
+              5.639839928964939e-16,
+              -0.03266663884281855
+            ],
+            [
+              -2.792210906932269e-14,
+              -1.0,
+              -1.471601099022237e-16,
+              0.01049999105662229
+            ],
+            [
+              5.639839928964981e-16,
+              1.4716010990220786e-16,
+              -1.0,
+              0.2755463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-SoporteMotores.SLDPRT",
+          "local_sha256": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-SoporteMotores.stl",
+            "sha256": "241e242aa526a5b39c97a9a8cca9cf313d67ba0f4574d37ab0d23490b2b1dbef"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "0-SoporteMotores-1",
+          "basename": "0-SoporteMotores.SLDPRT",
+          "source_cache_stamp": "358",
+          "cached_identity": [
+            "0-soportemotores.sldprt",
+            "Predeterminado",
+            "358",
+            "1777752642"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              -2.792210906932269e-14,
+              5.639839928964939e-16,
+              -0.03266663884281855
+            ],
+            [
+              -2.792210906932269e-14,
+              -1.0,
+              -1.471601099022237e-16,
+              0.01049999105662229
+            ],
+            [
+              5.639839928964981e-16,
+              1.4716010990220786e-16,
+              -1.0,
+              0.2755463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/0-SoporteMotores.SLDPRT",
+          "local_sha256": "5ea0ac0c607b7e033df72ec5a0680690528e29c8c8854276601bef6bd50e1da2",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/0-SoporteMotores.stl",
+            "sha256": "241e242aa526a5b39c97a9a8cca9cf313d67ba0f4574d37ab0d23490b2b1dbef"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "NEMA23-registro-1",
+      "basename": "NEMA23.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_NEMA23_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/NEMA23.SLDPRT",
+      "source_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          2.8227420401094608e-14,
+          3.728527327101952e-16,
+          0.024333361157181446
+        ],
+        [
+          -2.8227420401094608e-14,
+          1.0,
+          1.5479465906140353e-16,
+          0.010499991056620667
+        ],
+        [
+          -3.7285273271019084e-16,
+          -1.5479465906141406e-16,
+          1.0,
+          0.24854637151172465
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846357141,
+          -0.9998901124135372,
+          -1.492503277007551e-16,
+          0.0008449913042426221
+        ],
+        [
+          -0.9998901124135372,
+          -0.014824408846357141,
+          -3.751065001364461e-16,
+          -0.05699373640757162
+        ],
+        [
+          3.7285273271019084e-16,
+          1.5479465906141406e-16,
+          -1.0,
+          0.17983749999999993
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846357141,
+          -0.9998901124135372,
+          -1.492503277007551e-16,
+          0.0008449913042426221
+        ],
+        [
+          -0.9998901124135372,
+          -0.014824408846357141,
+          -3.751065001364461e-16,
+          -0.05699373640757162
+        ],
+        [
+          3.7285273271019084e-16,
+          1.5479465906141406e-16,
+          -1.0,
+          0.17983749999999993
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.028200000524520874,
+        -0.028200000524520874,
+        0.0,
+        0.028200000524520874,
+        0.028200000524520874,
+        0.07259999960660934
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/NEMA23.stl",
+          "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "NEMA23-1",
+          "basename": "NEMA23.SLDPRT",
+          "source_cache_stamp": "179",
+          "cached_identity": [
+            "nema23.sldprt",
+            "Predeterminado",
+            "179",
+            "1776396215"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              2.8227420401094608e-14,
+              3.728527327101952e-16,
+              0.024333361157181446
+            ],
+            [
+              -2.8227420401094608e-14,
+              1.0,
+              1.5479465906140353e-16,
+              0.010499991056620667
+            ],
+            [
+              -3.7285273271019084e-16,
+              -1.5479465906141406e-16,
+              1.0,
+              0.24854637151172465
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/NEMA23.SLDPRT",
+          "local_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/NEMA23.stl",
+            "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "NEMA23-1",
+          "basename": "NEMA23.SLDPRT",
+          "source_cache_stamp": "179",
+          "cached_identity": [
+            "nema23.sldprt",
+            "Predeterminado",
+            "179",
+            "1776396215"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              2.8227420401094608e-14,
+              3.728527327101952e-16,
+              0.024333361157181446
+            ],
+            [
+              -2.8227420401094608e-14,
+              1.0,
+              1.5479465906140353e-16,
+              0.010499991056620667
+            ],
+            [
+              -3.7285273271019084e-16,
+              -1.5479465906141406e-16,
+              1.0,
+              0.24854637151172465
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/NEMA23.SLDPRT",
+          "local_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/NEMA23.stl",
+            "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "NEMA23-registro-2",
+      "basename": "NEMA23.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_NEMA23_registro_2",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/NEMA23.SLDPRT",
+      "source_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          2.775557561562891e-17,
+          -1.545892525659674e-16,
+          -0.08880042133660354
+        ],
+        [
+          -2.775557561562897e-17,
+          1.0,
+          1.471601099022237e-16,
+          0.010473237861583268
+        ],
+        [
+          1.545892525659674e-16,
+          -1.471601099022236e-16,
+          1.0,
+          0.22414637151172462
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846328945,
+          -0.9998901124135376,
+          -1.4943563311620932e-16,
+          -0.0008053998865835302
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328945,
+          1.5239070349104866e-16,
+          0.056128010688208954
+        ],
+        [
+          -1.545892525659674e-16,
+          1.471601099022236e-16,
+          -1.0,
+          0.20423749999999996
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846328945,
+          -0.9998901124135376,
+          -1.4943563311620932e-16,
+          -0.0008053998865835302
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328945,
+          1.5239070349104866e-16,
+          0.056128010688208954
+        ],
+        [
+          -1.545892525659674e-16,
+          1.471601099022236e-16,
+          -1.0,
+          0.20423749999999996
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.028200000524520874,
+        -0.028200000524520874,
+        0.0,
+        0.028200000524520874,
+        0.028200000524520874,
+        0.07259999960660934
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/NEMA23.stl",
+          "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "NEMA23-3",
+          "basename": "NEMA23.SLDPRT",
+          "source_cache_stamp": "179",
+          "cached_identity": [
+            "nema23.sldprt",
+            "Predeterminado",
+            "179",
+            "1776396215"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              2.775557561562891e-17,
+              -1.545892525659674e-16,
+              -0.08880042133660354
+            ],
+            [
+              -2.775557561562897e-17,
+              1.0,
+              1.471601099022237e-16,
+              0.010473237861583268
+            ],
+            [
+              1.545892525659674e-16,
+              -1.471601099022236e-16,
+              1.0,
+              0.22414637151172462
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/NEMA23.SLDPRT",
+          "local_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/NEMA23.stl",
+            "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "NEMA23-3",
+          "basename": "NEMA23.SLDPRT",
+          "source_cache_stamp": "179",
+          "cached_identity": [
+            "nema23.sldprt",
+            "Predeterminado",
+            "179",
+            "1776396215"
+          ],
+          "transform_part_to_global_m": [
+            [
+              1.0,
+              2.775557561562891e-17,
+              -1.545892525659674e-16,
+              -0.08880042133660354
+            ],
+            [
+              -2.775557561562897e-17,
+              1.0,
+              1.471601099022237e-16,
+              0.010473237861583268
+            ],
+            [
+              1.545892525659674e-16,
+              -1.471601099022236e-16,
+              1.0,
+              0.22414637151172462
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/NEMA23.SLDPRT",
+          "local_sha256": "9028d2f836b11db21ab1674d9066a9a69e2d9d3ac39b3abd70c453ad427507fe",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/NEMA23.stl",
+            "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "A-Brazo-1",
+      "basename": "A-Brazo.SLDPRT",
+      "group": "arm",
+      "def_name": "CAD_A_Brazo_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/A-Brazo.SLDPRT",
+      "source_sha256": "3465c2fede70b9befc81f6f723a73551b294f24aee7b0663001d43057c3d0b6c",
+      "saved_object_to_assembly": [
+        [
+          -0.9998901124135379,
+          -5.880343857188895e-16,
+          0.01482440884632897,
+          -0.03311137110820844
+        ],
+        [
+          -0.01482440884632897,
+          -5.846670350999895e-16,
+          -0.9998901124135379,
+          0.04049669442902881
+        ],
+        [
+          5.966371112067787e-16,
+          -1.0,
+          5.758855253010213e-16,
+          0.1370213715117244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          4.85722573273506e-17,
+          5.758855253010215e-16,
+          1.0000000000000002,
+          -0.030000000000000145
+        ],
+        [
+          1.0000000000000002,
+          5.966371112067792e-16,
+          -4.85722573273506e-17,
+          1.9081958235744878e-17
+        ],
+        [
+          -5.966371112067787e-16,
+          1.0,
+          -5.758855253010213e-16,
+          0.2913625000000002
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          1.2825851491982009e-15,
+          5.758855253010222e-16,
+          1.0000000000000002,
+          -0.030000000000000145
+        ],
+        [
+          1.0000000000000002,
+          5.966371112067785e-16,
+          -1.2825851491982009e-15,
+          5.610234499187055e-17
+        ],
+        [
+          -5.966371112067787e-16,
+          1.0,
+          -5.758855253010213e-16,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02500000037252903,
+        -0.02500000037252903,
+        0.0,
+        0.02500000037252903,
+        0.02500000037252903,
+        0.30000001192092896
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/A-Brazo.stl",
+          "sha256": "b8c4483d288c0214338d76300f81658a843db5c9a55932a1ce6f4376ccb86ef7"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "A-BridaEje-1",
+      "basename": "A-BridaEje.SLDPRT",
+      "group": "arm",
+      "def_name": "CAD_A_BridaEje_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/A-BridaEje.SLDPRT",
+      "source_sha256": "208eead9ba17df76d6ab435ec1faf4068a2939c0b3eeedb7b9e568e29d220d8b",
+      "saved_object_to_assembly": [
+        [
+          0.9998901124135379,
+          -0.01482440884632945,
+          -4.363005608772298e-18,
+          -0.03266663884281855
+        ],
+        [
+          0.01482440884632945,
+          0.9998901124135379,
+          6.910135092716505e-18,
+          0.01049999105662254
+        ],
+        [
+          4.260087500818428e-18,
+          -6.974054733592302e-18,
+          1.0,
+          0.1620213715117244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -5.290906601729262e-16,
+          -1.0000000000000002,
+          -6.974054733592305e-18,
+          3.7947076036992655e-19
+        ],
+        [
+          -1.0000000000000002,
+          5.290906601729262e-16,
+          4.260087500818434e-18,
+          -1.5178830414797062e-18
+        ],
+        [
+          -4.260087500818428e-18,
+          6.974054733592302e-18,
+          -1.0,
+          0.26636250000000017
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.7631035520437764e-15,
+          -1.0000000000000002,
+          -6.974054733592301e-18,
+          3.7947076036992467e-19
+        ],
+        [
+          -1.0000000000000002,
+          1.7631035520437764e-15,
+          4.2600875008184425e-18,
+          -1.5178830414797066e-18
+        ],
+        [
+          -4.260087500818428e-18,
+          6.974054733592302e-18,
+          -1.0,
+          -0.025000000000000022
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02500000037252903,
+        -0.029999999329447746,
+        0.0,
+        0.02500000037252903,
+        0.029999999329447746,
+        0.014762500301003456
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/A-BridaEje.stl",
+          "sha256": "906d2b56d2cab1e9146b22d6c1a8628e52f1e2a7f7113b57b4f6fff350ebe997"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "A-CarretelSup-1",
+      "basename": "A-CarretelSup.SLDPRT",
+      "group": "arm",
+      "def_name": "CAD_A_CarretelSup_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "source": "Modelos3D/A-CarretelSup.SLDPRT",
+      "source_sha256": "724e621b00264214b071c7cec7ff35d340c10a05d0458d8a7f5fca50af40914f",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.03266663884281854
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.01049999105662247
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.1767838715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846328917,
+          -0.9998901124135376,
+          0.0,
+          6.987683001669076e-17
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328917,
+          0.0,
+          -7.426784881525705e-18
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.2516
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846327684,
+          -0.9998901124135376,
+          0.0,
+          6.987683001669075e-17
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846327684,
+          0.0,
+          -7.426784881525792e-18
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          -0.0397625000000002
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03499544784426689,
+        -0.03500000014901161,
+        0.0,
+        0.03500000014901161,
+        0.03499886021018028,
+        0.014999999664723873
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/A-CarretelSup.stl",
+          "sha256": "28f081e8066408731411c70772a94b38dfda520d813c2c85fcb6c5bba4aec2db"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "B-CarretelSup-1",
+      "basename": "B-CarretelSup.SLDPRT",
+      "group": "arm",
+      "def_name": "CAD_B_CarretelSup_1",
+      "disposition": "wire_bbox_only_rejected_mesh",
+      "attachment_status": "provisional_joint_side",
+      "source": "Modelos3D/B-CarretelSup.SLDPRT",
+      "source_sha256": "f470bd3408e498096b28f2c40a2c9e7ef8c29bce4642f21e1dc584bb2b81bc5b",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.02896053663123632
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.2394725370467629
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.1620213715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846328917,
+          -0.9998901124135376,
+          0.0,
+          0.25000000000000105
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328917,
+          0.0,
+          1.214306433183765e-17
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.26636249999999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.014824408846327684,
+          -0.9998901124135376,
+          0.0,
+          0.25000000000000105
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846327684,
+          0.0,
+          -2.9636015863587615e-16
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          -0.025000000000000244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03500000000000001,
+        -0.03500000000000001,
+        0.0,
+        0.03500000000000001,
+        0.03500000000000001,
+        0.014
+      ],
+      "meshes": [],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "B-SoporteRuleman-registro-1",
+      "basename": "B-SoporteRuleman.SLDPRT",
+      "group": "arm",
+      "def_name": "CAD_B_SoporteRuleman_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+      "source_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+      "saved_object_to_assembly": [
+        [
+          0.9998901124135379,
+          0.014824408846328865,
+          -6.848601294012231e-16,
+          -0.02896053663123633
+        ],
+        [
+          0.014824408846328865,
+          -0.9998901124135379,
+          -6.971370810355992e-16,
+          -0.23947253704676183
+        ],
+        [
+          -6.951195168857464e-16,
+          6.869078277635371e-16,
+          -1.0,
+          0.12522137151172458
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          5.551115123125783e-17,
+          1.0000000000000002,
+          6.869078277635374e-16,
+          0.24999999999999997
+        ],
+        [
+          -1.0000000000000002,
+          5.551115123125783e-17,
+          6.95119516885747e-16,
+          6.5052130349130266e-18
+        ],
+        [
+          6.951195168857464e-16,
+          -6.869078277635371e-16,
+          1.0,
+          0.3031625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.1785017406395925e-15,
+          1.0000000000000002,
+          6.869078277635383e-16,
+          0.24999999999999997
+        ],
+        [
+          -1.0000000000000002,
+          -1.1785017406395925e-15,
+          6.951195168857461e-16,
+          -3.0199800993279944e-16
+        ],
+        [
+          6.951195168857464e-16,
+          -6.869078277635371e-16,
+          1.0,
+          0.01179999999999981
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02500000037252903,
+        -0.019999999552965164,
+        0.0,
+        0.02500000037252903,
+        0.03199132904410362,
+        0.013199999928474426
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/B-SoporteRuleman.stl",
+          "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "A-EnsambleBrazo",
+          "source_instance": "B-SoporteRuleman-1",
+          "basename": "B-SoporteRuleman.SLDPRT",
+          "source_cache_stamp": "215",
+          "cached_identity": [
+            "b-soporteruleman.sldprt",
+            "Predeterminado",
+            "215",
+            "1777418594"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.9998901124135379,
+              0.014824408846328865,
+              -6.848601294012231e-16,
+              -0.02896053663123633
+            ],
+            [
+              0.014824408846328865,
+              -0.9998901124135379,
+              -6.971370810355992e-16,
+              -0.23947253704676183
+            ],
+            [
+              -6.951195168857464e-16,
+              6.869078277635371e-16,
+              -1.0,
+              0.12522137151172458
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "A-EnsambleBrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+          "local_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/B-SoporteRuleman.stl",
+            "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "B-SoporteRuleman-registro-2",
+      "basename": "B-SoporteRuleman.SLDPRT",
+      "group": "arm",
+      "def_name": "CAD_B_SoporteRuleman_registro_2",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+      "source_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+      "saved_object_to_assembly": [
+        [
+          -0.9998901124135379,
+          0.01482440884632884,
+          6.302150034017833e-16,
+          -0.028960536631236315
+        ],
+        [
+          -0.01482440884632884,
+          -0.9998901124135379,
+          4.187406508782453e-16,
+          -0.2394725370467618
+        ],
+        [
+          6.363533332053035e-16,
+          4.093520716072479e-16,
+          1.0,
+          0.14882137151172456
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -8.153200337090993e-17,
+          1.0000000000000002,
+          -4.09352071607248e-16,
+          0.24999999999999994
+        ],
+        [
+          1.0000000000000002,
+          8.153200337090993e-17,
+          -6.363533332053041e-16,
+          -7.806255641895632e-18
+        ],
+        [
+          -6.363533332053035e-16,
+          -4.093520716072479e-16,
+          -1.0,
+          0.27956250000000005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          1.1524808884999403e-15,
+          1.0000000000000002,
+          -4.093520716072488e-16,
+          0.24999999999999994
+        ],
+        [
+          1.0000000000000002,
+          -1.1524808884999403e-15,
+          -6.363533332053036e-16,
+          -3.163094786096081e-16
+        ],
+        [
+          -6.363533332053035e-16,
+          -4.093520716072479e-16,
+          -1.0,
+          -0.011800000000000144
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02500000037252903,
+        -0.019999999552965164,
+        0.0,
+        0.02500000037252903,
+        0.03199132904410362,
+        0.013199999928474426
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/B-SoporteRuleman.stl",
+          "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "A-EnsambleBrazo",
+          "source_instance": "B-SoporteRuleman-2",
+          "basename": "B-SoporteRuleman.SLDPRT",
+          "source_cache_stamp": "215",
+          "cached_identity": [
+            "b-soporteruleman.sldprt",
+            "Predeterminado",
+            "215",
+            "1777418594"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.9998901124135379,
+              0.01482440884632884,
+              6.302150034017833e-16,
+              -0.028960536631236315
+            ],
+            [
+              -0.01482440884632884,
+              -0.9998901124135379,
+              4.187406508782453e-16,
+              -0.2394725370467618
+            ],
+            [
+              6.363533332053035e-16,
+              4.093520716072479e-16,
+              1.0,
+              0.14882137151172456
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "A-EnsambleBrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/B-SoporteRuleman.SLDPRT",
+          "local_sha256": "d9b8a9c217edb8ab18cd33af360c1cf28ca32197cd2bea67c261f111b34b2cb9",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/B-SoporteRuleman.stl",
+            "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "B-Antebrazo-1",
+      "basename": "B-Antebrazo.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_B_Antebrazo_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/B-Antebrazo.SLDPRT",
+      "source_sha256": "12c370a6136c7e357c23bfddec99d4ada03d69969b0c4db15456ed232470d8ce",
+      "saved_object_to_assembly": [
+        [
+          -0.9996419493929843,
+          3.8109203694368e-16,
+          0.02675767205483625,
+          -0.03484722448330059
+        ],
+        [
+          0.02675767205483625,
+          7.297881049343179e-16,
+          0.9996419493929843,
+          -0.4593937659132206
+        ],
+        [
+          3.614281559271705e-16,
+          1.0,
+          -7.39723939607602e-16,
+          0.2150213715117245
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.04157383267657763,
+          -7.240584461171043e-16,
+          -0.9991354344815221,
+          0.4698097955859371
+        ],
+        [
+          0.9991354344815221,
+          -3.9186883689825415e-16,
+          -0.04157383267657763,
+          0.009146243188847405
+        ],
+        [
+          -3.614281559271705e-16,
+          -1.0,
+          7.39723939607602e-16,
+          0.21336250000000007
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.942890293094024e-16,
+          -7.397239396076018e-16,
+          -1.0,
+          0.21999999999999995
+        ],
+        [
+          1.0,
+          -3.6142815592717073e-16,
+          -1.942890293094024e-16,
+          6.071532165918825e-17
+        ],
+        [
+          -3.614281559271705e-16,
+          -1.0,
+          7.39723939607602e-16,
+          -1.6653345369377348e-16
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02500000037252903,
+        -0.02500000037252903,
+        0.0,
+        0.02500000037252903,
+        0.02500000037252903,
+        0.2370000034570694
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/B-Antebrazo.stl",
+          "sha256": "3d75388aa30bddb254c185ca90e4353b3978f869c8b2e3e61437c6770e6d1016"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "B-CarretelInf-1",
+      "basename": "B-CarretelInf.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_B_CarretelInf_1",
+      "disposition": "wire_bbox_only_rejected_mesh",
+      "attachment_status": "provisional_joint_side",
+      "source": "Modelos3D/B-CarretelInf.SLDPRT",
+      "source_sha256": "a937c813349b4f3730047cbdbc7490acc6eda49c62a35317a457527982d37eaf",
+      "saved_object_to_assembly": [
+        [
+          -1.0,
+          0.0,
+          1.498801083243961e-15,
+          -0.02896053663123635
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.2394725370467629
+        ],
+        [
+          -1.498801083243961e-15,
+          0.0,
+          -1.0,
+          0.1900213715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.014824408846328917,
+          -0.9998901124135376,
+          2.2218840037329138e-17,
+          0.25000000000000105
+        ],
+        [
+          0.9998901124135376,
+          -0.014824408846328917,
+          -1.498636383610336e-15,
+          4.336808689942018e-17
+        ],
+        [
+          1.498801083243961e-15,
+          0.0,
+          1.0,
+          0.23836249999999998
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.026757672054836062,
+          -0.9996419493929845,
+          -4.010442786087495e-17,
+          -1.2749535007306703e-15
+        ],
+        [
+          0.9996419493929845,
+          0.026757672054836062,
+          -1.4982644366063097e-15,
+          -2.1167375862170606e-16
+        ],
+        [
+          1.498801083243961e-15,
+          0.0,
+          1.0,
+          0.024999999999999745
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03500000000000001,
+        -0.03500000000000001,
+        0.0,
+        0.03500000000000001,
+        0.03500000000000001,
+        0.014
+      ],
+      "meshes": [],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "NEMA17-1",
+      "basename": "NEMA17.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_NEMA17_1",
+      "disposition": "accepted_mesh_cache_differs",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/NEMA17.SLDPRT",
+      "source_sha256": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+      "saved_object_to_assembly": [
+        [
+          0.9996419493929846,
+          -0.02675767205483626,
+          5.650171598628443e-17,
+          -0.03037869325014305
+        ],
+        [
+          -0.02675767205483626,
+          -0.9996419493929846,
+          -9.783948452854846e-16,
+          -0.2924535603645917
+        ],
+        [
+          8.266105392286939e-17,
+          9.765326760303324e-16,
+          -1.0,
+          0.2780213715117242
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.041573832676577646,
+          0.9991354344815223,
+          9.79124936375629e-16,
+          0.30295417802752234
+        ],
+        [
+          -0.9991354344815223,
+          0.041573832676577646,
+          -4.1991381949430965e-17,
+          0.002203413131859045
+        ],
+        [
+          -8.266105392286939e-17,
+          -9.765326760303324e-16,
+          1.0,
+          0.1503625000000004
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          1.942890293094024e-16,
+          1.0000000000000002,
+          9.765326760303328e-16,
+          0.05299999999999937
+        ],
+        [
+          -1.0000000000000002,
+          1.942890293094024e-16,
+          -8.266105392286918e-17,
+          1.5959455978986625e-16
+        ],
+        [
+          -8.266105392286939e-17,
+          -9.765326760303324e-16,
+          1.0,
+          -0.06299999999999983
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.020999999716877937,
+        -0.024000000208616257,
+        0.0,
+        0.020999999716877937,
+        0.020999999716877937,
+        0.05299999937415123
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/NEMA17.stl",
+          "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "R-Bancada-1",
+      "basename": "R-Bancada.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_R_Bancada_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/R-Bancada.SLDPRT",
+      "source_sha256": "142b7025e8e5aa78bcd99d926460960d4733b04a96e766522c1096475149d31c",
+      "saved_object_to_assembly": [
+        [
+          -0.9996419493929843,
+          -5.351659202439783e-17,
+          0.02675767205483625,
+          -0.03511480120384905
+        ],
+        [
+          0.02675767205483625,
+          -1.509874864568857e-14,
+          0.9996419493929843,
+          -0.4693901854071539
+        ],
+        [
+          3.505099343235996e-16,
+          1.0,
+          1.509477450898968e-14,
+          0.2150213715117169
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.04157383267657763,
+          1.509629612880106e-14,
+          -0.9991354344815221,
+          0.47980114993075573
+        ],
+        [
+          0.9991354344815221,
+          2.77340734206907e-16,
+          -0.04157383267657763,
+          0.009561981515613332
+        ],
+        [
+          -3.505099343235996e-16,
+          -1.0,
+          -1.509477450898968e-14,
+          0.21336250000000767
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.942890293094024e-16,
+          1.5094774508989686e-14,
+          -1.0,
+          0.23000000000000334
+        ],
+        [
+          1.0,
+          -3.505099343235967e-16,
+          -1.942890293094024e-16,
+          7.45931094670027e-17
+        ],
+        [
+          -3.505099343235996e-16,
+          -1.0,
+          -1.509477450898968e-14,
+          7.438494264988549e-15
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.04500000178813934,
+        -0.02500000037252903,
+        -0.019999999552965164,
+        0.04500000178813934,
+        0.023800000548362732,
+        0.03999999910593033
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/R-Bancada.stl",
+          "sha256": "384f7805ad648b512753da167b438189a0dada45e4f710480a4f9e6ed2ad504f"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "R-ContraBancada-1",
+      "basename": "R-ContraBancada.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_R_ContraBancada_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/R-ContraBancada.SLDPRT",
+      "source_sha256": "010f3d820c0e69d6b8f39b89eb7fb42ceb869a09106a0d36a9be997ff008b71e",
+      "saved_object_to_assembly": [
+        [
+          0.9996419493929846,
+          0.02675767205483626,
+          -1.491070977920783e-15,
+          -0.03564995464494631
+        ],
+        [
+          -0.02675767205483626,
+          0.9996419493929846,
+          -1.47540148965139e-14,
+          -0.4893830243950129
+        ],
+        [
+          1.095754006958947e-15,
+          1.478862980076197e-14,
+          1.0,
+          0.1912213715117167
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.041573832676577646,
+          -0.9991354344815223,
+          1.47302893676307e-14,
+          0.4997838586203855
+        ],
+        [
+          -0.9991354344815223,
+          -0.041573832676577646,
+          1.7096266766805245e-15,
+          0.010393458169145404
+        ],
+        [
+          -1.095754006958947e-15,
+          -1.478862980076197e-14,
+          -1.0,
+          0.23716250000000788
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          1.942890293094024e-16,
+          -1.0000000000000002,
+          1.4788629800761976e-14,
+          0.2500000000000027
+        ],
+        [
+          -1.0000000000000002,
+          -1.942890293094024e-16,
+          1.09575400695895e-15,
+          6.245004513516506e-16
+        ],
+        [
+          -1.095754006958947e-15,
+          -1.478862980076197e-14,
+          -1.0,
+          0.02380000000000765
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.04500000178813934,
+        -0.03500000014901161,
+        0.0,
+        0.04500000178813934,
+        2.168404344971009e-18,
+        0.047600001096725464
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/R-ContraBancada.stl",
+          "sha256": "0cda5062b40426c20fec05789d7cb05320e60e2d0050418148d457ea24f650c6"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "R-CarretelInf-1",
+      "basename": "R-CarretelInf.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_R_CarretelInf_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "provisional_joint_side",
+      "source": "Modelos3D/R-CarretelInf.SLDPRT",
+      "source_sha256": "64541bc13b13a388b14236e65d4dc2d8fac748b3e9681bf884bff2882763b2c3",
+      "saved_object_to_assembly": [
+        [
+          0.9996419493929843,
+          -0.02675767205483338,
+          4.48029387984735e-17,
+          -0.03564995464494349
+        ],
+        [
+          -0.02675767205483338,
+          -0.9996419493929843,
+          1.477321459776244e-14,
+          -0.489383024395013
+        ],
+        [
+          -3.50509934323564e-16,
+          -1.47691238616516e-14,
+          -0.9999999999999999,
+          0.1900213715117168
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.041573832676574766,
+          0.9991354344815222,
+          -1.4770927027783735e-14,
+          0.49978385862038566
+        ],
+        [
+          -0.9991354344815222,
+          0.041573832676574766,
+          -2.638021886834475e-16,
+          0.010393458169142595
+        ],
+        [
+          3.50509934323564e-16,
+          1.47691238616516e-14,
+          0.9999999999999999,
+          0.23836250000000778
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -2.67841304690819e-15,
+          1.0,
+          -1.47691238616516e-14,
+          0.2500000000000028
+        ],
+        [
+          -1.0,
+          -2.67841304690819e-15,
+          3.505099343236036e-16,
+          -2.1874863032067537e-15
+        ],
+        [
+          3.50509934323564e-16,
+          1.47691238616516e-14,
+          0.9999999999999999,
+          0.025000000000007544
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03500000014901161,
+        -0.03500000014901161,
+        0.0,
+        0.03500000014901161,
+        0.03500000014901161,
+        0.014000000432133675
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/R-CarretelInf.stl",
+          "sha256": "d451893b2600214f6a0a4fdb5668f70af5e53a8b523f5d052646513d5a3dc361"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "B-SoporteEjeFijo-registro-1",
+      "basename": "B-SoporteEjeFijo.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_B_SoporteEjeFijo_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/B-SoporteEjeFijo.SLDPRT",
+      "source_sha256": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+      "saved_object_to_assembly": [
+        [
+          0.9996419493929843,
+          3.8109203694368e-16,
+          -0.02675767205483625,
+          -0.02850565620630441
+        ],
+        [
+          -0.02675767205483625,
+          7.297881049343179e-16,
+          -0.9996419493929843,
+          -0.2224786239070834
+        ],
+        [
+          -3.614281559271705e-16,
+          1.0,
+          7.39723939607602e-16,
+          0.21502137151172435
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.04157383267657763,
+          -7.240584461171043e-16,
+          0.9991354344815221,
+          0.23301469761381638
+        ],
+        [
+          -0.9991354344815221,
+          -3.9186883689825415e-16,
+          0.04157383267657763,
+          -0.0007067551555014844
+        ],
+        [
+          3.614281559271705e-16,
+          -1.0,
+          -7.39723939607602e-16,
+          0.21336250000000023
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          1.942890293094024e-16,
+          -7.397239396076018e-16,
+          1.0,
+          -0.017000000000000067
+        ],
+        [
+          -1.0,
+          -3.6142815592717073e-16,
+          1.942890293094024e-16,
+          2.6020852139652106e-17
+        ],
+        [
+          3.614281559271705e-16,
+          -1.0,
+          -7.39723939607602e-16,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02500000037252903,
+        -0.02500000037252903,
+        -0.01323243323713541,
+        0.02500000037252903,
+        0.02500000037252903,
+        0.029999999329447746
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/B-SoporteEjeFijo.stl",
+          "sha256": "0cd4092fbbdd8b5605e8d268919408e9d4080a90eb4df56096cb5420ece6e86b"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "B-EnsambleAntebrazo",
+          "source_instance": "B-SoporteEjeFijo-1",
+          "basename": "B-SoporteEjeFijo.SLDPRT",
+          "source_cache_stamp": "123",
+          "cached_identity": [
+            "b-soporteejefijo.sldprt",
+            "Predeterminado",
+            "123",
+            "1777416908"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.9996419493929843,
+              3.8109203694368e-16,
+              -0.02675767205483625,
+              -0.02850565620630441
+            ],
+            [
+              -0.02675767205483625,
+              7.297881049343179e-16,
+              -0.9996419493929843,
+              -0.2224786239070834
+            ],
+            [
+              -3.614281559271705e-16,
+              1.0,
+              7.39723939607602e-16,
+              0.21502137151172435
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "B-EnsambleAntebrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/B-SoporteEjeFijo.SLDPRT",
+          "local_sha256": "93568772f06875a5a0f643ee9b08e5612433f70908244a2919c5e36a0a16ccfc",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/B-SoporteEjeFijo.stl",
+            "sha256": "0cd4092fbbdd8b5605e8d268919408e9d4080a90eb4df56096cb5420ece6e86b"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "B-SoporteM3-registro-1",
+      "basename": "B-SoporteM3.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_B_SoporteM3_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/B-SoporteM3.SLDPRT",
+      "source_sha256": "6b1e7eb5bccbd0c2f88fad4a66b16c48dfff06a394005d4fe1b0647fa37b8135",
+      "saved_object_to_assembly": [
+        [
+          0.026757672054835584,
+          -0.9996419493929843,
+          1.0331145232445736e-15,
+          -0.030378693250142943
+        ],
+        [
+          0.9996419493929843,
+          0.026757672054835584,
+          7.123352520689374e-16,
+          -0.29245356036459225
+        ],
+        [
+          -7.397239396076018e-16,
+          1.0136841828944498e-15,
+          1.0,
+          0.2400213715117244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.9991354344815221,
+          -0.041573832676576966,
+          -6.969416631896778e-16,
+          0.3029541780275229
+        ],
+        [
+          -0.041573832676576966,
+          0.9991354344815221,
+          -1.0435609457953976e-15,
+          0.002203413131858946
+        ],
+        [
+          7.397239396076018e-16,
+          -1.0136841828944498e-15,
+          -1.0,
+          0.18836250000000018
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.0,
+          4.718447854656915e-16,
+          -7.397239396076022e-16,
+          0.05299999999999992
+        ],
+        [
+          4.718447854656915e-16,
+          1.0,
+          -1.0136841828944494e-15,
+          3.8163916471489756e-17
+        ],
+        [
+          7.397239396076018e-16,
+          -1.0136841828944498e-15,
+          -1.0,
+          -0.02500000000000005
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.041999999433755875,
+        -0.02500000037252903,
+        0.0,
+        0.041999999433755875,
+        0.02500000037252903,
+        0.00800000037997961
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/B-SoporteM3.stl",
+          "sha256": "1d282aa050033e6c7a98ae89909f1238c37e93c2a2f52fa8c1e2da5a0287f122"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "B-EnsambleAntebrazo",
+          "source_instance": "B-SoporteM3-1",
+          "basename": "B-SoporteM3.SLDPRT",
+          "source_cache_stamp": "195",
+          "cached_identity": [
+            "b-soportem3.sldprt",
+            "Predeterminado",
+            "195",
+            "1777923901"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.026757672054835584,
+              -0.9996419493929843,
+              1.0331145232445736e-15,
+              -0.030378693250142943
+            ],
+            [
+              0.9996419493929843,
+              0.026757672054835584,
+              7.123352520689374e-16,
+              -0.29245356036459225
+            ],
+            [
+              -7.397239396076018e-16,
+              1.0136841828944498e-15,
+              1.0,
+              0.2400213715117244
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "B-EnsambleAntebrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/B-SoporteM3.SLDPRT",
+          "local_sha256": "6b1e7eb5bccbd0c2f88fad4a66b16c48dfff06a394005d4fe1b0647fa37b8135",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/B-SoporteM3.stl",
+            "sha256": "1d282aa050033e6c7a98ae89909f1238c37e93c2a2f52fa8c1e2da5a0287f122"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "Z-BujeExterior-1",
+      "basename": "Z-BujeExterior.SLDPRT",
+      "group": "wrist",
+      "def_name": "CAD_Z_BujeExterior_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/Z-BujeExterior.SLDPRT",
+      "source_sha256": "ed4d66fb189feb52c9d3d94714475d08da3dd05d25b13f597ac419d466ab2790",
+      "saved_object_to_assembly": [
+        [
+          0.09883576595969448,
+          0.9951037590960858,
+          5.858556578328183e-16,
+          -0.03564995464494558
+        ],
+        [
+          0.995103759096086,
+          -0.09883576595969451,
+          -1.790602961220079e-15,
+          -0.4893830243950076
+        ],
+        [
+          -1.723932245074956e-15,
+          7.599627825990327e-16,
+          -1.0,
+          0.2530213715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.9935292277424926,
+          0.11357673010527622,
+          1.799091159979007e-15,
+          0.49978385862038016
+        ],
+        [
+          -0.11357673010527619,
+          -0.9935292277424925,
+          -5.5924664918999e-16,
+          0.010393458169144595
+        ],
+        [
+          1.723932245074956e-15,
+          -7.599627825990327e-16,
+          1.0,
+          0.17536249999999998
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.0000000000000004,
+          -2.7755575615628914e-17,
+          1.723932245074956e-15,
+          -1.6197980456933436e-16
+        ],
+        [
+          6.938893903907228e-17,
+          -1.0000000000000004,
+          -7.599627825990314e-16,
+          4.85722573273506e-17
+        ],
+        [
+          1.723932245074956e-15,
+          -7.599627825990327e-16,
+          1.0,
+          -0.038000000000000256
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.02199999988079071,
+        -0.02199999988079071,
+        0.0,
+        0.02199999988079071,
+        0.02199999988079071,
+        0.09099999815225601
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/Z-BujeExterior.stl",
+          "sha256": "c44397ae816d097ec226bb1b46533a95d9004bb08d8bb2c2bbb0bb24bf63975e"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "Z-Cuerpo-1",
+      "basename": "Z-Cuerpo.SLDPRT",
+      "group": "wrist",
+      "def_name": "CAD_Z_Cuerpo_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/Z-Cuerpo.SLDPRT",
+      "source_sha256": "e3f1fc239fcf450806833f2213d44b76337858e126df9fe3bc99b3cb1408309a",
+      "saved_object_to_assembly": [
+        [
+          0.09883576595969482,
+          0.9951037590960857,
+          6.464030606725555e-16,
+          -0.03564995464494557
+        ],
+        [
+          0.9951037590960857,
+          -0.09883576595969482,
+          -1.786530945087127e-15,
+          -0.4893830243950076
+        ],
+        [
+          -1.713895917577421e-15,
+          8.198112699348603e-16,
+          -0.9999999999999999,
+          0.2480213715117246
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.9935292277424924,
+          0.11357673010527652,
+          1.7959171707643596e-15,
+          0.49978385862038016
+        ],
+        [
+          -0.11357673010527652,
+          -0.9935292277424924,
+          -6.198477638537464e-16,
+          0.010393458169144582
+        ],
+        [
+          1.713895917577421e-15,
+          -8.198112699348603e-16,
+          0.9999999999999999,
+          0.18036249999999998
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.0000000000000002,
+          2.914335439641036e-16,
+          1.7138959175774204e-15,
+          -1.6349768761081407e-16
+        ],
+        [
+          -2.914335439641036e-16,
+          -1.0000000000000002,
+          -8.198112699348585e-16,
+          3.469446951953614e-17
+        ],
+        [
+          1.713895917577421e-15,
+          -8.198112699348603e-16,
+          0.9999999999999999,
+          -0.03300000000000025
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.012500000186264515,
+        -0.012500000186264515,
+        0.0,
+        0.012500000186264515,
+        0.012500000186264515,
+        0.1899999976158142
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/Z-Cuerpo.stl",
+          "sha256": "d06650ba64f8bd4674420be39afc2a128194e8585ebb253e1b9bee2988da18eb"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "Z-SoporteM4-1",
+      "basename": "Z-SoporteM4.SLDPRT",
+      "group": "wrist",
+      "def_name": "CAD_Z_SoporteM4_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/Z-SoporteM4.SLDPRT",
+      "source_sha256": "89b47ec55d4ed5e62665c11cd19e1e23931e9c4fdfcdc50856ec96968ce1636a",
+      "saved_object_to_assembly": [
+        [
+          -0.9951037590960858,
+          0.09883576595969373,
+          -1.047936540063713e-16,
+          -0.03564995464494544
+        ],
+        [
+          0.09883576595969373,
+          0.9951037590960858,
+          -1.711920531848267e-15,
+          -0.489383024395008
+        ],
+        [
+          -6.491841799619496e-17,
+          -1.713895917577416e-15,
+          -0.9999999999999999,
+          0.03602137151172458
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.11357673010527544,
+          -0.9935292277424926,
+          1.7101789090613156e-15,
+          0.4997838586203806
+        ],
+        [
+          0.9935292277424926,
+          -0.11357673010527544,
+          1.3016034836119951e-16,
+          0.010393458169144464
+        ],
+        [
+          6.491841799619496e-17,
+          1.713895917577416e-15,
+          0.9999999999999999,
+          0.3923625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          8.049116928532385e-16,
+          -1.0000000000000004,
+          1.7138959175774159e-15,
+          2.671474153004283e-16
+        ],
+        [
+          1.0000000000000004,
+          8.049116928532385e-16,
+          -6.491841799619646e-17,
+          -1.3183898417423734e-16
+        ],
+        [
+          6.491841799619496e-17,
+          1.713895917577416e-15,
+          0.9999999999999999,
+          0.17899999999999977
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.020999999716877937,
+        -0.020999999716877937,
+        0.0,
+        0.020999999716877937,
+        0.020999999716877937,
+        0.04600000008940697
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/Z-SoporteM4.stl",
+          "sha256": "4094d5d0b568a987f461483e9a5b1334e9ec98c0bf86418440ddb6b11de6de49"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "Z-SoporteRuleman-1",
+      "basename": "Z-SoporteRuleman.SLDPRT",
+      "group": "wrist",
+      "def_name": "CAD_Z_SoporteRuleman_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/Z-SoporteRuleman.SLDPRT",
+      "source_sha256": "5c5d2923eeda77663c858ab739024197898eabaf7a4061b33fa3922f7722e5a6",
+      "saved_object_to_assembly": [
+        [
+          0.9951037590960857,
+          -0.09883576595969497,
+          -1.047936540063738e-16,
+          -0.03564995464494544
+        ],
+        [
+          -0.09883576595969497,
+          -0.9951037590960857,
+          -1.711920531848272e-15,
+          -0.489383024395008
+        ],
+        [
+          6.491841799619078e-17,
+          1.713895917577421e-15,
+          -1.0,
+          0.05802137151172458
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.11357673010527668,
+          0.9935292277424924,
+          1.7101789090613207e-15,
+          0.4997838586203806
+        ],
+        [
+          -0.9935292277424924,
+          0.11357673010527668,
+          1.301603483612021e-16,
+          0.010393458169144464
+        ],
+        [
+          -6.491841799619078e-17,
+          -1.713895917577421e-15,
+          1.0,
+          0.3703625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          4.440892098500626e-16,
+          1.0000000000000002,
+          1.7138959175774214e-15,
+          2.671474153004283e-16
+        ],
+        [
+          -1.0000000000000002,
+          4.440892098500626e-16,
+          -6.491841799619446e-17,
+          -1.3183898417423734e-16
+        ],
+        [
+          -6.491841799619078e-17,
+          -1.713895917577421e-15,
+          1.0,
+          0.15699999999999975
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.020999999716877937,
+        -0.020999999716877937,
+        0.0,
+        0.020999999716877937,
+        0.020999999716877937,
+        0.02199999988079071
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/Z-SoporteRuleman.stl",
+          "sha256": "82f9b126d8f647c3f6d4e9b186a65c36931f8551a22ddc6081bc1bd435de4fa0"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "NEMA17-2",
+      "basename": "NEMA17.SLDPRT",
+      "group": "wrist",
+      "def_name": "CAD_NEMA17_2",
+      "disposition": "accepted_mesh_cache_differs",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/NEMA17.SLDPRT",
+      "source_sha256": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+      "saved_object_to_assembly": [
+        [
+          0.9951037590960862,
+          0.09883576595968954,
+          8.311574940151828e-17,
+          -0.03564995464494546
+        ],
+        [
+          -0.09883576595968954,
+          0.9951037590960862,
+          1.694159758413736e-15,
+          -0.4893830243950081
+        ],
+        [
+          8.473478271136465e-17,
+          -1.694079552862238e-15,
+          1.0,
+          -0.04797862848827542
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.11357673010527125,
+          -0.993529227742493,
+          -1.6927414494361052e-15,
+          0.49978385862038066
+        ],
+        [
+          -0.993529227742493,
+          -0.11357673010527125,
+          -1.0822153292214259e-16,
+          0.010393458169144484
+        ],
+        [
+          -8.473478271136465e-17,
+          1.694079552862238e-15,
+          -1.0,
+          0.4763625
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -5.009881398621019e-15,
+          -1.0000000000000002,
+          -1.6940795528622384e-15,
+          3.2504381131115423e-16
+        ],
+        [
+          -1.0000000000000002,
+          5.009881398621019e-15,
+          8.473478271137358e-17,
+          -1.1796119636642288e-16
+        ],
+        [
+          -8.473478271136465e-17,
+          1.694079552862238e-15,
+          -1.0,
+          0.2629999999999998
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.020999999716877937,
+        -0.024000000208616257,
+        0.0,
+        0.020999999716877937,
+        0.020999999716877937,
+        0.05299999937415123
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/NEMA17.stl",
+          "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "R-CarretelSup-1",
+      "basename": "R-CarretelSup.SLDPRT",
+      "group": "wrist",
+      "def_name": "CAD_R_CarretelSup_1",
+      "disposition": "accepted_mesh_cache_differs",
+      "attachment_status": "provisional_joint_side",
+      "source": "Modelos3D/R-CarretelSup.SLDPRT",
+      "source_sha256": "da9dcc5e2862c373070e67306f165e324c042da2ebbede433a2a216e8705d0c1",
+      "saved_object_to_assembly": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          -0.03564995464494561
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          -0.4893830243950077
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.1620213715117249
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.014824408846328917,
+          -0.9998901124135376,
+          0.0,
+          0.4997838586203803
+        ],
+        [
+          -0.9998901124135376,
+          -0.014824408846328917,
+          0.0,
+          0.010393458169144625
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.26636249999999967
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -0.09883576595969454,
+          -0.995103759096086,
+          0.0,
+          -4.7704895589362195e-17
+        ],
+        [
+          -0.995103759096086,
+          0.09883576595969454,
+          0.0,
+          7.112366251504909e-17
+        ],
+        [
+          0.0,
+          0.0,
+          -1.0,
+          0.052999999999999436
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03500000014901161,
+        -0.03500000014901161,
+        0.0,
+        0.03500000014901161,
+        0.03500000014901161,
+        0.014000000432133675
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/R-CarretelSup.stl",
+          "sha256": "0da333ba5884503e29010d7e15c9bed95a55945af8cdec699606d00cbb28380c"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "Z-Piston-1",
+      "basename": "Z-Piston.SLDPRT",
+      "group": "tool",
+      "def_name": "CAD_Z_Piston_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/Z-Piston.SLDPRT",
+      "source_sha256": "9daee92ea9d50c3f3d0db4d1f55bc49165789efad022cfc00dd8108a8a261e8c",
+      "saved_object_to_assembly": [
+        [
+          0.09883576595969451,
+          -0.9951037590960856,
+          -5.858556578328202e-16,
+          -0.03564995464494557
+        ],
+        [
+          0.9951037590960856,
+          0.09883576595969451,
+          1.790602961220081e-15,
+          -0.4893830243950077
+        ],
+        [
+          -1.723932245074958e-15,
+          -7.599627825990335e-16,
+          0.9999999999999999,
+          0.1947170126469252
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.9935292277424923,
+          -0.11357673010527622,
+          -1.799091159979009e-15,
+          0.4997838586203803
+        ],
+        [
+          -0.11357673010527622,
+          0.9935292277424923,
+          5.592466491899919e-16,
+          0.010393458169144583
+        ],
+        [
+          1.723932245074958e-15,
+          7.599627825990335e-16,
+          -0.9999999999999999,
+          0.23366685886479938
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.0,
+          0.0,
+          -1.7239322450749577e-15,
+          -5.2258544713801314e-17
+        ],
+        [
+          0.0,
+          1.0,
+          7.599627825990335e-16,
+          2.949029909160572e-17
+        ],
+        [
+          1.723932245074958e-15,
+          7.599627825990335e-16,
+          -0.9999999999999999,
+          0.1989999999999999
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.009999999776482582,
+        -0.009999999776482582,
+        0.0,
+        0.009999999776482582,
+        0.009999999776482582,
+        0.18000000715255737
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/Z-Piston.stl",
+          "sha256": "0c4253764ef904a6b7118ee57d4857e674761eb053fea745b08266b66abb6288"
+        }
+      ],
+      "body_report": null,
+      "registration_evidence": null
+    },
+    {
+      "instance_name": "Z-SoporteEfector-1",
+      "basename": "Z-SoporteEfector.SLDPRT",
+      "group": "tool",
+      "def_name": "CAD_Z_SoporteEfector_1",
+      "disposition": "wire_bbox_only_rejected_mesh",
+      "attachment_status": "structural_group_from_assembly",
+      "source": "Modelos3D/Z-SoporteEfector.SLDPRT",
+      "source_sha256": "e28bbbcbdc55730b57c1332a735f0108f83657879813b28a23e761ac07cf1a62",
+      "saved_object_to_assembly": [
+        [
+          0.09883576595969451,
+          0.9951037590960856,
+          1.715604933680007e-16,
+          -0.03564995464494569
+        ],
+        [
+          0.9951037590960856,
+          -0.09883576595969451,
+          -1.749454307585737e-15,
+          -0.4893830243950073
+        ],
+        [
+          -1.723932245074958e-15,
+          3.436291483645999e-16,
+          -0.9999999999999999,
+          0.3937170126469251
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.9935292277424923,
+          0.11357673010527622,
+          1.7518053471698154e-15,
+          0.4997838586203799
+        ],
+        [
+          -0.11357673010527622,
+          -0.9935292277424923,
+          -1.4560701508582997e-16,
+          0.010393458169144703
+        ],
+        [
+          1.723932245074958e-15,
+          -3.436291483645999e-16,
+          0.9999999999999999,
+          0.03466685886479948
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -1.0,
+          0.0,
+          1.7239322450749575e-15,
+          -4.2739249639378585e-16
+        ],
+        [
+          0.0,
+          -1.0,
+          -3.436291483646e-16,
+          1.8908485888147197e-16
+        ],
+        [
+          1.723932245074958e-15,
+          -3.436291483645999e-16,
+          0.9999999999999999,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.03,
+        -0.03,
+        0.0,
+        0.03,
+        0.03,
+        0.019
+      ],
+      "meshes": [],
+      "body_report": null,
+      "registration_evidence": null
+    }
+  ],
+  "sources": {
+    "config/cad_integration.json": "33dc31e0356253792a88d634259432d30c9b1235338a9d1ccb0f930e7b3f10c7",
+    "cad/ensambles/informe.json": "cc0a92aec69817cca68d25361f8c2927d75c118f93af1e89ceca2f25540d2361",
+    "cad/ensambles/ejes_propuestos.json": "ce5f91bd9e4b98215d24bf3eb2e20fb4d64dea1594225a3619ac62931b9652ac",
+    "cad/ensambles/registro_subensambles.json": "2d603b82490d7d9a6829496fe1633089b98aae5f07d1a93ca7b417bd80934dc0",
+    "tools/registrar_subensambles.py": "845503ef569c2a677cfd7eaefe4a509ea1cf82bd314336366946eeaf4c935351",
+    "tools/integrate_cad.py": "0afeba5ddcfae7c1f15900fdc9072df6e49b364221c785dea947cb2c19a9bd76",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4"
+  }
+}

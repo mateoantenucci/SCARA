@@ -1,0 +1,90 @@
+{
+  "source_assembly": "0-EnsambleColision.SLDASM",
+  "canonical_frame": "Z arriba mediante Rx(pi); J1 en X=Y=0; plano inferior de torre Z=0; J1-J2 guardado alineado con +X",
+  "shoulder_center_local_m": [
+    0,
+    0,
+    0.03
+  ],
+  "elbow_center_local_m": [
+    0,
+    0,
+    0.22
+  ],
+  "tool_point_local_m": [
+    0,
+    0,
+    0
+  ],
+  "tool_heading_local": [
+    -1,
+    0,
+    0
+  ],
+  "saved_slider_position_m": 0.06,
+  "reference_status": "Convenciones de simulacion provisionales. No son ceros, homing, TCP ni fase de montaje certificados.",
+  "groups": {
+    "base": [
+      "0-Torre-1",
+      "A-CarretelInf-1"
+    ],
+    "arm": [
+      "A-Brazo-1",
+      "A-BridaEje-1",
+      "A-CarretelSup-1",
+      "B-CarretelSup-1"
+    ],
+    "forearm": [
+      "B-Antebrazo-1",
+      "B-CarretelInf-1",
+      "NEMA17-1",
+      "R-Bancada-1",
+      "R-ContraBancada-1",
+      "R-CarretelInf-1"
+    ],
+    "wrist": [
+      "Z-BujeExterior-1",
+      "Z-Cuerpo-1",
+      "Z-SoporteM4-1",
+      "Z-SoporteRuleman-1",
+      "NEMA17-2",
+      "R-CarretelSup-1"
+    ],
+    "tool": [
+      "Z-Piston-1",
+      "Z-SoporteEfector-1"
+    ]
+  },
+  "provisional_attachments": [
+    "A-CarretelInf-1",
+    "A-CarretelSup-1",
+    "B-CarretelInf-1",
+    "B-CarretelSup-1",
+    "R-CarretelInf-1",
+    "R-CarretelSup-1"
+  ],
+  "attachment_note": "Lados de articulacion inferidos de diametros, contactos y montaje; la fase angular de los carreteles no esta resuelta por mates. Se conserva la pose guardada y se propone una pertenencia visual reversible. Ver docs/INTEGRACION_CAD_CRITERIOS.md.",
+  "additional_occurrences": {
+    "base": [
+      "0-Bancada-registro-1",
+      "0-ElevadorM2-registro-1",
+      "0-PlatinaSuperior-registro-1",
+      "0-SoporteMotores-registro-1",
+      "NEMA23-registro-1",
+      "NEMA23-registro-2",
+      "0-6203-2RS-registro-1",
+      "0-6203-2RS-registro-2"
+    ],
+    "arm": [
+      "B-SoporteRuleman-registro-1",
+      "B-SoporteRuleman-registro-2",
+      "Z-608zz-registro-1",
+      "Z-608zz-registro-2"
+    ],
+    "forearm": [
+      "B-SoporteEjeFijo-registro-1",
+      "B-SoporteM3-registro-1"
+    ]
+  },
+  "additional_note": "Montajes y carcasas registrados mediante piezas compartidas. Los NEMA23 se visualizan enteros sin separar rotor; no se modela su giro interno. Poleas, rodamientos y poses/revisiones ambiguas quedan fuera por ahora. Cuatro rodamientos de geometría axialmente simétrica se muestran simplificados sobre sus alojamientos; no se representan giros separados de los aros ni se suman masas. Dos Z-6907 se retienen por un desfase de asiento de 3 mm."
+}

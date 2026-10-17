@@ -1,0 +1,266 @@
+{
+  "world": "webots/worlds/scara_cad_inspeccion.wbt",
+  "world_sha256": "f138d99d073d9a18b756b35081815aaf56ba06a8e2a05dfece568004425cc637",
+  "generator_sha256": "a08525e67a83b5ca8d8d5dc2ea3024417d40ef798a61df70c470c906518824db",
+  "assembly_report_sha256": "cc0a92aec69817cca68d25361f8c2927d75c118f93af1e89ceca2f25540d2361",
+  "assembly_source": "Modelos3D/0-EnsambleColision.SLDASM",
+  "assembly_sha256": "c903eb41ac79f023fc2013e8760f12b6a06520435035fba3ce0d4d8e544cf474",
+  "saved_configuration": "Predeterminado",
+  "dynamic_robot_modified": false,
+  "physics_or_motors": false,
+  "preserves_saved_cad_frame": true,
+  "instances": [
+    {
+      "instance_name": "0-Torre-1",
+      "basename": "0-Torre.SLDPRT",
+      "disposition": "body_meshes_validated_zero_area_cleanup",
+      "mesh_gate_status": "failed",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": null,
+      "individual_body_meshes": [
+        {
+          "path": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl",
+          "sha256": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941",
+          "individual_gate_status": "individual_mesh_validated",
+          "zero_area_triangles_removed": 0
+        },
+        {
+          "path": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl",
+          "sha256": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877",
+          "individual_gate_status": "individual_mesh_validated",
+          "zero_area_triangles_removed": 0
+        },
+        {
+          "path": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl",
+          "sha256": "63a3e255774c8618a0b4a9539e586f6a77310b6a0b5649b66eafc113c098ff55",
+          "individual_gate_status": "individual_mesh_validated",
+          "zero_area_triangles_removed": 8
+        }
+      ]
+    },
+    {
+      "instance_name": "A-CarretelInf-1",
+      "basename": "A-CarretelInf.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/A-CarretelInf.stl",
+        "sha256": "07f5694e603f7165f0733fc8bed1272bcec61c9129bfc7bc8bae58f53290ea93"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "A-CarretelSup-1",
+      "basename": "A-CarretelSup.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/A-CarretelSup.stl",
+        "sha256": "28f081e8066408731411c70772a94b38dfda520d813c2c85fcb6c5bba4aec2db"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "A-Brazo-1",
+      "basename": "A-Brazo.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/A-Brazo.stl",
+        "sha256": "b8c4483d288c0214338d76300f81658a843db5c9a55932a1ce6f4376ccb86ef7"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "A-BridaEje-1",
+      "basename": "A-BridaEje.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/A-BridaEje.stl",
+        "sha256": "906d2b56d2cab1e9146b22d6c1a8628e52f1e2a7f7113b57b4f6fff350ebe997"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "B-CarretelSup-1",
+      "basename": "B-CarretelSup.SLDPRT",
+      "disposition": "cached_wire_bbox_only_rejected_or_missing_mesh",
+      "mesh_gate_status": "failed",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": null,
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "B-CarretelInf-1",
+      "basename": "B-CarretelInf.SLDPRT",
+      "disposition": "cached_wire_bbox_only_rejected_or_missing_mesh",
+      "mesh_gate_status": "failed",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": null,
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "B-Antebrazo-1",
+      "basename": "B-Antebrazo.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/B-Antebrazo.stl",
+        "sha256": "3d75388aa30bddb254c185ca90e4353b3978f869c8b2e3e61437c6770e6d1016"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "NEMA17-1",
+      "basename": "NEMA17.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_differs",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 0.0029999999999999957,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/NEMA17.stl",
+        "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "R-Bancada-1",
+      "basename": "R-Bancada.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/R-Bancada.stl",
+        "sha256": "384f7805ad648b512753da167b438189a0dada45e4f710480a4f9e6ed2ad504f"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "Z-BujeExterior-1",
+      "basename": "Z-BujeExterior.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/Z-BujeExterior.stl",
+        "sha256": "c44397ae816d097ec226bb1b46533a95d9004bb08d8bb2c2bbb0bb24bf63975e"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "Z-Piston-1",
+      "basename": "Z-Piston.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/Z-Piston.stl",
+        "sha256": "0c4253764ef904a6b7118ee57d4857e674761eb053fea745b08266b66abb6288"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "Z-SoporteEfector-1",
+      "basename": "Z-SoporteEfector.SLDPRT",
+      "disposition": "cached_wire_bbox_only_rejected_or_missing_mesh",
+      "mesh_gate_status": "failed",
+      "cache_bbox_difference_m": 1.000000082740371e-10,
+      "accepted_stl": null,
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "Z-Cuerpo-1",
+      "basename": "Z-Cuerpo.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 9.999999960041972e-11,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/Z-Cuerpo.stl",
+        "sha256": "d06650ba64f8bd4674420be39afc2a128194e8585ebb253e1b9bee2988da18eb"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "R-ContraBancada-1",
+      "basename": "R-ContraBancada.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 9.999999653055305e-11,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/R-ContraBancada.stl",
+        "sha256": "0cda5062b40426c20fec05789d7cb05320e60e2d0050418148d457ea24f650c6"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "R-CarretelInf-1",
+      "basename": "R-CarretelInf.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/R-CarretelInf.stl",
+        "sha256": "d451893b2600214f6a0a4fdb5668f70af5e53a8b523f5d052646513d5a3dc361"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "R-CarretelSup-1",
+      "basename": "R-CarretelSup.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_differs",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 0.0001779728336367135,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/R-CarretelSup.stl",
+        "sha256": "0da333ba5884503e29010d7e15c9bed95a55945af8cdec699606d00cbb28380c"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "Z-SoporteM4-1",
+      "basename": "Z-SoporteM4.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/Z-SoporteM4.stl",
+        "sha256": "4094d5d0b568a987f461483e9a5b1334e9ec98c0bf86418440ddb6b11de6de49"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "Z-SoporteRuleman-1",
+      "basename": "Z-SoporteRuleman.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_agrees",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 1.000000013351432e-10,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/Z-SoporteRuleman.stl",
+        "sha256": "82f9b126d8f647c3f6d4e9b186a65c36931f8551a22ddc6081bc1bd435de4fa0"
+      },
+      "individual_body_meshes": []
+    },
+    {
+      "instance_name": "NEMA17-2",
+      "basename": "NEMA17.SLDPRT",
+      "disposition": "accepted_mesh_cache_bbox_differs",
+      "mesh_gate_status": "kernel_validated",
+      "cache_bbox_difference_m": 0.0029999999999999957,
+      "accepted_stl": {
+        "path": "cad/derivados/stl/NEMA17.stl",
+        "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+      },
+      "individual_body_meshes": []
+    }
+  ],
+  "tower_individual_bodies_report": {
+    "path": "cad/derivados/torre_por_cuerpos/informe.json",
+    "sha256": "ce0a8e2d7fd3b298740f73ab642b354eeb7624349a89a0384bbca08a336f6102",
+    "global_mesh_manifold_validated": false
+  }
+}

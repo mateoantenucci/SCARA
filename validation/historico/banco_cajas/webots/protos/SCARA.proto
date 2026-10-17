@@ -1,0 +1,144 @@
+#VRML_SIM R2025a utf8
+# Generado por tools/generate_world.py. Modelo exploratorio, NO montaje CAD validado.
+PROTO SCARA [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 1 0
+  field SFString controller "scara_bridge"
+  field SFFloat toolMass 0.15
+  field MFVec3f toolCenterOfMass [ 0 0 0.0875 ]
+  field MFVec3f toolInertiaMatrix [ 0.0003878125 0.0003878125 1e-05, 0 0 0 ]
+] {
+  Robot {
+    translation IS translation rotation IS rotation
+    name "SCARA" model "SCARA exploratorio; parametros provisionales"
+    supervisor TRUE controller IS controller selfCollision FALSE
+    children [
+      Pose {
+      translation 0 0 0.0125
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.4 0.42 0.45 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.28 0.28 0.025 }
+      } ]
+    }
+      Pose {
+      translation 0 0 0.105
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.58 0.56 0.5 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.12 0.12 0.16 }
+      } ]
+    }
+      HingeJoint {
+          jointParameters HingeJointParameters { axis 0 0 1 anchor 0 0 0.2
+            position 0 minStop -2.356194490192345 maxStop 2.356194490192345
+            dampingConstant 0.01 }
+          device [ RotationalMotor { name "j1_motor" minPosition -2.356194490192345
+            maxPosition 2.356194490192345 maxVelocity 0.35
+            acceleration 0.6 maxTorque 0.8 }
+            PositionSensor { name "j1_sensor" } ]
+          endPoint Solid {
+              translation 0 0 0.2 rotation 0 0 1 0
+              name "brazo"
+              children [ Pose {
+      translation 0.13 0 0
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.65 0.23 0.2 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.3 0.05 0.05 }
+      } ]
+    } HingeJoint {
+          jointParameters HingeJointParameters { axis 0 0 1 anchor 0.25 0 -0.055
+            position 1.57079632679 minStop -2.356194490192345 maxStop 2.356194490192345
+            dampingConstant 0.01 }
+          device [ RotationalMotor { name "j2_motor" minPosition -2.356194490192345
+            maxPosition 2.356194490192345 maxVelocity 0.35
+            acceleration 0.6 maxTorque 0.8 }
+            PositionSensor { name "j2_sensor" } ]
+          endPoint Solid {
+              translation 0.25 0 -0.055 rotation 0 0 1 1.57079632679
+              name "antebrazo"
+              children [ Pose {
+      translation 0.11 0 0
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.65 0.23 0.2 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.237 0.05 0.05 }
+      } ]
+    } HingeJoint {
+          jointParameters HingeJointParameters { axis 0 0 1 anchor 0.25 0 0
+            position -1.57079632679 minStop -2.6179938779914944 maxStop 2.6179938779914944
+            dampingConstant 0.01 }
+          device [ RotationalMotor { name "j3_motor" minPosition -2.6179938779914944
+            maxPosition 2.6179938779914944 maxVelocity 0.5
+            acceleration 0.9 maxTorque 0.3 }
+            PositionSensor { name "j3_sensor" } ]
+          endPoint Solid {
+      translation 0.25 0 0 rotation 0 0 1 -1.57079632679
+      name "conjunto_z"
+      children [ Pose {
+      translation 0 0 0.07
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.65 0.67 0.7 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.04 0.04 0.19 }
+      } ]
+    } SliderJoint {
+      jointParameters JointParameters { axis 0 0 -1 position 0.06
+        minStop 0.0 maxStop 0.12 dampingConstant 0.2 }
+      device [ LinearMotor { name "j4_motor" minPosition 0.0 maxPosition 0.12
+        maxVelocity 0.03 acceleration 0.06 maxForce 8.0 }
+        PositionSensor { name "j4_sensor" } ]
+      endPoint DEF TOOL Solid {
+      translation 0 0 -0.11
+      name "piston_y_soporte"
+      children [
+        Pose {
+      translation 0 0 0.0875
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.2 0.38 0.75 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.02 0.02 0.175 }
+      } ]
+    }
+        Pose {
+      translation 0 0 0
+      children [ Shape {
+        appearance PBRAppearance { baseColor 0.25 0.45 0.8 roughness 0.6 metalness 0.2 }
+        geometry Box { size 0.06 0.06 0.006 }
+      } ]
+    }
+        Shape { appearance PBRAppearance { baseColor 0.1 0.9 0.3 roughness 0.5 metalness 0 }
+          geometry Sphere { radius 0.008 } }
+      ]
+      boundingObject Pose { translation 0 0 0.0875
+        children [ Box { size 0.02 0.02 0.175 } ] }
+      physics Physics { density -1 mass IS toolMass
+        centerOfMass IS toolCenterOfMass inertiaMatrix IS toolInertiaMatrix }
+    }
+    } ]
+      boundingObject Pose { translation 0 0 0.07
+        children [ Box { size 0.04 0.04 0.19 } ] }
+      physics Physics { density -1 mass 0.35
+      centerOfMass [ 0 0 0.07 ]
+      inertiaMatrix [ 0.00109958333333 0.00109958333333 9.33333333333e-05, 0 0 0 ]
+    }
+    }
+        } ]
+              boundingObject Pose { translation 0.11 0 0
+                children [ Box { size 0.237 0.05 0.05 } ] }
+              physics Physics { density -1 mass 0.5
+      centerOfMass [ 0.11 0 0 ]
+      inertiaMatrix [ 0.000208333333333 0.00244454166667 0.00244454166667, 0 0 0 ]
+    }
+            }
+        } ]
+              boundingObject Pose { translation 0.13 0 0
+                children [ Box { size 0.3 0.05 0.05 } ] }
+              physics Physics { density -1 mass 0.3
+      centerOfMass [ 0.13 0 0 ]
+      inertiaMatrix [ 0.000125 0.0023125 0.0023125, 0 0 0 ]
+    }
+            }
+        }
+    ]
+    boundingObject Group { children [
+      Pose { translation 0 0 0.0125 children [ Box { size 0.28 0.28 0.025 } ] }
+      Pose { translation 0 0 0.105 children [ Box { size 0.12 0.12 0.16 } ] }
+    ] }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "base_sha256": "1cb9b5144870f1e7839260cea1fb29d7bfa7a633da1a8d63f0a0b6bcd4169cfa",
+  "manifest7_sha256": "c1e7043a338170f1a15cddeecdf3f5dbdf35ff26d0b8fa18b73e2f9530b3b1ab",
+  "manifest8_sha256": "868e89f2eaf493658183455c33e11c4f2ca2a5113631d8efbfdd94cf2587eed2",
+  "session7": {
+    "manifest_files": 33,
+    "archive_files": 52,
+    "common_files": 51,
+    "samples": 2162,
+    "arrival_xyz_error_m": 1.4715000048390635e-06,
+    "arrival_tcp_world_error_m": 4.377374708732996e-06,
+    "rejection_samples": 91,
+    "clear_without_rearm_samples": 76,
+    "last_mode": "STOPPED",
+    "all_15_png_visually_reviewed": true
+  },
+  "session8": {
+    "manifest_files": 9,
+    "base_files": 680,
+    "protected_files": 217,
+    "previous_instances_equal": 38,
+    "unaffected_groups_equal": 4,
+    "added": [
+      "2GT_80Teet_40Bore-registro-R"
+    ],
+    "source_and_step_hashes_verified": 50,
+    "csv_rows": 145,
+    "wrist_formula_tensor_relative_error": 1.985962994406957e-16,
+    "brep_compound_method_reviewed_without_rerun": true
+  }
+}

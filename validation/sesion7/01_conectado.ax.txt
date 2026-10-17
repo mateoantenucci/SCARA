@@ -1,0 +1,81 @@
+Browser tab: 1497285515, Title: "SCARA · laboratorio virtual", URL: "http://127.0.0.1:8765/".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 7-8, 40-41, 51-78, 92-135, 167
++			181 text TCP conectado
++			182 text Conectado. Habilitá explícitamente antes de mover.
++			183 text Detenido
++			184 text · t = 28.9 s
++				185 row
++					186 cell
++						187 text X · mm
++					188 cell
++						189 text 250.00
++					190 cell
++						191 text 250.00
++				192 row
++					193 cell
++						194 text Y · mm
++					195 cell
++						196 text 250.00
++					197 cell
++						198 text 250.00
++				199 row
++					200 cell
++						201 text Z · mm
++					202 cell
++						203 text 34.67
++					204 cell
++						205 text 34.67
++				206 row
++					207 cell
++						208 text Orientación · °
++					209 cell
++						210 text 0.00
++					211 cell
++						212 text -0.00
++				213 row
++					214 cell
++						215 text J1 · °
++					216 cell
++						217 text 0.00
++					218 cell
++						219 text 0.00
++					220 cell
++						221 text -0.00
++					222 cell
++						223 text Inactivo
++				224 row
++					225 cell
++						226 text J2 · °
++					227 cell
++						228 text 90.00
++					229 cell
++						230 text 90.00
++					231 cell
++						232 text 90.00
++					233 cell
++						234 text Inactivo
++				235 row
++					236 cell
++						237 text J3 · °
++					238 cell
++						239 text -90.00
++					240 cell
++						241 text -90.00
++					242 cell
++						243 text -90.00
++					244 cell
++						245 text Inactivo
++				246 row
++					247 cell
++						248 text J4 · mm
++					249 cell
++						250 text 60.00
++					251 cell
++						252 text 60.00
++					253 cell
++						254 text 60.00
++					255 cell
++						256 text Inactivo
++		257 text Carga actual: 0.000 kg
+The focused UI element is 0 AXWebArea SCARA · laboratorio virtual, URL: 127.0.0.1:8765/

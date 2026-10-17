@@ -1,0 +1,767 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-17T22:36:27.431772+00:00",
+  "status": "remaining_mounts_reviewed_with_explicit_wrist_choice",
+  "active_instances": 39,
+  "environment": {
+    "platform": "macOS-27.0.1-arm64-arm-64bit",
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+    "kernel": "8.0.1.1.0"
+  },
+  "method": "STEP mm, saved transforms m; exact cylindrical spans and BREP Common. No physical hardware trial.",
+  "checks": [
+    {
+      "name": "known_box_intersection_125_mm3",
+      "passed": true
+    },
+    {
+      "name": "separated_boxes_zero_volume",
+      "passed": true
+    },
+    {
+      "name": "five_retained_part_types_measured",
+      "passed": true
+    },
+    {
+      "name": "wrist_R_seated_on_shoulder_full_12mm_engagement",
+      "passed": true
+    },
+    {
+      "name": "wrist_R_no_positive_volume_against_six_neighbors",
+      "passed": true
+    },
+    {
+      "name": "wrist_B_rejected_by_bushing_shoulder_interference",
+      "passed": true
+    },
+    {
+      "name": "selected_wrist_pulley_follows_wrist",
+      "passed": true
+    },
+    {
+      "name": "M3_extension_and_pinion_diameters_incompatible",
+      "passed": true
+    },
+    {
+      "name": "vertical_has_no_identity_preserving_global_registration",
+      "passed": true
+    },
+    {
+      "name": "protected_inputs_unchanged",
+      "passed": true
+    }
+  ],
+  "sources_sha256": {
+    "tools/check_remaining_mounts.py": "e8f4cea0ce96d41db761a2f5c64e886058c36a1ecb239d49c51098675e48cfc6",
+    "tools/check_self_collisions.py": "20752a44ee7fec80b8ce1b9f6fb82808e8a35e52dc19e10e23311c2d6d81b2af",
+    "tools/check_collisions.py": "4c7c1b2bd4696e587f25085cf8a82b790b6086d17b6f88fcf4d2cb9d7ea22cab",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "config/cad_integration.json": "f974033cc568cec76d0be0b380df7195cbe90c0966766144701e2ad02c5654b5",
+    "tools/integrate_cad.py": "2e3fd1864122460c82960b01a198d10e6d09c08fadc47b08854fee838963b4d9",
+    "tools/registrar_subensambles.py": "845503ef569c2a677cfd7eaefe4a509ea1cf82bd314336366946eeaf4c935351",
+    "cad/derivados/informe.json": "e8f01f0cc10438967672ec156f19acc5f98b828114c99e673645f2672eae3279",
+    "cad/ensambles/informe.json": "541de5c1b812d549c0afc9e9a41acb13fff0f4f35769de86517ee68dfe96e6d3",
+    "cad/ensambles/registro_subensambles.json": "fc57d16b85ed3fda3ccb8c8439b8d2669833484a69ab0f159ac7cc7583aeca53",
+    "cad/ensambles/integracion_articulada.json": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475",
+    "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+    "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+    "tools/requirements-cad.txt": "90efabe7cc4d29dabe5130dec0b44b870a24c7c014a296d637404411814bc199",
+    "Modelos3D/B-ExtensorM3.PDF": "2435f593453e52e6e558fef660b6e9275e9a1afeaacfbbff1079ce45d489a383",
+    "Modelos3D/A-Eje.PDF": "4879758bb6053831e67d537f1625e9aca6e0810e7fc5d4d554b01e8a41ab2b69",
+    "Modelos3D/A-EjeInterior.PDF": "6c07e9b8767691863b8b5a0eff315ac54941e175576da9e1421ea6fda215b97d",
+    "cad/ensambles/ejes_propuestos.json": "0ca281741ecfcf408115442e79b8be0aec23bac810618ac7fd49ef73f99ba8a9",
+    "Modelos3D/R-EnsambleRotacion.SLDASM": "f3691f0425d30c01f244aacdce4e9a7abec2a311cd696852d4b3a81b71179d0b",
+    "Modelos3D/0-EnsambleBase.SLDASM": "5558e2f464ae0c64ed8fd842a567cda64f78643f342229058556f31de9c317ea",
+    "Modelos3D/0-EnsambleColision.SLDASM": "c903eb41ac79f023fc2013e8760f12b6a06520435035fba3ce0d4d8e544cf474",
+    "Modelos3D/0-EnsambleTorre.SLDASM": "d10001043850d71f46f1ca0a53d8cf0dff90c899241f7db75bf61863938e11af",
+    "Modelos3D/A-EnsambleBrazo.SLDASM": "a9296eb37355d898417c4e0fd56fd1e4fdfcec62ae1f948f5b9139fbdfd7ae22",
+    "Modelos3D/A-EnsambleCarretel.SLDASM": "30ed11ca9ba5ebad8393d2b6bd304952887bb502ead411f162fa291057602e10",
+    "Modelos3D/B-EnsambleAntebrazo.SLDASM": "1c38beb036054dce813e2343aed9b69f2ab85e9adfbd0d6af5782a8442a2feed",
+    "Modelos3D/R-EnsambleCarretel.SLDASM": "61afb0fbe906e535630be3673bc9c49ae866308010869f5e026c64c754d0717d",
+    "Modelos3D/Z-EnsambleEfector.SLDASM": "2ab12acab70c21f12ce78de1e0ef64e13b30e4f217c27b0a96ea7700804add45",
+    "Modelos3D/Z-EnsambleM4.SLDASM": "8ab94d39896002d5904ad48ca5feb4ad091c6ec3e1ba5feb5f8141c0f0714620",
+    "Modelos3D/2GT_60Teet_10Bore.SLDPRT": "1c7c2bc6126f5b37da5510fbf8362f0ea9fa6d2864239b6c1dcd3dcaa3196395",
+    "cad/derivados/step/2GT_60Teet_10Bore.step": "c3c149fc239fbacec54d60e8321cd6d843e9144b5ad36c15f85723e0860d8e42",
+    "Modelos3D/2GT_80Teet_40Bore.SLDPRT": "7652b60cc56bd4c7481448dc077eeeb698a377fe7a4f539a647e8b14d26c1c90",
+    "cad/derivados/step/2GT_80Teet_40Bore.step": "056cb1e3d8c51a271cd5608e0541b31423963b89241c5bb00d6cba3b5ffe99c4",
+    "Modelos3D/A-Eje.SLDPRT": "11d0824a7e2f383101cddc9ee18b5999b6a770f221a6bae04171b51f94ab9000",
+    "cad/derivados/step/A-Eje.step": "a31fdfcfbb667dd40d718ad4ed3848899dfee34df068d51456a04898cf0cc834",
+    "Modelos3D/A-EjeInterior.SLDPRT": "d8ee48f0fea3937bc23e39950aa8b63e46e11516959ba09e378c3e5b7485e861",
+    "cad/derivados/step/A-EjeInterior.step": "8a027439a2c307c0cc49f0f182d5ca12b341bde8b5602376913ef664c444f560",
+    "Modelos3D/B-Eje.SLDPRT": "a93fa00bab44a857a422444804773979e09b4a40e6293327c7fe0c191759edfa",
+    "cad/derivados/step/B-Eje.step": "0c781de53f284b3198e1f5152ebef40fe93fe9fffd34bfc579d98f4a67da2733",
+    "Modelos3D/Z-BujeExterior.SLDPRT": "ed4d66fb189feb52c9d3d94714475d08da3dd05d25b13f597ac419d466ab2790",
+    "cad/derivados/step/Z-BujeExterior.step": "5e4189efa3a28149596ee1c8eb29467485654c5cfa7ef0931ef6f12fe7889bcc",
+    "Modelos3D/Z-Cuerpo.SLDPRT": "e3f1fc239fcf450806833f2213d44b76337858e126df9fe3bc99b3cb1408309a",
+    "cad/derivados/step/Z-Cuerpo.step": "d79131aad2aa22def2fd9cf1d809f24a01ad8decf43f1f215e527c0230790ce5",
+    "Modelos3D/R-Bancada.SLDPRT": "142b7025e8e5aa78bcd99d926460960d4733b04a96e766522c1096475149d31c",
+    "cad/derivados/step/R-Bancada.step": "959a722d9ff724f910bc6e75b58f40b29be9c056f38d3652a1c65681cb10871d",
+    "Modelos3D/R-ContraBancada.SLDPRT": "010f3d820c0e69d6b8f39b89eb7fb42ceb869a09106a0d36a9be997ff008b71e",
+    "cad/derivados/step/R-ContraBancada.step": "f6aea6ef73e6e5afe78835dce0342ea27cf20928ceaf5a264c72ca7abae9f0a4",
+    "Modelos3D/Z-6907-2RS.SLDPRT": "ffad950d435c7adda8d5addd482bb20fcd00cb3ec95eff544001603f35e8e8fa",
+    "cad/derivados/step/Z-6907-2RS.step": "c8ca82d62e37b6b2490ad9c627797199300b800e7d83ca21a1f542bc374125ea",
+    "Modelos3D/NEMA17.SLDPRT": "6865c7fecc4c8942fa3951dc6c20c226e5cfa48f2240a8c023f3708a9df2e681",
+    "cad/derivados/step/NEMA17.step": "c518140415b5025553a38991630df1e97a5f4e75c574d25d7d5e6ca2532bc6f9",
+    "Modelos3D/2GT_20Teet_5Bore.SLDPRT": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+    "cad/derivados/step/2GT_20Teet_5Bore.step": "dd6d03d5593d1259403e732c7fd06b3f0fa5ce8ab1c9faecb036080edf8767ab",
+    "Modelos3D/B-ExtensorM3.SLDPRT": "2439f98e8ab45f98226f2146007136e7442e9552f7291909445b3c7cb51d8c94",
+    "cad/derivados/step/B-ExtensorM3.step": "396d4a85ca1af1354b12853b2818ba778ec34dbc9ee26ffca0f37819f44b8e49"
+  },
+  "retained_candidates": [
+    {
+      "part": "2GT_60Teet_10Bore",
+      "reason": "different_placed_occurrences_across_registered_caches",
+      "candidates": [
+        {
+          "assembly": "A-EnsambleBrazo",
+          "instance": "2GT_60Teet_10Bore-1",
+          "cache_stamp": "280",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -53.66663894281836,
+            -10.500009043377432,
+            132.6101703507777,
+            -11.666638742818337,
+            31.499991156622592,
+            152.91017055077774
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9821208656178592,
+              -0.18825144174222902,
+              6.084016557531087e-16,
+              -0.03266663884281835
+            ],
+            [
+              0.18825144174222902,
+              -0.9821208656178592,
+              -7.890829832094829e-16,
+              0.010499991056622585
+            ],
+            [
+              7.460699700350253e-16,
+              -6.604423736601366e-16,
+              0.9999999999999999,
+              0.13261017045077772
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "assembly": "0-EnsambleBase",
+          "instance": "2GT_60Teet_10Bore-1",
+          "cache_stamp": "280",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -53.66663894281792,
+            -10.500009043377156,
+            129.2640862922146,
+            -11.666638742817915,
+            31.49999115662284,
+            149.5640864922146
+          ],
+          "transform_part_to_saved_global": [
+            [
+              0.9386766077439539,
+              0.3447988197112966,
+              -5.588090503494717e-16,
+              -0.03266663884281791
+            ],
+            [
+              -0.3447988197112966,
+              0.9386766077439539,
+              1.5672390874352084e-16,
+              0.010499991056622839
+            ],
+            [
+              5.785792025139694e-16,
+              4.556363399274733e-17,
+              0.9999999999999999,
+              0.12926408639221462
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "part": "2GT_80Teet_40Bore",
+      "reason": "different_placed_occurrences_across_registered_caches",
+      "candidates": [
+        {
+          "assembly": "B-EnsambleAntebrazo",
+          "instance": "2GT_80Teet_40Bore-1",
+          "cache_stamp": "396",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -63.199954744945664,
+            -516.9330244950098,
+            210.9346502057972,
+            -8.099954544945666,
+            -461.83302429500986,
+            222.93465030579725
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9849900699714534,
+              -0.1726110137205365,
+              -3.87776108253826e-16,
+              -0.035649954644945664
+            ],
+            [
+              -0.1726110137205365,
+              0.9849900699714534,
+              -9.794988443687023e-16,
+              -0.4893830243950099
+            ],
+            [
+              5.510279044667697e-16,
+              -8.978622081093887e-16,
+              -1.0,
+              0.22293465020579722
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "assembly": "R-EnsambleRotacion",
+          "instance": "2GT_80Teet_40Bore-1",
+          "cache_stamp": "396",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -63.199954744945565,
+            -516.9330244950075,
+            210.0213715117245,
+            -8.099954544945552,
+            -461.8330242950076,
+            222.02137161172462
+          ],
+          "transform_part_to_saved_global": [
+            [
+              0.09883576595969448,
+              0.9951037590960858,
+              5.858556578328183e-16,
+              -0.03564995464494556
+            ],
+            [
+              0.995103759096086,
+              -0.09883576595969451,
+              -1.790602961220079e-15,
+              -0.48938302439500764
+            ],
+            [
+              -1.723932245074956e-15,
+              7.599627825990327e-16,
+              -1.0,
+              0.22202137151172457
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "part": "A-Eje",
+      "reason": "different_placed_occurrences_across_registered_caches",
+      "candidates": [
+        {
+          "assembly": "A-EnsambleBrazo",
+          "instance": "A-Eje-1",
+          "cache_stamp": "144",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -42.06663894281858,
+            1.0999909566226898,
+            158.13190086117163,
+            -23.266638742818554,
+            19.89999115662272,
+            298.1319010611716
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9935971185372249,
+              0.11298126408623782,
+              5.855656257147419e-16,
+              -0.03266663884281859
+            ],
+            [
+              -0.11298126408623782,
+              -0.9935971185372249,
+              7.511821888344707e-16,
+              0.010499991056622667
+            ],
+            [
+              6.666858316781996e-16,
+              6.802145137237152e-16,
+              0.9999999999999999,
+              0.15813190096117163
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "assembly": "0-EnsambleBase",
+          "instance": "A-Eje-1",
+          "cache_stamp": "144",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -42.06663894281798,
+            1.0999909566228532,
+            151.14637141172463,
+            -23.266638742817964,
+            19.89999115662286,
+            291.14637161172465
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.989492234131016,
+              0.14458602489317904,
+              5.639839928964938e-16,
+              -0.032666638842818
+            ],
+            [
+              0.14458602489317904,
+              0.989492234131016,
+              -1.4716010990222369e-16,
+              0.010499991056622865
+            ],
+            [
+              -5.793350764588887e-16,
+              -6.40695822858301e-17,
+              -0.9999999999999999,
+              0.2911463715117246
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "part": "A-EjeInterior",
+      "reason": "different_placed_occurrences_across_registered_caches",
+      "candidates": [
+        {
+          "assembly": "A-EnsambleBrazo",
+          "instance": "A-EjeInterior-1",
+          "cache_stamp": "117",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -37.416638942818615,
+            5.7499909566225735,
+            101.54966930296052,
+            -27.916638742818506,
+            15.2499911566228,
+            291.54966950296057
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9998901124135379,
+              -0.01482440884632897,
+              -5.790851307038541e-16,
+              -0.03266663884281851
+            ],
+            [
+              -0.01482440884632897,
+              0.9998901124135379,
+              -1.1882844673874864e-15,
+              0.0104999910566228
+            ],
+            [
+              5.966371112067787e-16,
+              -1.1795692949409503e-15,
+              -1.0,
+              0.29154966940296057
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "assembly": "0-EnsambleBase",
+          "instance": "A-EjeInterior-1",
+          "cache_stamp": "117",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -37.41663894281802,
+            5.749990956622839,
+            129.26408629221467,
+            -27.91663874281791,
+            15.249991156622867,
+            319.2640864922147
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9964148887341683,
+              0.08460123822306086,
+              5.639839928964938e-16,
+              -0.032666638842818015
+            ],
+            [
+              0.08460123822306086,
+              0.9964148887341683,
+              -1.4716010990222369e-16,
+              0.010499991056622868
+            ],
+            [
+              -5.744119750445817e-16,
+              -9.891878039730277e-17,
+              -0.9999999999999999,
+              0.31926408639221465
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "part": "B-Eje",
+      "reason": "different_placed_occurrences_across_registered_caches",
+      "candidates": [
+        {
+          "assembly": "A-EnsambleBrazo",
+          "instance": "B-Eje-1",
+          "cache_stamp": "115",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -32.96053673123634,
+            -243.47253714676182,
+            113.22137141172458,
+            -24.96053653123626,
+            -235.47253694676164,
+            243.2213716117246
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9910472987751764,
+              0.13351124143841636,
+              5.733246906941765e-16,
+              -0.028960536631236336
+            ],
+            [
+              -0.13351124143841633,
+              -0.9910472987751764,
+              1.5768198261012773e-15,
+              -0.23947253704676183
+            ],
+            [
+              7.787150585410655e-16,
+              1.4861577381109372e-15,
+              1.0,
+              0.11322137151172457
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        },
+        {
+          "assembly": "B-EnsambleAntebrazo",
+          "instance": "B-Eje-1",
+          "cache_stamp": "115",
+          "current_bbox_agrees": true,
+          "saved_global_bbox_mm": [
+            -32.96053673123669,
+            -243.47253714676415,
+            110.02137141172437,
+            -24.960536531236635,
+            -235.47253694676405,
+            240.02137161172436
+          ],
+          "transform_part_to_saved_global": [
+            [
+              -0.9996419493929843,
+              0.02675767205483625,
+              -3.84805409893761e-16,
+              -0.028960536631236634
+            ],
+            [
+              0.02675767205483625,
+              0.9996419493929843,
+              -8.685162935089762e-16,
+              -0.23947253704676405
+            ],
+            [
+              3.614281559271705e-16,
+              -8.785018176857466e-16,
+              -1.0,
+              0.24002137151172437
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "wrist_pulley_comparison": [
+    {
+      "source_assembly": "B-EnsambleAntebrazo",
+      "axis_gap_mm": 2.291464495015947e-12,
+      "pulley_bore_diameter_mm": 40,
+      "bushing_seat_diameter_mm": 40,
+      "bore_on_bushing_Z_mm": [
+        30.0867213059274,
+        42.086721305927405
+      ],
+      "seat_on_bushing_Z_mm": [
+        31.0,
+        45.0
+      ],
+      "shoulder_offset_mm": -0.9132786940725985,
+      "engagement_mm": 11.086721305927405,
+      "contacts": [
+        {
+          "part": "Z-BujeExterior-1",
+          "intersection_volume_mm3": 470.375573964228
+        },
+        {
+          "part": "Z-Cuerpo-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "R-Bancada-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "R-ContraBancada-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "Z-6907-2RS-registro-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "Z-6907-2RS-registro-2",
+          "intersection_volume_mm3": 0
+        }
+      ]
+    },
+    {
+      "source_assembly": "R-EnsambleRotacion",
+      "axis_gap_mm": 3.987137759474365e-15,
+      "pulley_bore_diameter_mm": 40,
+      "bushing_seat_diameter_mm": 40,
+      "bore_on_bushing_Z_mm": [
+        31.000000000000053,
+        43.00000000000005
+      ],
+      "seat_on_bushing_Z_mm": [
+        31.0,
+        45.0
+      ],
+      "shoulder_offset_mm": 5.3290705182007514e-14,
+      "engagement_mm": 11.999999999999996,
+      "contacts": [
+        {
+          "part": "Z-BujeExterior-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "Z-Cuerpo-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "R-Bancada-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "R-ContraBancada-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "Z-6907-2RS-registro-1",
+          "intersection_volume_mm3": 0
+        },
+        {
+          "part": "Z-6907-2RS-registro-2",
+          "intersection_volume_mm3": 0
+        }
+      ]
+    }
+  ],
+  "M3": {
+    "reference": "NEMA17 local Z in B-EnsambleAntebrazo; current STEP geometry",
+    "motor_shaft_span_mm": [
+      40.0,
+      53.0
+    ],
+    "pinion_bore_span_mm": [
+      55.50000000000001,
+      72.5
+    ],
+    "direct_motor_pinion_engagement_mm": 0,
+    "extension_input_bore_span_mm": [
+      43.00000000000119,
+      53.00000000000119
+    ],
+    "motor_extension_engagement_mm": 9.999999999998813,
+    "extension_output_span_mm": [
+      55.00000000000119,
+      74.20000000000118
+    ],
+    "extension_output_diameter_mm": 8,
+    "pinion_bore_diameter_mm": 5,
+    "mismatched_axial_overlap_mm": 16.999999999999993,
+    "extension_status": "failed",
+    "limitation": "Extensor STEP inválido: superficies solo diagnósticas. El plano original también indica salida Ø8 y entrada Ø5. No se calcula su intersección/masa."
+  },
+  "vertical": [
+    {
+      "assembly": "Z-EnsambleEfector",
+      "valid_registration_candidates_to_global": 0,
+      "shared_revisions": [
+        {
+          "part": "Z-Cuerpo.SLDPRT",
+          "source_instance": "Z-Cuerpo-1",
+          "global_instance": "Z-Cuerpo-1",
+          "source_cache_stamp": "154",
+          "global_cache_stamp": "152"
+        },
+        {
+          "part": "Z-BujeExterior.SLDPRT",
+          "source_instance": "Z-BujeExterior-1",
+          "global_instance": "Z-BujeExterior-1",
+          "source_cache_stamp": "569",
+          "global_cache_stamp": "554"
+        },
+        {
+          "part": "Z-Piston.SLDPRT",
+          "source_instance": "Z-Piston-1",
+          "global_instance": "Z-Piston-1",
+          "source_cache_stamp": "135",
+          "global_cache_stamp": "131"
+        },
+        {
+          "part": "Z-SoporteEfector.SLDPRT",
+          "source_instance": "Z-SoporteEfector-1",
+          "global_instance": "Z-SoporteEfector-1",
+          "source_cache_stamp": "196",
+          "global_cache_stamp": "191"
+        },
+        {
+          "part": "Z-SoporteRuleman.SLDPRT",
+          "source_instance": "Z-SoporteRuleman-1",
+          "global_instance": "Z-SoporteRuleman-1",
+          "source_cache_stamp": "203",
+          "global_cache_stamp": "201"
+        }
+      ]
+    },
+    {
+      "assembly": "Z-EnsambleM4",
+      "valid_registration_candidates_to_global": 0,
+      "shared_revisions": [
+        {
+          "part": "Z-Cuerpo.SLDPRT",
+          "source_instance": "Z-Cuerpo-1",
+          "global_instance": "Z-Cuerpo-1",
+          "source_cache_stamp": "154",
+          "global_cache_stamp": "152"
+        },
+        {
+          "part": "NEMA17.SLDPRT",
+          "source_instance": "NEMA17-1",
+          "global_instance": "NEMA17-1",
+          "source_cache_stamp": "126",
+          "global_cache_stamp": "120"
+        },
+        {
+          "part": "NEMA17.SLDPRT",
+          "source_instance": "NEMA17-1",
+          "global_instance": "NEMA17-2",
+          "source_cache_stamp": "126",
+          "global_cache_stamp": "120"
+        },
+        {
+          "part": "Z-SoporteRuleman.SLDPRT",
+          "source_instance": "Z-SoporteRuleman-1",
+          "global_instance": "Z-SoporteRuleman-1",
+          "source_cache_stamp": "203",
+          "global_cache_stamp": "201"
+        },
+        {
+          "part": "Z-SoporteM4.SLDPRT",
+          "source_instance": "Z-SoporteM4-1",
+          "global_instance": "Z-SoporteM4-1",
+          "source_cache_stamp": "192",
+          "global_cache_stamp": "190"
+        }
+      ]
+    }
+  ],
+  "drawing_contrasts": [
+    {
+      "part": "A-Eje",
+      "drawing_length_mm": 110,
+      "STEP_length_mm": 140,
+      "drawing": "Modelos3D/A-Eje.PDF",
+      "page": 1
+    },
+    {
+      "part": "A-EjeInterior",
+      "drawing_length_mm": 160,
+      "STEP_length_mm": 190,
+      "drawing": "Modelos3D/A-EjeInterior.PDF",
+      "page": 1
+    },
+    {
+      "part": "B-ExtensorM3",
+      "drawing_input_diameter_mm": 5,
+      "drawing_output_diameter_mm": 8,
+      "drawing": "Modelos3D/B-ExtensorM3.PDF",
+      "page": 1
+    }
+  ],
+  "limitations": [
+    "Saved angular phase and mechanical fastening are provisional; diameter fit is not torque transmission.",
+    "Three motor pinions and inner transmission require separate rotor coordinates; no belt path or sign assumed.",
+    "No new mass/inertia, motor properties, homing or full workspace collision claim."
+  ]
+}

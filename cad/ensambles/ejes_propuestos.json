@@ -1,0 +1,366 @@
+{
+  "generator_sha256": "0fa73979dac3b18cf096266a475c9973831d01ab127a8ddf1e9ea3a0bd36fa4a",
+  "assembly_report_sha256": "541de5c1b812d549c0afc9e9a41acb13fff0f4f35769de86517ee68dfe96e6d3",
+  "source_assembly": "Modelos3D/0-EnsambleColision.SLDASM",
+  "source_sha256": "c903eb41ac79f023fc2013e8760f12b6a06520435035fba3ce0d4d8e544cf474",
+  "units": "m",
+  "frame": "exact saved 0-EnsambleColision assembly frame",
+  "axes": {
+    "J1": {
+      "point_on_axis_assembly_m": [
+        -0.03266663884281855,
+        0.01049999105662254,
+        0.1620213715117244
+      ],
+      "axis_direction_assembly": [
+        -4.363005608772298e-18,
+        6.910135092716505e-18,
+        1.0
+      ],
+      "source_instance": "A-BridaEje-1",
+      "point_local_m": [
+        0,
+        0,
+        0
+      ],
+      "axis_local": [
+        0,
+        0,
+        1
+      ],
+      "observed_cylinder_radius_mm": 8,
+      "sign_is_command_convention": false,
+      "independent_line_agreement_checks": [
+        {
+          "point_on_axis_assembly_m": [
+            -0.03266663884281856,
+            0.010499991056622693,
+            0.1600213715117244
+          ],
+          "axis_direction_assembly": [
+            5.880343857188895e-16,
+            5.846670350999895e-16,
+            1.0
+          ],
+          "source_instance": "A-Brazo-1",
+          "point_local_m": [
+            0,
+            -0.023,
+            0.03
+          ],
+          "axis_local": [
+            0,
+            -1,
+            0
+          ],
+          "observed_cylinder_radius_mm": 8,
+          "sign_is_command_convention": false,
+          "perpendicular_distance_m": 1.5329973016684455e-16
+        }
+      ]
+    },
+    "J2": {
+      "point_on_axis_assembly_m": [
+        -0.028960536631236315,
+        -0.2394725370467618,
+        0.16202137151172455
+      ],
+      "axis_direction_assembly": [
+        -5.880343857188895e-16,
+        -5.846670350999895e-16,
+        -1.0
+      ],
+      "source_instance": "A-Brazo-1",
+      "point_local_m": [
+        0,
+        -0.025,
+        0.28
+      ],
+      "axis_local": [
+        0,
+        1,
+        0
+      ],
+      "observed_cylinder_radius_mm": 4.5,
+      "sign_is_command_convention": false,
+      "independent_line_agreement_checks": [
+        {
+          "point_on_axis_assembly_m": [
+            -0.028960536631236624,
+            -0.23947253704676408,
+            0.19002137151172435
+          ],
+          "axis_direction_assembly": [
+            3.8109203694368e-16,
+            7.297881049343179e-16,
+            1.0
+          ],
+          "source_instance": "B-Antebrazo-1",
+          "point_local_m": [
+            0,
+            -0.025,
+            0.22
+          ],
+          "axis_local": [
+            0,
+            1,
+            0
+          ],
+          "observed_cylinder_radius_mm": 4,
+          "sign_is_command_convention": false,
+          "perpendicular_distance_m": 2.315286567615293e-15
+        },
+        {
+          "point_on_axis_assembly_m": [
+            -0.02896053663123635,
+            -0.2394725370467629,
+            0.1900213715117246
+          ],
+          "axis_direction_assembly": [
+            1.498801083243961e-15,
+            0.0,
+            -1.0
+          ],
+          "source_instance": "B-CarretelInf-1",
+          "point_local_m": [
+            0,
+            0,
+            0
+          ],
+          "axis_local": [
+            0,
+            0,
+            1
+          ],
+          "observed_cylinder_radius_mm": null,
+          "sign_is_command_convention": false,
+          "perpendicular_distance_m": 1.1277546967394935e-15
+        }
+      ]
+    },
+    "J3": {
+      "point_on_axis_assembly_m": [
+        -0.03564995464494557,
+        -0.48938302439500764,
+        0.2250213715117246
+      ],
+      "axis_direction_assembly": [
+        -5.858556578328183e-16,
+        1.790602961220079e-15,
+        1.0
+      ],
+      "source_instance": "Z-BujeExterior-1",
+      "point_local_m": [
+        0,
+        0,
+        0.028
+      ],
+      "axis_local": [
+        0,
+        0,
+        -1
+      ],
+      "observed_cylinder_radius_mm": 17.5,
+      "sign_is_command_convention": false,
+      "independent_line_agreement_checks": [
+        {
+          "point_on_axis_assembly_m": [
+            -0.035649954644945775,
+            -0.4893830243950133,
+            0.19802137151171662
+          ],
+          "axis_direction_assembly": [
+            -5.351659202439783e-17,
+            -1.509874864568857e-14,
+            1.0
+          ],
+          "source_instance": "R-Bancada-1",
+          "point_local_m": [
+            0,
+            -0.017,
+            -0.02
+          ],
+          "axis_local": [
+            0,
+            1,
+            0
+          ],
+          "observed_cylinder_radius_mm": 27.5,
+          "sign_is_command_convention": false,
+          "perpendicular_distance_m": 5.61825776118779e-15
+        },
+        {
+          "point_on_axis_assembly_m": [
+            -0.03564995464494557,
+            -0.4893830243950076,
+            0.2480213715117246
+          ],
+          "axis_direction_assembly": [
+            6.464030606725555e-16,
+            -1.786530945087127e-15,
+            -0.9999999999999999
+          ],
+          "source_instance": "Z-Cuerpo-1",
+          "point_local_m": [
+            0,
+            0,
+            0
+          ],
+          "axis_local": [
+            0,
+            0,
+            1
+          ],
+          "observed_cylinder_radius_mm": null,
+          "sign_is_command_convention": false,
+          "perpendicular_distance_m": 1.966819885760276e-17
+        }
+      ]
+    },
+    "J4": {
+      "point_on_axis_assembly_m": [
+        -0.03564995464494557,
+        -0.4893830243950077,
+        0.1947170126469252
+      ],
+      "axis_direction_assembly": [
+        -5.858556578328202e-16,
+        1.790602961220081e-15,
+        0.9999999999999999
+      ],
+      "source_instance": "Z-Piston-1",
+      "point_local_m": [
+        0,
+        0,
+        0
+      ],
+      "axis_local": [
+        0,
+        0,
+        1
+      ],
+      "observed_cylinder_radius_mm": null,
+      "sign_is_command_convention": false,
+      "independent_line_agreement_checks": [
+        {
+          "point_on_axis_assembly_m": [
+            -0.03564995464494557,
+            -0.4893830243950076,
+            0.2480213715117246
+          ],
+          "axis_direction_assembly": [
+            6.464030606725555e-16,
+            -1.786530945087127e-15,
+            -0.9999999999999999
+          ],
+          "source_instance": "Z-Cuerpo-1",
+          "point_local_m": [
+            0,
+            0,
+            0
+          ],
+          "axis_local": [
+            0,
+            0,
+            1
+          ],
+          "observed_cylinder_radius_mm": null,
+          "sign_is_command_convention": false,
+          "perpendicular_distance_m": 3.755547951745635e-17
+        }
+      ]
+    }
+  },
+  "horizontal_link_lengths": {
+    "J1_J2_horizontal_m": 0.24999999999999992,
+    "J2_J3_horizontal_m": 0.24999999999999975
+  },
+  "tool_support": {
+    "instance": "Z-SoporteEfector-1",
+    "official_tcp_defined": false,
+    "transform_object_to_assembly_m": [
+      [
+        0.09883576595969451,
+        0.9951037590960856,
+        1.715604933680007e-16,
+        -0.03564995464494569
+      ],
+      [
+        0.9951037590960856,
+        -0.09883576595969451,
+        -1.749454307585737e-15,
+        -0.4893830243950073
+      ],
+      [
+        -1.723932245074958e-15,
+        3.436291483645999e-16,
+        -0.9999999999999999,
+        0.3937170126469251
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "mesh_status": "kernel_validated"
+  },
+  "grouping_proposal": {
+    "fixed_base": [
+      "0-Torre-1"
+    ],
+    "arm_proposed": [
+      "A-Brazo-1",
+      "A-BridaEje-1"
+    ],
+    "forearm_proposed": [
+      "B-Antebrazo-1",
+      "NEMA17-1",
+      "R-Bancada-1",
+      "R-ContraBancada-1"
+    ],
+    "z_rotating_outer_proposed": [
+      "Z-BujeExterior-1",
+      "Z-Cuerpo-1",
+      "Z-SoporteM4-1",
+      "Z-SoporteRuleman-1",
+      "NEMA17-2"
+    ],
+    "z_sliding_proposed": [
+      "Z-Piston-1",
+      "Z-SoporteEfector-1"
+    ],
+    "transmission_membership_unresolved": [
+      "A-CarretelInf-1",
+      "A-CarretelSup-1",
+      "B-CarretelInf-1",
+      "B-CarretelSup-1",
+      "R-CarretelInf-1",
+      "R-CarretelSup-1"
+    ]
+  },
+  "grouping_status": "Engineering proposal from documented construction and geometry; mates not solved. Carretels intentionally unresolved.",
+  "basis_for_upright_frame": {
+    "candidate_rotation_saved_to_upright": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        -1,
+        0
+      ],
+      [
+        0,
+        0,
+        -1
+      ]
+    ],
+    "candidate_name": "180 degrees around saved X; still requires translation and yaw convention",
+    "applied": false
+  },
+  "joint_zeros_limits_and_motor_signs_determined": false
+}

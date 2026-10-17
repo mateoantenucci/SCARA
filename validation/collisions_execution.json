@@ -1,0 +1,22 @@
+{
+  "project": "/private/tmp/scara-colisiones-native-20261015",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "native_port": 19001,
+  "application_port": 19003,
+  "version": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+  "sources_sha256": {
+    "config/scara.json": "95bdaef4a51dd6b90e45bee7d5b97fad3c1219dec68017fd542a81d7d8585f9d",
+    "scara/collisions.py": "d322e655a32a5e5a604f33adb9e4789fdf71bfa675837adbc35abd8ba21545d7",
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "scara/kinematics.py": "9ac6bb81fc5511d90b79e0aec77eb59464c80df4ee559a3b1cf3bba6550b41a9",
+    "webots/controllers/scara_bridge/scara_bridge.py": "a85c55ae7ff6bf5617cb513e717ad7ad713b0af441e303884e1922d94528e084",
+    "webots/protos/SCARA.proto": "8a3453ebb8f5fdd76738345058bf249946873c729184f9c7cd9a46b9e3017733",
+    "cad/ensambles/integracion_articulada.json": "7c5374bf9fe983fd16350c12610741ee70baa5a8110f1bb65cf966bb1c393c13"
+  },
+  "world_sha256": "8f9875622fdda546e26d685be5678e05e95bb7b983b37f8ad0c1ce6c5a9c478b",
+  "binary_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+  "source_files_match_root": true,
+  "last_trial": "STOPPED, initial pose, payload 0, reference valid after reset",
+  "user_session": "Original app, TCP9000 and client8765 were not moved or reloaded"
+}

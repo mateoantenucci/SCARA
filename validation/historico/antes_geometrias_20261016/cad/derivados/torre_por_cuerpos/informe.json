@@ -1,0 +1,305 @@
+{
+  "created_utc": "2026-10-15T00:20:47.245027+00:00",
+  "purpose": "visualizacion de tres cuerpos de 0-Torre en su marco de pieza",
+  "source": {
+    "path": "Modelos3D/0-Torre.SLDPRT",
+    "sha256": "fd94227671db45086676cdf6400add36907ed54e42645c7f0be022c91325f2ff"
+  },
+  "step": {
+    "path": "cad/derivados/step/0-Torre.step",
+    "sha256": "5645cfedfce3ba8235655667d94065563690c423de68ef12d4890a746c34e5a8"
+  },
+  "batch_report_sha256_before": "be8366177ae51468371671628b0fcc40d18a5dad02ae6f6b47a62cb378b16fe3",
+  "batch_result_unchanged": "44 STL aceptados; seis piezas rechazadas",
+  "converter_revision": "fa954124f4f126e0c465c8f96454978ac80b812e",
+  "source_conversion_warnings": [],
+  "script_sha256": "bb47e6d6a5b009bbf4a2c9e8562d5f5f9cda18327b2ae043ee5517e67e935097",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "kernel_distribution": {
+    "cadquery-ocp-novtk": "8.0.1.1.0",
+    "cadquery-ocp-proxy": "8.0.1.1.0"
+  },
+  "scale_mm_to_m": 0.001,
+  "origin_or_orientation_changed": false,
+  "explicit_brep_repair": false,
+  "linear_tessellation_mm": 0.05,
+  "angular_tessellation_rad": 0.3,
+  "mass_kg": null,
+  "assembly_placement": false,
+  "global_mesh_manifold_validated": false,
+  "equivalence_to_original_solidworks_independently_verified": false,
+  "bodies": [
+    {
+      "index": 1,
+      "brep_valid": true,
+      "volume_mm3": 9457.636133149845,
+      "bbox_mm": [
+        [
+          -155.83751249682564,
+          -128.7919357558623,
+          219.9999999
+        ],
+        [
+          155.8375124968258,
+          -108.79193575586231,
+          221.6000001
+        ]
+      ],
+      "volume_centroid_mm": [
+        7.866306713181604e-14,
+        -118.63124410556435,
+        220.8
+      ],
+      "raw_stl": {
+        "path": "crudos/0-Torre-cuerpo-01.stl",
+        "sha256": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941",
+        "metrics": {
+          "triangles": 648,
+          "bbox_m": [
+            [
+              -0.1558375060558319,
+              -0.128791943192482,
+              0.2199999988079071
+            ],
+            [
+              0.1558375060558319,
+              -0.10879193246364594,
+              0.2215999960899353
+            ]
+          ],
+          "signed_volume_m3": 9.456909789419462e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true
+        }
+      },
+      "zero_area_filter": {
+        "method": "exact_rational_cross_product_of_exported_float32_vertices",
+        "removed_triangle_indices_zero_based": [],
+        "removed_triangles": 0,
+        "removed_positive_area_triangles": 0,
+        "retained_triangle_records_byte_identical": true,
+        "geometric_oriented_volume_exactly_preserved": true,
+        "vertices_moved_or_welded": 0,
+        "triangles_added": 0,
+        "bbox_float32_identical": true,
+        "signed_volume_float64_identical": true,
+        "signed_volume_float64_difference_m3": 0.0
+      },
+      "derived_stl": {
+        "path": "stl/0-Torre-cuerpo-01.stl",
+        "sha256": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941",
+        "metrics": {
+          "triangles": 648,
+          "bbox_m": [
+            [
+              -0.1558375060558319,
+              -0.128791943192482,
+              0.2199999988079071
+            ],
+            [
+              0.1558375060558319,
+              -0.10879193246364594,
+              0.2215999960899353
+            ]
+          ],
+          "signed_volume_m3": 9.456909789419462e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error_to_brep": 7.679971191076884e-05,
+          "max_bbox_error_m": 7.436619681167045e-09
+        }
+      },
+      "status": "individual_mesh_validated",
+      "errors": []
+    },
+    {
+      "index": 2,
+      "brep_valid": true,
+      "volume_mm3": 9457.636133149845,
+      "bbox_mm": [
+        [
+          -155.83751249682567,
+          108.79193575586226,
+          219.9999999
+        ],
+        [
+          155.83751249682575,
+          128.79193575586226,
+          221.6000001
+        ]
+      ],
+      "volume_centroid_mm": [
+        3.373968216899762e-14,
+        118.63124410556425,
+        220.80000000000004
+      ],
+      "raw_stl": {
+        "path": "crudos/0-Torre-cuerpo-02.stl",
+        "sha256": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877",
+        "metrics": {
+          "triangles": 648,
+          "bbox_m": [
+            [
+              -0.1558375060558319,
+              0.10879193246364594,
+              0.2199999988079071
+            ],
+            [
+              0.1558375060558319,
+              0.128791943192482,
+              0.2215999960899353
+            ]
+          ],
+          "signed_volume_m3": 9.456909789419376e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true
+        }
+      },
+      "zero_area_filter": {
+        "method": "exact_rational_cross_product_of_exported_float32_vertices",
+        "removed_triangle_indices_zero_based": [],
+        "removed_triangles": 0,
+        "removed_positive_area_triangles": 0,
+        "retained_triangle_records_byte_identical": true,
+        "geometric_oriented_volume_exactly_preserved": true,
+        "vertices_moved_or_welded": 0,
+        "triangles_added": 0,
+        "bbox_float32_identical": true,
+        "signed_volume_float64_identical": true,
+        "signed_volume_float64_difference_m3": 0.0
+      },
+      "derived_stl": {
+        "path": "stl/0-Torre-cuerpo-02.stl",
+        "sha256": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877",
+        "metrics": {
+          "triangles": 648,
+          "bbox_m": [
+            [
+              -0.1558375060558319,
+              0.10879193246364594,
+              0.2199999988079071
+            ],
+            [
+              0.1558375060558319,
+              0.128791943192482,
+              0.2215999960899353
+            ]
+          ],
+          "signed_volume_m3": 9.456909789419376e-06,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error_to_brep": 7.679971191987267e-05,
+          "max_bbox_error_m": 7.436619736678196e-09
+        }
+      },
+      "status": "individual_mesh_validated",
+      "errors": []
+    },
+    {
+      "index": 3,
+      "brep_valid": true,
+      "volume_mm3": 373897.66336414486,
+      "bbox_mm": [
+        [
+          -158.79193575586228,
+          -108.79193575586235,
+          -1e-07
+        ],
+        [
+          158.79193575586234,
+          108.79193575586228,
+          220.00000000000006
+        ]
+      ],
+      "volume_centroid_mm": [
+        -1.366811968847733e-12,
+        8.932150015585106e-14,
+        100.72380487392432
+      ],
+      "raw_stl": {
+        "path": "crudos/0-Torre-cuerpo-03.stl",
+        "sha256": "19f0535af249bab6decf540f628edd993c35ac5914dcf7bcc2d5e1f62c9b48ea",
+        "metrics": {
+          "triangles": 2990,
+          "bbox_m": [
+            [
+              -0.1587919294834137,
+              -0.10879193246364594,
+              0.0
+            ],
+            [
+              0.1587919294834137,
+              0.10879193246364594,
+              0.2199999988079071
+            ]
+          ],
+          "signed_volume_m3": 0.0003738765765667932,
+          "boundary_edges": 8,
+          "nonmanifold_edges": 8,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true
+        }
+      },
+      "zero_area_filter": {
+        "method": "exact_rational_cross_product_of_exported_float32_vertices",
+        "removed_triangle_indices_zero_based": [
+          598,
+          718,
+          926,
+          1046,
+          1660,
+          1780,
+          1986,
+          2106
+        ],
+        "removed_triangles": 8,
+        "removed_positive_area_triangles": 0,
+        "retained_triangle_records_byte_identical": true,
+        "geometric_oriented_volume_exactly_preserved": true,
+        "vertices_moved_or_welded": 0,
+        "triangles_added": 0,
+        "bbox_float32_identical": true,
+        "signed_volume_float64_identical": true,
+        "signed_volume_float64_difference_m3": 0.0
+      },
+      "derived_stl": {
+        "path": "stl/0-Torre-cuerpo-03.stl",
+        "sha256": "63a3e255774c8618a0b4a9539e586f6a77310b6a0b5649b66eafc113c098ff55",
+        "metrics": {
+          "triangles": 2982,
+          "bbox_m": [
+            [
+              -0.1587919294834137,
+              -0.10879193246364594,
+              0.0
+            ],
+            [
+              0.1587919294834137,
+              0.10879193246364594,
+              0.2199999988079071
+            ]
+          ],
+          "signed_volume_m3": 0.0003738765765667932,
+          "boundary_edges": 0,
+          "nonmanifold_edges": 0,
+          "webots_r2025a_shadow_triangle_limit": 21845,
+          "within_shadow_limit": true,
+          "relative_volume_error_to_brep": 5.639724292993975e-05,
+          "max_bbox_error_m": 6.2724486438181515e-09
+        }
+      },
+      "status": "individual_mesh_validated",
+      "errors": []
+    }
+  ],
+  "protected_inputs_unchanged": true,
+  "all_individual_meshes_validated": true
+}

@@ -1,0 +1,71 @@
+Window: "/private/tmp/scara-rondaA-20261017-01/sesion7/extraido/SCARA/webots/worlds/scara.wbt (webots) - Webots R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8", App: Webots Sesion7.
+0 standard window Secondary Actions: Raise, /private/tmp/scara-rondaA-20261017-01/sesion7/extraido/SCARA/webots/worlds/scara.wbt (webots) - Webots R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8
+	1 text Welcome to Webots!
+	2 text Simulation View
+	3 button Maximize the panel.
+	4 button Close the panel.
+	5 button Description: Hide the Scene Tree side bar., Secondary Actions: Raise
+	6 button Add New, Description: Add a new object or import an object. (⌘+Shift+A)
+	7 button Restore Viewpoint, Description: Restore the initial Viewpoint position and orientation. (CTRL + SHIFT + V)
+	8 menu button Change View, Description: Open standard Viewpoint positions menu.
+	9 button Open World, Description: Open an existing world file. (⌘+Shift+O)
+	10 button Save World, Description: Save the current world file. (⌘+Shift+S)
+	11 button Reload World, Description: Reload World.
+Reload the current world file and restart the simulation. (⌘+Shift+R)
+	12 text - 0:00:36:336 0.94x
+	13 button Reset Simulation, Description: Reset Simulation.
+Restore initial state of the simulation. (⌘+Shift+T)
+	14 button Step, Description: Execute one simulation step. (⌘+1)
+	15 button
+	16 checkbox Rendering, Description: Hide Rendering. (⌘+4), Value: 1
+	17 button Take Screenshot, Description: Save the current image of the simulation. (⌘ + SHIFT + P)
+	18 button Make Movie, Description: Start video recording of the current simulation.
+	19 button Share, Description: Share your simulation...
+	20 button
+	21 slider (disabled, settable) 0
+	22 button Unmute sound, Description: Unmute the sound on the main audio device of the computer.
+	23 button Pause, Description: Pause the simulation. (⌘+0)
+	24 button Fast, Description: Run the simulation as fast as possible. (⌘+3)
+	25 split group
+		26 outline
+			27 row
+				28 container Viewpoint 
+			29 row
+				30 container DirectionalLight 
+		31 button IMPORTABLE EXTERNPROTO, Secondary Actions: Raise
+	32 button New Text File, Description: Create a new text file.
+	33 button Open Text File, Description: Open an existing text file.
+	34 button (disabled) Save Text File, Description: Save the current text file.
+	35 button (disabled) Save Text File As, Description: Save the current text file with a new name.
+	36 button (disabled) Revert Text File, Description: Revert the current text file.
+	37 button (disabled) Find, Description: Find text in current file.
+	38 button (disabled) Replace, Description: Replace text in current file.
+	39 button (disabled) Build, Description: Build the current project.
+	40 button (disabled) Clean, Description: Remove intermediate build files.
+	41 text Text Editor
+	42 button Maximize the panel.
+	43 button Close the panel.
+	44 button Undock the panel.
+	45 text entry area Secondary Actions: Raise, Value: INFO: 'scara_bridge' controller exited successfully.
+INFO: scara_bridge: Starting controller: /Library/Developer/CommandLineTools/usr/bin/python3 -u scara_bridge.py
+SCARA: banco provisional scara-dev/1 en TCP 127.0.0.1:9000; habilitar desde la interfaz
+	46 text Console - All
+	47 button Maximize the panel.
+	48 button Close the panel.
+	49 button Undock the panel.
+	50 close button
+	51 full screen button Help: this button also has an action to zoom the window, Secondary Actions: zoom the window
+	52 minimize button
+	53 text /private/tmp/scara-rondaA-20261017-01/sesion7/extraido/SCARA/webots/worlds/scara.wbt (webots) - Webots R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8
+54 menu bar
+	55 Webots Sesion7
+	56 File
+	57 Edit
+	58 View
+	59 Simulation
+	60 Build
+	61 Overlays
+	62 Tools
+	63 Help
+
+The focused UI element is 0 standard window Secondary Actions: Raise, /private/tmp/scara-rondaA-20261017-01/sesion7/extraido/SCARA/webots/worlds/scara.wbt (webots) - Webots R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8

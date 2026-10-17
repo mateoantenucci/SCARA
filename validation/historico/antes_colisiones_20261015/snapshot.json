@@ -1,0 +1,22 @@
+{
+  "purpose": "Fuentes y evidencia inmediatamente anteriores al punto 2 de colisiones; originales CAD sin cambios",
+  "sha256": {
+    "config/scara.json": "9cb831cf852f33b8c50c76a089d10f48edb06301149e566219c40c6e03c1823d",
+    "config/cad_integration.json": "33dc31e0356253792a88d634259432d30c9b1235338a9d1ccb0f930e7b3f10c7",
+    "scara/runtime.py": "b44882cfd2cabd4ae4435860994784fe4376174c379a7c232355c357e8a4a287",
+    "tools/generate_world.py": "f4c633019b95a1c039634516b959f2d63ee5ab5bcccf8d5e7904277ee37ebf28",
+    "tools/check_simulation.py": "6a8a0c17545b85fe2c3a01e8f133ad7ddd4bc513669cc8f25d0ea8bb3baac8c1",
+    "tools/check_cad_motion.py": "17fabff5e04ef1a0d9434b1a75ef50ef706296e5289b5ce4681d9aef26ec5eb8",
+    "client/app.py": "06456f601a6c97f5b5686071b8f53d2ce0eee88cdbff99797117626fa12f5dae",
+    "webots/controllers/scara_bridge/scara_bridge.py": "1e5f4491f013bd34f7ffef195cd2cfa27e8346a34eb73c8752442960adcb114d",
+    "webots/protos/SCARA.proto": "493b68164b2554fa9bf4c5178859e694bad6ec8d50ec73cb86bf44ea8fd03787",
+    "webots/worlds/scara.wbt": "bec5739f1e283fb96f4ff1157bdc011725d1277ddd18a36c10578b84eda4affa",
+    "cad/ensambles/integracion_articulada.json": "7c5374bf9fe983fd16350c12610741ee70baa5a8110f1bb65cf966bb1c393c13",
+    "validation/simulation.json": "7e4d9f15c6f8395e39cc6358ac392d208a7953174399129a33a2dc58b1330c7a",
+    "validation/cad_motion.json": "853e5113e7628f0297d38765814edf1adcac95eee72842ea34d6f943ecff3525",
+    "validation/client_native.json": "297a270417c631d431aa42a32d33442d2569d4d05336155063c606961d7f35eb",
+    "validation/cad_properties.json": "8c9d806474bb9dd8a257dd0c3e2fef7ab2a51d3731dcadb09b60cd65bbab9472",
+    "cad/propiedades/propiedades_geometricas.json": "f13257b82cb1bfad260cab980db66f75c28aa47b50e30d19a08608c4b19b7c24",
+    "cad/propiedades/propiedades_geometricas.csv": "4bf9d908d0413150e69e597cae5d59fee24f9b5997f2c3ab5c6e968f5f0fd438"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "created_utc": "2026-10-17T22:53:07.013669+00:00",
+  "scope": "Existing README, VALIDACION and DATOS only; private coordination; consolidated evidence; exact independent review4. No model/runtime/physics/code changes.",
+  "base_files_sha256": {
+    "README.md": "fc4d4e40190a10d23b7c371bcfa4701cc899d9859b1d29aaea7a24bdb60f5414",
+    "docs/VALIDACION_WEBOTS.md": "047800876dd63e348c61f22fae8b880b677098d680962afe771b3b5581c0edda",
+    "docs/DATOS_PARA_EL_PROFESOR.md": "35bb1d3a78c340b480e523896bc3e87a95738fa5517bbe7c802ab7e9784b1b3e",
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": "f1901d5678c0e2cf12ce110022e912eb084ca0be6cb51e81dd421624344766d7",
+    ".agent-state/ronda-profesor-20261017/estado.md": "34bb9e4688a5c435fbee3f86c27d800cad7ae998c1823d6adec4d9339469dd1c"
+  },
+  "files_sha256": {
+    ".agent-state/ronda-profesor-20261017/SESIONES.md": "90ddee494625381de0b709a690b7b6328716d163a60362a89cfa727b68bdd21f",
+    ".agent-state/ronda-profesor-20261017/estado.md": "e8a9be8a4eb7979dff6202a5772b4e75d3870254a652a5de770fd83b626b4992",
+    "README.md": "5897c07be11d463224fd73071c124cde02315d4e38e8f7a7cd5ee9dbb4abe30c",
+    "docs/DATOS_PARA_EL_PROFESOR.md": "fea2ac3c61d10b78356b42f099f1a8c5cec1ea402e7b757d4dcb989a16d0da20",
+    "docs/VALIDACION_WEBOTS.md": "43eb9ed876ea0eb687aee000509e0e8561870be7c4deddf06de7a6e058d2f666",
+    "validation/sesion4/review.json": "67274ea32454406c5111fe63b1462dc51d8171ca6a48fb682b02e4647d6d59c5",
+    "validation/sesion6/consolidado.json": "28080e530afe8215b99270ec230a9519ea0020ac2de8594b2fb19b023e49213a"
+  }
+}

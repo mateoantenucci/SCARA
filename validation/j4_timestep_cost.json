@@ -1,0 +1,58 @@
+{
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "mode": "fast",
+  "note": "Sonda local de sostén inicial, 3 ventanas de 5 s por paso; no benchmark general ni de hardware",
+  "variants": [
+    {
+      "step_ms": 16,
+      "world_sha256": "7fe58c68c89d8914102c3ff83ff4238bbdb971eeacd167e39319a1145e33d151",
+      "samples": [
+        {
+          "wall_seconds": 0.07146716699935496,
+          "simulated_seconds": 5.008000000000001,
+          "physics_steps": 313,
+          "simulated_per_wall": 70.07413628198249
+        },
+        {
+          "wall_seconds": 0.06938837503548712,
+          "simulated_seconds": 5.007999999999999,
+          "physics_steps": 313,
+          "simulated_per_wall": 72.17347282507727
+        },
+        {
+          "wall_seconds": 0.06947679200675339,
+          "simulated_seconds": 5.008000000000003,
+          "physics_steps": 313,
+          "simulated_per_wall": 72.08162402652684
+        }
+      ],
+      "median_wall_seconds": 0.06947679200675339
+    },
+    {
+      "step_ms": 2,
+      "world_sha256": "670f99a8dc792466af35257e8bfcc83e3ea16beee09358bc8b36c0413f3db9f8",
+      "samples": [
+        {
+          "wall_seconds": 0.8559444579295814,
+          "simulated_seconds": 5.0,
+          "physics_steps": 2500,
+          "simulated_per_wall": 5.8415005245718294
+        },
+        {
+          "wall_seconds": 0.691831500036642,
+          "simulated_seconds": 5.0,
+          "physics_steps": 2500,
+          "simulated_per_wall": 7.227193326315991
+        },
+        {
+          "wall_seconds": 0.5231755420099944,
+          "simulated_seconds": 5.000000000000002,
+          "physics_steps": 2500,
+          "simulated_per_wall": 9.557021684902246
+        }
+      ],
+      "median_wall_seconds": 0.691831500036642
+    }
+  ],
+  "wall_ratio_2ms_over_16ms": 9.957735238687956
+}

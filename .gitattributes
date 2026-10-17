@@ -1,0 +1,3 @@
+# Conservar bytes y SHA-256 de originales, fuentes y evidencia al clonar.
+# Los archivos de texto actuales también deben conservar sus saltos de línea.
+* -text

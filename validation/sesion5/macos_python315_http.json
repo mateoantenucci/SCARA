@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "python": "3.15.0 (main, Oct  9 2026, 11:16:41) [Clang 21.0.0 (clang-2100.3.34.2)]",
+  "executable": "/opt/homebrew/bin/python3",
+  "cwd": "/private/tmp/scara-sesion5-20261017/SCARA copia limpia",
+  "command": [
+    "/opt/homebrew/bin/python3",
+    "-S",
+    "-B",
+    "-m",
+    "client.app",
+    "--port",
+    "50810",
+    "--webots-port",
+    "50811"
+  ],
+  "no_site_packages": true,
+  "checks": [
+    "GET / sirve exactamente index.html UTF-8 de la copia",
+    "GET /api/state inicia sin conexión y devuelve configuración de la copia",
+    "POST de movimiento sin Webots se rechaza y no se guarda",
+    "Desconectar/reconectar HTTP funciona sin habilitar movimiento",
+    "Ruta desconocida devuelve 404"
+  ],
+  "output": "Interfaz SCARA: http://127.0.0.1:50810\nProtocolo de desarrollo scara-dev/1; pendiente del protocolo del profesor.\n"
+}

@@ -1,0 +1,623 @@
+{
+  "status": "passed",
+  "instances": 39,
+  "native_checks": 16,
+  "checks_by_report": {
+    "final39_simulation.json": {
+      "status": "passed",
+      "checks": 9,
+      "sha256": "7c0dc706090b0c7f04b414537c3d0b6af7be6122d39bed0bba5e82a9cd6d1c69"
+    },
+    "final39_supplement.json": {
+      "status": "passed",
+      "checks": 6,
+      "sha256": "cbd05c72c46150702890e5db24da5dd20828ef8a1bf5d6f4d8a9a321efc3d313"
+    },
+    "final39_demo_collision.json": {
+      "status": "passed",
+      "checks": 1,
+      "sha256": "922fba407d5264f28146c64669e9637478cdddcd66170c2a60ca6384a7b7336c"
+    }
+  },
+  "runtime_minimal_file_count": 52,
+  "runtime_source_files": 51,
+  "asset_references_checked": 64,
+  "no_symlinks": true,
+  "platform": "macOS-27.0.1-arm64-arm-64bit-Mach-O",
+  "webots_version": "R2025b Nightly Build 14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+  "webots_binary_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+  "controller_python": "/Library/Developer/CommandLineTools/usr/bin/python3 (Python3.9.6)",
+  "checker_python": "/Library/Developer/CommandLineTools/usr/bin/python3 -B -S (Python3.9.6; sin paquetes de sitio)",
+  "snapshot_source": "/private/tmp/scara-sesion5-20261017/SCARA copia limpia",
+  "snapshot_tested": "/private/tmp/scara-sesion4-final-20261017/SCARA minima39",
+  "baseline": "baseline38 en sesion4_simulation_baseline.json/sesion4_supplement.json: conservado, no sustituido por este final39",
+  "runtime_unique_change": {
+    "file": "webots/worlds/scara.wbt",
+    "from_sha256": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+    "to_sha256": "eb037da9e5a1d87792f41bb0e34428619ff59f9f3b0d9f8ad2c5f4fada6f5e6b",
+    "meaning": "Solo controllerArgs --port19141; física y otros bytes idénticos"
+  },
+  "runtime_sources_identical_before_after": true,
+  "runtime_sources_match_root_except_port": true,
+  "root_differences": [],
+  "generated_extra_files": [
+    "webots/worlds/.scara.wbproj"
+  ],
+  "executed_runtime_files_sha256": {
+    "cad/derivados/stl/0-6203-2RS.stl": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691",
+    "cad/derivados/stl/0-Bancada.stl": "009ba429eb3948aa598a2a61e9d8397731405855e2eca4cef230e80b87781345",
+    "cad/derivados/stl/0-ElevadorM2.stl": "78bb2f5901ebbfa5227fd60108cc22026126dbecea18cc29f351dde427428870",
+    "cad/derivados/stl/0-PlatinaSuperior.stl": "0a13e701c3d75c77a44640f83a295635837e78d052117e7706afd5946072e828",
+    "cad/derivados/stl/0-SoporteMotores.stl": "241e242aa526a5b39c97a9a8cca9cf313d67ba0f4574d37ab0d23490b2b1dbef",
+    "cad/derivados/stl/2GT_60Teet_8Bore.stl": "402bbb41e12e8cc0f3279f3fad8bbd84e5bbbcbb67f814597c2adc261d7482d6",
+    "cad/derivados/stl/2GT_80Teet_16Bore.stl": "6d18e9c7ba7fd9dd7953f6dac0c210691522543a46166c1f56b5c90f12d2e108",
+    "cad/derivados/stl/2GT_80Teet_40Bore.stl": "becb8baa552beb5ba7b782b8f286adfffd86ccad736afb2b296137bc5ad78c48",
+    "cad/derivados/stl/A-Brazo.stl": "b8c4483d288c0214338d76300f81658a843db5c9a55932a1ce6f4376ccb86ef7",
+    "cad/derivados/stl/A-BridaEje.stl": "906d2b56d2cab1e9146b22d6c1a8628e52f1e2a7f7113b57b4f6fff350ebe997",
+    "cad/derivados/stl/A-CarretelInf.stl": "07f5694e603f7165f0733fc8bed1272bcec61c9129bfc7bc8bae58f53290ea93",
+    "cad/derivados/stl/A-CarretelSup.stl": "28f081e8066408731411c70772a94b38dfda520d813c2c85fcb6c5bba4aec2db",
+    "cad/derivados/stl/B-Antebrazo.stl": "3d75388aa30bddb254c185ca90e4353b3978f869c8b2e3e61437c6770e6d1016",
+    "cad/derivados/stl/B-CarretelInf.stl": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a",
+    "cad/derivados/stl/B-CarretelSup.stl": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a",
+    "cad/derivados/stl/B-SoporteEjeFijo.stl": "0cd4092fbbdd8b5605e8d268919408e9d4080a90eb4df56096cb5420ece6e86b",
+    "cad/derivados/stl/B-SoporteM3.stl": "1d282aa050033e6c7a98ae89909f1238c37e93c2a2f52fa8c1e2da5a0287f122",
+    "cad/derivados/stl/B-SoporteRuleman.stl": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c",
+    "cad/derivados/stl/NEMA17.stl": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8",
+    "cad/derivados/stl/NEMA23.stl": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263",
+    "cad/derivados/stl/R-Bancada.stl": "384f7805ad648b512753da167b438189a0dada45e4f710480a4f9e6ed2ad504f",
+    "cad/derivados/stl/R-CarretelInf.stl": "d451893b2600214f6a0a4fdb5668f70af5e53a8b523f5d052646513d5a3dc361",
+    "cad/derivados/stl/R-CarretelSup.stl": "0da333ba5884503e29010d7e15c9bed95a55945af8cdec699606d00cbb28380c",
+    "cad/derivados/stl/R-ContraBancada.stl": "0cda5062b40426c20fec05789d7cb05320e60e2d0050418148d457ea24f650c6",
+    "cad/derivados/stl/Z-608zz.stl": "0b8926526636d1f0878de2724e85540a324d44caf6e91066c9419605920b3e8b",
+    "cad/derivados/stl/Z-6907-2RS.stl": "ad7aa39f051c22ab659ea67e65f2bc857c2826b6ccf29293ef92ee24855aaaa6",
+    "cad/derivados/stl/Z-BujeExterior.stl": "c44397ae816d097ec226bb1b46533a95d9004bb08d8bb2c2bbb0bb24bf63975e",
+    "cad/derivados/stl/Z-Cuerpo.stl": "d06650ba64f8bd4674420be39afc2a128194e8585ebb253e1b9bee2988da18eb",
+    "cad/derivados/stl/Z-Piston.stl": "0c4253764ef904a6b7118ee57d4857e674761eb053fea745b08266b66abb6288",
+    "cad/derivados/stl/Z-SoporteEfector.stl": "ab8d05b92dd68fefb42c9d0e57c1c8487871a70f1229fb91d6a1da5354c4b0b9",
+    "cad/derivados/stl/Z-SoporteM4.stl": "4094d5d0b568a987f461483e9a5b1334e9ec98c0bf86418440ddb6b11de6de49",
+    "cad/derivados/stl/Z-SoporteRuleman.stl": "82f9b126d8f647c3f6d4e9b186a65c36931f8551a22ddc6081bc1bd435de4fa0",
+    "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941",
+    "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877",
+    "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl": "63a3e255774c8618a0b4a9539e586f6a77310b6a0b5649b66eafc113c098ff55",
+    "cad/ensambles/integracion_articulada.json": "c9abb0b27770cfc22ced9d78c2b22204e817726d479e782599bee04249c1c475",
+    "client/__init__.py": "8f69077a8604e4398551f28140e4ad5d39f2facd545d867600f962fa417c3871",
+    "client/app.py": "2c787b00e2ec1998477bc2588e61ab026eb06930c1dff3bc369e6c7a1a0a91be",
+    "client/index.html": "0799eb40e667a90f4f38aef1c579c3409a17d5ba2708fbf3d36c492831b5b3d5",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "scara/__init__.py": "e2e675f363668029dc114ec40f778f6bffbbdc4bb17838bcf4ed3e68580d8a47",
+    "scara/collisions.py": "25cad1ea1031e727ac50daaa4244b352f83138c8da5c0ec5e0c7293e2eab33ec",
+    "scara/dynamics.py": "a36d385afe96d44097fa066ce0bc84e5b86c5c139fafd9a76b8436401209cb16",
+    "scara/frames.py": "e18ef1361ace65b0f724d7817c59b94153442f543f2f3f7613414c593bb786b4",
+    "scara/kinematics.py": "9ac6bb81fc5511d90b79e0aec77eb59464c80df4ee559a3b1cf3bba6550b41a9",
+    "scara/runtime.py": "d6d609909fca3b05f62aef15d512dd4fbeb9792931f6a3006aedc8e49c6cbdde",
+    "scara/transport.py": "090c4588e846d36de6de330ea0cf888481dcdac3792f2342e90ac94619fb8d0b",
+    "webots/controllers/scara_bridge/scara_bridge.py": "bd1d225a863c14d9371a6f28644cf2c6c9d6730cb78041e0ef946826ab7e30ba",
+    "webots/protos/SCARA.proto": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920",
+    "webots/worlds/scara.wbt": "eb037da9e5a1d87792f41bb0e34428619ff59f9f3b0d9f8ad2c5f4fada6f5e6b",
+    "webots/worlds/scara_cad_inspeccion.wbt": "220ecac06476fc389a48127d4588e709606b36a90f299d3425ee34780f14e5c9",
+    "LEEME.txt": "b6b0ae44fd2e445d34db3b355afc498135c4612dbd7e3ba47fb989e763861bc6"
+  },
+  "assets": [
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl",
+      "target": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl",
+      "sha256": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl",
+      "target": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl",
+      "sha256": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl",
+      "target": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl",
+      "sha256": "63a3e255774c8618a0b4a9539e586f6a77310b6a0b5649b66eafc113c098ff55"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/A-CarretelInf.stl",
+      "target": "cad/derivados/stl/A-CarretelInf.stl",
+      "sha256": "07f5694e603f7165f0733fc8bed1272bcec61c9129bfc7bc8bae58f53290ea93"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/A-CarretelSup.stl",
+      "target": "cad/derivados/stl/A-CarretelSup.stl",
+      "sha256": "28f081e8066408731411c70772a94b38dfda520d813c2c85fcb6c5bba4aec2db"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/A-Brazo.stl",
+      "target": "cad/derivados/stl/A-Brazo.stl",
+      "sha256": "b8c4483d288c0214338d76300f81658a843db5c9a55932a1ce6f4376ccb86ef7"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/A-BridaEje.stl",
+      "target": "cad/derivados/stl/A-BridaEje.stl",
+      "sha256": "906d2b56d2cab1e9146b22d6c1a8628e52f1e2a7f7113b57b4f6fff350ebe997"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/B-CarretelSup.stl",
+      "target": "cad/derivados/stl/B-CarretelSup.stl",
+      "sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/B-CarretelInf.stl",
+      "target": "cad/derivados/stl/B-CarretelInf.stl",
+      "sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/B-Antebrazo.stl",
+      "target": "cad/derivados/stl/B-Antebrazo.stl",
+      "sha256": "3d75388aa30bddb254c185ca90e4353b3978f869c8b2e3e61437c6770e6d1016"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/NEMA17.stl",
+      "target": "cad/derivados/stl/NEMA17.stl",
+      "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/R-Bancada.stl",
+      "target": "cad/derivados/stl/R-Bancada.stl",
+      "sha256": "384f7805ad648b512753da167b438189a0dada45e4f710480a4f9e6ed2ad504f"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/Z-BujeExterior.stl",
+      "target": "cad/derivados/stl/Z-BujeExterior.stl",
+      "sha256": "c44397ae816d097ec226bb1b46533a95d9004bb08d8bb2c2bbb0bb24bf63975e"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/Z-Piston.stl",
+      "target": "cad/derivados/stl/Z-Piston.stl",
+      "sha256": "0c4253764ef904a6b7118ee57d4857e674761eb053fea745b08266b66abb6288"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/Z-SoporteEfector.stl",
+      "target": "cad/derivados/stl/Z-SoporteEfector.stl",
+      "sha256": "ab8d05b92dd68fefb42c9d0e57c1c8487871a70f1229fb91d6a1da5354c4b0b9"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/Z-Cuerpo.stl",
+      "target": "cad/derivados/stl/Z-Cuerpo.stl",
+      "sha256": "d06650ba64f8bd4674420be39afc2a128194e8585ebb253e1b9bee2988da18eb"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/R-ContraBancada.stl",
+      "target": "cad/derivados/stl/R-ContraBancada.stl",
+      "sha256": "0cda5062b40426c20fec05789d7cb05320e60e2d0050418148d457ea24f650c6"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/R-CarretelInf.stl",
+      "target": "cad/derivados/stl/R-CarretelInf.stl",
+      "sha256": "d451893b2600214f6a0a4fdb5668f70af5e53a8b523f5d052646513d5a3dc361"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/R-CarretelSup.stl",
+      "target": "cad/derivados/stl/R-CarretelSup.stl",
+      "sha256": "0da333ba5884503e29010d7e15c9bed95a55945af8cdec699606d00cbb28380c"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/Z-SoporteM4.stl",
+      "target": "cad/derivados/stl/Z-SoporteM4.stl",
+      "sha256": "4094d5d0b568a987f461483e9a5b1334e9ec98c0bf86418440ddb6b11de6de49"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/Z-SoporteRuleman.stl",
+      "target": "cad/derivados/stl/Z-SoporteRuleman.stl",
+      "sha256": "82f9b126d8f647c3f6d4e9b186a65c36931f8551a22ddc6081bc1bd435de4fa0"
+    },
+    {
+      "source": "webots/worlds/scara_cad_inspeccion.wbt",
+      "reference": "../../cad/derivados/stl/NEMA17.stl",
+      "target": "cad/derivados/stl/NEMA17.stl",
+      "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+    },
+    {
+      "source": "webots/worlds/scara.wbt",
+      "reference": "../protos/SCARA.proto",
+      "target": "webots/protos/SCARA.proto",
+      "sha256": "b530352ff2dbfbc82db9532311310538429510483710a1165671f8253ea54920"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl",
+      "target": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl",
+      "sha256": "05123188ae2df96a4e5f0cd156caebbdcae115341b415a37d65e357e77f6c941"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl",
+      "target": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl",
+      "sha256": "a5bf894c063df5200a54877b2229e98e614bc58aa62d221c87787a138b4df877"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl",
+      "target": "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl",
+      "sha256": "63a3e255774c8618a0b4a9539e586f6a77310b6a0b5649b66eafc113c098ff55"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/A-CarretelInf.stl",
+      "target": "cad/derivados/stl/A-CarretelInf.stl",
+      "sha256": "07f5694e603f7165f0733fc8bed1272bcec61c9129bfc7bc8bae58f53290ea93"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/0-Bancada.stl",
+      "target": "cad/derivados/stl/0-Bancada.stl",
+      "sha256": "009ba429eb3948aa598a2a61e9d8397731405855e2eca4cef230e80b87781345"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/0-ElevadorM2.stl",
+      "target": "cad/derivados/stl/0-ElevadorM2.stl",
+      "sha256": "78bb2f5901ebbfa5227fd60108cc22026126dbecea18cc29f351dde427428870"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/0-PlatinaSuperior.stl",
+      "target": "cad/derivados/stl/0-PlatinaSuperior.stl",
+      "sha256": "0a13e701c3d75c77a44640f83a295635837e78d052117e7706afd5946072e828"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/0-SoporteMotores.stl",
+      "target": "cad/derivados/stl/0-SoporteMotores.stl",
+      "sha256": "241e242aa526a5b39c97a9a8cca9cf313d67ba0f4574d37ab0d23490b2b1dbef"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/NEMA23.stl",
+      "target": "cad/derivados/stl/NEMA23.stl",
+      "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/NEMA23.stl",
+      "target": "cad/derivados/stl/NEMA23.stl",
+      "sha256": "4d92a666b0a42b2694951f75030903ff5d8c4cc9286b46b5edbbdc58002d5263"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/0-6203-2RS.stl",
+      "target": "cad/derivados/stl/0-6203-2RS.stl",
+      "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/0-6203-2RS.stl",
+      "target": "cad/derivados/stl/0-6203-2RS.stl",
+      "sha256": "f1b5a9eddb8e3e043bbe80dbd80e301911fe826a5a09cb9c74365358deeeb691"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/A-Brazo.stl",
+      "target": "cad/derivados/stl/A-Brazo.stl",
+      "sha256": "b8c4483d288c0214338d76300f81658a843db5c9a55932a1ce6f4376ccb86ef7"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/A-BridaEje.stl",
+      "target": "cad/derivados/stl/A-BridaEje.stl",
+      "sha256": "906d2b56d2cab1e9146b22d6c1a8628e52f1e2a7f7113b57b4f6fff350ebe997"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/A-CarretelSup.stl",
+      "target": "cad/derivados/stl/A-CarretelSup.stl",
+      "sha256": "28f081e8066408731411c70772a94b38dfda520d813c2c85fcb6c5bba4aec2db"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-CarretelSup.stl",
+      "target": "cad/derivados/stl/B-CarretelSup.stl",
+      "sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-SoporteRuleman.stl",
+      "target": "cad/derivados/stl/B-SoporteRuleman.stl",
+      "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-SoporteRuleman.stl",
+      "target": "cad/derivados/stl/B-SoporteRuleman.stl",
+      "sha256": "c704dfa6987f2ebb5ad7a7f6a6b2172dd5ce0ae36673246180a29673fabb186c"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-608zz.stl",
+      "target": "cad/derivados/stl/Z-608zz.stl",
+      "sha256": "0b8926526636d1f0878de2724e85540a324d44caf6e91066c9419605920b3e8b"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-608zz.stl",
+      "target": "cad/derivados/stl/Z-608zz.stl",
+      "sha256": "0b8926526636d1f0878de2724e85540a324d44caf6e91066c9419605920b3e8b"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/2GT_80Teet_16Bore.stl",
+      "target": "cad/derivados/stl/2GT_80Teet_16Bore.stl",
+      "sha256": "6d18e9c7ba7fd9dd7953f6dac0c210691522543a46166c1f56b5c90f12d2e108"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-Antebrazo.stl",
+      "target": "cad/derivados/stl/B-Antebrazo.stl",
+      "sha256": "3d75388aa30bddb254c185ca90e4353b3978f869c8b2e3e61437c6770e6d1016"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-CarretelInf.stl",
+      "target": "cad/derivados/stl/B-CarretelInf.stl",
+      "sha256": "f5ec86e9917053ab420953684cfd57681dcddc68a65f61aab5ae3e68fac7617a"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/NEMA17.stl",
+      "target": "cad/derivados/stl/NEMA17.stl",
+      "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/R-Bancada.stl",
+      "target": "cad/derivados/stl/R-Bancada.stl",
+      "sha256": "384f7805ad648b512753da167b438189a0dada45e4f710480a4f9e6ed2ad504f"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/R-ContraBancada.stl",
+      "target": "cad/derivados/stl/R-ContraBancada.stl",
+      "sha256": "0cda5062b40426c20fec05789d7cb05320e60e2d0050418148d457ea24f650c6"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/R-CarretelInf.stl",
+      "target": "cad/derivados/stl/R-CarretelInf.stl",
+      "sha256": "d451893b2600214f6a0a4fdb5668f70af5e53a8b523f5d052646513d5a3dc361"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-SoporteEjeFijo.stl",
+      "target": "cad/derivados/stl/B-SoporteEjeFijo.stl",
+      "sha256": "0cd4092fbbdd8b5605e8d268919408e9d4080a90eb4df56096cb5420ece6e86b"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/B-SoporteM3.stl",
+      "target": "cad/derivados/stl/B-SoporteM3.stl",
+      "sha256": "1d282aa050033e6c7a98ae89909f1238c37e93c2a2f52fa8c1e2da5a0287f122"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-6907-2RS.stl",
+      "target": "cad/derivados/stl/Z-6907-2RS.stl",
+      "sha256": "ad7aa39f051c22ab659ea67e65f2bc857c2826b6ccf29293ef92ee24855aaaa6"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-6907-2RS.stl",
+      "target": "cad/derivados/stl/Z-6907-2RS.stl",
+      "sha256": "ad7aa39f051c22ab659ea67e65f2bc857c2826b6ccf29293ef92ee24855aaaa6"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/2GT_60Teet_8Bore.stl",
+      "target": "cad/derivados/stl/2GT_60Teet_8Bore.stl",
+      "sha256": "402bbb41e12e8cc0f3279f3fad8bbd84e5bbbcbb67f814597c2adc261d7482d6"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-BujeExterior.stl",
+      "target": "cad/derivados/stl/Z-BujeExterior.stl",
+      "sha256": "c44397ae816d097ec226bb1b46533a95d9004bb08d8bb2c2bbb0bb24bf63975e"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-Cuerpo.stl",
+      "target": "cad/derivados/stl/Z-Cuerpo.stl",
+      "sha256": "d06650ba64f8bd4674420be39afc2a128194e8585ebb253e1b9bee2988da18eb"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-SoporteM4.stl",
+      "target": "cad/derivados/stl/Z-SoporteM4.stl",
+      "sha256": "4094d5d0b568a987f461483e9a5b1334e9ec98c0bf86418440ddb6b11de6de49"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-SoporteRuleman.stl",
+      "target": "cad/derivados/stl/Z-SoporteRuleman.stl",
+      "sha256": "82f9b126d8f647c3f6d4e9b186a65c36931f8551a22ddc6081bc1bd435de4fa0"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/NEMA17.stl",
+      "target": "cad/derivados/stl/NEMA17.stl",
+      "sha256": "a794e402528fbfd8659c11262f9bd4d5de5ca62cbc98fbd3241268b59dda36d8"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/R-CarretelSup.stl",
+      "target": "cad/derivados/stl/R-CarretelSup.stl",
+      "sha256": "0da333ba5884503e29010d7e15c9bed95a55945af8cdec699606d00cbb28380c"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/2GT_80Teet_40Bore.stl",
+      "target": "cad/derivados/stl/2GT_80Teet_40Bore.stl",
+      "sha256": "becb8baa552beb5ba7b782b8f286adfffd86ccad736afb2b296137bc5ad78c48"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-Piston.stl",
+      "target": "cad/derivados/stl/Z-Piston.stl",
+      "sha256": "0c4253764ef904a6b7118ee57d4857e674761eb053fea745b08266b66abb6288"
+    },
+    {
+      "source": "webots/protos/SCARA.proto",
+      "reference": "../../cad/derivados/stl/Z-SoporteEfector.stl",
+      "target": "cad/derivados/stl/Z-SoporteEfector.stl",
+      "sha256": "ab8d05b92dd68fefb42c9d0e57c1c8487871a70f1229fb91d6a1da5354c4b0b9"
+    }
+  ],
+  "checker_adaptations": [
+    {
+      "original": "/private/tmp/scara-sesion4-final-20261017/evidence/check_simulation_original.py",
+      "adapted": "/private/tmp/scara-sesion4-final-20261017/harness/tools/check_simulation.py",
+      "original_sha256": "46ff949a3581757c94c246fc3a7b153fcaa9e01cd7b3f28f2e81b32b84911009",
+      "adapted_sha256": "0a699b727cdd4d1d338ddb01a1f9b2b6c4676878eea80cdaf20399caffefc79d",
+      "assertion_count": 21,
+      "assertions_ast_identical": true,
+      "adaptation": "Solo rutas ROOT/HARNESS, procedencia de hashes y salida; diff guardado"
+    },
+    {
+      "original": "/private/tmp/scara-sesion4-final-20261017/evidence/check_sesion4_original.py",
+      "adapted": "/private/tmp/scara-sesion4-final-20261017/harness/check_sesion4.py",
+      "original_sha256": "07ebf94f33c6272c36e28e04e5f7ca22e1fc4a5ebf84be1408dc6f27fe855222",
+      "adapted_sha256": "450583c4e82d0ac5dacf7d470512b9594387109f86e605f9d1a0aefbdcb4df65",
+      "assertion_count": 12,
+      "assertions_ast_identical": true,
+      "adaptation": "Solo rutas ROOT/HARNESS, procedencia de hashes y salida; diff guardado"
+    }
+  ],
+  "harness_files_sha256": {
+    "harness/check_demo39.py": "054081b135f8a4ca58278fd9431d35c968427495969ea4ad7de038dff3142523",
+    "harness/check_final_stability.py": "f516793c4e5eee9e7dc93bd4ea10859da005b23f8cd17567c3626f1dc5cfbe5d",
+    "harness/check_sesion4.py": "450583c4e82d0ac5dacf7d470512b9594387109f86e605f9d1a0aefbdcb4df65",
+    "harness/tools/check_simulation.py": "0a699b727cdd4d1d338ddb01a1f9b2b6c4676878eea80cdaf20399caffefc79d"
+  },
+  "final_state": {
+    "time": 617.244,
+    "trial_id": "6e705bd6-fa78-4a78-a771-5831d702e895",
+    "mode": "STOPPED",
+    "commanded": [
+      0.0,
+      1.5707963267948966,
+      -1.5707963267948966,
+      0.06
+    ],
+    "estimated": [
+      0.0,
+      1.5707963267948966,
+      -1.5707963267948966,
+      0.06
+    ],
+    "simulated": [
+      3.3660991006372095e-07,
+      1.5707965105144475,
+      -1.5707963267953626,
+      0.06000147150000004
+    ],
+    "estimated_pose": [
+      0.25000000000000233,
+      0.24999999999999745,
+      0.03466685886479948,
+      0.0
+    ],
+    "simulated_pose": [
+      0.24999986991762294,
+      0.2500000841524411,
+      0.03466538736479943,
+      5.20328995001762e-07
+    ],
+    "hall": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "hall_nominal": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "end_hall": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "faults": {},
+    "payload_mass": 0.0,
+    "reference_valid": true,
+    "effort_available": [
+      0.8,
+      0.8,
+      0.3,
+      8.0
+    ],
+    "effort_feedback": [
+      null,
+      0.0002246149560805367,
+      2.2451877687323335e-06,
+      -1.4715000048159737
+    ],
+    "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+    "tcp_world": [
+      0.24999992633835438,
+      0.24999992083087114,
+      0.03466247819999335
+    ],
+    "tcp_world_yaw": 5.178968288324333e-09,
+    "tool_physics": {
+      "mass": 0.15,
+      "center": [
+        -4.28476698566271e-16,
+        1.90819582357449e-16,
+        0.0994999999999999
+      ],
+      "inertia": [
+        0.0005400125,
+        0.0005400125,
+        9e-05,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+    "protocol": "scara-dev/1"
+  },
+  "stability_samples": 12,
+  "stability_simulated_duration_s": 1.4279999999999973,
+  "final_max_joint_errors": [
+    3.3660991065049275e-07,
+    1.8372058252502654e-07,
+    4.667377595524158e-13,
+    1.4715000000442569e-06
+  ],
+  "own_webots_pid": 7319,
+  "own_application_closed": true,
+  "ports_19141_19143": "sin LISTEN tras cierre",
+  "limitations": [
+    "Solo macOS Webots nativo; Linux software separado y Windows pendiente",
+    "Sin observación visual de navegador",
+    "No homing físico ni protocolo oficial",
+    "Hall y física provisionales; no diagnostica con encoder real",
+    "Rechazo demo preventivo por envolventes; no se provocó choque físico"
+  ]
+}

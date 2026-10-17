@@ -1,0 +1,258 @@
+#VRML_SIM R2025a utf8
+# Generado por tools/generate_world.py. Visuales CAD parciales; física y referencias provisionales.
+PROTO SCARA [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 0 1 0
+  field SFString controller "scara_bridge"
+  field SFFloat toolMass 0.15
+  field MFVec3f toolCenterOfMass [ -4.28476698566271e-16 1.90819582357449e-16 0.0994999999999999 ]
+  field MFVec3f toolInertiaMatrix [ 0.0005400125 0.0005400125 9e-05, 0 0 0 ]
+] {
+  DEF BASE Robot { translation IS translation rotation IS rotation
+    name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"
+    supervisor TRUE controller IS controller selfCollision FALSE
+    children [ # 0-Torre-1 | validated_individual_bodies_zero_area_cleanup | structural_group_from_assembly
+              DEF CAD_0_Torre_1 Pose { translation 6.93889390390723e-17 -6.93889390390723e-18 0.2216
+                rotation 0.712328719358671 -0.701845991351974 0 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl" ] } castShadows FALSE } Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl" ] } castShadows FALSE } Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl" ] } castShadows FALSE } ] }
+# A-CarretelInf-1 | accepted_mesh | provisional_joint_side
+              DEF CAD_A_CarretelInf_1 Pose { translation 6.93889390390723e-17 -6.93889390390723e-18 0.2216
+                rotation 5.63402623280883e-17 -5.55111512312579e-17 -1 1.55597137491853 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/A-CarretelInf.stl" ] } castShadows FALSE } ] }
+# 0-Bancada-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_0_Bancada_registro_1 Pose { translation -3.12250225675825e-16 -5.62050406216485e-16 0.1552375
+                rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/0-Bancada.stl" ] } castShadows FALSE } ] }
+# 0-ElevadorM2-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_0_ElevadorM2_registro_1 Pose { translation 0.000844991304242615 -0.0569937364075716 0.1358375
+                rotation 6.6235420698921e-17 1.27259062494001e-16 -1 1.5559713749185 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/0-ElevadorM2.stl" ] } castShadows FALSE } ] }
+# 0-PlatinaSuperior-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_0_PlatinaSuperior_registro_1 Pose { translation 6.93889390390723e-17 0 0.2152375
+                rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/0-PlatinaSuperior.stl" ] } castShadows FALSE } ] }
+# 0-SoporteMotores-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_0_SoporteMotores_registro_1 Pose { translation 2.4980018054066e-16 0 0.1528375
+                rotation 2.0731295437992e-16 3.59783866292167e-16 -1 1.5559713749185 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/0-SoporteMotores.stl" ] } castShadows FALSE } ] }
+# NEMA23-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_NEMA23_registro_1 Pose { translation 0.000844991304242622 -0.0569937364075716 0.1798375
+                rotation 0.712328719358681 -0.701845991351964 2.61713954932124e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/NEMA23.stl" ] } castShadows FALSE } ] }
+# NEMA23-registro-2 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_NEMA23_registro_2 Pose { translation -0.000805399886583531 0.056128010688209 0.2042375
+                rotation 0.712328719358671 -0.701845991351974 -1.08509771096375e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/NEMA23.stl" ] } castShadows FALSE } ] } HingeJoint {
+          jointParameters HingeJointParameters { axis 0 0 1 anchor 0 0 0.2913625
+            position 0 minStop -2.356194490192345 maxStop 2.356194490192345
+            dampingConstant 0.01 }
+          device [ RotationalMotor { name "j1_motor" minPosition -2.356194490192345
+            maxPosition 2.356194490192345 maxVelocity 0.35
+            acceleration 0.6 maxTorque 0.8 }
+            PositionSensor { name "j1_sensor" } ] endPoint DEF ARM Solid {
+              translation 0 0 0.2913625 rotation 0 0 1 0 name "arm"
+              children [ # A-Brazo-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_A_Brazo_1 Pose { translation -0.0300000000000001 5.72125680164957e-17 0
+                rotation 0.577350269189626 0.577350269189626 0.577350269189625 2.09439510239319 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/A-Brazo.stl" ] } castShadows FALSE } ] }
+# A-BridaEje-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_A_BridaEje_1 Pose { translation 0 0 -0.025
+                rotation -0.707106781186547 0.707106781186548 4.93140139448925e-18 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/A-BridaEje.stl" ] } castShadows FALSE } ] }
+# A-CarretelSup-1 | accepted_mesh | provisional_joint_side
+              DEF CAD_A_CarretelSup_1 Pose { translation 6.93889390390723e-17 -6.93889390390731e-18 -0.0397625000000002
+                rotation 0.712328719358671 -0.701845991351975 0 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/A-CarretelSup.stl" ] } castShadows FALSE } ] }
+# B-CarretelSup-1 | wire_bbox_only_rejected_mesh | provisional_joint_side
+              DEF CAD_B_CarretelSup_1 Pose { translation 0.250000000000001 -2.89421264731969e-16 -0.0250000000000002
+                rotation 0.712328719358671 -0.701845991351975 0 3.14159265358979 children [ Shape { appearance Appearance { material Material { emissiveColor 0.85 0.1 0.5 } }
+geometry IndexedLineSet { coord Coordinate { point [
+-0.035 -0.035 0,
+0.035 -0.035 0,
+-0.035 0.035 0,
+0.035 0.035 0,
+-0.035 -0.035 0.014,
+0.035 -0.035 0.014,
+-0.035 0.035 0.014,
+0.035 0.035 0.014,
+] } coordIndex [
+0, 1, -1,
+0, 2, -1,
+0, 4, -1,
+1, 3, -1,
+1, 5, -1,
+2, 3, -1,
+2, 6, -1,
+3, 7, -1,
+4, 5, -1,
+4, 6, -1,
+5, 7, -1,
+6, 7, -1,
+] } } ] }
+# B-SoporteRuleman-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_B_SoporteRuleman_registro_1 Pose { translation 0.25 -2.96360158635875e-16 0.0117999999999998
+                rotation -6.91013672324641e-16 -4.10584456110406e-18 -1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/B-SoporteRuleman.stl" ] } castShadows FALSE } ] }
+# B-SoporteRuleman-registro-2 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_B_SoporteRuleman_registro_2 Pose { translation 0.25 -3.10237946443689e-16 -0.0118000000000001
+                rotation 0.707106781186548 0.707106781186547 -4.49969757140132e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/B-SoporteRuleman.stl" ] } castShadows FALSE } ] } HingeJoint {
+          jointParameters HingeJointParameters { axis 0 0 1 anchor 0.250000000000002 0 -0.078
+            position 1.5707963267949 minStop -2.356194490192345 maxStop 2.356194490192345
+            dampingConstant 0.01 }
+          device [ RotationalMotor { name "j2_motor" minPosition -2.356194490192345
+            maxPosition 2.356194490192345 maxVelocity 0.35
+            acceleration 0.6 maxTorque 0.8 }
+            PositionSensor { name "j2_sensor" } ] endPoint DEF FOREARM Solid {
+              translation 0.250000000000002 0 -0.078 rotation 0 0 1 1.5707963267949 name "forearm"
+              children [ # B-Antebrazo-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_B_Antebrazo_1 Pose { translation 0.22 5.89805981832114e-17 -1.66533453693773e-16
+                rotation -0.577350269189626 -0.577350269189626 0.577350269189626 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/B-Antebrazo.stl" ] } castShadows FALSE } ] }
+# B-CarretelInf-1 | wire_bbox_only_rejected_mesh | provisional_joint_side
+              DEF CAD_B_CarretelInf_1 Pose { translation -1.27675647831893e-15 -2.08166817117217e-16 0.0249999999999997
+                rotation 7.4940054162198e-16 -7.69728357257971e-16 1 1.54403546074904 children [ Shape { appearance Appearance { material Material { emissiveColor 0.85 0.1 0.5 } }
+geometry IndexedLineSet { coord Coordinate { point [
+-0.035 -0.035 0,
+0.035 -0.035 0,
+-0.035 0.035 0,
+0.035 0.035 0,
+-0.035 -0.035 0.014,
+0.035 -0.035 0.014,
+-0.035 0.035 0.014,
+0.035 0.035 0.014,
+] } coordIndex [
+0, 1, -1,
+0, 2, -1,
+0, 4, -1,
+1, 3, -1,
+1, 5, -1,
+2, 3, -1,
+2, 6, -1,
+3, 7, -1,
+4, 5, -1,
+4, 6, -1,
+5, 7, -1,
+6, 7, -1,
+] } } ] }
+# NEMA17-1 | accepted_mesh_cache_differs | structural_group_from_assembly
+              DEF CAD_NEMA17_1 Pose { translation 0.0529999999999994 1.6306400674182e-16 -0.0629999999999998
+                rotation -4.46935811053731e-16 5.29596864976601e-16 -1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.9 0.5 0.12 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/NEMA17.stl" ] } castShadows FALSE } ] }
+# R-Bancada-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_R_Bancada_1 Pose { translation 0.230000000000003 7.80625564189563e-17 7.43849426498855e-15
+                rotation -0.577350269189629 -0.577350269189629 0.57735026918962 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/R-Bancada.stl" ] } castShadows FALSE } ] }
+# R-ContraBancada-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_R_ContraBancada_1 Pose { translation 0.250000000000003 6.22765727875674e-16 0.0238000000000076
+                rotation 0.707106781186548 -0.707106781186548 -7.74815088833003e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/R-ContraBancada.stl" ] } castShadows FALSE } ] }
+# R-CarretelInf-1 | accepted_mesh | provisional_joint_side
+              DEF CAD_R_CarretelInf_1 Pose { translation 0.250000000000003 -2.1840168562548e-15 0.0250000000000075
+                rotation 7.209306963664e-15 -7.55981689798758e-15 -1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/R-CarretelInf.stl" ] } castShadows FALSE } ] }
+# B-SoporteEjeFijo-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_B_SoporteEjeFijo_registro_1 Pose { translation -0.0170000000000001 3.29597460435593e-17 0
+                rotation -0.577350269189626 0.577350269189626 -0.577350269189626 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/B-SoporteEjeFijo.stl" ] } castShadows FALSE } ] }
+# B-SoporteM3-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_B_SoporteM3_registro_1 Pose { translation 0.0529999999999999 4.5102810375397e-17 -0.025
+                rotation 2.42861286636753e-16 1 -5.06842091447225e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/B-SoporteM3.stl" ] } castShadows FALSE } ] } HingeJoint {
+          jointParameters HingeJointParameters { axis 0 0 1 anchor 0.249999999999997 0 0
+            position -1.5707963267949 minStop -2.6179938779914944 maxStop 2.6179938779914944
+            dampingConstant 0.01 }
+          device [ RotationalMotor { name "j3_motor" minPosition -2.6179938779914944
+            maxPosition 2.6179938779914944 maxVelocity 0.5
+            acceleration 0.9 maxTorque 0.3 }
+            PositionSensor { name "j3_sensor" } ] endPoint DEF WRIST Solid {
+      translation 0.249999999999997 0 0 rotation 0 0 1 -1.5707963267949 name "conjunto_z"
+      children [ # Z-BujeExterior-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_Z_BujeExterior_1 Pose { translation -1.66533453693773e-16 4.85722573273506e-17 -0.0380000000000003
+                rotation 8.61966122537478e-16 -3.79981391299516e-16 1 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.68 0.72 0.76 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/Z-BujeExterior.stl" ] } castShadows FALSE } ] }
+# Z-Cuerpo-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_Z_Cuerpo_1 Pose { translation -1.66533453693773e-16 3.46944695195361e-17 -0.0330000000000003
+                rotation 8.5694795878871e-16 -4.09905634967429e-16 1 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.68 0.72 0.76 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/Z-Cuerpo.stl" ] } castShadows FALSE } ] }
+# Z-SoporteM4-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_Z_SoporteM4_1 Pose { translation 2.77555756156289e-16 -1.31838984174237e-16 0.179
+                rotation 8.89407167786806e-16 8.2448874979061e-16 1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.68 0.72 0.76 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/Z-SoporteM4.stl" ] } castShadows FALSE } ] }
+# Z-SoporteRuleman-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_Z_SoporteRuleman_1 Pose { translation 2.77555756156289e-16 -1.31838984174237e-16 0.157
+                rotation -8.24488749790613e-16 8.89407167786806e-16 -1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.68 0.72 0.76 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/Z-SoporteRuleman.stl" ] } castShadows FALSE } ] }
+# NEMA17-2 | accepted_mesh_cache_differs | structural_group_from_assembly
+              DEF CAD_NEMA17_2 Pose { translation 3.33066907387547e-16 -1.17961196366423e-16 0.263
+                rotation -0.707106781186546 0.707106781186549 1.19789513969836e-15 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.9 0.5 0.12 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/NEMA17.stl" ] } castShadows FALSE } ] }
+# R-CarretelSup-1 | accepted_mesh_cache_differs | provisional_joint_side
+              DEF CAD_R_CarretelSup_1 Pose { translation -5.55111512312578e-17 6.93889390390723e-17 0.0529999999999994
+                rotation -0.671254137432428 0.741227281594416 0 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.9 0.5 0.12 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/R-CarretelSup.stl" ] } castShadows FALSE } ] } SliderJoint {
+      jointParameters JointParameters { axis 0 0 -1 position 0.06
+        minStop 0.0 maxStop 0.12 dampingConstant 0.2 }
+      device [ LinearMotor { name "j4_motor" minPosition 0.0 maxPosition 0.12
+        maxVelocity 0.03 acceleration 0.06 maxForce 8.0 }
+        PositionSensor { name "j4_sensor" } ] endPoint DEF TOOL Solid {
+      translation 0 0 -0.178695641135201 name "piston_y_soporte"
+      children [ # Z-Piston-1 | accepted_mesh | structural_group_from_assembly
+              DEF CAD_Z_Piston_1 Pose { translation -5.55111512312578e-17 2.77555756156289e-17 0.199
+                rotation 0 1 3.79981391299517e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.62 0.48 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/Z-Piston.stl" ] } castShadows FALSE } ] }
+# Z-SoporteEfector-1 | wire_bbox_only_rejected_mesh | structural_group_from_assembly
+              DEF CAD_Z_SoporteEfector_1 Pose { translation -4.44089209850063e-16 1.94289029309402e-16 0
+                rotation 8.61966122537479e-16 -1.718145741823e-16 1 3.14159265358979 children [ Shape { appearance Appearance { material Material { emissiveColor 0.85 0.1 0.5 } }
+geometry IndexedLineSet { coord Coordinate { point [
+-0.03 -0.03 0,
+0.03 -0.03 0,
+-0.03 0.03 0,
+0.03 0.03 0,
+-0.03 -0.03 0.019,
+0.03 -0.03 0.019,
+-0.03 0.03 0.019,
+0.03 0.03 0.019,
+] } coordIndex [
+0, 1, -1,
+0, 2, -1,
+0, 4, -1,
+1, 3, -1,
+1, 5, -1,
+2, 3, -1,
+2, 6, -1,
+3, 7, -1,
+4, 5, -1,
+4, 6, -1,
+5, 7, -1,
+6, 7, -1,
+] } } ] }
+        # Marcador del TCP provisional; no es geometría de una pinza.
+        Shape { appearance PBRAppearance { baseColor 0.1 0.9 0.3 roughness 0.5 metalness 0 }
+          geometry Sphere { radius 0.004 } } ]
+      boundingObject Pose { translation -4.28476698566271e-16 1.90819582357449e-16 0.0994999999999999
+      children [ Box { size 0.06 0.06 0.199 } ] }
+      physics Physics { density -1 mass IS toolMass
+        centerOfMass IS toolCenterOfMass inertiaMatrix IS toolInertiaMatrix }
+    } } ]
+      boundingObject Pose { translation -5.55111512312578e-17 6.93889390390723e-17 0.1125
+      children [ Box { size 0.076575767079924 0.076575767079924 0.301 } ] }
+      physics Physics { density -1 mass 0.35
+      centerOfMass [ -5.55111512312578e-17 6.93889390390723e-17 0.1125 ]
+      inertiaMatrix [ 0.00281355806969647 0.00281355806969647 0.000342057806059595, 0 0 0 ] } } } ]
+              boundingObject Pose { translation 0.12453800669917 3.78169717762944e-16 -0.0119999997839291
+      children [ Box { size 0.32092398689969 0.0900000035762793 0.102000000432142 } ] }
+              physics Physics { density -1 mass 0.5
+      centerOfMass [ 0.12453800669917 3.78169717762944e-16 -0.0119999997839291 ]
+      inertiaMatrix [ 0.000771000030495299 0.00472484189398955 0.00462884191713845, 0 0 0 ] } } } ]
+              boundingObject Pose { translation 0.125000603573795 -2.91433543964104e-16 -0.0148812496460975
+      children [ Box { size 0.321028809340603 0.0710300164881906 0.0797625000372531 } ] }
+              physics Physics { density -1 mass 0.3
+      centerOfMass [ 0.125000603573795 -2.91433543964104e-16 -0.0148812496460975 ]
+      inertiaMatrix [ 0.000285182991362636 0.00273553882097095 0.00270261899172394, 0 0 0 ] } } } ]
+    boundingObject Pose { translation 5.55111512312578e-17 0 0.118300001787394
+      children [ Box { size 0.262263574081697 0.321367489287063 0.236599995754659 } ] }
+  }
+}

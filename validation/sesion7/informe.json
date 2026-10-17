@@ -1,0 +1,672 @@
+{
+  "session": 7,
+  "date_local": "2026-10-17",
+  "timezone": "America/Argentina/Tucuman",
+  "scope": "Demo renderizada de ronda A; sin cambios al producto ni física ni protocolo; sin ronda B",
+  "status": "passed_pending_independent_review",
+  "entry": "Extracción limpia de validation/sesion5/SCARA-ejecucion.zip,52 archivos; un cliente TCP propio y un mundo propio, carga0, reinicios limpios",
+  "environment": {
+    "os": "macOS27.0.1",
+    "os_build": "26A434",
+    "architecture": "arm64",
+    "client_python": "3.15.0",
+    "controller_python": "3.9.6 (/Library/Developer/CommandLineTools/usr/bin/python3)",
+    "chrome": "155.0.8059.85",
+    "webots": "R2025b Nightly Build14/10/2026 a459c02c7292d23ae437101c76111ec1668198c8",
+    "webots_executable_sha256": "ffd0f55a57162289c4ee00049d824549572f1fa336f032d6a8a0d9c7e95f677f",
+    "webots_observability_adaptation": {
+      "reason": "CUA macOS seleccionaba el Webots ajeno por bundleID y no exponía selector PID/ventana; se clonó el app instalado a tmp",
+      "only_metadata_changed": {
+        "CFBundleIdentifier": "local.scara.sesion7.webots",
+        "CFBundleName": "Webots Sesion7"
+      },
+      "source_and_copy_executable_identical": true,
+      "installed_application_modified": false,
+      "product_modified": false
+    }
+  },
+  "identities": {
+    "detail": "identidad.json",
+    "archive_sha256": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+    "archive_files": 52,
+    "archive_files_changed_after_execution": [],
+    "common_existing_files_compared": 51,
+    "common_matches": {
+      "scara/kinematics.py": true,
+      "scara/transport.py": true,
+      "scara/__init__.py": true,
+      "scara/collisions.py": true,
+      "scara/runtime.py": true,
+      "scara/frames.py": true,
+      "scara/dynamics.py": true,
+      "config/scara.json": true,
+      "client/index.html": true,
+      "client/__init__.py": true,
+      "client/app.py": true,
+      "webots/protos/SCARA.proto": true,
+      "webots/worlds/scara_cad_inspeccion.wbt": true,
+      "webots/worlds/scara.wbt": true,
+      "webots/controllers/scara_bridge/scara_bridge.py": true,
+      "cad/ensambles/integracion_articulada.json": true,
+      "cad/derivados/stl/0-ElevadorM2.stl": true,
+      "cad/derivados/stl/0-PlatinaSuperior.stl": true,
+      "cad/derivados/stl/A-BridaEje.stl": true,
+      "cad/derivados/stl/Z-Cuerpo.stl": true,
+      "cad/derivados/stl/R-ContraBancada.stl": true,
+      "cad/derivados/stl/Z-Piston.stl": true,
+      "cad/derivados/stl/R-CarretelInf.stl": true,
+      "cad/derivados/stl/2GT_80Teet_40Bore.stl": true,
+      "cad/derivados/stl/A-Brazo.stl": true,
+      "cad/derivados/stl/NEMA17.stl": true,
+      "cad/derivados/stl/2GT_80Teet_16Bore.stl": true,
+      "cad/derivados/stl/B-CarretelSup.stl": true,
+      "cad/derivados/stl/Z-SoporteRuleman.stl": true,
+      "cad/derivados/stl/Z-608zz.stl": true,
+      "cad/derivados/stl/A-CarretelInf.stl": true,
+      "cad/derivados/stl/NEMA23.stl": true,
+      "cad/derivados/stl/R-Bancada.stl": true,
+      "cad/derivados/stl/0-SoporteMotores.stl": true,
+      "cad/derivados/stl/Z-6907-2RS.stl": true,
+      "cad/derivados/stl/0-Bancada.stl": true,
+      "cad/derivados/stl/R-CarretelSup.stl": true,
+      "cad/derivados/stl/Z-SoporteM4.stl": true,
+      "cad/derivados/stl/2GT_60Teet_8Bore.stl": true,
+      "cad/derivados/stl/B-SoporteRuleman.stl": true,
+      "cad/derivados/stl/Z-BujeExterior.stl": true,
+      "cad/derivados/stl/B-SoporteM3.stl": true,
+      "cad/derivados/stl/B-Antebrazo.stl": true,
+      "cad/derivados/stl/B-CarretelInf.stl": true,
+      "cad/derivados/stl/0-6203-2RS.stl": true,
+      "cad/derivados/stl/A-CarretelSup.stl": true,
+      "cad/derivados/stl/B-SoporteEjeFijo.stl": true,
+      "cad/derivados/stl/Z-SoporteEfector.stl": true,
+      "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl": true,
+      "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl": true,
+      "cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl": true
+    }
+  },
+  "method": {
+    "ui": "Acciones reales sobre DOM/AX de Chrome mediante CUA; capturas fullPage y observación visual",
+    "webots": "Ventana nativa propia CUA, rendering1, realtime, robot y consola TCP9000 observados; capturas PNG reales",
+    "telemetry": "GET /api/state cada0.1s como evidencia suplementaria; expone estado/eventos recibidos por Bridge desde el único TCP9000. No se abrió otro cliente TCP ni se enviaron comandos por HTTP fuera de la UI",
+    "tcp_limit": "No se conservó pcap: correlación por IDs de eventos del controlador expuestos por el bridge y consola9000, más inspección de la ruta de código vigente",
+    "sampling": "0.1 s de pared solicitados; telemetría del controlador aproximadamente cada128ms simulados, sin máxima continua",
+    "raw_samples": 2162,
+    "raw_evidence": "telemetria.jsonl"
+  },
+  "events": [
+    {
+      "first_observed_utc": "2026-10-17T23:11:42.499871+00:00",
+      "trial_at_observation": "1bdfc033-e0a1-4fd6-9af8-cb4500fec567",
+      "event": {
+        "event": "accepted",
+        "id": "db530bc2-f250-4561-a23a-43e1872ea55f",
+        "mode": "IDLE"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:13.183566+00:00",
+      "trial_at_observation": "10bbd24f-e536-4ffd-936c-b3368b0fb955",
+      "event": {
+        "event": "accepted",
+        "id": "78812365-2080-43d6-b81c-9ce78c8fd4e7",
+        "message": "Recarga del ensayo; no es homing del robot fisico"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:21.420934+00:00",
+      "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+      "event": {
+        "event": "accepted",
+        "id": "2bc048b0-6f6b-4408-933e-5da00440e229",
+        "mode": "IDLE"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:25.009302+00:00",
+      "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+      "event": {
+        "event": "accepted",
+        "id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+        "mode": "MOVING"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:26.275662+00:00",
+      "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+      "event": {
+        "event": "completed",
+        "id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+        "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:38.822318+00:00",
+      "trial_at_observation": "67e48c65-5f21-44bc-9953-c489f8e33294",
+      "event": {
+        "event": "accepted",
+        "id": "232a329e-6307-4bac-8365-d5426e0575de",
+        "message": "Recarga del ensayo; no es homing del robot fisico"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:44.320287+00:00",
+      "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+      "event": {
+        "event": "accepted",
+        "id": "ddc9359a-804d-4d7f-83eb-a97e74b7b925",
+        "mode": "IDLE"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:54.959317+00:00",
+      "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+      "event": {
+        "event": "accepted",
+        "id": "203a8fff-7a65-4f0e-bc09-85f6032a882d",
+        "mode": "FAULT"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:14:58.631395+00:00",
+      "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+      "event": {
+        "event": "rejected",
+        "id": "5e50faae-ab87-41ad-91db-f2394cc46345",
+        "message": "Primero quitar las fallas inyectadas"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:15:02.746082+00:00",
+      "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+      "event": {
+        "event": "accepted",
+        "id": "f26097a3-949c-4dce-9f9f-b8d13a00de6e",
+        "mode": "STOPPED"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:15:10.899631+00:00",
+      "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+      "event": {
+        "event": "accepted",
+        "id": "4023a1bf-a74d-431a-94f0-82248c660e50",
+        "mode": "IDLE"
+      }
+    },
+    {
+      "first_observed_utc": "2026-10-17T23:15:14.803689+00:00",
+      "trial_at_observation": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+      "event": {
+        "event": "accepted",
+        "id": "e2c24ad9-44f2-4a13-8d43-8676372ca5bc",
+        "mode": "STOPPED"
+      }
+    }
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "action": "Conectar y reiniciar ensayo limpio, carga0",
+      "ui": "TCP conectado; Detenido; habilitación explícita requerida",
+      "state": "STOPPED; payload_mass0; reference_validtrue",
+      "evidence": [
+        "capturas/01_conectado.png",
+        "capturas/02_webots_inicial.png",
+        "capturas/03_habilitado.png"
+      ],
+      "note": "01 corresponde a preparación inicial; antes del movimiento se ejecutó reset78812365 y luego rearm2bc048b0, trial nuevo."
+    },
+    {
+      "step": 2,
+      "action": "Habilitar y Enviar destino240/250/35mm,30%,orientación vacía",
+      "ui": "Orden aceptada; luego Secuencia de consignas terminada: Finalizaron las consignas; comprobar llegada en instrumentacion",
+      "tcp_id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+      "movement_observed_samples": 13,
+      "modes_sampled": [
+        "IDLE",
+        "MOVING"
+      ],
+      "completion_observation": {
+        "utc": "2026-10-17T23:14:26.275662+00:00",
+        "time": 11.502,
+        "simulated_pose_error_m_rad": [
+          0.00017258002207598544,
+          3.3954088866638976e-06,
+          -7.223762895990082e-06,
+          1.0410072581734653e-08
+        ],
+        "xyz_error_m": 0.00017276450900469327,
+        "tcp_world_error_m": 0.00017283554366706507,
+        "joint_error_rad_m": [
+          -1.3813799034867241e-05,
+          -0.0006770387332555305,
+          0.0006908629423629797,
+          7.223762895990082e-06
+        ]
+      },
+      "arrival_observation": {
+        "utc": "2026-10-17T23:14:28.492447+00:00",
+        "time": 13.554,
+        "state": {
+          "time": 13.554,
+          "trial_id": "67e48c65-5f21-44bc-9953-c489f8e33294",
+          "mode": "IDLE",
+          "commanded": [
+            0.0008003075216479472,
+            1.6100063731246972,
+            -1.6108066806463452,
+            0.05966685886479947
+          ],
+          "estimated": [
+            0.0008003075216479472,
+            1.6100063731246972,
+            -1.6108066806463452,
+            0.05966685886479947
+          ],
+          "simulated": [
+            0.0008003075216342586,
+            1.6100063731235053,
+            -1.610806680645657,
+            0.05966833036480431
+          ],
+          "estimated_pose": [
+            0.24,
+            0.25,
+            0.035,
+            0.0
+          ],
+          "simulated_pose": [
+            0.24000000000030117,
+            0.2500000000000086,
+            0.034998528499995164,
+            -5.173639294753229e-13
+          ],
+          "hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "hall_nominal": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "end_hall": [
+            false,
+            false,
+            false,
+            false
+          ],
+          "faults": {},
+          "payload_mass": 0.0,
+          "reference_valid": true,
+          "effort_available": [
+            0.8,
+            0.8,
+            0.3,
+            8.0
+          ],
+          "effort_feedback": [
+            null,
+            5.177327917870186e-07,
+            -7.084591786710797e-14,
+            -1.4714999999997809
+          ],
+          "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+          "tcp_world": [
+            0.23999993090775282,
+            0.24999992012545716,
+            0.034995623899491624
+          ],
+          "tcp_world_yaw": -6.915556151208611e-11,
+          "tool_physics": {
+            "mass": 0.15,
+            "center": [
+              -4.28476698566271e-16,
+              1.90819582357449e-16,
+              0.0994999999999999
+            ],
+            "inertia": [
+              0.0005400125,
+              0.0005400125,
+              9e-05,
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+          "protocol": "scara-dev/1"
+        },
+        "simulated_pose_error_m_rad": [
+          3.0117575100518934e-13,
+          8.604228440844963e-15,
+          -1.4715000048390325e-06,
+          -5.173639294753229e-13
+        ],
+        "xyz_error_m": 1.4715000048390635e-06,
+        "tcp_world_error_m": 4.377374708732996e-06,
+        "joint_error_rad_m": [
+          -1.3688594528715736e-14,
+          -1.191935439237568e-12,
+          6.883382752675971e-13,
+          1.4715000048390325e-06
+        ]
+      },
+      "criteria": {
+        "xyz_m": 0.001,
+        "yaw_rad": 0.02,
+        "rotary_joint_rad": 0.005,
+        "linear_joint_m": 0.0005,
+        "settling_observed_s": 2
+      },
+      "pass": true,
+      "evidence": [
+        "capturas/04_webots_movimiento.png",
+        "capturas/05_llegada.png",
+        "capturas/05_webots_llegada.png"
+      ],
+      "limit": "completed confirma fin de consignas. Llegada se acredita aparte con comparación de sensores simulados y TCP geométrico; no hardware."
+    },
+    {
+      "step": 3,
+      "action": "Desde llegada enviar73.2233/176.7767/34.6669mm,rumbo0°,30%",
+      "ui": "Recorrido rechazado: Z-SoporteEfector-1 puede tocar0-Torre-1 (envolventes y margen1mm)",
+      "tcp": "El cliente rechaza antes de encolar move_joints. No hay nuevo ID TCP de movimiento ni accepted/completed; no se atribuye al controlador este rechazo local. La evidencia nativa directa anterior de sesión4 conserva alcance propio.",
+      "state": {
+        "window_utc": [
+          "2026-10-17T23:14:29.228868+00:00",
+          "2026-10-17T23:14:38.715021+00:00"
+        ],
+        "samples": 91,
+        "modes": [
+          "IDLE"
+        ],
+        "max_commanded_delta": 0.0,
+        "new_move_events": []
+      },
+      "pass": true,
+      "evidence": [
+        "capturas/06_choque_rechazado.png",
+        "capturas/06_webots_sin_movimiento.png"
+      ]
+    },
+    {
+      "step": 4,
+      "action": "Reiniciar ensayo232a329e, habilitarddc9359a e inyectar HallJ1 fijo Activo",
+      "tcp_id": "203a8fff-7a65-4f0e-bc09-85f6032a882d",
+      "ui": "Falla activa; HallJ1 Activo; pose inicial sin movimiento",
+      "state": "FAULT; hall[0]true, hall_nominal[0]false, faults hall_stuck axis1 factor1",
+      "pass": true,
+      "evidence": [
+        "capturas/07_Hall_activo.png"
+      ]
+    },
+    {
+      "step": 5,
+      "action": "Intentar Habilitar movimiento con Hall todavía inyectado",
+      "tcp_id": "5e50faae-ab87-41ad-91db-f2394cc46345",
+      "ui": "Orden rechazada: Primero quitar las fallas inyectadas",
+      "state": "FAULT; sin movimiento",
+      "pass": true,
+      "evidence": [
+        "capturas/08_rearme_bloqueado.png",
+        "capturas/08_webots_Hall_sin_movimiento.png"
+      ]
+    },
+    {
+      "step": 6,
+      "action": "Limpiar fallas sin habilitar",
+      "tcp_id": "f26097a3-949c-4dce-9f9f-b8d13a00de6e",
+      "ui": "Detenido, HallJ1 Inactivo",
+      "observation_window_utc": [
+        "2026-10-17T23:15:02.746082+00:00",
+        "2026-10-17T23:15:10.796457+00:00"
+      ],
+      "samples": 76,
+      "modes": [
+        "STOPPED"
+      ],
+      "faults_empty": true,
+      "pass": true,
+      "evidence": [
+        "capturas/09_limpio_sin_rearme.png"
+      ]
+    },
+    {
+      "step": 7,
+      "action": "Habilitar movimiento explícitamente",
+      "tcp_id": "4023a1bf-a74d-431a-94f0-82248c660e50",
+      "ui": "En espera",
+      "state": "IDLE",
+      "pass": true,
+      "evidence": [
+        "capturas/10_rearme_explicito.png"
+      ]
+    },
+    {
+      "step": 8,
+      "action": "Detener movimiento y terminar",
+      "tcp_id": "e2c24ad9-44f2-4a13-8d43-8676372ca5bc",
+      "ui": "Detenido; carga0; Hall inactivo",
+      "final_snapshot": {
+        "utc": "2026-10-17T23:15:26.834760+00:00",
+        "snapshot": {
+          "protocol": "scara-dev/1",
+          "connected": true,
+          "connection_enabled": true,
+          "connection_message": "Conectado. Habilitá explícitamente antes de mover.",
+          "state": {
+            "time": 44.050000000000004,
+            "trial_id": "bbf98214-dd5e-438b-bb70-f8de2bceda6c",
+            "mode": "STOPPED",
+            "commanded": [
+              0.0,
+              1.5707963267948966,
+              -1.5707963267948966,
+              0.06
+            ],
+            "estimated": [
+              0.0,
+              1.5707963267948966,
+              -1.5707963267948966,
+              0.06
+            ],
+            "simulated": [
+              -3.366098671084927e-07,
+              1.570796143074341,
+              -1.570796326794437,
+              0.0600014714999999
+            ],
+            "estimated_pose": [
+              0.25000000000000233,
+              0.24999999999999745,
+              0.03466685886479948,
+              0.0
+            ],
+            "simulated_pose": [
+              0.25000013008259386,
+              0.24999991584749684,
+              0.03466538736479957,
+              -5.203299631162395e-07
+            ],
+            "hall": [
+              false,
+              false,
+              false,
+              false
+            ],
+            "hall_nominal": [
+              false,
+              false,
+              false,
+              false
+            ],
+            "end_hall": [
+              false,
+              false,
+              false,
+              false
+            ],
+            "faults": {},
+            "payload_mass": 0.0,
+            "reference_valid": true,
+            "effort_available": [
+              0.8,
+              0.8,
+              0.3,
+              8.0
+            ],
+            "effort_feedback": [
+              null,
+              -0.0002235786886853771,
+              -2.2451877670151707e-06,
+              -1.4714999951835153
+            ],
+            "effort_feedback_note": "J1 no disponible con base estatica; los otros valores son aproximaciones de Webots",
+            "tcp_world": [
+              0.24999992887441103,
+              0.24999991920221928,
+              0.03466247819992904
+            ],
+            "tcp_world_yaw": -5.216000505034e-09,
+            "tool_physics": {
+              "mass": 0.15,
+              "center": [
+                -4.28476698566271e-16,
+                1.90819582357449e-16,
+                0.0994999999999999
+              ],
+              "inertia": [
+                0.0005400125,
+                0.0005400125,
+                9e-05,
+                0.0,
+                0.0,
+                0.0
+              ]
+            },
+            "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+            "protocol": "scara-dev/1"
+          },
+          "responses": [
+            {
+              "event": "accepted",
+              "id": "db530bc2-f250-4561-a23a-43e1872ea55f",
+              "mode": "IDLE"
+            },
+            {
+              "event": "accepted",
+              "id": "78812365-2080-43d6-b81c-9ce78c8fd4e7",
+              "message": "Recarga del ensayo; no es homing del robot fisico"
+            },
+            {
+              "event": "accepted",
+              "id": "2bc048b0-6f6b-4408-933e-5da00440e229",
+              "mode": "IDLE"
+            },
+            {
+              "event": "accepted",
+              "id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+              "mode": "MOVING"
+            },
+            {
+              "event": "completed",
+              "id": "a6ce9629-a0f0-4815-b783-c27938d889e3",
+              "message": "Finalizaron las consignas; comprobar llegada en instrumentacion"
+            },
+            {
+              "event": "accepted",
+              "id": "232a329e-6307-4bac-8365-d5426e0575de",
+              "message": "Recarga del ensayo; no es homing del robot fisico"
+            },
+            {
+              "event": "accepted",
+              "id": "ddc9359a-804d-4d7f-83eb-a97e74b7b925",
+              "mode": "IDLE"
+            },
+            {
+              "event": "accepted",
+              "id": "203a8fff-7a65-4f0e-bc09-85f6032a882d",
+              "mode": "FAULT"
+            },
+            {
+              "event": "rejected",
+              "id": "5e50faae-ab87-41ad-91db-f2394cc46345",
+              "message": "Primero quitar las fallas inyectadas"
+            },
+            {
+              "event": "accepted",
+              "id": "f26097a3-949c-4dce-9f9f-b8d13a00de6e",
+              "mode": "STOPPED"
+            },
+            {
+              "event": "accepted",
+              "id": "4023a1bf-a74d-431a-94f0-82248c660e50",
+              "mode": "IDLE"
+            },
+            {
+              "event": "accepted",
+              "id": "e2c24ad9-44f2-4a13-8d43-8676372ca5bc",
+              "mode": "STOPPED"
+            }
+          ],
+          "initial_pose": [
+            0.25000000000000233,
+            0.24999999999999745,
+            0.03466685886479948,
+            0.0
+          ]
+        }
+      },
+      "pass": true,
+      "evidence": [
+        "capturas/11_STOPPED.png",
+        "capturas/11_webots_STOPPED.png"
+      ]
+    }
+  ],
+  "product_changes": [],
+  "reproduced_product_defects": [],
+  "checks_repeated": [
+    "Solo flujo visual de sesión7 y correlación/identidad; no suites ni Webots ajenos"
+  ],
+  "cleanup": {
+    "own_client_pid": 17505,
+    "own_initial_webots_pid": 17546,
+    "own_final_webots_pid": 17964,
+    "own_final_controller_pid": 18495,
+    "own_sampler_pid": 17718,
+    "ports_closed": [
+      8765,
+      9000,
+      1237
+    ],
+    "close_method": "STOPPED por UI; cerrar procesos propios con SIGINT a sesiones exec, sampler por sentinel; cerrar pestaña propia",
+    "closed_exit_status": 0,
+    "foreign_preserved": {
+      "controller_pid": 983,
+      "port": 19051,
+      "world": "/private/tmp/scara-transmision-native-20261017/webots/worlds/scara.wbt",
+      "acted_on": false,
+      "still_listening_after_cleanup": true
+    },
+    "retained_for_independent_review": [
+      "extracción limpia",
+      "copia app temporal",
+      "entrega",
+      "scripts de captura/análisis propios"
+    ]
+  },
+  "limits": [
+    "Simulador con física/TCP/Hall provisionales; ninguna QA física experimental.",
+    "No Windows ni Webots Linux nativo.",
+    "Una instancia y cliente propios ensayados; existía otro mundo ajeno en19051, aislado y preservado.",
+    "No barrido general de autocolisión, homing ni evidencia de detección autónoma Hall.",
+    "El selector Hall Activo queda como formulario después de limpiar; la señal de estado observada pasa Inactivo.",
+    "Setup adicional clonó solo metadata del app para observabilidad; el ejecutable Webots usado conserva identidad y build."
+  ]
+}

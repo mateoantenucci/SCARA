@@ -1,0 +1,195 @@
+{
+  "model_status": "CAD visual articulado parcial; masas, esfuerzo, colisiones y TCP provisionales",
+  "geometry": {
+    "l1": 0.25000000000000233,
+    "l2": 0.24999999999999745,
+    "shoulder_z": 0.2913625000000002,
+    "elbow_z_offset": -0.07799999999999996,
+    "tool_z_offset": -0.11869564113520076
+  },
+  "limits": [
+    [
+      -2.356194490192345,
+      2.356194490192345
+    ],
+    [
+      -2.356194490192345,
+      2.356194490192345
+    ],
+    [
+      -2.6179938779914944,
+      2.6179938779914944
+    ],
+    [
+      0.0,
+      0.12
+    ]
+  ],
+  "initial_positions": [
+    0.0,
+    1.5707963267948966,
+    -1.5707963267948966,
+    0.06
+  ],
+  "max_velocity": [
+    0.35,
+    0.35,
+    0.5,
+    0.03
+  ],
+  "max_acceleration": [
+    0.6,
+    0.6,
+    0.9,
+    0.06
+  ],
+  "max_effort": [
+    0.8,
+    0.8,
+    0.3,
+    8.0
+  ],
+  "body_properties": [
+    {
+      "mass": 0.3,
+      "size": [
+        0.3210288093406029,
+        0.07103001648819059,
+        0.07976250003725312
+      ],
+      "center": [
+        0.12500060357379492,
+        -2.914335439641036e-16,
+        -0.014881249646097515
+      ]
+    },
+    {
+      "mass": 0.5,
+      "size": [
+        0.32092398689969004,
+        0.09000000357627932,
+        0.10200000043214161
+      ],
+      "center": [
+        0.12453800669917002,
+        3.7816971776294395e-16,
+        -0.011999999783929058
+      ]
+    },
+    {
+      "mass": 0.35,
+      "size": [
+        0.07657576707992403,
+        0.07657576707992403,
+        0.30100000000000016
+      ],
+      "center": [
+        -5.551115123125783e-17,
+        6.938893903907228e-17,
+        0.11249999999999977
+      ]
+    },
+    {
+      "mass": 0.15,
+      "size": [
+        0.060000000000000026,
+        0.060000000000000005,
+        0.19899999999999998
+      ],
+      "center": [
+        -4.2847669856627135e-16,
+        1.9081958235744878e-16,
+        0.09949999999999994
+      ]
+    }
+  ],
+  "provenance": {
+    "geometry.l1": "Derivado del ensamble guardado y convenciones explícitas de config/cad_integration.json; ver cad/ensambles/integracion_articulada.json",
+    "geometry.l2": "Derivado del ensamble guardado y convenciones explícitas de config/cad_integration.json; ver cad/ensambles/integracion_articulada.json",
+    "geometry.shoulder_z": "Derivado del ensamble guardado y convenciones explícitas de config/cad_integration.json; ver cad/ensambles/integracion_articulada.json",
+    "geometry.elbow_z_offset": "Derivado del ensamble guardado y convenciones explícitas de config/cad_integration.json; ver cad/ensambles/integracion_articulada.json",
+    "geometry.tool_z_offset": "Derivado del ensamble guardado y convenciones explícitas de config/cad_integration.json; ver cad/ensambles/integracion_articulada.json",
+    "limits": "amplitudes del maestro; ceros y reparto simetrico provisionales. J4 positivo hacia abajo",
+    "body_properties": "Masas exploratorias conservadas; COM e inercia de cajas envolventes equivalentes de los grupos CAD. No son propiedades materiales validadas",
+    "max_velocity": "limites conservadores de demostracion, NO valores de fabricante",
+    "max_acceleration": "limites conservadores de demostracion, NO valores de fabricante",
+    "max_effort": "esfuerzos equivalentes exploratorios de salida, NO torques de placa ni datos medidos",
+    "environment": "Geometría de banco de tools/generate_world.py, centralizada el 15/10/2026; no es parte del diseño CAD",
+    "collision_check": "Margen 1 mm y cota 0.25 mm de ensayo. Comprobación continua del entorno y herramienta/carga contra base fija; ver docs/MONTAJE_Y_AUTOCOLISIONES.md",
+    "simulation.basic_time_step_ms": "Paso numérico de ensayo reducido de 16 a 2 ms tras reproducir discontinuidad motor/tope J4. Mantiene carrera, masas y esfuerzo; ver docs/DIAGNOSTICO_TOPE_J4.md. No es frecuencia de hardware."
+  },
+  "units": {
+    "geometry": "m",
+    "joint_positions": [
+      "rad",
+      "rad",
+      "rad",
+      "m"
+    ],
+    "max_velocity": [
+      "rad/s",
+      "rad/s",
+      "rad/s",
+      "m/s"
+    ],
+    "max_acceleration": [
+      "rad/s^2",
+      "rad/s^2",
+      "rad/s^2",
+      "m/s^2"
+    ],
+    "max_effort": [
+      "N*m",
+      "N*m",
+      "N*m",
+      "N"
+    ],
+    "mass": "kg"
+  },
+  "environment": [
+    {
+      "name": "suelo_de_ensayo",
+      "center": [
+        0,
+        0,
+        -0.205
+      ],
+      "size": [
+        2,
+        2,
+        0.01
+      ],
+      "color": [
+        0.78,
+        0.8,
+        0.83
+      ]
+    },
+    {
+      "name": "pedestal_de_ensayo",
+      "center": [
+        0,
+        0,
+        -0.1
+      ],
+      "size": [
+        0.4,
+        0.4,
+        0.2
+      ],
+      "color": [
+        0.45,
+        0.48,
+        0.52
+      ]
+    }
+  ],
+  "collision_check": {
+    "margin_m": 0.001,
+    "interval_bound_m": 0.00025,
+    "scope": "Recorrido nominal de cajas y carga frente al entorno; además herramienta y carga frente a la base fija. Sin revisión continua de otros pares internos ni seguimiento físico garantizado"
+  },
+  "simulation": {
+    "basic_time_step_ms": 2
+  }
+}

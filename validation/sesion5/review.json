@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "reviewed_utc": "2026-10-17T22:51:31.091557+00:00",
+  "reviewer": "sesion6_profesor independent of implementer sesion5_portabilidad",
+  "status": "approved_available_platform_scope",
+  "candidate_manifest_sha256": "8279535914b5ac6a16c00868607bc0f7e54f5620347847750157596776d20b8e",
+  "candidate_artifacts_sha256": {
+    "validation/sesion5/SCARA-ejecucion.zip": "eaea37ceab2c47340a0b02308df7c976cd2925b82bae6078ed55ccff665ab3ce",
+    "validation/sesion5/check_http.py": "a12c37fd7eb77c0231c9dd0bb657848b50350dbbfa13034588339ffbe42028a5",
+    "validation/sesion5/final_root_match.json": "3380d8a513011edec60ec0928962453562be6dfad2089b46e429bb4942905c79",
+    "validation/sesion5/linux_image.txt": "33feae85807b268fd2a5f3ff19f3b4cb75eddd2b85b3301f6e1f0e7a1b4a2b73",
+    "validation/sesion5/linux_python312_http.json": "53397cecfe4ecde0ed3b65ff24ffc0eb4807a1d9a39d00ec79a6b26abec16b05",
+    "validation/sesion5/linux_python312_unittest.txt": "c8ddce2087289a36bd10c5666187c0de54704a06be5301035ed2c39bcc57c45e",
+    "validation/sesion5/macos_python315_http.json": "a8e6bb375f1e2f37f6405314d778bea87c4ada1f35cdf8d2565ca3843c4fc96c",
+    "validation/sesion5/macos_python315_unittest.txt": "ccbefaa6082b10e300ea88a5da2422f1f0faab8dc2e5db843d397b839e13fcfa",
+    "validation/sesion5/macos_python39_http.json": "e83c137d4a0b1cfda1461c4929e8dac9956707a46a313f422b41458a736dc152",
+    "validation/sesion5/macos_python39_unittest.txt": "596bac186900749fa51fea32a2bb072c79bd4f35536911a5eb1346c46188aede",
+    "validation/sesion5/macos_python39_unittest_sandbox.txt": "da69ca3e18f73cd5b10d086c46720738b6303f89590e2874863b55fd0d5d2a94",
+    "validation/sesion5/portability.json": "cf0a33b0fa6f36787470479a08b1df9d60ca5cfcb7cdcecada66f50685c845f4",
+    "validation/sesion5/snapshot.json": "eafcf27bff17053675faf9fecb88c1bab0751c950dd88a2a5e5d4721acad8c54"
+  },
+  "checks": [
+    "13 candidate artifacts match closed manifest",
+    "ZIP CRC passed;52 unique safe entries,35 STL,6546305 raw bytes and every archived hash match snapshot",
+    "All51 delivered runtime source files independently match current root",
+    "64 STL/PROTO relative references independently resolve to exact-case ZIP entries",
+    "Embedded LEEME inspected: executable package/source distinction; native mac scope, no new visual browser QA, Windows/WebotsLinux pending",
+    "All3 real interpreter logs independently confirm36discovered=33passed+3OCPskips and5HTTP checks without Webots",
+    "Native4 evidence identity16checks/39instances matches delivered51runtime sources except declared test TCP port; final trial STOPPED/carga0/refvalid, own Webots closed",
+    "QA340 final-root report and pending target-platform limits consistent"
+  ],
+  "findings": [],
+  "limits": [
+    "No rerun of unchanged tests/native checks; independent artifact/source/log inspection",
+    "Approves available platform scope only: native WebotsmacOS and softwaremacOS/Linuxcontainer",
+    "No native Windows/LinuxWebots or new visual browser observation, no hardware validation",
+    "LEEME-only change after native16checks does not affect runtime"
+  ],
+  "integration_condition": "Copy these exact candidate bytes to validation/sesion5 and preserve review.json; verify manifest match after copy"
+}

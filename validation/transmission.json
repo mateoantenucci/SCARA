@@ -1,0 +1,121 @@
+{
+  "status": "passed",
+  "created_utc": "2026-10-17T18:53:14.369494+00:00",
+  "platform": "macOS-27.0.1-arm64-arm-64bit",
+  "scope": "Two output pulley visuals only; no motor coordinates, transmission physics or new mass.",
+  "before_instances": 36,
+  "instances": 38,
+  "checks": {
+    "prior_36_placements_preserved": true,
+    "two_new_meshes_and_expected_groups": true,
+    "physics_config_byte_identical": true,
+    "software_passed": true,
+    "geometry_and_mounts_passed": true,
+    "native_CAD_passed": true,
+    "native_contacts_passed": true,
+    "internal_audit_passed": true,
+    "external_audit_passed": true,
+    "all_report_hashes_current": true,
+    "all_60_native_CAD_sources_unchanged": true,
+    "no_new_internal_interferences_in_41_poses": true
+  },
+  "added_visual_outputs": [
+    {
+      "occurrence": "2GT_80Teet_16Bore-registro-1",
+      "group": "arm"
+    },
+    {
+      "occurrence": "2GT_60Teet_8Bore-registro-1",
+      "group": "forearm"
+    }
+  ],
+  "group_counts": {
+    "base": 10,
+    "arm": 9,
+    "forearm": 11,
+    "wrist": 6,
+    "tool": 2
+  },
+  "bearing_visuals": 6,
+  "existing_placements": {
+    "compared": 36,
+    "maximum_matrix_error": 0.0
+  },
+  "physics_config_byte_identical": true,
+  "original_CAD_files_checked": 60,
+  "properties_summary": {
+    "parts": 50,
+    "computed_parts": 49,
+    "computed_solids": 51,
+    "excluded_parts": [
+      "B-ExtensorM3"
+    ],
+    "instances": 38,
+    "computed_instances": 38
+  },
+  "software_tests": {
+    "created_utc": "2026-10-17T18:49:19.329031+00:00",
+    "status": "passed",
+    "tests_run": 34,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+    "interpreter": "/private/tmp/scara-cad-piloto-20261014/venv/bin/python"
+  },
+  "native_CAD": {
+    "status": "passed",
+    "snapshots": 11,
+    "comparisons": 418,
+    "arrivals": 6
+  },
+  "native_contacts": {
+    "status": "passed",
+    "checks": 6
+  },
+  "internal_audit": {
+    "instances": 38,
+    "poses": 41,
+    "bbox_candidates": 1008,
+    "confirmed_intersections": 4,
+    "initial_envelope_overlaps_without_CAD_volume": 20
+  },
+  "external_audit": {
+    "poses": 11,
+    "movable_instances": 28,
+    "valid_movable_instances": 28,
+    "excluded_movable_instances": 0,
+    "confirmed_intersections": 8
+  },
+  "limitations": [
+    "Saved angular phases are provisional; no official mechanical revision or assembly certification.",
+    "Six bearings remain simplified visuals; neither races nor internal motor rotors are animated separately.",
+    "Other pulleys/shafts and belts are omitted; coupled motor motion, signs, zeros and driver configuration remain unresolved.",
+    "41 internal poses are samples; four known tower/support intrusions are rejected by the nominal guard.",
+    "Masses, efforts and contacts remain exploratory. Windows/Linux execution has not been validated."
+  ],
+  "sources_sha256": {
+    "config/cad_integration.json": "5253d2c648e599ed4dc96ec6e6ea22605cc3939d7eecc64238ff476fa7b2a5be",
+    "config/scara.json": "285c39168f02f35aa14872c550610f35e3454085f1da526b522e0af242adf9d4",
+    "tools/integrate_cad.py": "2b669648ea1c0f6ddc91ccae2d850f5791dd40ebd53115cb5ce45d8ad5ee31d0",
+    "tools/generate_world.py": "168e01f570e97d3055365d5c327d3221c9b2269d87e9981dcae2a8b7cd0baa3f",
+    "tests/test_cad_integration.py": "94177a8b7112f3f5c2d36662e258a41f9d5b4753f215b81e4616c731869ed4c8",
+    "tools/check_pulley_geometry.py": "189b23842caf6cf9dcdb7108a92b2a51008e43a595e2850175d2f66f5ee379e7",
+    "tools/check_pulley_mounts.py": "a36e0aab8b74ce03f7087786f85e0ca212f1582454281bd7818c9b89babbb0d3",
+    "cad/ensambles/integracion_articulada.json": "71ec250dc82b238240089f12139861fa82552645ebad9329e3763d8009ba133f",
+    "cad/propiedades/propiedades_geometricas.json": "4e6e020a38d267d10946b908b7dbf255069c5f82881aae36c5f0b20e216db2e8",
+    "webots/protos/SCARA.proto": "fe572da90f626ed79fdde9f8761b397a6414dd4d62259e1ec260658c0b7baa4b",
+    "webots/worlds/scara.wbt": "2ce698edc62c58c27b22b665a539fced44cff816967ec53db96532899722db2e",
+    "validation/transmission_execution.json": "4d986b3f8a28331a902cebe762cb337d4ae9091ca2aed553910b71d31f60f9b8",
+    "validation/transmission_tests.json": "0815b4d8afeb3a31518b6957524959c861f6383c5e58f8f805033854eb0172b6",
+    "validation/pulley_geometry.json": "b30c9ee6eedb085e3ea2302874f3ae519d126023f5e3b6bf78e1ebd507e4d5c5",
+    "validation/pulley_mounts.json": "7eb15625dd8fa7c1cbad9c0e11580e0d89d63159bca3827c4eb0f91f02b719a2",
+    "validation/transmission_sources.json": "17c8a1ef9b56b890e4628ab4e543e9599532cb8509fc7ba9a9a3a3843d3dd77e",
+    "validation/cad_motion_transmission.json": "d13c9f1858b5975475f5a827700846ad72bed2b69ebfbc0b1bc1c27c8b2d5039",
+    "validation/collisions_native_transmission.json": "55d3845ea740a3456e3dbef1c9d0c68c68fc77952ca464b47ed289a342f6734e",
+    "validation/self_collisions_transmission.json": "0b2d9b6aa313b3232e841f1701b45c4300adc68e910d8cdbf283da19f8731d2e",
+    "validation/collisions_transmission.json": "62fa1a31fd58d70a58335a88534b7c80aa3faaed0ea8a6cd373fe28216809501",
+    "validation/self_collisions_wrist.json": "b2099cb413f7379075b0b43d15f3e35e689293c53f096768216123b6b0f02450"
+  },
+  "collision_representation": "Two new per-instance boxes; existing masses, effort and joint parameters unchanged. Native selfCollision remains FALSE."
+}

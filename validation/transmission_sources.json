@@ -1,0 +1,264 @@
+{
+  "schema_version": 1,
+  "status": "documented_nominal_design_not_confirmed_revision",
+  "scope": "Lectura visual de fuentes PDF locales. El contraste CAD se registra por separado en validation/pulley_geometry.json: cuenta la geometria convertida vigente, sin confirmar la revision oficial ni el montaje.",
+  "sources": {
+    "master": {
+      "path": "00-SCARA-Master.pdf",
+      "sha256": "7ec2ec12c7d6f3beda713966946a5ad096e314851224d2d84e738d4a1511d3e6"
+    },
+    "pulleys_1": {
+      "path": "Modelos3D/2GT_Vs1.PDF",
+      "sha256": "9df692d6573a97fb039709889498e77d00326cecfc99d5736be8b6b2e84e7534"
+    },
+    "pulleys_2": {
+      "path": "Modelos3D/2GT_Vs2.PDF",
+      "sha256": "9648372780b115d884c243203c67c4cc4fdacc5d9a4e936faa9c48674083ca19"
+    },
+    "wrist_pulley": {
+      "path": "Modelos3D/2GT_80Teet40Bore.PDF",
+      "sha256": "fd3d7010abcfb796594afc51534a8a47c38a9bff187f7b9f5f5cb5818cb60e87"
+    },
+    "acme": {
+      "path": "Modelos3D/Z-VarillaACME.PDF",
+      "sha256": "1ec8e6b10c092eda0bf95e9ddca16db6b7981edeff54a96488eec947515b24ad"
+    }
+  },
+  "transmissions": [
+    {
+      "motor": "M1",
+      "joint": "J1",
+      "documented_motor": "Minebea 23KM-K381-P1, NEMA23",
+      "location": "Base; eje concentrico exterior acoplado a L1",
+      "stages_teeth": [
+        [
+          20,
+          80
+        ]
+      ],
+      "nominal_motor_to_driven_shaft_reduction": 4,
+      "classification": "explicit_documented_nominal",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 10
+        },
+        {
+          "source": "master",
+          "page": 11
+        }
+      ]
+    },
+    {
+      "motor": "M2",
+      "joint": "J2",
+      "documented_motor": "Minebea 23KM-K381-P1, NEMA23",
+      "location": "Base; eje concentrico interior y transmision hasta codo",
+      "stages_teeth": [
+        [
+          20,
+          80
+        ],
+        [
+          60,
+          60
+        ]
+      ],
+      "nominal_motor_to_driven_shaft_reduction": 4,
+      "classification": "explicit_documented_nominal",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 10
+        },
+        {
+          "source": "master",
+          "page": 11
+        }
+      ],
+      "limit": "La etapa 60/60 esta declarada en el texto. La reduccion no fija por si sola el angulo relativo J2: faltan acoplamiento M1/M2, signos y ceros."
+    },
+    {
+      "motor": "M3",
+      "joint": "J3",
+      "documented_motor": "Shinano Kenshi STP-42D221-03, NEMA17",
+      "location": "Sobre L2, alejado de L3",
+      "stages_teeth": [
+        [
+          20,
+          80
+        ]
+      ],
+      "nominal_motor_to_driven_shaft_reduction": 4,
+      "classification": "explicit_documented_nominal",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 10
+        },
+        {
+          "source": "master",
+          "page": 12
+        }
+      ],
+      "limit": "El plano de la polea de muneca tiene texto contradictorio de dientes; ver contradicciones."
+    },
+    {
+      "motor": "M4",
+      "joint": "J4",
+      "documented_motor": "42D265 sin marca, NEMA17",
+      "stages_teeth": [],
+      "nominal_motor_to_screw_ratio": 1,
+      "screw_diameter_mm": 8,
+      "documented_threads": 4,
+      "lead_mm_per_revolution": 8,
+      "nut_location": "L4",
+      "classification": "explicit_documented_nominal",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 8
+        },
+        {
+          "source": "master",
+          "page": 10
+        },
+        {
+          "source": "master",
+          "page": 12
+        },
+        {
+          "source": "acme",
+          "page": 1
+        }
+      ],
+      "limit": "La relacion 1:1 y el avance no fijan signo de desplazamiento, cero, eficiencia o condiciones de sosten."
+    }
+  ],
+  "other_nominal_data": [
+    {
+      "value": "Perfil GT2/2GT; paso 2 mm y ancho 10 mm para las correas/poleas del proyecto.",
+      "classification": "explicit_documented_nominal",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 10
+        },
+        {
+          "source": "master",
+          "page": 11
+        }
+      ]
+    },
+    {
+      "value": {
+        "native_steps_per_revolution": 200,
+        "controller_steps_per_revolution": 400,
+        "rotary_steps_per_degree": 4.44,
+        "linear_steps_per_mm": 50
+      },
+      "classification": "explicit_documented_table",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 8
+        }
+      ],
+      "limit": "No confirma microstepping realmente configurado. 400/8 = 50 y 400*4/360 = 4,444... son comprobaciones aritmeticas condicionales."
+    },
+    {
+      "value": "Planos: 20 dientes con agujeros 5/6,35 mm; 60 y 80 con agujero 8 mm; 60 y 80 nombradas 10Bore acotadas 9,5 mm; 80 con agujero 16 mm.",
+      "classification": "explicit_dimensioned_parts",
+      "evidence": [
+        {
+          "source": "pulleys_1",
+          "page": 1
+        },
+        {
+          "source": "pulleys_2",
+          "page": 1
+        }
+      ],
+      "limit": "Disponibilidad y dimensiones no certifican instancia, fijacion, fase angular ni revision seleccionada."
+    }
+  ],
+  "contradictions": [
+    {
+      "issue": "Cantidad de dientes de la polea de muneca",
+      "observed": "El nombre es 2GT_80Teet_40Bore, pero la descripcion dice 60 dientes. El diametro dentado acotado es 50,4 mm; el maestro describe 80 en J3.",
+      "evidence": [
+        {
+          "source": "wrist_pulley",
+          "page": 1
+        },
+        {
+          "source": "master",
+          "page": 12
+        }
+      ],
+      "inference": "Los PDF conservan la contradiccion 80 en nombre/maestro frente a 60 en descripcion. El contraste CAD separado cuenta 80 dientes dibujados en el STEP vigente; la revision mecanica oficial sigue pendiente.",
+      "resolution": "current_converted_CAD_models_80_teeth_official_revision_pending"
+    },
+    {
+      "issue": "Velocidad angular",
+      "observed": "La tabla junta 4,44 grados/s y 266 rpm, aunque estima 1000 rpm de motor sin carga.",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 8
+        }
+      ],
+      "arithmetic": "4,44 grados/s = 0,74 rpm; 1000 rpm / 4 = 250 rpm. Los valores no son equivalentes.",
+      "resolution": "No usar como limite bajo carga confirmado."
+    },
+    {
+      "issue": "Longitud del tornillo ACME",
+      "observed": "Maestro p. 12: 120 mm mas encastres; el plano del tornillo acota 200 mm. Ambos coinciden en avance 8 mm/rev.",
+      "evidence": [
+        {
+          "source": "master",
+          "page": 12
+        },
+        {
+          "source": "acme",
+          "page": 1
+        }
+      ],
+      "resolution": "Confirmar revision; no confundir longitud total del tornillo con carrera de J4."
+    }
+  ],
+  "illustration_limits": [
+    {
+      "evidence": [
+        {
+          "source": "master",
+          "page": 11
+        }
+      ],
+      "note": "La foto inferior es ilustrativa, muestra dos poleas de distinto tamaño y no permite verificar una etapa 60/60. La evidencia de 60/60 es el texto de esa pagina."
+    },
+    {
+      "evidence": [
+        {
+          "source": "master",
+          "page": 12
+        }
+      ],
+      "note": "La tabla de longitudes de correas y distancias se titula ejemplos de calculos; no declara una seleccion de correas instaladas."
+    }
+  ],
+  "pending": [
+    "Confirmar revision mecanica e instancias de las transmisiones, incluida la etapa del codo; el recuento de 80 dientes de muneca ya esta disponible como contraste CAD separado.",
+    "Derivar acoplamiento motor-articulacion, signos y ceros desde un montaje sustentado.",
+    "Confirmar revision mecanica, fijaciones, fases y ajustes reales del controlador. No inferir eficiencia, friccion, holgura, rigidez o esfuerzo desde estos PDF."
+  ],
+  "cad_cross_check": {
+    "report_path": "validation/pulley_geometry.json",
+    "report_sha256": "b30c9ee6eedb085e3ea2302874f3ae519d126023f5e3b6bf78e1ebd507e4d5c5",
+    "part": "2GT_80Teet_40Bore",
+    "current_converted_geometry_tooth_count": 80,
+    "basis": "80 cortes cilindricos uniformes cada 4,5 grados y 80 arcos exteriores a radio 25,2 mm con ancho 10 mm.",
+    "classification": "current_converted_CAD_geometry_only",
+    "limit": "Confirma 80 dientes dibujados en este STEP, no revision mecanica oficial, perfil normalizado, correas, fijaciones, fases, signos o relacion completa motor-articulacion."
+  }
+}
