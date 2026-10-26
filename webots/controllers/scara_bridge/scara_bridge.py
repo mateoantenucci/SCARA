@@ -133,6 +133,10 @@ def main():
                         server.send({"event": "cad_snapshot_complete", "id": request.get("id")})
                     continue
                 if isinstance(request, dict) and request.get("command") == "reset_trial":
+                    event = runtime.handle({"command": "status", "id": request.get("id")}, now)
+                    if event["event"] == "rejected":
+                        server.send(event)
+                        continue
                     runtime.stop()
                     server.send({"event": "accepted", "id": request.get("id"),
                                  "message": "Recarga del ensayo; no es homing del robot fisico"})

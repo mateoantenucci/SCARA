@@ -121,7 +121,7 @@ Si se omite orientación, J3 compensa los cambios de J1 y J2 para conservar el r
 
 `Runtime` interpola las articulaciones con un perfil quíntico: arranque y final suaves, con velocidad y aceleración de referencia nulas en los extremos. El extremo puede seguir una curva; no se implementó movimiento cartesiano rectilíneo.
 
-TCP transporta un flujo de bytes. Un mensaje puede llegar partido y varios pueden llegar juntos. `scara/transport.py` reconstruye mensajes completos. El banco usa JSON por línea y se identifica como **`scara-dev/1`**. Es un contrato de desarrollo; todavía falta el del profesor.
+TCP transporta un flujo de bytes. Un mensaje puede llegar partido y varios pueden llegar juntos. `scara/transport.py` reconstruye mensajes completos. El banco usa JSON por línea y se identifica como **`scara-dev/1`**. Su [especificación actual](PROTOCOLO_SCARA_DEV_1.md) reúne mensajes, unidades, respuestas y reglas para revisión docente. Es un contrato de desarrollo; todavía falta el del profesor.
 
 En esta versión, Python sirve la página en el puerto local 8765 y se conecta al controlador de Webots en el 9000. Son dos conexiones distintas. Pausar Webots pausa también la atención de órdenes de su controlador.
 
@@ -242,6 +242,7 @@ Las preguntas que necesitan una decisión externa están en [Consultas para el p
 | Operar el robot | [README](../README.md). |
 | Entender alcance, acuerdos y pendientes | [Plan](PLAN_GEMELO_DIGITAL.md) y [decisión de simular sin hardware](adr/0001-simulacion-del-diseno-sin-hardware.md). |
 | Resolver un término | [Glosario](../GLOSSARY.md). |
+| Revisar el protocolo implementado | [Especificación de scara-dev/1](PROTOCOLO_SCARA_DEV_1.md), con ejemplos y puntos para revisión del profesor. |
 | Justificar conversiones y recuperaciones | [Conversión CAD](EVALUACION_CONVERSION_CAD.md), [tres geometrías recuperadas](RECUPERACION_GEOMETRIAS.md) y [torre por cuerpos](../cad/derivados/torre_por_cuerpos/README.md). |
 | Explicar posiciones, ejes y cuerpos | [Ensamble](ENSAMBLE_CAD.md) y [criterios de integración](INTEGRACION_CAD_CRITERIOS.md). |
 | Revisar montaje y transmisión | [Montaje](MONTAJE_Y_AUTOCOLISIONES.md) y [transmisión](TRANSMISION.md). |
