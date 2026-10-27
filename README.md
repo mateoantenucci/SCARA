@@ -107,6 +107,19 @@ Probá **una falla por vez**, empezando desde una recarga limpia. El banco conoc
 
 Tras perder la referencia, el banco rechaza movimientos y cambios de carga hasta reiniciar. Las condiciones y límites de cada caso están en [Fallas y validación](docs/FALLAS_Y_VALIDACION.md).
 
+### Mostrar la pérdida de esfuerzo al profesor
+
+«Aplicar falla» reduce el esfuerzo **y avisa al controlador**, que cancela la trayectoria y bloquea nuevos movimientos. Por eso no permite mover después de inyectar ni continúa una trayectoria cada vez más atrasada. La física sigue activa: una consigna detenida no impide que un eje sin fuerza caiga. El porcentaje es **esfuerzo disponible**, no velocidad ni porcentaje de pérdida.
+
+1. Pulsá **Reiniciar ensayo**, esperá la reconexión y **Habilitar movimiento**. Conservá la pose inicial y carga **0 kg**; no hace falta enviar un destino.
+2. Elegí **J4 · desplazamiento vertical**, **Pérdida de fuerza del motor** y **0 %** de esfuerzo disponible. Pulsá **Aplicar falla**.
+3. Mostrá «Falla activa» y la fila J4: **Estimado queda en 60 mm** y **Simulador avanza hacia 120 mm**. J4 positivo baja la herramienta; la separación es de unos **60 mm** al llegar al tope. La referencia queda invalidada, aunque la estimación conserve su último valor.
+4. Para repetir o recuperar movimiento, **Reiniciar ensayo** y habilitar de nuevo. Limpiar fallas no devuelve fuerza ni referencia.
+
+Como comparación, repetí desde un reinicio limpio con J4 al **50 %** y carga **0 kg**. El control también se detiene, pero el eje puede sostenerse: conserva **4 N** frente a unos **1,47 N** de peso del cuerpo móvil provisional. Reducir esfuerzo no exige que haya un desvío. En J1–J3, tras cancelar la trayectoria, el desplazamiento por inercia puede ser muy pequeño.
+
+La [repetición aislada del 26/10/2026](validation/perdida_esfuerzo_20261026.json) comprobó esos dos casos, la caída con carga de 0,25 kg y J4 al 25 %, y la cancelación durante un movimiento de J1. Para estudiar retraso o pérdida de pasos mientras el control sigue enviando consignas haría falta un ensayo de inyección sin aviso, separado del comportamiento actual. El banco todavía usa una estimación ideal de consignas; no modela pasos individuales ni detección autónoma de esa pérdida.
+
 ## Qué se revisa y qué falta
 
 Se han probado geometría, colocaciones, movimiento, comunicación y fallas. Consultá la [validación](docs/VALIDACION_WEBOTS.md) para conocer la revisión, evidencia y límites de cada ejecución; una prueba anterior no valida automáticamente una versión nueva.

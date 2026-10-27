@@ -88,7 +88,6 @@
       <small>Una orden fuera de alcance o de los límites se rechaza. Después de una detención o reconexión, habilitá de nuevo. Si se perdió la referencia, reiniciá el ensayo.</small>
       <div class="actions">
         <button data-command="rearm" data-network data-reference>Habilitar movimiento</button>
-        <button data-command="status" data-network>Consultar estado</button>
       </div>
     </section>
 
@@ -116,7 +115,18 @@
         <label id="hall-label" hidden>Lectura fija del sensor<select id="hall-value"><option value="0">Inactivo</option><option value="1">Activo</option></select></label>
         <div class="actions"><button type="submit" data-network>Aplicar falla</button><button type="button" data-command="clear_faults" data-network>Limpiar fallas</button><button type="button" data-command="reset_trial" data-network>Reiniciar ensayo</button></div>
       </form>
+      <small>«Aplicar falla» avisa al controlador: cancela la trayectoria y bloquea nuevos movimientos. El porcentaje indica esfuerzo disponible, no velocidad. Una reducción puede alcanzar para sostener el eje sin un desvío visible.</small>
       <small>0 % deja el motor sin fuerza. Esto no retira el brazo: el conjunto conserva su masa y puede moverse por gravedad. El sensor atascado mantiene la lectura elegida.</small>
+      <details>
+        <summary>Cómo mostrar la pérdida de esfuerzo</summary>
+        <ol>
+          <li>Pulsá «Reiniciar ensayo», esperá la reconexión y habilitá el movimiento. Dejá la carga en 0 kg y el robot en su pose inicial.</li>
+          <li>Elegí J4 · desplazamiento vertical, «Pérdida de fuerza del motor» y esfuerzo disponible 0 %. Pulsá «Aplicar falla» sin enviar un destino.</li>
+          <li>El estado pasa a «Falla activa». En la fila J4, «Estimado» queda en 60 mm y «Simulador» debe avanzar hacia 120 mm mientras la herramienta cae. J4 aumenta hacia abajo.</li>
+          <li>Para repetir, reiniciá el ensayo y habilitá de nuevo. Limpiar fallas no recupera esfuerzo ni referencia.</li>
+        </ol>
+        <small>En J1–J3 el desvío puede ser pequeño. Esta prueba muestra una falla avisada con detención; no simula pérdida de pasos sin aviso mientras continúa la trayectoria.</small>
+      </details>
       <small>«Reiniciar ensayo» recarga el mundo en su estado inicial: es un reinicio de la simulación, no una búsqueda física de referencia (homing). Luego tenés que habilitar el movimiento.</small>
       <form id="payload-form">
         <label style="margin-top: 18px">Carga de ensayo en el extremo · kg<input id="payload" type="number" min="0" max="2" step="0.05" value="0" required></label>
