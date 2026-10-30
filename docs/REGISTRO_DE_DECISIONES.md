@@ -386,3 +386,35 @@ Decisiones tomadas al completar `scara/1`. La especificación está en [`PROTOCO
 - **Decisión:** al leer `BOOT`, la URC descarta el último estado (el robot queda «sin referencia» de inmediato, sin esperar al próximo `S`), las órdenes pendientes y el jog en curso. Si el `BOOT` llega a mitad de una conexión, después de que la UCI ya había hablado, avisa «BOOT inesperado… (F5)».
 - **Por qué:** las órdenes pendientes eran para un firmware que ya no existe. Con USB, abrir el puerto reinicia el UNO, así que un `BOOT` al principio de la conexión es lo normal y no merece alarma; a mitad de una conexión indica un reinicio por falla (alimentación, watchdog del micro).
 - **Estado:** Aceptada.
+
+## Transmisión N1 (issue #7)
+
+Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta simulada. Cómo funciona y la evidencia: [Transmisión](TRANSMISION.md#transmisión-n1-en-el-firmware-y-en-la-planta).
+
+**D44 · El microstepping es un solo parámetro, en `firmware/config.h`.**
+- **Decisión:**
+  - `SCARA_MICROSTEPS` (8 por defecto, D9) vive en `firmware/config.h`, junto con los pasos por vuelta de los motores. Lo incluyen el núcleo del firmware, la capa de hardware del Arduino UNO y la planta de Webots.
+  - El firmware deriva de ahí, en tiempo de compilación, la fracción entera de pasos por unidad del protocolo (8/45 en J1–J3 y 2/1 en J4 con 1/8). La conversión y el acople están en `firmware/transmission.h`.
+  - La mecánica (poleas 4:1, 60T–60T al codo, ACME de 8 mm) se escribe por separado en el firmware y en la planta: la planta es el robot y el firmware es lo que el robot cree.
+  - Las pruebas compilan la conversión con los seis valores del TB6600 (1 a 32). Las conversaciones de conformidad están escritas para 1/8.
+- **Por qué:** en el robot real, el microstepping es una llave DIP de los TB6600 que el firmware tiene que conocer. Si la planta tuviera su propio valor, cambiarlo en un solo lado haría que el robot simulado se moviera distinto de lo que el firmware cree, sin que falle ninguna prueba. La mecánica, en cambio, puede diferir a propósito para estudiar errores del modelo.
+- **Descartado:** una constante en el controlador de Webots y otra en el firmware, como en la bala trazadora, y compartir también la mecánica.
+- **Estado:** Aceptada. El valor 1/8 sigue siendo propuesta al profesor (D9).
+
+**D45 · Límites de velocidad y aceleración por motor, derivados a las articulaciones por la transmisión.**
+- **Decisión:**
+  - Los límites se fijan por motor, en grados de su eje: M1 y M2 a 80 °/s y 136 °/s², M3 a 112 °/s y 204 °/s², M4 a 1350 °/s y 2700 °/s² (`firmware/config.h`).
+  - Son un parámetro provisional, elegidos para que cada articulación quede dentro de los límites conservadores del modelo (J1 y J2 a 20 °/s, J3 a 28 °/s, J4 a 30 mm/s). Las curvas de par de N2 (#15) los reemplazan.
+  - Los de las articulaciones se derivan con el acople: |ω_J1| ≤ ω_M1/4 y |ω_J1 + ω_J2| ≤ ω_M2/4. Mover J1 y J2 a la vez en el mismo sentido gasta el margen de M2.
+  - El jog arranca y frena sin rampa, así que su velocidad máxima tiene que quedar dentro de la de cada motor. El firmware lo verifica al compilar.
+- **Por qué:** la limitación física está en los motores, no en las articulaciones. Con el acople, J2 no tiene un límite propio: depende de cuánto se mueva J1. El planificador de la URC (#9, #10) necesita esa forma para validar los tramos PTP y LIN. Faltan los datos del fabricante («1000 rpm» sin carga, aceleraciones «??»): un valor provisional declarado es mejor que uno inventado como si fuera de placa.
+- **Descartado:** límites por articulación independientes (ignoran que M2 sostiene J1 + J2) y «1000 rpm» del maestro (26,7 kHz por motor a 1/8: el UNO no los genera).
+- **Estado:** Aceptada. Valores provisionales.
+
+**D46 · Jog por motor como modo de prueba: `JOG Mm ± vel`.**
+- **Decisión:**
+  - `JOG M1 + 450` mueve solo el motor M1, sin compensar el acople. `m` va de 1 a 4. La velocidad usa las unidades de la articulación de ese motor (θM/4 en M1–M3, mm de J4 en M4), con el mismo rango que el jog articular. `JOG STOP`, `STOP` y `HALT` lo frenan igual.
+  - La página lo ofrece con una casilla, «Modo de prueba: jog por motor». Las mismas teclas mueven M1–M4 en lugar de J1–J4.
+- **Por qué:** muestra en la defensa lo que pidió el profesor: mover M1 gira el brazo, el antebrazo conserva su orientación, J2 cambia al revés que J1 y el rumbo de la herramienta queda igual. Una sola orden `JOG` con dos formas mantiene un solo camino en el firmware.
+- **Descartado:** un comando aparte (`JOGM`) y medir la velocidad del motor en pasos por segundo (dependería del microstepping, y el protocolo no lo conoce, ADR 0003).
+- **Estado:** Aceptada.

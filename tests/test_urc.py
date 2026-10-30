@@ -90,11 +90,25 @@ class SessionTests(unittest.TestCase):
         self.session.zero()
         self.assertEqual(self.uci.receive(), "ZERO")
 
+    def test_motor_jog_is_a_different_jog(self):
+        self.assertEqual(self.uci.receive(), "HELLO")
+        wait_for(lambda: self.session.snapshot()["connected"])
+        self.session.jog(4, "-")
+        self.assertEqual(self.uci.receive(), "JOG 4 - 500")
+        # El mismo eje y sentido, pero por motor: es otra orden.
+        self.session.jog(1, "+", motor=True)
+        self.assertEqual(self.uci.receive(), "JOG M1 + 500")
+        self.assertEqual(self.session.snapshot()["jog"], {"joint": 1, "direction": "+", "motor": True})
+        self.session.jog(1, "+")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+
     def test_rejects_invalid_jog_and_orders_without_robot(self):
         with self.assertRaises(ValueError):
             self.session.jog(5, "+")
         with self.assertRaises(ValueError):
             self.session.jog(1, "x")
+        with self.assertRaises(ValueError):
+            self.session.jog(1, "+", motor="sí")
         self.uci.close()
         wait_for(lambda: not self.session.snapshot()["connected"])
         with self.assertRaises(ConnectionError):
@@ -219,6 +233,8 @@ class HttpTests(unittest.TestCase):
                                  {"Origin": "http://evil.example"})
         self.assertEqual(status, 403)
         status, _ = self.request("POST", "/api/jog", {"joint": 9, "direction": "+"})
+        self.assertEqual(status, 400)
+        status, _ = self.request("POST", "/api/jog", {"joint": 1, "direction": "+", "motor": 1})
         self.assertEqual(status, 400)
         status, _ = self.request("POST", "/api/nada", {})
         self.assertEqual(status, 404)

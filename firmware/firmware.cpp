@@ -2,27 +2,22 @@
 
 #include <string.h>
 
+#include "transmission.h"
+
 namespace scara {
 
 namespace {
 
-// Pasos de motor por unidad del protocolo, como fracción entera (ADR 0003).
-// J1–J3: 1600 pasos por vuelta (1/8, D9) y polea 4:1, así que 6400 pasos son
-// 36000 centésimas de grado: 8/45. J4: ACME de 8 mm por vuelta, así que 1600
-// pasos son 800 centésimas de mm: 2/1.
-const int32_t STEPS_NUM[MOTOR_COUNT] = {8, 8, 8, 2};
-const int32_t STEPS_DEN[MOTOR_COUNT] = {45, 45, 45, 1};
-// Motores que mueve el jog de cada articulación. J1 mueve M1 y M2 juntos para
-// que J2 relativo no cambie: J1 = θM1/4 y J2 = (θM2 − θM1)/4.
-const uint8_t JOG_MOTORS[MOTOR_COUNT] = {0x03, 0x02, 0x04, 0x08};
 // Pose de reposo (D30): brazo estirado y J4 abajo, en unidades del protocolo.
 const int32_t REST[MOTOR_COUNT] = {0, 0, 0, 12000};
 // Una pausa larga entre llamadas no se recupera de golpe.
 const uint32_t JOG_MAX_ELAPSED_MS = 100;
 
-int32_t divideRounded(int32_t value, int32_t divisor) {
-  return value >= 0 ? (value + divisor / 2) / divisor : -((-value + divisor / 2) / divisor);
-}
+// El jog arranca y frena sin rampa, así que su velocidad máxima tiene que
+// quedar dentro de la de cada motor (D45), también en el jog por motor.
+static_assert(withinMotorSpeed(0, JOG_SPEED_MAX) && withinMotorSpeed(1, JOG_SPEED_MAX) &&
+                  withinMotorSpeed(2, JOG_SPEED_MAX) && withinMotorSpeed(3, JOG_SPEED_MAX),
+              "JOG_SPEED_MAX supera la velocidad de algún motor");
 
 char* append(char* out, const char* text) {
   while (*text) *out++ = *text++;
@@ -81,7 +76,7 @@ const int32_t ERR_DISABLED = 6;   // no se acepta sin corriente en los drivers
 
 Firmware::Firmware(Hal& hal)
     : hal_(hal), length_(0), invalid_(false), overflow_(false), homed_(0), enabled_(false),
-      jogJoint_(-1), jogDirection_(0),
+      jogMotors_(0), jogAxis_(0), jogDirection_(0),
       jogSpeed_(0), jogAccumulator_(0), lastJog_(0), lastStatus_(0), lastMessage_(0) {
   for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) steps_[motor] = 0;
 }
@@ -193,20 +188,13 @@ void Firmware::handle(char* line) {
       sendError(ERR_BUSY, "ocupado");
       return;
     }
-    int32_t motors[MOTOR_COUNT];
-    for (uint8_t joint = 0; joint < MOTOR_COUNT; ++joint) {
-      motors[joint] = REST[joint] * STEPS_NUM[joint] / STEPS_DEN[joint];
-    }
-    steps_[0] = motors[0];
-    steps_[1] = motors[0] + motors[1];
-    steps_[2] = motors[2];
-    steps_[3] = motors[3];
+    jointsToMotors(REST, steps_);
     homed_ = 0x0F;
   }
   // PING solo renueva el watchdog.
 }
 
-// JOG j ± vel | JOG STOP
+// JOG j ± vel | JOG Mm ± vel | JOG STOP
 void Firmware::handleJog(char* arguments) {
   char* first = nextField(&arguments);
   if (first != 0 && strcmp(first, "STOP") == 0 && noMoreFields(arguments)) {
@@ -215,9 +203,11 @@ void Firmware::handleJog(char* arguments) {
   }
   char* sign = nextField(&arguments);
   char* speedText = nextField(&arguments);
-  int32_t joint, speed;
+  // Mm: jog por motor, un modo de prueba que no compensa el acople (D46).
+  bool byMotor = first != 0 && first[0] == 'M';
+  int32_t axis, speed;
   bool valid = first != 0 && sign != 0 && speedText != 0 && noMoreFields(arguments) &&
-               parseUnsigned(first, &joint) && joint >= 1 && joint <= MOTOR_COUNT &&
+               parseUnsigned(byMotor ? first + 1 : first, &axis) && axis >= 1 && axis <= MOTOR_COUNT &&
                (strcmp(sign, "+") == 0 || strcmp(sign, "-") == 0) &&
                parseUnsigned(speedText, &speed) && speed >= 1 && speed <= JOG_SPEED_MAX;
   if (!valid) {
@@ -228,7 +218,8 @@ void Firmware::handleJog(char* arguments) {
     sendError(ERR_DISABLED, "deshabilitado");
     return;
   }
-  jogJoint_ = static_cast<int8_t>(joint - 1);
+  jogAxis_ = static_cast<uint8_t>(axis - 1);
+  jogMotors_ = byMotor ? static_cast<uint8_t>(1 << jogAxis_) : JOINT_MOTORS[jogAxis_];
   jogDirection_ = sign[0] == '+' ? 1 : -1;
   jogSpeed_ = speed;
   jogAccumulator_ = 0;
@@ -244,36 +235,31 @@ void Firmware::disable() {
 }
 
 void Firmware::stopMotion() {
-  jogJoint_ = -1;
+  jogMotors_ = 0;
   jogAccumulator_ = 0;
 }
 
-bool Firmware::moving() const { return jogJoint_ >= 0; }
+bool Firmware::moving() const { return jogMotors_ != 0; }
 
 // Integra la velocidad con aritmética entera: cada vez que el acumulador
-// junta una unidad de paso, emite un paso en cada motor del jog.
+// junta una unidad de paso, emite un paso en cada motor del jog. La velocidad
+// está en unidades del eje jogAxis_, y todos sus motores dan los mismos pasos.
 void Firmware::advanceJog(uint32_t now) {
   uint32_t elapsed = now - lastJog_;
   lastJog_ = now;
-  if (jogJoint_ < 0) return;
+  if (!moving()) return;
   if (elapsed > JOG_MAX_ELAPSED_MS) elapsed = JOG_MAX_ELAPSED_MS;
-  jogAccumulator_ += jogSpeed_ * STEPS_NUM[jogJoint_] * static_cast<int32_t>(elapsed);
-  const int32_t threshold = STEPS_DEN[jogJoint_] * 1000;
+  jogAccumulator_ += jogSpeed_ * STEPS_NUM[jogAxis_] * static_cast<int32_t>(elapsed);
+  const int32_t threshold = STEPS_DEN[jogAxis_] * 1000;
   while (jogAccumulator_ >= threshold) {
     jogAccumulator_ -= threshold;
     for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) {
-      if (JOG_MOTORS[jogJoint_] & (1 << motor)) {
+      if (jogMotors_ & (1 << motor)) {
         hal_.step(motor, jogDirection_);
         steps_[motor] += jogDirection_;
       }
     }
   }
-}
-
-// Posición estimada por pasos de la articulación 0..3, en unidades del protocolo.
-int32_t Firmware::estimated(uint8_t joint) const {
-  int32_t motor = joint == 1 ? steps_[1] - steps_[0] : steps_[joint];
-  return divideRounded(motor * STEPS_DEN[joint], STEPS_NUM[joint]);
 }
 
 // S modo referenciados J1 J2 J3 J4 hall libres último
@@ -282,7 +268,10 @@ void Firmware::sendStatus() {
   const char* mode = !enabled_ ? "OFF" : moving() ? "JOG" : "IDLE";
   char* end = append(append(append(out, "S "), mode), " ");
   end = append(end, static_cast<int32_t>(homed_));
-  for (uint8_t joint = 0; joint < MOTOR_COUNT; ++joint) end = append(append(end, " "), estimated(joint));
+  // Posición estimada por pasos, en unidades del protocolo.
+  int32_t joints[MOTOR_COUNT];
+  motorsToJoints(steps_, joints);
+  for (uint8_t joint = 0; joint < MOTOR_COUNT; ++joint) end = append(append(end, " "), joints[joint]);
   end = append(append(end, " "), static_cast<int32_t>(hal_.readHall()));
   end = append(append(end, " "), static_cast<int32_t>(QUEUE_SIZE));
   end = append(end, " 0\n");

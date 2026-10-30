@@ -7,9 +7,9 @@
 
 #include <stdint.h>
 
-namespace scara {
+#include "config.h"
 
-const uint8_t MOTOR_COUNT = 4;
+namespace scara {
 
 class Hal {
 public:

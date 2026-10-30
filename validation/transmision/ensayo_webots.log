@@ -1,0 +1,8 @@
+0 en reposo y referenciada: estimada [0, 0, 0, 12000] física [0.0, 0.0, -0.0, 11997.7] rumbo 0.0
+1 jog articular de J1: estimada [624, 0, 0, 12000], física [624.4, -0.0, 0.0, 12000.1], cambio físico [624.4, -0.0, 0.0, 2.4]
+2 jog articular de J2: estimada [624, 624, 0, 12000], física [624.4, 624.4, 0.0, 12000.1], cambio físico [0.0, 624.4, -0.0, -0.0]
+3 jog articular de J3: estimada [624, 624, 602, 12000], física [624.4, 624.4, 601.8, 12000.1], cambio físico [-0.0, 0.0, 601.8, -0.0]
+4 jog articular de J4: estimada [624, 624, 602, 11370], física [624.4, 624.4, 601.9, 11370.5], cambio físico [-0.0, -0.0, 0.0, -629.6]
+5 jog por motor de M1: estimada [1249, 0, 602, 11370] física [1248.7, 0.0, 601.9, 11370.4] cambio físico [624.3, -624.3, 0.0, -0.1] rumbo antes 1850.6 después 1850.6
+6 resolución: jog de J3 a 0,1 °/s durante 6 s; 106 muestras de la física, 36 en transición; escalones vistos (en pasos de 5.625 centésimas de grado): [0, 1, 2, 3, 4, 5, 6, 7, 8]; al frenar, 8.000 pasos
+ENSAYO OK

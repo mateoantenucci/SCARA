@@ -2,7 +2,7 @@
 
 Especificación del contrato de mensajes entre la URC y el firmware de la UCI. Reemplaza al borrador de la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md#5-protocolo-propuesto-scara1-borrador) y, cuando se retire (issue #17), al banco provisional [`scara-dev/1`](PROTOCOLO_SCARA_DEV_1.md).
 
-**Estado:** completo desde el issue #6 para conexión, corriente, jog, paradas, watchdog y reinicio. `HOME`, `SEG`, `OK` y `EV` tienen su forma fijada acá, pero los implementan el homing (#8), los segmentos (#9) y la pérdida de pasos (#15); hasta entonces el firmware responde `ERR 1 comando` a `HOME` y `SEG`, y la URC no los envía. Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37 y D40–D43.
+**Estado:** completo desde el issue #6 para conexión, corriente, jog, paradas, watchdog y reinicio. `HOME`, `SEG`, `OK` y `EV` tienen su forma fijada acá, pero los implementan el homing (#8), los segmentos (#9) y la pérdida de pasos (#15); hasta entonces el firmware responde `ERR 1 comando` a `HOME` y `SEG`, y la URC no los envía. Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37, D40–D43 y D46.
 
 ## Transporte y formato
 
@@ -25,7 +25,8 @@ Ninguna orden tiene respuesta si sale bien: el efecto se ve en el próximo `S` (
 | `ENABLE` | Da corriente a los cuatro drivers (D40). Si ya tenían, no cambia nada. | — |
 | `DISABLE` | Frena, corta la corriente y pierde la referencia (D40). | — |
 | `JOG j ± vel` | Jog articular de `j` (1–4) a `vel` centésimas por segundo (1–1000). Reemplaza al jog anterior. | `ERR 6` sin corriente |
-| `JOG STOP` | Frena el jog. | — |
+| `JOG Mm ± vel` | Jog por motor, un modo de prueba (D46): mueve solo el motor `m` (1–4), sin compensar el acople M1/M2. `vel` va en las unidades de la articulación de ese motor (θM/4 en M1–M3, mm de J4 en M4), 1–1000. Reemplaza al jog anterior. | `ERR 6` sin corriente |
+| `JOG STOP` | Frena el jog, articular o por motor. | — |
 | `STOP` | Frena todo y conserva la referencia (D41). Con los segmentos (#9), frena con rampa y vacía la cola. | — |
 | `HALT` | Parada inmediata. Si había movimiento, la referencia se pierde (D41). | — |
 | `ZERO` | Referencia manual: declara que el robot está en la pose de reposo (D30) y deja los cuatro ejes referenciados. | `ERR 6` sin corriente; `ERR 5` con movimiento |
@@ -109,6 +110,17 @@ UCI → S IDLE 15 450 0 0 12000 0 16 0
 ```
 
 J1 avanza 4,5° y J2 no cambia, porque el firmware mueve M1 y M2 juntos (J2 = (θM2 − θM1)/4).
+
+Jog por motor de M1 ([`jog_motor.txt`](../firmware/test/conversaciones/jog_motor.txt)):
+
+```text
+URC → JOG M1 + 450
+URC → JOG STOP                     (1 s después: 80 pasos de M1, M2 quieto)
+URC → STATUS
+UCI → S IDLE 0 450 -450 0 0 0 16 0
+```
+
+El brazo gira y el antebrazo conserva su orientación: J2 cambia al revés que J1 y el rumbo J1 + J2 + J3 no cambia.
 
 Corte de la URC ([`watchdog.txt`](../firmware/test/conversaciones/watchdog.txt)):
 
