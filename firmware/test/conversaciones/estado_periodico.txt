@@ -1,0 +1,9 @@
+# El estado S llega solo, 20 veces por segundo, sin que la URC lo pida.
+< BOOT scara/1 1
++ 50
+< S IDLE 0 0 0 0 0 0 16 0
+> JOG 1 + 450
++ 50
+< S JOG 0 * 0 0 0 0 16 0
++ 50
+< S JOG 0 * 0 0 0 0 16 0

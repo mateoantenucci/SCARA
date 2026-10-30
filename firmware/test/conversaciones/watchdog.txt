@@ -1,0 +1,14 @@
+# Si la URC deja de hablar más de 1 s, el jog se detiene solo (D27).
+< BOOT scara/1 1
+> JOG 1 + 450
++ 1000
+> PING
++ 1000
+# PING mantuvo vivo el enlace: pasado el primer segundo, el jog sigue.
+= M1 160 M2 160
++ 1
+< ERR 4 watchdog
++ 1000
+= M1 160 M2 160
+> STATUS
+< S IDLE 0 900 0 0 0 0 16 0

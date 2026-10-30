@@ -1,0 +1,29 @@
+# Mensajes inválidos: la UCI responde ERR y sigue atendiendo.
+< BOOT scara/1 1
+> MOVER 1
+< ERR 1 comando
+> JOG 5 + 100
+< ERR 2 argumentos
+> JOG 1 * 100
+< ERR 2 argumentos
+> JOG 1 + 0
+< ERR 2 argumentos
+> JOG 1 + 1001
+< ERR 2 argumentos
+> JOG 1 + 10x
+< ERR 2 argumentos
+> JOG 1 + 100 7
+< ERR 2 argumentos
+> HELLO extra
+< ERR 2 argumentos
+# 64 bytes con el LF es el máximo; uno más se descarta entero.
+> HELLO                                                          
+< HI scara/1 1
+> HELLO                                                          X
+< ERR 3 largo
+> HELLO
+< HI scara/1 1
+# Una línea vacía no es un mensaje.
+> 
+> STATUS
+< S IDLE 0 0 0 0 0 0 16 0

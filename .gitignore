@@ -19,3 +19,8 @@ Desktop.ini
 *.wbproj
 .vscode/
 .idea/
+
+# Compilación del controlador C++ de Webots.
+/webots/controllers/scara_uci/build/
+/webots/controllers/scara_uci/scara_uci
+/webots/controllers/scara_uci/scara_uci.exe

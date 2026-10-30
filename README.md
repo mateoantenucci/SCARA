@@ -4,6 +4,8 @@ Simulación del diseño SCARA entregado por la cátedra, para estudiar movimient
 
 El robot tiene cuatro articulaciones y se controla desde el navegador. Reutiliza geometrías CAD y colocaciones recuperadas de los archivos de la cátedra. El montaje es parcial, las propiedades físicas siguen siendo provisionales y los originales permanecen intactos. La [validación](docs/VALIDACION_WEBOTS.md) identifica la última revisión ensayada y sus resultados.
 
+**Camino nuevo, en construcción:** la URC con el protocolo `scara/1` y el firmware C++ compartido entre Arduino y Webots ya mueven J1 por jog. Cómo compilarlo y usarlo: [UCI en Webots](docs/UCI_WEBOTS.md). Lo que sigue describe el banco provisional `scara-dev/1`, que funciona igual que antes.
+
 Para entender el proyecto desde cero, leé la [guía desde cero](docs/PROCESO_Y_ARCHIVOS.md): explica qué recibimos, qué desarrollamos, cómo funciona una orden y qué archivo resuelve cada parte. Este README es el manual de ejecución; no hace falta leer primero los informes técnicos.
 
 ## Qué podés abrir
