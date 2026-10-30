@@ -417,4 +417,36 @@ Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta
   - La página lo ofrece con una casilla, «Modo de prueba: jog por motor». Las mismas teclas mueven M1–M4 en lugar de J1–J4.
 - **Por qué:** muestra en la defensa lo que pidió el profesor: mover M1 gira el brazo, el antebrazo conserva su orientación, J2 cambia al revés que J1 y el rumbo de la herramienta queda igual. Una sola orden `JOG` con dos formas mantiene un solo camino en el firmware.
 - **Descartado:** un comando aparte (`JOGM`) y medir la velocidad del motor en pasos por segundo (dependería del microstepping, y el protocolo no lo conoce, ADR 0003).
+## Arduino UNO y socat (issue #16)
+
+Decisiones tomadas al escribir la capa de hardware del UNO y ensayar el camino serie. El detalle está en [UCI en el Arduino UNO](ARDUINO_UNO.md).
+
+**D47 · Pines del UNO compatibles con el shield Ethernet.**
+- **Decisión:**
+  - STEP de M1–M4 en D2, D3, D5 y D6 (PORTD); DIR en A0–A3 (PORTC); ENABLE común en D7; Hall de J1–J4 en D8, D9, A4 y A5.
+  - Quedan libres D4 y D10–D13, los del shield Ethernet.
+  - TB6600 con cátodo común: ENA+ en alto corta la corriente. Los KY-003 usan el pull-up interno; `LOW` es activo.
+  - Un motor cableado al revés se corrige con `DIR_INVERT`, sin recablear.
+- **Por qué:** con los STEP en un mismo puerto, la interrupción los escribe de una vez y los pulsos de M1 y M2 (J1) salen juntos. Los 13 pines entran en los 13 que no usa el shield, así que pasar a Ethernet (D18) no obliga a recablear.
+- **Descartado:** repartir los pines sin mirar los puertos (los pulsos acoplados saldrían desfasados) y usar D10–D13 (cerraría la alternativa Ethernet).
+- **Estado:** Aceptada.
+
+**D48 · El núcleo cuenta los pasos y el Timer1 los convierte en pulsos.**
+- **Decisión:**
+  - `Hal::step` no saca el pulso: lo deja pendiente. La interrupción del Timer1, a 20 kHz, cambia DIR un tick antes del flanco y da un tick en alto y al menos uno en bajo: hasta 10 000 pasos/s por motor.
+  - Con 255 pasos pendientes en un motor, `step` espera a que salgan. Nunca se descarta un paso contado.
+  - El generador de pulsos es C++ sin dependencias de Arduino y se prueba en la PC.
+  - Un `static_assert` en `hal_uno.h` comprueba al compilar que el tick alcance para la velocidad máxima de cada motor (D45) con el microstepping configurado (D44).
+- **Por qué:** el ancho de pulso y el tiempo de preparación de DIR del TB6600 no dependen de cuánto tarde `poll()`, y la serie sigue atendida mientras salen los pasos. 20 kHz alcanza para J4 a 30 mm/s con 1/8 (6000 pasos/s); 10 kHz no. Descartar pasos haría que la posición estimada difiera de la real por culpa del firmware, y eso tiene que pasar solo con la pérdida de pasos que el firmware no advierte (ADR 0006).
+- **Descartado:** pulsos con `digitalWrite` y `delayMicroseconds` dentro de `step` (frenan el lazo y el ancho depende de la carga) y mover la integración de la velocidad al timer (es lógica del núcleo, que tiene que ser la misma en Webots).
+- **Estado:** Aceptada.
+
+**D49 · Ensayo del camino serie: la UCI de PC hace de placa detrás de un PTY.**
+- **Decisión:**
+  - `firmware/pc/uci_serie` crea un puerto serie virtual (PTY) y espera; socat lo abre con la misma receta que el USB del UNO y se conecta a la URC.
+  - Imita al UNO por USB: abrir el puerto reinicia el firmware (`BOOT`), y la línea que llega antes se pierde, como en el bootloader. Cerrarlo lo apaga.
+  - En Windows se usa MSYS2 (socat y `g++` del mismo runtime). Al cerrarse el puerto, la UCI crea un PTY nuevo, porque en Cygwin un PTY cerrado no se reabre.
+  - El UNO se compila con `arduino-cli` y el núcleo como biblioteca (`--library firmware`), sin copias.
+- **Por qué:** así se prueba sin la placa justo lo que va a correr con ella: la receta de socat y la URC sin cambios. La prueba entra en `python -m unittest discover` y se omite si no hay socat.
+- **Descartado:** que socat cree el PTY (`PTY,link=…`): en MSYS2 no espera a que lo abran (`wait-slave`) y se cierra con un error de E/S; además la receta dejaría de ser la del robot real. Un par de puertos COM virtuales (com0com): exige instalar un driver con permisos de administrador.
 - **Estado:** Aceptada.
