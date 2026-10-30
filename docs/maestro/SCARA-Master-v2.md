@@ -220,24 +220,24 @@ La URC y la UCI se comunican con un protocolo de texto propio, al nivel de un Ar
 | --- | --- | --- |
 | URC → UCI | `HELLO` | Pide identificación |
 | URC → UCI | `PING` | Latido para el watchdog |
-| URC → UCI | `ENABLE` / `DISABLE` | Habilita o corta los drivers |
+| URC → UCI | `ENABLE` / `DISABLE` | Habilita o corta los drivers; la UCI arranca sin corriente y `DISABLE` pierde la referencia (D40) |
 | URC → UCI | `HOME [j]` | Homing de todos los ejes o de uno |
 | URC → UCI | `ZERO` | Referencia manual desde la pose de reposo |
 | URC → UCI | `JOG j ± vel` / `JOG STOP` | Jog articular local (sin referencia) |
 | URC → UCI | `SEG n ms q1 q2 q3 q4` | Encola el segmento n: llegar a esa configuración articular en ms milisegundos |
-| URC → UCI | `STOP` / `HALT` | Frena con rampa y vacía la cola / parada inmediata |
+| URC → UCI | `STOP` / `HALT` | Frena y conserva la referencia / parada inmediata, que la pierde si había movimiento (D41) |
 | URC → UCI | `STATUS` | Pide un estado inmediato |
 | UCI → URC | `BOOT` | Arranque o reinicio: «no estoy referenciado» |
 | UCI → URC | `HI` | Respuesta a `HELLO`, con versión de firmware y de protocolo |
 | UCI → URC | `S` | Estado, 20 por segundo: modo, ejes referenciados, posición estimada por pasos, bits de Hall, lugares libres en la cola, último segmento terminado |
-| UCI → URC | `OK n` / `ERR código texto` | Respuesta a cada orden; en `SEG`, el `OK` es el control de flujo |
+| UCI → URC | `OK n` / `ERR código palabra` | `OK n`: el segmento n entró en la cola (control de flujo). `ERR`: orden rechazada o evento que frena, con códigos estables. Las demás órdenes no responden si salen bien: el efecto se ve en `S` (D35) |
 | UCI → URC | `EV HOMED j` / `EV LOST j pasos` | Eje referenciado / diferencia de pasos detectada al cruzar un Hall |
 
 **Valores iniciales (D27).** PING cada 250 ms; watchdog de 1 s; segmentos de 20 ms; cola de 16 segmentos (2–3 durante el jog verificado); 115200 baudios. Caben con holgura en un UNO: a 50 segmentos por segundo son unos 2 KB/s, contra unos 11 KB/s del enlace serie.
 
 **Canal de instrumentación (D2, [ADR 0004](../adr/0004-canal-de-instrumentacion-separado.md)).** Lo que solo existe en la simulación va por otro puerto: posición física simulada, inyección de fallas, carga y recarga del mundo. Así la URC no puede depender sin querer de información que el robot real no da.
 
-> **Pendiente de evidencia:** especificación completa del protocolo (códigos de error, campos exactos de `S`, conversaciones de ejemplo) y su suite de conformidad. Se agrega en la versión final desde el ticket del protocolo completo.
+**Especificación y conformidad (D42).** La especificación completa, con códigos de error, campos de `S` y conversaciones de ejemplo, está en [`PROTOCOLO_SCARA_1.md`](../PROTOCOLO_SCARA_1.md). Las mismas conversaciones de conformidad se ejecutan como pruebas contra el firmware (compilado en la PC) y contra la URC (con una UCI falsa por TCP), así los dos lados no pueden entender el protocolo de maneras distintas. El ensayo en Webots está en [UCI en Webots](../UCI_WEBOTS.md#ensayo-del-protocolo-completo-issue-6).
 
 ## 7. Homing y seguridad
 

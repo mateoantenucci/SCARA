@@ -1,11 +1,13 @@
 # Arranque, saludo y estado a pedido.
-# Al encender, la UCI anuncia protocolo y versión de firmware.
+# Al encender, la UCI anuncia protocolo y versión de firmware, con los
+# drivers sin corriente y sin referencia.
 < BOOT scara/1 1
+= EN 0
 > HELLO
 < HI scara/1 1
 # Sin referencia, la posición estimada cuenta desde el arranque.
 > STATUS
-< S IDLE 0 0 0 0 0 0 16 0
+< S OFF 0 0 0 0 0 0 16 0
 # El CR de un monitor serie se ignora.
 > HELLO\r
 < HI scara/1 1

@@ -17,6 +17,9 @@ public:
   virtual uint32_t millis() = 0;
   // Un pulso de paso del motor 0..3 (M1..M4); direction es +1 o -1.
   virtual void step(uint8_t motor, int8_t direction) = 0;
+  // Corriente de los cuatro drivers (ENABLE común, D18). Sin corriente, los
+  // motores giran libres y J4 cae.
+  virtual void enableDrivers(bool on) = 0;
   // Bit n = Hall de la articulación Jn+1 activo.
   virtual uint8_t readHall() = 0;
   // Próximo byte recibido del enlace, o -1 si no hay.

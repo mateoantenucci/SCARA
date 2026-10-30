@@ -1,5 +1,6 @@
 # Jog de J2, J3 y J4: cada articulación mueve solo su motor.
 < BOOT scara/1 1
+> ENABLE
 # J2 depende solo de M2 respecto de M1.
 > JOG 2 + 450
 + 1000

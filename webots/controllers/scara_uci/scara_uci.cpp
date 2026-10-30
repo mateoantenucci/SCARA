@@ -301,6 +301,12 @@ public:
       : robot_(robot), plant_(plant), link_(link) {}
   uint32_t millis() { return static_cast<uint32_t>(std::llround(robot_.getTime() * 1000.0)); }
   void step(uint8_t motor, int8_t direction) { plant_.step(motor, direction); }
+  // La planta todavía no modela el driver sin corriente: J4 no cae (falla F2,
+  // con las fallas). El firmware igual no da pasos sin corriente.
+  void enableDrivers(bool on) {
+    std::printf("UCI: drivers %s\n", on ? "con corriente" : "sin corriente");
+    std::fflush(stdout);
+  }
   uint8_t readHall() { return 0; }  // los Hall llegan con el homing (#8)
   int readByte() { return link_.readByte(); }
   void write(const char* text) { link_.write(text); }

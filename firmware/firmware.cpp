@@ -71,17 +71,33 @@ bool parseUnsigned(const char* text, int32_t* value) {
 
 }  // namespace
 
+// Código y palabra de cada ERR. Son estables: se agregan, no se renumeran.
+const int32_t ERR_COMMAND = 1;    // comando desconocido o bytes no permitidos
+const int32_t ERR_ARGUMENTS = 2;  // faltan, sobran o están fuera de rango
+const int32_t ERR_LENGTH = 3;     // línea de más de LINE_MAX bytes
+const int32_t ERR_WATCHDOG = 4;   // sin mensajes de la URC: se frenó solo
+const int32_t ERR_BUSY = 5;       // no se acepta con movimiento
+const int32_t ERR_DISABLED = 6;   // no se acepta sin corriente en los drivers
+
 Firmware::Firmware(Hal& hal)
-    : hal_(hal), length_(0), overflow_(false), homed_(0), jogJoint_(-1), jogDirection_(0),
+    : hal_(hal), length_(0), invalid_(false), overflow_(false), homed_(0), enabled_(false),
+      jogJoint_(-1), jogDirection_(0),
       jogSpeed_(0), jogAccumulator_(0), lastJog_(0), lastStatus_(0), lastMessage_(0) {
   for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) steps_[motor] = 0;
 }
 
+// Arranca sin corriente (D40): nada se mueve hasta que la URC envía ENABLE.
 void Firmware::begin() {
+  hal_.enableDrivers(false);
   uint32_t now = hal_.millis();
   lastJog_ = lastStatus_ = lastMessage_ = now;
+  sendIdentity("BOOT ");
+}
+
+// BOOT o HI: protocolo y versión de firmware.
+void Firmware::sendIdentity(const char* greeting) {
   char out[LINE_MAX];
-  char* end = append(append(append(append(out, "BOOT "), PROTOCOL), " "), FIRMWARE_VERSION);
+  char* end = append(append(append(append(out, greeting), PROTOCOL), " "), FIRMWARE_VERSION);
   append(end, "\n")[0] = '\0';
   hal_.write(out);
 }
@@ -95,9 +111,10 @@ void Firmware::poll() {
     if (byte == '\n') lastMessage_ = now;
     receive(byte);
   }
-  if (jogJoint_ >= 0 && now - lastMessage_ > WATCHDOG_MS) {
-    stopJog();
-    sendError(4, "watchdog");
+  // Quieto no hay nada que frenar. Los drivers siguen con corriente.
+  if (moving() && now - lastMessage_ > WATCHDOG_MS) {
+    stopMotion();
+    sendError(ERR_WATCHDOG, "watchdog");
   }
   if (now - lastStatus_ >= STATUS_PERIOD_MS) {
     lastStatus_ = now;
@@ -108,15 +125,17 @@ void Firmware::poll() {
 void Firmware::receive(int byte) {
   if (byte == '\r') return;
   if (byte == '\n') {
-    if (overflow_) {
-      overflow_ = false;
-      length_ = 0;
-      sendError(3, "largo");
-      return;
-    }
+    bool overflow = overflow_, invalid = invalid_;
+    overflow_ = invalid_ = false;
     line_[length_] = '\0';
     length_ = 0;
-    handle(line_);
+    if (overflow) {
+      sendError(ERR_LENGTH, "largo");
+    } else if (invalid) {
+      sendError(ERR_COMMAND, "comando");
+    } else {
+      handle(line_);
+    }
     return;
   }
   // Hasta LINE_MAX - 1 caracteres más el LF.
@@ -124,6 +143,8 @@ void Firmware::receive(int byte) {
     overflow_ = true;
     return;
   }
+  // Solo ASCII imprimible: un byte nulo cortaría la línea sin avisar.
+  if (byte < ' ' || byte > '~') invalid_ = true;
   line_[length_++] = static_cast<char>(byte);
 }
 
@@ -135,23 +156,41 @@ void Firmware::handle(char* line) {
     handleJog(cursor);
     return;
   }
-  bool known = strcmp(command, "HELLO") == 0 || strcmp(command, "PING") == 0 ||
-               strcmp(command, "STATUS") == 0 || strcmp(command, "ZERO") == 0;
+  // Órdenes sin argumentos.
+  static const char* const SIMPLE[] = {"HELLO", "PING", "STATUS", "ENABLE", "DISABLE", "STOP", "HALT", "ZERO"};
+  bool known = false;
+  for (uint8_t i = 0; !known && i < sizeof SIMPLE / sizeof SIMPLE[0]; ++i) known = strcmp(command, SIMPLE[i]) == 0;
   if (!known) {
-    sendError(1, "comando");
+    sendError(ERR_COMMAND, "comando");
   } else if (!noMoreFields(cursor)) {
-    sendError(2, "argumentos");
+    sendError(ERR_ARGUMENTS, "argumentos");
   } else if (strcmp(command, "HELLO") == 0) {
-    char out[LINE_MAX];
-    char* end = append(append(append(append(out, "HI "), PROTOCOL), " "), FIRMWARE_VERSION);
-    append(end, "\n")[0] = '\0';
-    hal_.write(out);
+    sendIdentity("HI ");
   } else if (strcmp(command, "STATUS") == 0) {
     sendStatus();
+  } else if (strcmp(command, "ENABLE") == 0) {
+    enabled_ = true;
+    hal_.enableDrivers(true);
+  } else if (strcmp(command, "DISABLE") == 0) {
+    disable();
+  } else if (strcmp(command, "STOP") == 0) {
+    // Frena y conserva la referencia. El jog todavía no tiene rampa: a su
+    // velocidad baja, parar en seco no pierde pasos.
+    stopMotion();
+  } else if (strcmp(command, "HALT") == 0) {
+    // Parada inmediata (D41): como el reset de GRBL, si había movimiento la
+    // referencia ya no vale.
+    if (moving()) homed_ = 0;
+    stopMotion();
   } else if (strcmp(command, "ZERO") == 0) {
-    // Declara que el robot está en la pose de reposo.
-    if (jogJoint_ >= 0) {
-      sendError(5, "ocupado");
+    // Declara que el robot está en la pose de reposo. Sin corriente, los
+    // motores giran libres: no hay pose que declarar.
+    if (!enabled_) {
+      sendError(ERR_DISABLED, "deshabilitado");
+      return;
+    }
+    if (moving()) {
+      sendError(ERR_BUSY, "ocupado");
       return;
     }
     int32_t motors[MOTOR_COUNT];
@@ -171,7 +210,7 @@ void Firmware::handle(char* line) {
 void Firmware::handleJog(char* arguments) {
   char* first = nextField(&arguments);
   if (first != 0 && strcmp(first, "STOP") == 0 && noMoreFields(arguments)) {
-    stopJog();
+    stopMotion();
     return;
   }
   char* sign = nextField(&arguments);
@@ -182,7 +221,11 @@ void Firmware::handleJog(char* arguments) {
                (strcmp(sign, "+") == 0 || strcmp(sign, "-") == 0) &&
                parseUnsigned(speedText, &speed) && speed >= 1 && speed <= JOG_SPEED_MAX;
   if (!valid) {
-    sendError(2, "argumentos");
+    sendError(ERR_ARGUMENTS, "argumentos");
+    return;
+  }
+  if (!enabled_) {
+    sendError(ERR_DISABLED, "deshabilitado");
     return;
   }
   jogJoint_ = static_cast<int8_t>(joint - 1);
@@ -191,10 +234,21 @@ void Firmware::handleJog(char* arguments) {
   jogAccumulator_ = 0;
 }
 
-void Firmware::stopJog() {
+// Frena, corta la corriente y pierde la referencia (D40): sin par, los
+// motores pueden girar sin que el firmware cuente los pasos.
+void Firmware::disable() {
+  stopMotion();
+  enabled_ = false;
+  homed_ = 0;
+  hal_.enableDrivers(false);
+}
+
+void Firmware::stopMotion() {
   jogJoint_ = -1;
   jogAccumulator_ = 0;
 }
+
+bool Firmware::moving() const { return jogJoint_ >= 0; }
 
 // Integra la velocidad con aritmética entera: cada vez que el acumulador
 // junta una unidad de paso, emite un paso en cada motor del jog.
@@ -225,7 +279,8 @@ int32_t Firmware::estimated(uint8_t joint) const {
 // S modo referenciados J1 J2 J3 J4 hall libres último
 void Firmware::sendStatus() {
   char out[96];  // con holgura: en uso normal la línea no pasa de 64 bytes
-  char* end = append(append(append(out, "S "), jogJoint_ >= 0 ? "JOG" : "IDLE"), " ");
+  const char* mode = !enabled_ ? "OFF" : moving() ? "JOG" : "IDLE";
+  char* end = append(append(append(out, "S "), mode), " ");
   end = append(end, static_cast<int32_t>(homed_));
   for (uint8_t joint = 0; joint < MOTOR_COUNT; ++joint) end = append(append(end, " "), estimated(joint));
   end = append(append(end, " "), static_cast<int32_t>(hal_.readHall()));

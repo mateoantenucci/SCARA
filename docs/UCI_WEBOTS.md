@@ -1,6 +1,6 @@
 # UCI en Webots y URC: el camino nuevo
 
-El camino que reemplaza al banco `scara-dev/1` (D16). Hoy cubre la bala trazadora (issue #5): jog articular de J1 desde la página de la URC, de punta a punta, atravesando todas las capas. El banco viejo sigue igual en `client/`, `scara/` y `webots/worlds/scara.wbt`.
+El camino que reemplaza al banco `scara-dev/1` (D16). Hoy cubre la bala trazadora (issue #5) y el protocolo completo (issue #6): corriente de los drivers, jog articular de J1 desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas. El banco viejo sigue igual en `client/`, `scara/` y `webots/worlds/scara.wbt`.
 
 ## Cómo funciona
 
@@ -13,12 +13,16 @@ navegador ──HTTP 8766──► URC (urc/, Python) ◄──TCP 9000, scara/1
 
 1. **La URC escucha** en el puerto 9000 (D1) y sirve la página en el 8766.
 2. **Webots se conecta como cliente** desde el controlador `scara_uci`. Si la URC no está levantada, reintenta cada segundo sin frenar la simulación (el socket es no bloqueante).
-3. **El firmware arranca con la primera conexión** y envía `BOOT` (D36). La URC saluda con `HELLO` y la UCI responde `HI`.
-4. **Al mantener D**, la página pide jog a la URC cada 150 ms; la URC envía una sola vez `JOG 1 + 500` y lo frena con `JOG STOP` al soltar la tecla o si la página deja de renovar el pedido por 500 ms (D37).
-5. **El firmware genera los pasos** con aritmética entera: para J1 emite el mismo paso a M1 y a M2. Así J2 = (θM2 − θM1)/4 no cambia (acople de la cadena híbrida).
-6. **La planta simulada** cuenta los pasos de cada motor y los convierte en ángulos con la transmisión: 1600 pasos por vuelta (1/8, D9), poleas 4:1 y ACME de 8 mm. Ordena esas posiciones a las articulaciones de Webots. Todavía no pierde pasos: eso es N2 (issue #15).
-7. **El estado `S`** vuelve a la URC 20 veces por segundo con la posición estimada por pasos, que la página muestra.
-8. **Seguridad del enlace:** la URC envía `PING` cada 250 ms; si el firmware pasa más de 1 s sin mensajes, frena el jog (watchdog, D27).
+3. **El firmware arranca con la primera conexión** y envía `BOOT` (D36), con los drivers sin corriente (D40). La URC saluda con `HELLO` y la UCI responde `HI`.
+4. **«Habilitar motores»** envía `ENABLE`. Sin corriente, el firmware rechaza el jog y `ZERO` con `ERR 6 deshabilitado`.
+5. **Al mantener D**, la página pide jog a la URC cada 150 ms; la URC envía una sola vez `JOG 1 + 500` y lo frena con `JOG STOP` al soltar la tecla o si la página deja de renovar el pedido por 500 ms (D37).
+6. **El firmware genera los pasos** con aritmética entera: para J1 emite el mismo paso a M1 y a M2. Así J2 = (θM2 − θM1)/4 no cambia (acople de la cadena híbrida).
+7. **La planta simulada** cuenta los pasos de cada motor y los convierte en ángulos con la transmisión: 1600 pasos por vuelta (1/8, D9), poleas 4:1 y ACME de 8 mm. Ordena esas posiciones a las articulaciones de Webots. Todavía no pierde pasos: eso es N2 (issue #15).
+8. **El estado `S`** vuelve a la URC 20 veces por segundo con la posición estimada por pasos, que la página muestra.
+9. **Seguridad del enlace:** la URC envía `PING` cada 250 ms; si el firmware pasa más de 1 s sin mensajes, frena el jog (watchdog, D27).
+10. **Paradas (D41):** «Stop» o <kbd>Esc</kbd> envía `STOP` (frena y conserva la referencia); «Parada inmediata» envía `HALT` (si había movimiento, pierde la referencia); «Deshabilitar motores» envía `DISABLE` (corta la corriente y pierde la referencia).
+
+La planta todavía no modela el driver sin corriente: en Webots J4 no cae con `DISABLE`. Llega con las fallas (F2).
 
 `ZERO` (botón «Referencia manual») declara que el robot está en la pose de reposo: J1 = J2 = J3 = 0 y J4 abajo (120 mm). El mundo `scara_uci.wbt` arranca exactamente en esa pose (D38); el desvío aleatorio llega con el homing (issue #8).
 
@@ -26,12 +30,12 @@ navegador ──HTTP 8766──► URC (urc/, Python) ◄──TCP 9000, scara/1
 
 | Archivo | Qué es |
 | --- | --- |
-| [`firmware/hal.h`](../firmware/hal.h) | Interfaz de capa de hardware: pasos, Hall, reloj y enlace. |
-| [`firmware/firmware.cpp`](../firmware/firmware.cpp) | Núcleo portable: parser de `scara/1`, jog, acople M1/M2, watchdog y estado. Sin memoria dinámica ni flotantes. |
-| [`firmware/test/`](../firmware/test/) | Capa de hardware falsa y conversaciones de prueba ([formato](../firmware/test/conversaciones/LEEME.md)). |
+| [`firmware/hal.h`](../firmware/hal.h) | Interfaz de capa de hardware: pasos, corriente de los drivers, Hall, reloj y enlace. |
+| [`firmware/firmware.cpp`](../firmware/firmware.cpp) | Núcleo portable: parser de `scara/1`, corriente, jog, paradas, acople M1/M2, watchdog y estado. Sin memoria dinámica ni flotantes. |
+| [`firmware/test/`](../firmware/test/) | Capa de hardware falsa y conversaciones de conformidad ([formato](../firmware/test/conversaciones/LEEME.md)). |
 | [`webots/controllers/scara_uci/`](../webots/controllers/scara_uci/) | Controlador C++: cliente TCP, reloj simulado y planta simulada. |
 | [`webots/worlds/scara_uci.wbt`](../webots/worlds/scara_uci.wbt) | Mundo con el mismo robot y el controlador nuevo. |
-| [`urc/`](../urc/) | URC: sesión `scara/1`, servidor HTTP y página. |
+| [`urc/`](../urc/) | URC: gramática de `scara/1` (`protocol.py`), sesión, servidor HTTP y página. |
 | [`docs/PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md) | Mensajes de `scara/1`. |
 
 ## Compilar el controlador
@@ -58,7 +62,8 @@ Hay que correrlo desde la raíz del repo. Llamar a ese `make` desde Git Bash no 
 
 1. `python3 -m urc.app` (Windows: `python -m urc.app`) y abrir <http://127.0.0.1:8766>.
 2. En Webots, abrir `webots/worlds/scara_uci.wbt` y darle play. La consola anuncia `UCI: conectada a la URC`. El orden no importa: si Webots arranca primero, reintenta.
-3. Mantener **D** o **A** con la página enfocada: J1 gira y el antebrazo sigue alineado con el brazo.
+3. Apretar **Habilitar motores** y, si el robot está en la pose de reposo, **Referencia manual**.
+4. Mantener **D** o **A** con la página enfocada: J1 gira y el antebrazo sigue alineado con el brazo.
 
 No se puede usar a la vez con el banco viejo: los dos quieren el puerto 9000 (en uno escucha la URC; en el otro, Webots).
 
@@ -73,3 +78,17 @@ Probado el 30/10/2026 en Windows 11 Pro con Webots R2025a y el `g++` 14.2.0 (MSY
 - Las pruebas del firmware corren con el mismo `g++`.
 
 macOS queda pendiente de verificar en la Mac del grupo.
+
+## Ensayo del protocolo completo (issue #6)
+
+El 30/10/2026, en Windows 11 con Webots R2025a, [`validation/protocolo/ensayo_webots.py`](../validation/protocolo/ensayo_webots.py) manejó la sesión real de la URC contra el controlador compilado, en un Webots minimizado, sin vista y a tiempo real ([registro](../validation/protocolo/ensayo_webots.log)):
+
+1. La UCI arranca sin corriente (`S OFF`) y rechaza el jog con `ERR 6 deshabilitado`.
+2. `ENABLE` y `ZERO` la dejan quieta y referenciada.
+3. `STOP` tras 2 s de jog a 5 °/s: J1 queda en ~8,5°, quieto y referenciado.
+4. `HALT` en pleno jog: frena y pierde la referencia.
+5. Con la URC cortada en pleno jog, el firmware frena solo (watchdog). Al volver la URC, la UCI se reconecta sin `BOOT`, quieta y referenciada.
+6. `DISABLE` deja `S OFF` sin referencia.
+7. Al reiniciar Webots, la URC lee el `BOOT` y marca el robot sin referencia.
+
+No se pudo comprobar mirando la ventana de Webots: se ensayó por el protocolo, con Webots minimizado.

@@ -26,4 +26,25 @@
 # Una línea vacía no es un mensaje.
 > 
 > STATUS
-< S IDLE 0 0 0 0 0 0 16 0
+< S OFF 0 0 0 0 0 0 16 0
+# Las órdenes sin argumentos no aceptan argumentos.
+> ENABLE 1
+< ERR 2 argumentos
+> STOP ya
+< ERR 2 argumentos
+> JOG STOP 1
+< ERR 2 argumentos
+# Solo ASCII imprimible: cualquier otro byte invalida la línea entera.
+> HELLO ñ
+< ERR 1 comando
+# HOME y SEG llegan con los issues #8 y #9; hasta entonces no se conocen.
+> HOME
+< ERR 1 comando
+> SEG 1 20 0 0 0 0
+< ERR 1 comando
+# La forma se revisa antes que el estado: sin corriente, un JOG mal escrito
+# es ERR 2 y uno bien escrito, ERR 6.
+> JOG 1 + 0
+< ERR 2 argumentos
+> JOG 1 + 450
+< ERR 6 deshabilitado

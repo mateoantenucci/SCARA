@@ -317,7 +317,7 @@ Decisiones tomadas al construir el primer camino completo. El protocolo completo
 **D35 · Forma de los mensajes de la bala trazadora.**
 - **Decisión:**
   - `BOOT` y `HI` llevan el protocolo y la versión de firmware como entero: `HI scara/1 1`.
-  - `S` tiene nueve campos fijos: `S modo ref J1 J2 J3 J4 hall libres último`. El modo es una palabra (`IDLE`, `JOG`); el resto, enteros.
+  - `S` tiene nueve campos fijos: `S modo ref J1 J2 J3 J4 hall libres último`. El modo es una palabra (`IDLE`, `JOG`; `OFF` desde D40); el resto, enteros.
   - `ERR` lleva un código entero y una palabra: 1 `comando`, 2 `argumentos`, 3 `largo`, 4 `watchdog`, 5 `ocupado`.
   - `JOG j ± vel` usa centésimas por segundo, de 1 a 1000 (10 °/s o 10 mm/s). `JOG`, `ZERO` y `PING` no tienen respuesta: el efecto se ve en el próximo `S`.
 - **Por qué:** una palabra para el modo se lee a simple vista con `nc` o el monitor serie y cuesta lo mismo en un UNO. Un código numérico en `ERR` deja que la URC decida sin comparar textos. Responder a cada `JOG` duplicaría el tráfico sin informar nada que `S` no diga.
@@ -348,3 +348,41 @@ Decisiones tomadas al construir el primer camino completo. El protocolo completo
 - **Por qué:** es el seam 1 de la spec: se prueba el comportamiento por el protocolo, no detalles internos. Los mismos archivos servirán para la UCI falsa de Python (seam 2). Integrarlas a `unittest` evita una segunda herramienta (`cmake` no está en todas las máquinas).
 - **Estado:** Aceptada.
 
+## Protocolo completo (issue #6)
+
+Decisiones tomadas al completar `scara/1`. La especificación está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md).
+
+**D40 · La UCI arranca sin corriente; `DISABLE` pierde la referencia.**
+- **Decisión:**
+  - Al arrancar, el firmware deja los drivers sin corriente (modo `OFF` en `S`). Nada se mueve hasta que la URC envía `ENABLE`.
+  - `DISABLE` frena, corta la corriente y borra la referencia.
+  - Sin corriente, el jog y `ZERO` se rechazan con `ERR 6 deshabilitado`.
+  - La página tiene los botones «Habilitar motores» y «Deshabilitar motores…», con confirmación.
+- **Por qué:** sin corriente un paso a paso gira libre: J4 cae y cualquier eje se puede mover a mano sin que el firmware cuente pasos, así que la posición estimada deja de valer. Arrancar sin corriente es lo seguro si el Arduino se reinicia a mitad de un trabajo: no retoma nada solo. Declarar la referencia sin corriente sería declarar una pose que el robot no sostiene.
+- **Descartado:** arrancar con corriente (el robot quedaría firme después de un reinicio inesperado, como si nada hubiera pasado) y conservar la referencia al deshabilitar.
+- **Estado:** Aceptada.
+
+**D41 · `STOP` conserva la referencia; `HALT` la pierde si había movimiento.**
+- **Decisión:**
+  - `STOP` frena y conserva la referencia. Con los segmentos (#9), frena con rampa y vacía la cola.
+  - `HALT` para en seco y descarta todo. Si había movimiento, borra la referencia.
+  - Los dos dejan los drivers con corriente: J4 no cae. El watchdog frena como `STOP`.
+  - <kbd>Esc</kbd> y «Stop» envían `STOP`; «Parada inmediata» envía `HALT`.
+- **Por qué:** es la división de GRBL entre *feed hold* (frena con rampa y conserva la posición) y *reset* (para ya; si había movimiento, pide homing de nuevo). Parar en seco a velocidad alta puede perder pasos (ADR 0006), y el firmware no se entera. Quieto no hay pasos que perder, así que `HALT` conserva la referencia.
+- **Descartado:** `HALT` que corta la corriente (dejaría caer J4, que es justamente la falla F2) y `HALT` que siempre pierde la referencia, aun quieto.
+- **Estado:** Aceptada.
+
+**D42 · Conformidad simétrica con las mismas conversaciones.**
+- **Decisión:**
+  - Las conversaciones de `firmware/test/conversaciones` se corren contra el firmware (D39) y contra la URC: una UCI falsa en Python se conecta por TCP a la sesión real, le envía las líneas de la UCI y comprueba que la URC pueda enviar cada orden.
+  - La URC revisa la forma de cada orden antes de enviarla (`urc/protocol.py`). Lo que el firmware rechaza por su forma (`ERR 1`–`3`), la URC se niega a enviarlo con el mismo código.
+  - Los códigos de `ERR` son estables: se agregan al final y no se renumeran. Bytes fuera de ASCII imprimible invalidan la línea (`ERR 1`).
+  - Las conversaciones ganan `! reinicio` (la UCI se reinicia sin cortar el enlace) y `EN` en `=` (corriente de los drivers).
+- **Por qué:** con un solo archivo por caso, los dos lados no pueden divergir sin que falle una prueba. Una prueba de mutación lo confirmó: si la URC acepta `JOG 1 + 0`, falla `errores.txt`; si no borra el estado ante `BOOT`, falla `reinicio.txt`.
+- **Descartado:** pruebas separadas para cada lado (cada una podría entender el protocolo a su manera).
+- **Estado:** Aceptada.
+
+**D43 · Todo `BOOT` deja al robot sin referencia en la URC.**
+- **Decisión:** al leer `BOOT`, la URC descarta el último estado (el robot queda «sin referencia» de inmediato, sin esperar al próximo `S`), las órdenes pendientes y el jog en curso. Si el `BOOT` llega a mitad de una conexión, después de que la UCI ya había hablado, avisa «BOOT inesperado… (F5)».
+- **Por qué:** las órdenes pendientes eran para un firmware que ya no existe. Con USB, abrir el puerto reinicia el UNO, así que un `BOOT` al principio de la conexión es lo normal y no merece alarma; a mitad de una conexión indica un reinicio por falla (alimentación, watchdog del micro).
+- **Estado:** Aceptada.

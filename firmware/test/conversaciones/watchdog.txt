@@ -1,5 +1,7 @@
-# Si la URC deja de hablar más de 1 s, el jog se detiene solo (D27).
+# Si la URC deja de hablar más de 1 s, el jog se detiene solo (D27, falla F4).
+# Los drivers siguen con corriente: J4 no cae y la referencia se conserva.
 < BOOT scara/1 1
+> ENABLE
 > JOG 1 + 450
 + 1000
 > PING
@@ -9,6 +11,10 @@
 + 1
 < ERR 4 watchdog
 + 1000
-= M1 160 M2 160
+= M1 160 M2 160 EN 1
+> STATUS
+< S IDLE 0 900 0 0 0 0 16 0
+# Quieto, el watchdog no tiene nada que frenar: no avisa.
++ 3000
 > STATUS
 < S IDLE 0 900 0 0 0 0 16 0
