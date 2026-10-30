@@ -1,0 +1,2 @@
+# Markdown -> HTML para tools/exportar_maestro.py; el PDF lo imprime Edge o Chrome.
+mistune>=3,<4
