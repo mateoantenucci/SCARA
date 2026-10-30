@@ -16,12 +16,12 @@ namespace {
 
 class FakeHal : public scara::Hal {
 public:
-  FakeHal() : now(0), hall(0) {
+  FakeHal() : now(0) {
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) steps[i] = 0;
   }
   uint32_t millis() { return now; }
   void step(uint8_t motor, int8_t direction) { steps[motor] += direction; }
-  uint8_t readHall() { return hall; }
+  uint8_t readHall() { return 0; }  // los Hall a voluntad llegan con el homing (#8)
   int readByte() {
     if (input.empty()) return -1;
     int byte = static_cast<unsigned char>(input.front());
@@ -31,7 +31,6 @@ public:
   void write(const char* text) { output += text; }
 
   uint32_t now;
-  uint8_t hall;
   long steps[scara::MOTOR_COUNT];
   std::deque<char> input;
   std::string output;

@@ -99,6 +99,17 @@ class SessionTests(unittest.TestCase):
         with self.assertRaises(ConnectionError):
             self.session.jog(1, "+")
 
+    def test_bad_lines_are_reported_without_dropping_the_link(self):
+        self.assertEqual(self.uci.receive(), "HELLO")
+        self.uci.sock.sendall(b"\xff\xfe ruido de arranque\n" + b"x" * 200 + b"\n")
+        self.uci.send("HI scara/2 1")
+        self.uci.send("S IDLE 1_5 0 0 0 0 0 16 0")
+        self.uci.send("HI scara/1 1")
+        state = wait_for(lambda: (s := self.session.snapshot())["firmware"] and s)
+        self.assertTrue(state["connected"])
+        self.assertIsNone(state["status"])
+        self.assertEqual(len(state["errors"]), 4, state["errors"])
+
     def test_reconnection_greets_again_and_discards_bad_lines(self):
         self.assertEqual(self.uci.receive(), "HELLO")
         self.uci.send("S IDLE 0 1 2")

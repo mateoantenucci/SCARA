@@ -1,6 +1,6 @@
 # Conversaciones de prueba del firmware
 
-Cada `.txt` es una conversación `scara/1` entre una URC imaginaria y el firmware real, compilado para la PC con una capa de hardware falsa: reloj controlable, Hall a voluntad y contadores de pasos por motor. Es el seam 1 de la spec #2. Más adelante, una UCI falsa en Python reproducirá las mismas conversaciones contra la URC, así los dos lados quedan obligados a entender igual el protocolo.
+Cada `.txt` es una conversación `scara/1` entre una URC imaginaria y el firmware real, compilado para la PC con una capa de hardware falsa: reloj controlable y contadores de pasos por motor (los Hall a voluntad llegan con el homing, issue #8). Es el seam 1 de la spec #2. Más adelante, una UCI falsa en Python reproducirá las mismas conversaciones contra la URC, así los dos lados quedan obligados a entender igual el protocolo.
 
 ## Cómo se corren
 

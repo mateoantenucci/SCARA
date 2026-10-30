@@ -82,15 +82,17 @@ function format(joint, value) {
   return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
 }
 
-async function post(path, body = {}) {
+async function post(path, body = {}, timeoutMs = null) {
   const response = await fetch(path, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    signal: timeoutMs === null ? undefined : AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error((await response.json()).error);
 }
 
 function show(error) {
-  document.getElementById("feedback").textContent = error ? error.message : "";
+  const text = error && error.name === "TimeoutError" ? "La URC no responde" : error && error.message;
+  document.getElementById("feedback").textContent = text || "";
 }
 
 function startJog(direction) {
@@ -100,7 +102,9 @@ function startJog(direction) {
   for (const button of document.querySelectorAll("[data-direction]")) {
     button.classList.toggle("active", button.dataset.direction === direction);
   }
-  const send = () => post("/api/jog", { joint: 1, direction }).then(() => show(null), show);
+  // Un pedido que no llega a tiempo se cancela: si la URC estaba caída, no
+  // debe llegar tarde y mover el robot con la tecla ya suelta.
+  const send = () => post("/api/jog", { joint: 1, direction }, 2 * REFRESH_MS).then(() => show(null), show);
   send();
   timer = setInterval(send, REFRESH_MS);
 }

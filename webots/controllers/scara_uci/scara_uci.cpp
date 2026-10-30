@@ -10,6 +10,7 @@
 #include <webots/Node.hpp>
 #include <webots/Supervisor.hpp>
 
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstdio>
@@ -276,8 +277,14 @@ public:
         TWO_PI * turns[2] / PULLEY_RATIO,
         LEAD_M * turns[3],
     };
+    // Los topes mecánicos frenan la articulación aunque el motor siga dando
+    // pasos; el firmware no se entera (no hay encoders).
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
-      if (motors_[i]) motors_[i]->setPosition(REST[i] + joints[i]);
+      if (!motors_[i]) continue;
+      double target = REST[i] + joints[i];
+      double low = motors_[i]->getMinPosition(), high = motors_[i]->getMaxPosition();
+      if (low < high) target = std::max(low, std::min(high, target));  // 0 y 0: sin límites
+      motors_[i]->setPosition(target);
     }
   }
 

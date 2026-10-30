@@ -66,7 +66,7 @@ def handler_for(session):
                 self.reply(202, {"message": "Orden enviada a la UCI"})
             except ConnectionError as exc:
                 self.reply(409, {"error": str(exc)})
-            except ValueError as exc:
+            except (ValueError, RecursionError) as exc:
                 self.reply(400, {"error": str(exc)})
 
     return Handler

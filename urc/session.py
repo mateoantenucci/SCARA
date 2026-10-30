@@ -7,6 +7,7 @@ el estado y deja órdenes en una cola.
 
 from collections import deque
 import queue
+import re
 import select
 import socket
 import threading
@@ -19,13 +20,21 @@ PING_PERIOD = 0.25           # s (D27)
 JOG_SPEED = 500              # centésimas por segundo: jog articular lento
 JOG_HOLD = 0.5               # s sin renovar el jog desde la página => JOG STOP
 MODES = ("IDLE", "JOG")
+INTEGER = re.compile(r"-?[0-9]+")
+
+
+def integer(text):
+    """Entero del protocolo: solo cifras ASCII y un signo menos opcional."""
+    if not INTEGER.fullmatch(text):
+        raise ValueError(f"{text!r} no es un entero")
+    return int(text)
 
 
 def parse_status(fields):
     """S modo referenciados J1 J2 J3 J4 hall libres último."""
     if len(fields) != 9 or fields[0] not in MODES:
         raise ValueError("estado S mal formado")
-    numbers = [int(value) for value in fields[1:]]
+    numbers = [integer(value) for value in fields[1:]]
     return {
         "mode": fields[0],
         "homed": numbers[0],
@@ -148,7 +157,16 @@ class Session:
             self._discard_outgoing()
             self.message = f"UCI desconectada: {reason}. Esperando que se vuelva a conectar."
 
-    def _receive(self, line):
+    def _receive(self, raw):
+        """Una línea mala se informa y se descarta; no corta el enlace."""
+        try:
+            if len(raw) + 1 > LINE_MAX:
+                raise ValueError("línea de más de 64 bytes")
+            line = raw.decode("ascii").rstrip("\r")
+        except ValueError as exc:
+            with self.lock:
+                self.errors.append(f"{raw[:LINE_MAX]!r}: {exc}")
+            return
         fields = line.split()
         with self.lock:
             if fields and fields[0] != "S":
@@ -159,7 +177,9 @@ class Session:
                 if fields[0] in ("BOOT", "HI"):
                     if len(fields) != 3:
                         raise ValueError(f"{fields[0]} mal formado")
-                    self.firmware = {"protocol": fields[1], "version": int(fields[2])}
+                    if fields[1] != PROTOCOL:
+                        raise ValueError(f"la UCI habla {fields[1]}, no {PROTOCOL}")
+                    self.firmware = {"protocol": fields[1], "version": integer(fields[2])}
                     if fields[0] == "BOOT":
                         # Arranque de la UCI: toda referencia anterior se perdió.
                         self.boots += 1
@@ -213,15 +233,13 @@ class Session:
                     if not chunk:
                         raise ConnectionError("cerró la conexión")
                     buffer += chunk
-                    while b"\n" in buffer:
-                        raw, buffer = buffer.split(b"\n", 1)
-                        if len(raw) + 1 > LINE_MAX:
-                            raise ValueError("línea de más de 64 bytes")
-                        self._receive(raw.decode("ascii").rstrip("\r"))
-                    if len(buffer) >= LINE_MAX:
-                        raise ValueError("línea de más de 64 bytes")
+                    *lines, buffer = buffer.split(b"\n")
+                    for raw in lines:
+                        self._receive(raw)
+                    # Lo que pasa de 64 bytes sin LF ya es una línea inválida.
+                    buffer = buffer[:LINE_MAX]
                 self._send_pending(client, time.monotonic())
-            except (OSError, ValueError, UnicodeError) as exc:
+            except OSError as exc:
                 if client is not None:
                     client.close()
                 client, buffer = None, b""
