@@ -319,7 +319,26 @@ El jog cartesiano nunca cambia la configuración del codo. Desde el brazo estira
 
 **Reproducción (D29).** Play desde el principio o desde el punto seleccionado; pausa con rampa y reanudación sin perder la recta del tramo; stop (Esc) que frena y descarta lo pendiente; loop de N veces o infinito; tramo en ejecución resaltado. Los tiempos se respetan aunque la red tenga demoras, porque los ejecuta el reloj del firmware (D6).
 
-> **Pendiente de evidencia:** teach & play LIN y PTP en Webots, con trayectorias de demostración versionadas; desvío de la recta medido contra la posición física simulada.
+### Tramo PTP y segmentos temporizados
+
+Implementado en el issue #9. La página de la URC ya lleva el robot a una pose escrita a mano, en J1–J4 o en X, Y, Z y rumbo, con un tramo PTP.
+
+**Perfil sincronizado (D53).** Todas las articulaciones siguen el mismo perfil de velocidad trapezoidal s(t), de 0 a 1: q(t) = inicio + s(t) · recorrido. Por eso empiezan, aceleran, frenan y llegan a la vez, y el camino es una recta en articulaciones. Los máximos del perfil los fija la restricción más exigente entre las articulaciones del modelo y los motores, con el acople: M2 recorre J1 + J2 (D45). La velocidad del tramo, en porcentaje, reduce las velocidades máximas; la aceleración queda en su máximo.
+
+**Segmentos de 20 ms (D27, D50).** La URC muestrea el perfil cada 20 ms y envía cada muestra como `SEG n ms q1 q2 q3 q4`. El firmware los encola (16 lugares) y los ejecuta con su reloj, interpolando lineal entre muestras. Un segmento empieza cuando termina el anterior, aunque haya llegado tarde: una demora del enlace de hasta 320 ms no se nota. La URC envía un `SEG` por vez y espera su `OK`. Con la cola llena, el firmware demora el `OK` hasta que se libera un lugar, así la URC nunca envía de más.
+
+```text
+URC: perfil s(t) → muestras cada 20 ms → SEG n 20 q1 q2 q3 q4 ──┐
+                                                ▲               │
+                                              OK n              ▼
+UCI: cola de 16 ──→ reloj del firmware ──→ interpolación ──→ pasos de M1–M4
+```
+
+**Defensas en el firmware (D51).** `SEG` exige corriente y robot referenciado, y no se mezcla con el jog. El firmware verifica que ningún motor supere su velocidad en el segmento (`ERR 8`): protege a los motores de un error de la URC. Aceleraciones, límites y choques los verifica la URC antes de enviar.
+
+**Paradas (D52).** `STOP` y el watchdog frenan con rampa: cada motor sigue en su sentido y baja la velocidad en línea recta hasta cero, todos en el mismo tiempo, con la aceleración del motor más exigido. Desde 20 °/s, J1 frena en 0,59 s y 5,9°. La cola se vacía y la referencia se conserva. `HALT` para en seco.
+
+> **Pendiente de evidencia:** teach & play LIN en Webots, con trayectorias de demostración versionadas; desvío de la recta medido contra la posición física simulada. El PTP y los segmentos ya tienen su ensayo en Webots ([validación de segmentos](../../validation/segmentos/INFORME.md)).
 
 ## 9. Qué se simula y qué no
 
@@ -358,6 +377,8 @@ Qué va a traer:
 - Pruebas automáticas: firmware por su protocolo en la PC; URC por sus dos bordes (UCI falsa por TCP e interfaz HTTP); planificador como módulo puro.
 - Escenarios en Webots: homing desde el reposo; teach & play LIN y PTP; fallas F1–F5; comparación de lo simulado contra lo estimado.
 - Compilación en Windows y en Mac (D19).
+
+Ya hay ensayos de la ronda: [segmentos y tramo PTP](../../validation/segmentos/INFORME.md) (issue #9) y [transmisión N1](../../validation/transmision/INFORME.md) (issue #7).
 
 <!-- SALTO DE PAGINA -->
 
@@ -402,5 +423,7 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D32 | Tramo de aproximación PTP y vuelta del loop | Decidido | |
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
+
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

@@ -48,7 +48,8 @@ def forward(q, config=None):
     ]
 
 
-def inverse(x, y, z, yaw=None, current=None, config=None):
+def inverse(x, y, z, yaw=None, current=None, config=None, elbow=None):
+    """elbow: -1 o 1 restringe la configuracion del codo al signo de q2."""
     config = config or load_config()
     x, y, z = _numbers([x, y, z], 3, "Objetivo XYZ")
     current = validate_joints(current if current is not None else config["initial_positions"], config)
@@ -67,9 +68,11 @@ def inverse(x, y, z, yaw=None, current=None, config=None):
     if math.hypot(x, y) < 1e-10:
         raise ValueError("El origen es una configuracion singular; elegir otro objetivo")
     q4 = g["shoulder_z"] + g["elbow_z_offset"] + g["tool_z_offset"] - z
-    elbow = math.acos(max(-1.0, min(1.0, cosine)))
+    bend = math.acos(max(-1.0, min(1.0, cosine)))
     candidates = []
-    for q2 in (elbow, -elbow):
+    for q2 in (bend, -bend):
+        if elbow is not None and q2 * elbow < 0:
+            continue
         shoulder = math.atan2(y, x) - math.atan2(l2 * math.sin(q2), l1 + l2 * math.cos(q2))
         for turn1, turn3 in itertools.product((-1, 0, 1), (0,) if preserve_heading else (-1, 0, 1)):
             q1 = shoulder + turn1 * math.tau

@@ -125,6 +125,10 @@ _Evitar_: Programa, rutina.
 **Tramo**:
 Movimiento entre dos puntos consecutivos de una trayectoria. Su camino lo calcula la URC según su tipo, LIN o PTP.
 
+**Segmento**:
+Porción de unos 20 ms de un tramo que la URC envía al firmware con `SEG`: una configuración articular de destino y su duración. El firmware los encola y los ejecuta con su reloj, interpolando lineal en articulaciones.
+_Evitar_: Paso (es el pulso de un motor), punto (es de la trayectoria).
+
 **Tramo de aproximación**:
 Tramo PTP que la URC calcula al iniciar la reproducción, desde la pose actual del robot hasta el primer punto. No forma parte de la trayectoria guardada.
 

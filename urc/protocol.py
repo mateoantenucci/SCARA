@@ -12,7 +12,10 @@ import re
 PROTOCOL = "scara/1"
 LINE_MAX = 64                # bytes con el LF (D4)
 JOG_SPEED_MAX = 1000         # centésimas por segundo
-MODES = ("OFF", "IDLE", "JOG")
+SEG_NUMBER_MAX = 999999999   # n de SEG: hasta 9 cifras, desde 1
+SEG_MS_MAX = 1000            # duración máxima de un segmento
+SEG_UNITS_MAX = 99999        # |q| máximo de un segmento, en centésimas
+MODES = ("OFF", "IDLE", "JOG", "RUN")
 # Órdenes sin argumentos.
 SIMPLE_ORDERS = ("HELLO", "PING", "STATUS", "ENABLE", "DISABLE", "STOP", "HALT", "ZERO")
 # Código: (palabra, causa). Son estables: se agregan, no se renumeran.
@@ -23,9 +26,13 @@ ERRORS = {
     4: ("watchdog", "más de 1 s sin mensajes de la URC: el robot frenó solo"),
     5: ("ocupado", "no se acepta mientras hay movimiento"),
     6: ("deshabilitado", "no se acepta con los drivers sin corriente"),
+    7: ("referencia", "SEG sin el robot referenciado"),
+    8: ("velocidad", "el segmento supera la velocidad de un motor"),
+    9: ("cola", "SEG antes del OK del anterior, con la cola llena"),
 }
 INTEGER = re.compile(r"-?[0-9]+")
 UNSIGNED = re.compile(r"[0-9]{1,9}")      # como parseUnsigned del firmware
+SIGNED = re.compile(r"-?[0-9]{1,9}")      # como parseSigned del firmware
 PRINTABLE = re.compile(r"[ -~]*")
 
 
@@ -55,6 +62,10 @@ def check_order(line):
         if arguments != ["STOP"] and not _valid_jog(arguments):
             raise ProtocolError(2, "se espera JOG j ± vel, JOG Mm ± vel (j y m de 1 a 4, vel de 1 a 1000) "
                                    "o JOG STOP")
+    elif command == "SEG":
+        if not _valid_segment(arguments):
+            raise ProtocolError(2, f"se espera SEG n ms q1 q2 q3 q4 (n de 1 a {SEG_NUMBER_MAX}, ms de 1 a "
+                                   f"{SEG_MS_MAX}, q enteros de hasta ±{SEG_UNITS_MAX})")
     else:
         raise ProtocolError(1, f"{command} no es una orden de {PROTOCOL}")
     return line
@@ -68,6 +79,20 @@ def _valid_jog(arguments):
         axis = axis[1:]
     return (UNSIGNED.fullmatch(axis) is not None and 1 <= int(axis) <= 4 and sign in ("+", "-")
             and UNSIGNED.fullmatch(speed) is not None and 1 <= int(speed) <= JOG_SPEED_MAX)
+
+
+def _valid_segment(arguments):
+    if len(arguments) != 6:
+        return False
+    number, ms, *units = arguments
+    return (UNSIGNED.fullmatch(number) is not None and 1 <= int(number)
+            and UNSIGNED.fullmatch(ms) is not None and 1 <= int(ms) <= SEG_MS_MAX
+            and all(SIGNED.fullmatch(q) is not None and abs(int(q)) <= SEG_UNITS_MAX for q in units))
+
+
+def segment_line(number, ms, units):
+    """Orden SEG lista para enviar: n, duración en ms y J1–J4 en centésimas."""
+    return check_order(f"SEG {number} {ms} {' '.join(str(q) for q in units)}")
 
 
 def integer(text):
@@ -91,6 +116,10 @@ def parse_message(line):
         return {"kind": kind, "protocol": rest[0], "version": integer(rest[1])}
     if kind == "S":
         return dict(parse_status(rest), kind="S")
+    if kind == "OK":
+        if len(rest) != 1:
+            raise ValueError("OK mal formado")
+        return {"kind": "OK", "number": integer(rest[0])}
     if kind == "ERR":
         if len(rest) != 2:
             raise ValueError("ERR mal formado")

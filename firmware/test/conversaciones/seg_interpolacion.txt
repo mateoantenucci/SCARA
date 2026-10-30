@@ -1,0 +1,50 @@
+# SEG n ms q1 q2 q3 q4: llegar a esa configuración articular en ms
+# milisegundos, interpolando lineal en articulaciones (D6). El firmware lo
+# convierte a pasos con el acople: M2 sigue a J1 + J2. Con 1/8, 1° de J1–J3
+# son 160/9 pasos y 1 mm de J4, 200. Los pasos de = se cuentan desde el
+# arranque: ZERO no mueve motores.
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+= M1 0 M2 0 M3 0 M4 0
+# J1 sube 9° en 500 ms (18 °/s): M1 y M2 giran juntos. Después J2 baja 9°:
+# solo M2, que vuelve a cero.
+> SEG 1 500 900 0 0 12000
+< OK 1
+> SEG 2 500 900 -900 0 12000
+< OK 2
+> STATUS
+< S RUN 15 0 0 0 12000 0 14 0
++ 250
+= M1 80 M2 80 M3 0 M4 0
++ 250
+= M1 160 M2 160
+< S RUN 15 900 0 0 12000 0 15 1
++ 250
+= M1 160 M2 80
++ 250
+= M1 160 M2 0 M3 0 M4 0
+> STATUS
+< S IDLE 15 900 -900 0 12000 0 16 2
+# Las cuatro articulaciones a la vez: todas empiezan y llegan juntas.
+# M2 recorre (J1 + J2): de 0 a −900.
+> SEG 3 1000 0 -900 1800 10000
+< OK 3
++ 500
+= M1 80 M2 -80 M3 160 M4 -2000
+> STATUS
+< S RUN 15 450 -900 900 11000 0 15 2
++ 500
+= M1 0 M2 -160 M3 320 M4 -4000
+> STATUS
+< S IDLE 15 0 -900 1800 10000 0 16 3
+# Un segmento sin movimiento es una espera: el robot queda quieto ese tiempo.
+> SEG 4 1000 0 -900 1800 10000
+< OK 4
++ 999
+> STATUS
+< S RUN 15 0 -900 1800 10000 0 15 3
++ 1
+= M1 0 M2 -160 M3 320 M4 -4000
+> STATUS
+< S IDLE 15 0 -900 1800 10000 0 16 4

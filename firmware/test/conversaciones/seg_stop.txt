@@ -1,0 +1,42 @@
+# STOP frena con rampa, vacía la cola y conserva la referencia (D41). Cada
+# motor sigue en el sentido del segmento en ejecución y baja su velocidad en
+# línea recta hasta cero, con la aceleración de D45.
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+# J1 a 18 °/s: 320 pasos de M1 y M2 por segundo.
+> SEG 1 1000 1800 0 0 12000
+< OK 1
+> SEG 2 1000 3600 0 0 12000
+< OK 2
++ 500
+= M1 160 M2 160
+# M1 frena con 136 °/s² (J1 a 34 °/s²): 530 ms y 85 pasos, unos 4,8° de J1.
+# La cola ya está vacía; S sigue en RUN hasta que el robot se detiene.
+> STOP
++ 265
+= M1 224 M2 224
+> STATUS
+< S RUN 15 1260 0 0 12000 0 16 0
++ 265
+= M1 245 M2 245
+> STATUS
+< S IDLE 15 1378 0 0 12000 0 16 0
++ 500
+= M1 245 M2 245
+# Quieto, STOP no hace nada.
+> STOP
+> STATUS
+< S IDLE 15 1378 0 0 12000 0 16 0
+# HALT para en seco, descarta la cola y pierde la referencia.
+> SEG 3 1000 3178 0 0 12000
+< OK 3
++ 500
+> HALT
++ 500
+= M1 405 M2 405
+> STATUS
+< S IDLE 0 2278 0 0 12000 0 16 0
+# Sin referencia, no se aceptan segmentos.
+> SEG 4 1000 3178 0 0 12000
+< ERR 7 referencia

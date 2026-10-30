@@ -1,0 +1,63 @@
+# SEG mal escrito o fuera de lugar. La forma se revisa antes que el estado.
+< BOOT scara/1 1
+# n de 1 a 999999999, ms de 1 a 1000 y cuatro posiciones enteras de hasta
+# 5 cifras con signo.
+> SEG 0 20 0 0 0 0
+< ERR 2 argumentos
+> SEG 1 0 0 0 0 0
+< ERR 2 argumentos
+> SEG 1 1001 0 0 0 0
+< ERR 2 argumentos
+> SEG 1 20 0 0 0
+< ERR 2 argumentos
+> SEG 1 20 0 0 0 0 0
+< ERR 2 argumentos
+> SEG 1 20 100000 0 0 0
+< ERR 2 argumentos
+> SEG 1 20 0 0 0 +5
+< ERR 2 argumentos
+> SEG 1 20 0 0 0 1.5
+< ERR 2 argumentos
+> SEG 1 20 0 - 0 0
+< ERR 2 argumentos
+> SEG x 20 0 0 0 0
+< ERR 2 argumentos
+> SEG
+< ERR 2 argumentos
+# Bien escrito, pero sin corriente y sin referencia.
+> SEG 1 20 0 0 0 12000
+< ERR 6 deshabilitado
+> ENABLE
+> SEG 1 20 0 0 0 12000
+< ERR 7 referencia
+> ZERO
+# Más rápido que un motor (D45). J1 a 20 °/s son 40 centésimas en 20 ms; se
+# admiten 2 más por el redondeo de la URC.
+> SEG 1 20 43 0 0 12000
+< ERR 8 velocidad
+# J1 y J2 en el mismo sentido: M2 sigue a J1 + J2 y no le alcanza.
+> SEG 1 20 30 30 0 12000
+< ERR 8 velocidad
+# Opuestos, M2 queda quieto: vale.
+> SEG 1 20 42 -42 0 12000
+< OK 1
++ 20
+= M1 7 M2 0
+# Un movimiento por vez: con jog no hay SEG, y con segmentos no hay jog ni ZERO.
+> JOG 3 + 100
+> SEG 2 20 42 -42 0 12000
+< ERR 5 ocupado
+> JOG STOP
+> SEG 2 500 900 -900 0 12000
+< OK 2
+> STATUS
+< S RUN 15 * * 0 12000 0 15 1
+# Todo ERR con segmentos en ejecución frena con rampa, como STOP: la URC
+# cancela el resto del tramo.
+> JOG 1 + 450
+< ERR 5 ocupado
+> ZERO
+< ERR 5 ocupado
++ 1000
+> STATUS
+< S IDLE 15 * * 0 12000 0 16 1

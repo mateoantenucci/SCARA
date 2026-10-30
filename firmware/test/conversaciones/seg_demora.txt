@@ -1,0 +1,39 @@
+# Los tiempos los marca el reloj del firmware (D6): cada segmento empieza
+# cuando termina el anterior, no cuando llega. Una demora del enlace no se
+# nota mientras quede cola. J3 a 18 °/s: 32 pasos de M3 cada 100 ms.
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+> SEG 1 100 0 0 180 12000
+< OK 1
+> SEG 2 100 0 0 360 12000
+< OK 2
+> SEG 3 100 0 0 540 12000
+< OK 3
+# El segmento 4 llega 150 ms tarde, con la cola todavía en marcha.
++ 150
+= M3 48
+> SEG 4 100 0 0 720 12000
+< OK 4
++ 150
+= M3 96
+# Empezó a los 300 ms, al terminar el 3, aunque llegó a los 150: el ritmo no
+# cambia.
++ 50
+= M3 112
++ 50
+= M3 128
+> STATUS
+< S IDLE 15 0 0 720 12000 0 16 4
+# Si la cola se vacía, el robot se detiene en el último destino y el próximo
+# segmento arranca cuando llega. Para que no haya un salto de velocidad, la
+# URC planifica cada tramo hasta velocidad cero.
++ 200
+> SEG 5 100 0 0 900 12000
+< OK 5
++ 50
+= M3 144
++ 50
+= M3 160
+> STATUS
+< S IDLE 15 0 0 900 12000 0 16 5

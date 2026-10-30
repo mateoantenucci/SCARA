@@ -6,10 +6,13 @@ Cada renglón se lee desde el lado de la URC:
 
 - `> LÍNEA`: la URC tiene que poder enviarla, y la UCI falsa la recibe tal
   cual. Si el firmware la rechaza por su forma (ERR 1, 2 o 3), la URC tiene
-  que negarse a enviarla, con el mismo código.
+  que negarse a enviarla, con el mismo código. Los SEG siguen el control de
+  flujo: la URC envía uno y espera su OK. Un SEG que el firmware rechaza con
+  ERR 9 (cola) es uno que la URC no envía, porque todavía espera el OK del
+  anterior: no envía de más.
 - `< LÍNEA`: la UCI falsa la envía (`*` vale 0) y la URC tiene que entenderla:
-  un `S` actualiza el estado, un `BOOT` deja el robot sin referencia y un
-  `ERR` queda registrado con su código.
+  un `S` actualiza el estado, un `BOOT` deja el robot sin referencia, un `OK`
+  confirma el segmento y un `ERR` queda registrado con su código.
 - `+`, `=` y `!` son del reloj, los motores y el reinicio de la UCI: la URC
   no los ve.
 """
@@ -25,6 +28,7 @@ from urc.session import Session
 ROOT = Path(__file__).resolve().parents[1]
 CONVERSATIONS = sorted((ROOT / "firmware" / "test" / "conversaciones").glob("*.txt"))
 GRAMMAR_ERRORS = (1, 2, 3)
+QUEUE_ERROR = 9
 
 
 def read_conversation(path):
@@ -84,6 +88,9 @@ class ConformanceTests(unittest.TestCase):
             self.assertEqual(caught.exception.code, code, where)
             return
         session.order(text)
+        if code == QUEUE_ERROR:
+            self.assertTrue(uci.silent(), where)
+            return
         expected = text.replace("\r", "")
         received = uci.receive(ignore=() if expected == "PING" else ("PING",))
         self.assertEqual(received.split(), expected.split(), where)
@@ -99,8 +106,14 @@ class ConformanceTests(unittest.TestCase):
             self.assertIsNone(state["status"], where)
         elif kind == "HI":
             self.assertEqual(state["firmware"], message, where)
+        elif kind == "OK":
+            self.assertEqual(state["segments"]["last_ok"], message["number"], where)
+            self.assertIsNone(state["segments"]["in_flight"], where)
         elif kind == "ERR":
             self.assertTrue(state["errors"][-1].startswith(f"ERR {message['code']} {message['word']}:"), where)
+            # Ante un ERR, lo que faltaba del tramo ya no se envía.
+            self.assertEqual(state["segments"]["pending"], 0, where)
+            self.assertIsNone(state["segments"]["in_flight"], where)
 
 
 if __name__ == "__main__":

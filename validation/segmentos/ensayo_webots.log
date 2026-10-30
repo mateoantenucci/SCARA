@@ -1,0 +1,30 @@
+0 en reposo y referenciada: estimada [0, 0, 0, 12000]
+1 PTP: de [0, 0, 0, 12000] a [3000, -6000, 2000, 8000]: 179 segmentos, 3.58 s planificados
+   J1: arranca a los 0.030 s y llega a los 3.610 s
+   J2: arranca a los 0.000 s y llega a los 3.520 s
+   J3: arranca a los 0.040 s y llega a los 3.510 s
+   J4: arranca a los 0.030 s y llega a los 3.540 s
+   duración física 3.610 s; dispersión de arranques 0.040 s, de llegadas 0.100 s; mayor diferencia de avance entre articulaciones en una muestra: 0.2 % del camino
+   velocidad física máxima J1–J4 [1015, 2005, 678, 1338] (límites [2005, 2005, 2865, 3000]); M1–M4 [1015, 1013, 678, 1338] (límites [2000, 2000, 2800, 3000])
+   física final [2998.1, -5996.3, 2002.4, 8000.5]
+2 PTP con 200 ms sin enviar segmentos: de [2998, -5996, 2003, 8000] a [-3000, -3000, -2000, 10000]: 180 segmentos, 3.60 s planificados
+   J1: arranca a los 0.000 s y llega a los 3.680 s
+   J2: arranca a los 0.040 s y llega a los 3.680 s
+   J3: arranca a los 0.020 s y llega a los 3.600 s
+   J4: arranca a los 0.090 s y llega a los 3.500 s
+   duración física 3.680 s; dispersión de arranques 0.090 s, de llegadas 0.180 s; mayor diferencia de avance entre articulaciones en una muestra: 0.2 % del camino
+   velocidad física máxima J1–J4 [2004, 1022, 1343, 667] (límites [2005, 2005, 2865, 3000]); M1–M4 [2004, 1014, 1343, 667] (límites [2000, 2000, 2800, 3000])
+   física final [-2998.1, -3003.8, -2002.5, 10000.4]
+   durante la demora la cola bajó a 3 segmentos de 16, sin vaciarse; el firmware estuvo 3.59 s en RUN (planificado 3.60 s), sin detenerse (0.00 s en IDLE)
+3 PTP con 600 ms sin enviar segmentos: de [-2998, -3004, -2003, 10000] a [3000, -6000, 2000, 8000]: 180 segmentos, 3.60 s planificados
+   J1: arranca a los 0.000 s y llega a los 4.470 s
+   J2: arranca a los 0.030 s y llega a los 3.830 s
+   J3: arranca a los 0.000 s y llega a los 3.750 s
+   J4: arranca a los 0.070 s y llega a los 3.660 s
+   duración física 4.470 s; dispersión de arranques 0.070 s, de llegadas 0.810 s; mayor diferencia de avance entre articulaciones en una muestra: 3.0 % del camino
+   velocidad física máxima J1–J4 [2005, 1120, 1440, 667] (límites [2005, 2005, 2865, 3000]); M1–M4 [2005, 1213, 1440, 667] (límites [2000, 2000, 2800, 3000])
+   física final [2998.1, -5996.2, 2002.5, 8000.4]
+   la cola se vació: el firmware quedó quieto 0.20 s en IDLE en medio del tramo y estuvo 3.79 s entre el primer y el último RUN (planificado 3.60 s). Al volver los segmentos arrancó de golpe a velocidad de crucero.
+4 STOP a los 2,5 s de un PTP de J1 de 2998 a -9000: J1 iba a 20.0 °/s; empezó a frenar 0.12 s después de enviar STOP y se detuvo en 0.65 s y 6.72° (v/a y v²/2a con 34 °/s²: 0.59 s y 5.87°)
+   estimada [-1226, -4922, 2003, 8000], física [-1226.2, -4921.9, 2002.5, 8000.4], modo IDLE, cola libre 16, referenciada True, tramo: frenado por el operador
+ENSAYO OK

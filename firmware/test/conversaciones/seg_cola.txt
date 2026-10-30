@@ -1,0 +1,60 @@
+# Control de flujo (D6): el OK sale cuando el segmento entró en la cola, que
+# tiene 16 lugares contando el que se ejecuta. La URC espera el OK de cada
+# SEG antes de enviar el siguiente: con la cola llena, el OK se demora y la
+# URC no envía de más. J4 sube 0,1 mm cada 20 ms (5 mm/s).
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+> SEG 1 20 0 0 0 11990
+< OK 1
+> SEG 2 20 0 0 0 11980
+< OK 2
+> SEG 3 20 0 0 0 11970
+< OK 3
+> SEG 4 20 0 0 0 11960
+< OK 4
+> SEG 5 20 0 0 0 11950
+< OK 5
+> SEG 6 20 0 0 0 11940
+< OK 6
+> SEG 7 20 0 0 0 11930
+< OK 7
+> SEG 8 20 0 0 0 11920
+< OK 8
+> SEG 9 20 0 0 0 11910
+< OK 9
+> SEG 10 20 0 0 0 11900
+< OK 10
+> SEG 11 20 0 0 0 11890
+< OK 11
+> SEG 12 20 0 0 0 11880
+< OK 12
+> SEG 13 20 0 0 0 11870
+< OK 13
+> SEG 14 20 0 0 0 11860
+< OK 14
+> SEG 15 20 0 0 0 11850
+< OK 15
+> SEG 16 20 0 0 0 11840
+< OK 16
+> STATUS
+< S RUN 15 0 0 0 12000 0 0 0
+# Cola llena: el segmento 17 queda retenido y su OK espera lugar.
+> SEG 17 20 0 0 0 11830
++ 19
+> STATUS
+< S RUN 15 0 0 0 11991 0 0 0
+# A los 20 ms termina el segmento 1: entra el 17 y sale su OK.
++ 1
+< OK 17
+# Lo mismo con el 18. Un SEG más antes de su OK es un error de la URC: el
+# firmware lo rechaza y, como ante todo ERR con segmentos, frena con rampa y
+# vacía la cola. M4 iba a 1 paso por ms y frena con 60 mm/s² (D45): 84 ms y
+# 42 pasos.
+> SEG 18 20 0 0 0 11820
+> SEG 19 20 0 0 0 11810
+< ERR 9 cola
++ 84
+= M4 -62
+> STATUS
+< S IDLE 15 0 0 0 11969 0 16 1
