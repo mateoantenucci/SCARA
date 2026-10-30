@@ -59,7 +59,9 @@ def compile_for_uno(arduino_cli, build):
     """Compila el sketch con el núcleo como biblioteca; devuelve (flash, ram)."""
     command = [arduino_cli, "compile", "--fqbn", "arduino:avr:uno", "--warnings", "all",
                "--library", str(ROOT / "firmware"), "--build-path", str(build), str(SKETCH)]
-    result = subprocess.run(command, capture_output=True, text=True, timeout=600)
+    # En inglés, para leer el uso de memoria aunque el sistema esté en otro idioma.
+    env = dict(os.environ, ARDUINO_LOCALE="en")
+    result = subprocess.run(command, capture_output=True, text=True, timeout=600, env=env)
     if result.returncode != 0:
         raise AssertionError("No compila para el UNO:\n" + result.stdout + result.stderr)
     flash = re.search(r"Sketch uses (\d+) bytes", result.stdout)
@@ -78,8 +80,9 @@ class UnoBuildTests(unittest.TestCase):
         self.assertLessEqual(flash, FLASH_MAX)
         self.assertLessEqual(ram, RAM_GLOBALS_MAX, "La pila del UNO necesita al menos un 25 % de la RAM")
         # Sin avisos del compilador en nuestro código (los del core de Arduino no cuentan).
+        firmware = str(ROOT / "firmware").replace("\\", "/").lower()
         ours = [line for line in output.splitlines()
-                if "warning:" in line and ("firmware" in line.replace("\\", "/"))]
+                if "warning:" in line and firmware in line.replace("\\", "/").lower()]
         self.assertEqual(ours, [], "\n".join(ours))
 
 

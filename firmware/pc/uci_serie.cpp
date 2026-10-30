@@ -13,7 +13,9 @@
 // No tiene planta: los pasos no mueven nada y los Hall nunca se activan. La
 // posición que informa es la estimada por pasos del núcleo.
 // Ver docs/ARDUINO_UNO.md.
+#ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1  // posix_openpt y compañía con -std=c++11 en glibc y Cygwin
+#endif
 
 #include <errno.h>
 #include <fcntl.h>

@@ -84,7 +84,9 @@ class SerialSocatTests(unittest.TestCase):
         process = subprocess.Popen(command, stderr=subprocess.PIPE, text=True, env=self.env)
         self.addCleanup(self.stop, process)
         process.lines = queue.Queue()
-        threading.Thread(target=lambda: [process.lines.put(line) for line in process.stderr], daemon=True).start()
+        process.reader = threading.Thread(target=lambda: [process.lines.put(line) for line in process.stderr],
+                                          daemon=True)
+        process.reader.start()
         return process
 
     @staticmethod
@@ -92,6 +94,8 @@ class SerialSocatTests(unittest.TestCase):
         if process.poll() is None:
             process.terminate()
         process.wait(timeout=5)
+        # Con el proceso terminado, el lector llega al fin del pipe y lo suelta.
+        process.reader.join(timeout=5)
         process.stderr.close()
 
     def wait_line(self, process, pattern, timeout=10):

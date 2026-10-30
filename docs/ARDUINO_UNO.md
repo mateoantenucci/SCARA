@@ -64,7 +64,7 @@ El núcleo decide cuándo dar cada paso, con su reloj de milisegundos, y llama a
 
 1. Si el sentido cambió, primero cambia DIR, y el pulso sale en el tick siguiente.
 2. El pulso dura un tick (50 µs) en alto y al menos uno en bajo: hasta 10 000 pasos por segundo por motor. Con 1/8 y las velocidades máximas de `config.h` (D45), el que más pide es M4: 1350 °/s, 6000 pasos/s (J4 a 30 mm/s). Con un tick de 10 kHz no alcanzaría. Un `static_assert` en `hal_uno.h` lo comprueba al compilar: con 1/16, M4 pediría 12 000 pasos/s y el sketch no compila hasta subir `TICK_HZ`.
-3. Si un motor junta 255 pasos pendientes, `step` espera a que la interrupción los saque. El núcleo se atrasa, pero ningún paso que contó se deja de dar: la posición estimada no se separa de la real por culpa del firmware.
+3. Si un motor junta 255 pasos pendientes, `step` espera a que la interrupción los saque. El núcleo se atrasa, pero ningún paso que contó se deja de dar: la posición estimada no se separa de la real por culpa del firmware. Mientras espera, el núcleo no lee la serie: el buffer de 64 bytes del UNO se llena en unos 5 ms. Solo pasa si el núcleo pide más de 10 000 pasos/s a un motor, y eso lo impiden los límites de velocidad de `config.h` (D45) y el `static_assert` de abajo.
 
 Así el ancho del pulso no depende de cuánto tarde `poll()`, y la serie sigue atendida mientras salen los pasos.
 
