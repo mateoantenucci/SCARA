@@ -206,11 +206,22 @@ Detalle, tabla por microstepping y contraste con los planos: [Transmisión](../T
 | **Total por USB + socat** | **15 de 20** |
 | Con shield Ethernet (SPI D10–D13 + D4) | 20 de 20, sin margen |
 
-La asignación pin por pin la fija el firmware del UNO (ticket del Arduino y socat) y se agrega en la versión final.
+**Asignación de pines (D47).** Deja libres D4 y D10–D13, los del shield Ethernet: pasar a Ethernet no obliga a recablear.
+
+| Pines | Uso |
+| --- | --- |
+| D2, D3, D5, D6 | STEP de M1–M4 (PORTD: los pulsos de M1 y M2 salen juntos) |
+| A0–A3 | DIR de M1–M4 |
+| D7 | ENABLE común (ENA+ de los TB6600, cátodo común; en alto, sin corriente) |
+| D8, D9, A4, A5 | Hall de J1–J4 (KY-003 con pull-up interno; activo en bajo) |
+
+**Pasos por timer (D48).** El núcleo cuenta los pasos; la interrupción del Timer1, a 20 kHz, los convierte en pulsos con los tiempos del TB6600 (DIR estable antes del flanco, 50 µs en alto): hasta 10 000 pasos/s por motor, contra los 6000 que pide J4 a 30 mm/s. Si se juntan pasos pendientes, el firmware espera en lugar de descartarlos.
+
+**Compila sin placa.** Con `arduino-cli` y el mismo núcleo que corre en Webots: 6544 bytes de flash (20 % de 32 256) y 575 bytes de RAM global (28 % de 2048), sin avisos en el código del proyecto. La prueba automática exige que la RAM global no pase del 75 %, para dejar lugar a la pila.
+
+**socat probado con un puerto serie virtual (D49).** La URC opera el firmware, compilado para la PC, por un puerto serie virtual y socat, con la misma receta que se usará con el USB del UNO y sin cambios en la URC: arranque con `BOOT`, habilitar, referencia manual, jog de J1 con J2 quieto, deshabilitar, desconexión y nuevo `BOOT` al reabrir el puerto. Receta, cableado y resultados: [UCI en el Arduino UNO](../ARDUINO_UNO.md). Con la placa real no se probó: no hay hardware.
 
 **Sin corriente, J4 cae.** La varilla ACME de 4 hilos y paso largo probablemente no es autobloqueante. Por eso la pose de reposo tiene J4 abajo, y la falla F2 (driver sin corriente) se demuestra en J4.
-
-> **Pendiente de evidencia:** asignación de pines y compilación del firmware para el UNO sin hardware; receta de socat probada con un puerto serie virtual.
 
 <!-- SALTO DE PAGINA -->
 
