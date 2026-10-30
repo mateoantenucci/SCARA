@@ -1,6 +1,6 @@
 # Registro de decisiones: grabar y reproducir trayectorias
 
-Por qué el SCARA quedó diseñado así. Sirve para responder al profesor. Cada entrada dice qué se decidió, por qué y qué se descartó. Las decisiones difíciles de revertir tienen además un ADR en [`docs/adr/`](adr/). El análisis completo está en la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md). El documento maestro v2 incorporará este registro.
+Por qué el SCARA quedó diseñado así. Sirve para responder al profesor. Cada entrada dice qué se decidió, por qué y qué se descartó. Las decisiones difíciles de revertir tienen además un ADR en [`docs/adr/`](adr/). El análisis completo está en la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md). El [documento maestro v2](maestro/SCARA-Master-v2.md) lo resume y lo incorporará completo en su versión final.
 
 Estados:
 
