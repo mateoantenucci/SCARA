@@ -1,6 +1,10 @@
 # ZERO declara que el robot está en la pose de reposo (D30):
 # J1 = J2 = J3 = 0 y J4 abajo (120 mm). Quedan los cuatro ejes referenciados.
 < BOOT scara/1 1
+# Sin corriente, los motores giran libres: no se puede declarar referencia.
+> ZERO
+< ERR 6 deshabilitado
+> ENABLE
 > JOG 1 + 450
 + 1000
 > ZERO
@@ -14,4 +18,4 @@
 > JOG STOP
 > STATUS
 < S IDLE 15 -450 0 0 12000 0 16 0
-# Al reiniciar, la UCI pierde la referencia: lo informa BOOT (no se repite acá).
+# Al reiniciar, la UCI pierde la referencia: ver reinicio.txt.

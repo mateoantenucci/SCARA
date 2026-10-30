@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <deque>
 #include <fstream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -16,11 +17,12 @@ namespace {
 
 class FakeHal : public scara::Hal {
 public:
-  FakeHal() : now(0) {
+  FakeHal() : now(0), enabled(true) {
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) steps[i] = 0;
   }
   uint32_t millis() { return now; }
   void step(uint8_t motor, int8_t direction) { steps[motor] += direction; }
+  void enableDrivers(bool on) { enabled = on; }
   uint8_t readHall() { return 0; }  // los Hall a voluntad llegan con el homing (#8)
   int readByte() {
     if (input.empty()) return -1;
@@ -32,6 +34,7 @@ public:
 
   uint32_t now;
   long steps[scara::MOTOR_COUNT];
+  bool enabled;  // arranca en true: el firmware tiene que cortarlos al arrancar
   std::deque<char> input;
   std::string output;
 };
@@ -58,12 +61,12 @@ bool isStatus(const std::string& line) { return line.compare(0, 2, "S ") == 0; }
 
 class Conversation {
 public:
-  Conversation(const std::string& path) : path_(path), number_(0), firmware_(hal_) {}
+  Conversation(const std::string& path) : path_(path), number_(0), firmware_(new scara::Firmware(hal_)) {}
 
   bool run() {
     std::ifstream file(path_.c_str());
     if (!file) return fail("no se pudo abrir");
-    firmware_.begin();
+    firmware_->begin();
     std::string line;
     while (std::getline(file, line)) {
       ++number_;
@@ -76,6 +79,7 @@ public:
         case '<': ok = expect(body); break;
         case '+': ok = advance(std::atol(body.c_str())); break;
         case '=': ok = checkSteps(body); break;
+        case '!': ok = reboot(body); break;
         default: ok = fail("renglón desconocido: " + line);
       }
       if (!ok) return false;
@@ -110,7 +114,7 @@ private:
     while ((at = text.find("\\r")) != std::string::npos) text.replace(at, 2, "\r");
     text += '\n';
     for (size_t i = 0; i < text.size(); ++i) hal_.input.push_back(text[i]);
-    firmware_.poll();
+    firmware_->poll();
     return true;
   }
 
@@ -131,16 +135,32 @@ private:
     if (milliseconds <= 0) return fail("el avance debe ser positivo");
     for (long i = 0; i < milliseconds; ++i) {
       ++hal_.now;
-      firmware_.poll();
+      firmware_->poll();
     }
     return true;
   }
 
+  // "! reinicio": la UCI se reinicia sin que se corte el enlace. Los motores
+  // conservan los pasos dados; el firmware arranca de cero y envía BOOT.
+  bool reboot(const std::string& body) {
+    if (body != "reinicio") return fail("se esperaba «! reinicio»");
+    firmware_.reset(new scara::Firmware(hal_));
+    firmware_->begin();
+    return true;
+  }
+
   // "= M1 400 M2 400 M3 0 M4 0": pasos netos emitidos a cada motor.
+  // "EN 1" o "EN 0": drivers con corriente o sin ella.
   bool checkSteps(const std::string& body) {
     std::vector<std::string> items = fields(body);
     if (items.size() % 2 != 0) return fail("se esperan pares motor valor");
     for (size_t i = 0; i < items.size(); i += 2) {
+      if (items[i] == "EN") {
+        if (items[i + 1] != (hal_.enabled ? "1" : "0")) {
+          return fail(std::string("los drivers están ") + (hal_.enabled ? "con" : "sin") + " corriente");
+        }
+        continue;
+      }
       int motor = items[i].size() == 2 && items[i][0] == 'M' ? items[i][1] - '1' : -1;
       if (motor < 0 || motor >= scara::MOTOR_COUNT) return fail("motor desconocido: " + items[i]);
       long want = std::atol(items[i + 1].c_str());
@@ -156,7 +176,7 @@ private:
   std::string path_;
   int number_;
   FakeHal hal_;
-  scara::Firmware firmware_;
+  std::unique_ptr<scara::Firmware> firmware_;
   std::deque<std::string> pending_;
   std::vector<std::string> tooLong_;
 };

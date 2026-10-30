@@ -13,6 +13,15 @@ from urc.session import Session
 
 
 MAX_BODY = 1024
+# Órdenes sin parámetros de la página.
+ORDERS = {
+    "/api/jog/stop": Session.jog_stop,
+    "/api/zero": Session.zero,
+    "/api/enable": Session.enable,
+    "/api/disable": Session.disable,
+    "/api/stop": Session.stop,
+    "/api/halt": Session.halt,
+}
 
 
 def handler_for(session):
@@ -56,10 +65,8 @@ def handler_for(session):
                     raise ValueError("Se requiere un objeto JSON")
                 if self.path == "/api/jog":
                     session.jog(request.get("joint"), request.get("direction"))
-                elif self.path == "/api/jog/stop":
-                    session.jog_stop()
-                elif self.path == "/api/zero":
-                    session.zero()
+                elif self.path in ORDERS:
+                    ORDERS[self.path](session)
                 else:
                     self.reply(404, {"error": "Ruta desconocida"})
                     return

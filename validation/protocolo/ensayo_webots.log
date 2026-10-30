@@ -1,0 +1,9 @@
+1 conectada: La UCI arrancó: sin referencia hasta ZERO u homing ('OFF', 0, [0, 0, 0, 0])
+2 jog sin corriente rechazado: ERR 6 deshabilitado: no se acepta con los drivers sin corriente
+3 habilitada y referenciada: ('IDLE', 15, [0, 0, 0, 12000])
+4 STOP tras 2 s de jog: ('IDLE', 15, [849, 0, 0, 12000]) 1 s después: ('IDLE', 15, [849, 0, 0, 12000])
+5 HALT en movimiento: ('IDLE', 0, [428, 0, 0, 12000])
+6 tras cortar la URC 3 s y reconectar: ('IDLE', 15, [849, 0, 0, 12000]) ('IDLE', 15, [849, 0, 0, 12000]) boots: 0 errores: []
+7 DISABLE: ('OFF', 0, [849, 0, 0, 12000])
+8 reinicio de la UCI: La UCI arrancó: sin referencia hasta ZERO u homing referenciado: False ('OFF', 0, [0, 0, 0, 0])
+ENSAYO OK

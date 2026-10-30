@@ -9,6 +9,7 @@ import unittest
 from http.server import ThreadingHTTPServer
 
 from urc.app import handler_for
+from urc.protocol import ProtocolError
 from urc.session import Session
 
 
@@ -108,13 +109,73 @@ class SessionTests(unittest.TestCase):
         state = wait_for(lambda: (s := self.session.snapshot())["firmware"] and s)
         self.assertTrue(state["connected"])
         self.assertIsNone(state["status"])
-        self.assertEqual(len(state["errors"]), 4, state["errors"])
+        self.assertEqual(len(state["rejected"]), 4, state["rejected"])
+        self.assertEqual(state["errors"], [])
+        self.assertEqual(state["received"], 5)
+
+    def test_orders_reach_the_uci(self):
+        self.assertEqual(self.uci.receive(), "HELLO")
+        wait_for(lambda: self.session.snapshot()["connected"])
+        self.session.enable()
+        self.assertEqual(self.uci.receive(), "ENABLE")
+        self.session.jog(1, "+")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+        # Frenar olvida el jog: el próximo pedido de la página lo vuelve a enviar.
+        self.session.stop()
+        self.assertEqual(self.uci.receive(), "STOP")
+        self.session.jog(1, "+")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+        self.session.halt()
+        self.assertEqual(self.uci.receive(), "HALT")
+        self.session.disable()
+        self.assertEqual(self.uci.receive(), "DISABLE")
+        self.session.order("STATUS")
+        self.assertEqual(self.uci.receive(), "STATUS")
+        self.assertIsNone(self.session.snapshot()["jog"])
+
+    def test_malformed_orders_are_not_sent(self):
+        wait_for(lambda: self.session.snapshot()["connected"])
+        for line, code in (("MOVER 1", 1), ("JOG 1 + 1001", 2), ("ENABLE ya", 2), ("PING" + " " * 60, 3)):
+            with self.subTest(line=line), self.assertRaises(ProtocolError) as caught:
+                self.session.order(line)
+            self.assertEqual(caught.exception.code, code)
+
+    def test_unexpected_boot_marks_the_robot_unreferenced(self):
+        self.assertEqual(self.uci.receive(), "HELLO")
+        # BOOT como primera línea: el UNO se reinicia cuando socat abre el USB.
+        self.uci.send("BOOT scara/1 1")
+        wait_for(lambda: self.session.snapshot()["boots"] == 1)
+        self.assertIn("arrancó", self.session.snapshot()["message"])
+        self.uci.send("S IDLE 15 450 0 0 12000 0 16 0")
+        self.assertTrue(wait_for(lambda: self.session.snapshot()["referenced"]))
+        self.session.jog(1, "+")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+        # A mitad de la conexión: la UCI se reinició sola (F5).
+        self.uci.send("BOOT scara/1 1")
+        state = wait_for(lambda: (s := self.session.snapshot())["boots"] == 2 and s)
+        self.assertFalse(state["referenced"])
+        self.assertIsNone(state["status"])
+        self.assertIsNone(state["jog"])
+        self.assertIn("F5", state["message"])
+        # El jog se olvidó: si la página lo sigue pidiendo, la URC lo reenvía.
+        self.session.jog(1, "+")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+
+    def test_uci_errors_are_decoded(self):
+        self.assertEqual(self.uci.receive(), "HELLO")
+        self.uci.send("ERR 4 watchdog")
+        self.uci.send("ERR 99 nuevo")
+        state = wait_for(lambda: len((s := self.session.snapshot())["errors"]) == 2 and s)
+        self.assertEqual(state["errors"][0], "ERR 4 watchdog: más de 1 s sin mensajes de la URC: el robot frenó solo")
+        self.assertIn("desconocido", state["errors"][1])
+        self.assertEqual(state["rejected"], [])
 
     def test_reconnection_greets_again_and_discards_bad_lines(self):
         self.assertEqual(self.uci.receive(), "HELLO")
         self.uci.send("S IDLE 0 1 2")
         self.uci.send("ERR 1 comando")
         wait_for(lambda: self.session.snapshot()["errors"])
+        self.assertEqual(len(self.session.snapshot()["rejected"]), 1)
         self.assertIsNone(self.session.snapshot()["status"])
         self.uci.close()
         second = FakeUci(self.session.port)
@@ -161,6 +222,22 @@ class HttpTests(unittest.TestCase):
         self.assertEqual(status, 400)
         status, _ = self.request("POST", "/api/nada", {})
         self.assertEqual(status, 404)
+        for path in ("/api/enable", "/api/disable", "/api/stop", "/api/halt"):
+            with self.subTest(path=path):
+                status, _ = self.request("POST", path, {})
+                self.assertEqual(status, 409)
+
+    def test_orders_reach_a_connected_uci(self):
+        uci = FakeUci(self.session.port)
+        self.addCleanup(uci.close)
+        self.assertEqual(uci.receive(), "HELLO")
+        wait_for(lambda: self.session.snapshot()["connected"])
+        for path, line in (("/api/enable", "ENABLE"), ("/api/stop", "STOP"), ("/api/halt", "HALT"),
+                           ("/api/disable", "DISABLE")):
+            with self.subTest(path=path):
+                status, body = self.request("POST", path, {})
+                self.assertEqual(status, 202, body)
+                self.assertEqual(uci.receive(), line)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+# STOP frena y conserva la referencia; HALT para en seco y, si había
+# movimiento, la pierde (D41). Los dos dejan los drivers con corriente.
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+> JOG 1 + 450
++ 1000
+> STOP
++ 1000
+= M1 80 M2 80 EN 1
+> STATUS
+< S IDLE 15 450 0 0 12000 0 16 0
+# STOP sin movimiento no hace nada.
+> STOP
+> STATUS
+< S IDLE 15 450 0 0 12000 0 16 0
+# HALT quieto conserva la referencia: no había pasos que perder.
+> HALT
+> STATUS
+< S IDLE 15 450 0 0 12000 0 16 0
+# HALT en movimiento: para y la referencia ya no vale.
+> JOG 1 - 450
++ 1000
+> HALT
++ 1000
+= M1 0 M2 0 EN 1
+> STATUS
+< S IDLE 0 0 0 0 12000 0 16 0

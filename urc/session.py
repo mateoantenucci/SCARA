@@ -7,42 +7,18 @@ el estado y deja órdenes en una cola.
 
 from collections import deque
 import queue
-import re
 import select
 import socket
 import threading
 import time
 
+from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message
 
-PROTOCOL = "scara/1"
-LINE_MAX = 64                # bytes con el LF (D4)
+
 PING_PERIOD = 0.25           # s (D27)
 JOG_SPEED = 500              # centésimas por segundo: jog articular lento
 JOG_HOLD = 0.5               # s sin renovar el jog desde la página => JOG STOP
-MODES = ("IDLE", "JOG")
-INTEGER = re.compile(r"-?[0-9]+")
-
-
-def integer(text):
-    """Entero del protocolo: solo cifras ASCII y un signo menos opcional."""
-    if not INTEGER.fullmatch(text):
-        raise ValueError(f"{text!r} no es un entero")
-    return int(text)
-
-
-def parse_status(fields):
-    """S modo referenciados J1 J2 J3 J4 hall libres último."""
-    if len(fields) != 9 or fields[0] not in MODES:
-        raise ValueError("estado S mal formado")
-    numbers = [integer(value) for value in fields[1:]]
-    return {
-        "mode": fields[0],
-        "homed": numbers[0],
-        "position": numbers[1:5],
-        "hall": numbers[5],
-        "free": numbers[6],
-        "last": numbers[7],
-    }
+ALL_HOMED = 0x0F
 
 
 class Session:
@@ -56,11 +32,14 @@ class Session:
         self.lock = threading.Lock()
         self.outgoing = queue.Queue(maxsize=32)
         self.traffic = deque(maxlen=40)
-        self.errors = deque(maxlen=10)
+        self.errors = deque(maxlen=10)       # ERR que informó la UCI
+        self.rejected = deque(maxlen=10)     # líneas de la UCI que no respetan scara/1
         self.connected = False
         self.peer = None
         self.firmware = None
         self.boots = 0
+        self.received = 0                    # líneas recibidas de la UCI, válidas o no
+        self.greeted = False                 # la UCI ya habló en esta conexión
         self.status = None
         self.status_time = None
         self.jogging = None          # (articulación, sentido) enviado a la UCI
@@ -71,6 +50,17 @@ class Session:
         self.thread.start()
 
     # --- Órdenes desde la interfaz ---------------------------------------
+
+    def order(self, line):
+        """Envía una orden de scara/1 tal cual, si su forma es válida.
+
+        Un JOG enviado así no vence como el de jog(): solo lo frenan JOG STOP,
+        STOP o HALT. Por eso la página no lo expone.
+        """
+        line = check_order(line)
+        with self.lock:
+            self._require_robot()
+            self._queue(line)
 
     def jog(self, joint, direction):
         """Mantiene el jog mientras la página lo renueve antes de jog_hold."""
@@ -86,15 +76,25 @@ class Session:
                 self._queue(f"JOG {joint} {direction} {self.jog_speed}")
 
     def jog_stop(self):
-        with self.lock:
-            self._require_robot()
-            self.jogging = None
-            self._queue("JOG STOP")
+        self._stop("JOG STOP")
+
+    def stop(self):
+        """Frena todo y conserva la referencia."""
+        self._stop("STOP")
+
+    def halt(self):
+        """Parada inmediata: si había movimiento, la referencia se pierde (D41)."""
+        self._stop("HALT")
+
+    def disable(self):
+        """Corta la corriente de los drivers: la referencia se pierde (D40)."""
+        self._stop("DISABLE")
+
+    def enable(self):
+        self.order("ENABLE")
 
     def zero(self):
-        with self.lock:
-            self._require_robot()
-            self._queue("ZERO")
+        self.order("ZERO")
 
     def snapshot(self):
         with self.lock:
@@ -108,10 +108,13 @@ class Session:
                 "message": self.message,
                 "firmware": self.firmware,
                 "boots": self.boots,
+                "received": self.received,
                 "status": status,
+                "referenced": status is not None and status["homed"] == ALL_HOMED,
                 "jog": None if self.jogging is None else {"joint": self.jogging[0], "direction": self.jogging[1]},
                 "traffic": list(self.traffic),
                 "errors": list(self.errors),
+                "rejected": list(self.rejected),
             }
 
     def close(self):
@@ -120,6 +123,12 @@ class Session:
         self.listener.close()
 
     # --- Hilo del enlace (con self.lock tomado en los helpers) -------------
+
+    def _stop(self, line):
+        with self.lock:
+            self._require_robot()
+            self.jogging = None
+            self._queue(line)
 
     def _require_robot(self):
         if not self.connected:
@@ -144,6 +153,7 @@ class Session:
             self.peer = f"{address[0]}:{address[1]}"
             self.firmware = None
             self.status = None
+            self.greeted = False
             self.jogging = None
             self._discard_outgoing()
             self.message = "UCI conectada"
@@ -159,40 +169,47 @@ class Session:
 
     def _receive(self, raw):
         """Una línea mala se informa y se descarta; no corta el enlace."""
-        try:
-            if len(raw) + 1 > LINE_MAX:
-                raise ValueError("línea de más de 64 bytes")
-            line = raw.decode("ascii").rstrip("\r")
-        except ValueError as exc:
-            with self.lock:
-                self.errors.append(f"{raw[:LINE_MAX]!r}: {exc}")
-            return
-        fields = line.split()
         with self.lock:
-            if fields and fields[0] != "S":
+            self.received += 1
+            try:
+                if len(raw) + 1 > LINE_MAX:
+                    raise ValueError("línea de más de 64 bytes")
+                line = raw.decode("ascii").rstrip("\r")
+            except ValueError as exc:
+                self.rejected.append(f"{raw[:LINE_MAX]!r}: {exc}")
+                return
+            if not line.strip():
+                return
+            if not line.startswith("S "):
                 self.traffic.append({"direction": "<", "line": line})
             try:
-                if not fields:
-                    return
-                if fields[0] in ("BOOT", "HI"):
-                    if len(fields) != 3:
-                        raise ValueError(f"{fields[0]} mal formado")
-                    if fields[1] != PROTOCOL:
-                        raise ValueError(f"la UCI habla {fields[1]}, no {PROTOCOL}")
-                    self.firmware = {"protocol": fields[1], "version": integer(fields[2])}
-                    if fields[0] == "BOOT":
-                        # Arranque de la UCI: toda referencia anterior se perdió.
-                        self.boots += 1
-                        self.message = "La UCI arrancó: sin referencia hasta ZERO u homing"
-                elif fields[0] == "S":
-                    self.status = parse_status(fields[1:])
-                    self.status_time = time.monotonic()
-                elif fields[0] == "ERR":
-                    self.errors.append(line)
-                else:
-                    raise ValueError("mensaje desconocido")
+                message = parse_message(line)
             except ValueError as exc:
-                self.errors.append(f"{line!r}: {exc}")
+                self.rejected.append(f"{line!r}: {exc}")
+                return
+            kind = message["kind"]
+            if kind in ("BOOT", "HI"):
+                self.firmware = {"protocol": message["protocol"], "version": message["version"]}
+            if kind == "BOOT":
+                self._booted()
+            elif kind == "S":
+                self.status = {key: value for key, value in message.items() if key != "kind"}
+                self.status_time = time.monotonic()
+            elif kind == "ERR":
+                self.errors.append(f"ERR {message['code']} {message['word']}: {message['cause']}")
+            self.greeted = True
+
+    def _booted(self):
+        """La UCI arrancó: toda referencia y toda orden pendiente quedan sin valor."""
+        self.boots += 1
+        self.status = None
+        self.jogging = None
+        self._discard_outgoing()
+        if self.greeted:
+            # A mitad de una conexión: la UCI se reinició sola (falla F5).
+            self.message = "BOOT inesperado: la UCI se reinició y perdió la referencia (F5)"
+        else:
+            self.message = "La UCI arrancó: sin referencia hasta ZERO u homing"
 
     def _send_pending(self, client, now):
         lines = []

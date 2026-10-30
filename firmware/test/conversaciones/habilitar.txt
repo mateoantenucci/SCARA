@@ -1,0 +1,30 @@
+# ENABLE y DISABLE: corriente de los drivers (D40).
+# La UCI arranca sin corriente: nada se mueve hasta que la URC habilita.
+< BOOT scara/1 1
+= EN 0
+> JOG 1 + 450
+< ERR 6 deshabilitado
++ 1000
+= M1 0 M2 0 M3 0 M4 0
+> ENABLE
+= EN 1
+> STATUS
+< S IDLE 0 0 0 0 0 0 16 0
+# Habilitar dos veces no cambia nada.
+> ENABLE
+> ZERO
+> JOG 1 + 450
++ 1000
+= M1 80 M2 80 EN 1
+# DISABLE frena, corta la corriente y pierde la referencia: sin par, los
+# motores pueden girar sin que el firmware cuente pasos (J4 cae).
+> DISABLE
+= EN 0
+> STATUS
+< S OFF 0 450 0 0 12000 0 16 0
++ 1000
+= M1 80 M2 80
+# Volver a habilitar no devuelve la referencia.
+> ENABLE
+> STATUS
+< S IDLE 0 450 0 0 12000 0 16 0

@@ -1,5 +1,5 @@
-// Núcleo del firmware de la UCI: protocolo scara/1, jog articular y
-// conversión de unidades articulares a pasos con el acople M1/M2.
+// Núcleo del firmware de la UCI: protocolo scara/1, corriente de los
+// drivers, jog articular, paradas, watchdog y conversión de unidades articulares a pasos con el acople M1/M2.
 // Portable al Arduino UNO: sin memoria dinámica, buffers fijos y sin
 // flotantes. Ver docs/PROTOCOLO_SCARA_1.md.
 #ifndef SCARA_FIRMWARE_H
@@ -31,7 +31,10 @@ private:
   void receive(int byte);
   void handle(char* line);
   void handleJog(char* arguments);
-  void stopJog();
+  void sendIdentity(const char* greeting);
+  void disable();
+  void stopMotion();
+  bool moving() const;
   void advanceJog(uint32_t now);
   void sendStatus();
   void sendError(int32_t code, const char* text);
@@ -40,9 +43,11 @@ private:
   Hal& hal_;
   char line_[LINE_MAX];
   uint8_t length_;
+  bool invalid_;                 // la línea en curso tiene bytes no permitidos
   bool overflow_;
   int32_t steps_[MOTOR_COUNT];   // pasos netos de cada motor desde la referencia
   uint8_t homed_;                // máscara de ejes referenciados
+  bool enabled_;                 // drivers con corriente
   int8_t jogJoint_;              // 0..3, o -1 sin jog
   int8_t jogDirection_;
   int32_t jogSpeed_;             // centésimas por segundo

@@ -19,6 +19,8 @@
     .badge { display: inline-block; background: #e7edef; border-radius: 20px; padding: 5px 10px; font-size: .82rem; font-weight: 700; }
     .badge.ok { background: #d9f0e6; color: #0b6748; }
     .badge.warn { background: #fff1d6; color: #7a5200; }
+    button.danger { border-color: #a62929; color: #a62929; }
+    button.danger:hover { background: #fbeaea; }
     table { border-collapse: collapse; width: 100%; font-size: .95rem; }
     th, td { text-align: right; padding: 8px 6px; border-bottom: 1px solid #e4ebee; font-variant-numeric: tabular-nums; }
     th:first-child, td:first-child { text-align: left; }
@@ -36,7 +38,7 @@
 <main>
   <div class="eyebrow">Unidad Remota de Coordinación · protocolo scara/1</div>
   <h1>SCARA · URC</h1>
-  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. Mantené <kbd>A</kbd> o <kbd>D</kbd> para mover J1; al soltar, frena.</p>
+  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. La UCI arranca con los motores sin corriente: habilitalos primero. Mantené <kbd>A</kbd> o <kbd>D</kbd> para mover J1; al soltar, frena. <kbd>Esc</kbd> frena todo.</p>
 
   <section class="card" aria-label="Conexión">
     <div class="row">
@@ -46,6 +48,12 @@
     </div>
     <p id="message" class="muted">Consultando a la URC…</p>
     <p id="firmware" class="muted"></p>
+    <div class="row">
+      <button id="enable">Habilitar motores</button>
+      <button id="disable">Deshabilitar motores…</button>
+      <button id="stop">Stop <kbd>Esc</kbd></button>
+      <button id="halt" class="danger">Parada inmediata</button>
+    </div>
   </section>
 
   <section class="card" aria-label="Posición estimada por pasos">
@@ -66,6 +74,12 @@
     <div id="feedback" role="status" aria-live="polite"></div>
   </section>
 
+  <section class="card" aria-label="Errores">
+    <h2>Errores</h2>
+    <p class="muted">Los informados por la UCI con <code>ERR</code> y las líneas de la UCI que la URC no entendió.</p>
+    <pre id="errors"></pre>
+  </section>
+
   <section class="card" aria-label="Tráfico scara/1">
     <h2>Tráfico scara/1</h2>
     <p class="muted">Sin el estado S (20/s) ni PING (4/s).</p>
@@ -76,6 +90,7 @@
 const NAMES = ["J1", "J2", "J3", "J4"];
 const KEYS = { KeyA: "-", KeyD: "+" };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
+const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog" };
 let held = null, timer = null;
 
 function format(joint, value) {
@@ -117,7 +132,18 @@ function stopJog() {
   post("/api/jog/stop").catch(show);
 }
 
+// Frenar corta primero el jog de la página: si no, el próximo pedido lo reanuda.
+function order(path) {
+  stopJog();
+  post(path).then(() => show(null), show);
+}
+
 document.addEventListener("keydown", (event) => {
+  if (event.code === "Escape") {
+    event.preventDefault();
+    order("/api/stop");
+    return;
+  }
   const direction = KEYS[event.code];
   if (direction && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
@@ -134,6 +160,12 @@ for (const button of document.querySelectorAll("[data-direction]")) {
   button.addEventListener("pointerup", stopJog);
   button.addEventListener("pointerleave", stopJog);
 }
+document.getElementById("enable").addEventListener("click", () => post("/api/enable").then(() => show(null), show));
+document.getElementById("stop").addEventListener("click", () => order("/api/stop"));
+document.getElementById("halt").addEventListener("click", () => order("/api/halt"));
+document.getElementById("disable").addEventListener("click", () => {
+  if (confirm("Sin corriente, J4 cae y la referencia se pierde. ¿Deshabilitar los motores?")) order("/api/disable");
+});
 document.getElementById("zero").addEventListener("click", () => {
   if (confirm("¿El robot está en la pose de reposo? Brazo estirado (J1 = J2 = J3 = 0°) y J4 abajo.")) {
     post("/api/zero").then(() => show(null), show);
@@ -152,12 +184,15 @@ async function refresh() {
       : "";
     const status = state.connected ? state.status : null;
     const reference = document.getElementById("reference");
-    const homed = status ? status.homed === 15 : false;
+    const homed = state.connected && state.referenced;
     reference.textContent = homed ? "Referenciado" : "Sin referencia";
     reference.className = "badge" + (homed ? " ok" : " warn");
-    document.getElementById("mode").textContent = status ? `Modo ${status.mode}` : "—";
+    const mode = document.getElementById("mode");
+    mode.textContent = status ? MODES[status.mode] : "—";
+    mode.className = "badge" + (status && status.mode === "OFF" ? " warn" : "");
     document.getElementById("joints").innerHTML = NAMES.map((name, joint) =>
       `<tr><td>${name}</td><td>${status ? format(joint, status.position[joint]) : "—"}</td></tr>`).join("");
+    document.getElementById("errors").textContent = state.errors.concat(state.rejected.map((line) => `No entendida: ${line}`)).join("\n");
     document.getElementById("traffic").textContent = state.traffic.map((entry) => `${entry.direction} ${entry.line}`).join("\n");
   } catch (error) {
     document.getElementById("message").textContent = "La URC no responde.";

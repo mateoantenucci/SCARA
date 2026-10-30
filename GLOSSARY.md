@@ -90,6 +90,10 @@ _Evitar_: API.
 Conexión que solo existe en la simulación, por la que la URC lee la verdad del simulador y controla fallas, carga y recarga del mundo.
 _Evitar_: Telemetría (el estado que informa la UCI es otra cosa).
 
+**Conversación de conformidad**:
+Archivo con un intercambio de ejemplo de `scara/1` (lo que envía la URC y lo que tiene que responder la UCI) que se ejecuta como prueba contra el firmware y contra la URC. Es la definición ejecutable del protocolo.
+_Evitar_: Vector de prueba, caso de prueba (a secas).
+
 **API de Webots**:
 Funciones con las que el controlador de Webots lee sensores y ordena motores del mundo simulado. No comunica a la URC con el robot.
 _Evitar_: Decir que la URC se comunica con Webots "por API".

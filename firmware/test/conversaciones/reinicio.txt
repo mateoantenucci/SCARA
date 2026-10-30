@@ -1,0 +1,18 @@
+# Reinicio inesperado de la UCI (falla F5): el firmware vuelve a arrancar
+# sin que se corte el enlace, anuncia BOOT y pierde todo lo que sabía.
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+> JOG 1 + 450
++ 1000
+> STATUS
+< S JOG 15 450 0 0 12000 0 16 0
+! reinicio
+< BOOT scara/1 1
+# Sin corriente, sin referencia y contando desde cero. La URC tiene que
+# marcar el robot como no referenciado apenas lee el BOOT.
+= EN 0
+> STATUS
+< S OFF 0 0 0 0 0 0 16 0
++ 1000
+= M1 80 M2 80
