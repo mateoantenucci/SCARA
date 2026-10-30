@@ -45,6 +45,19 @@ class FakeUci:
             if text not in ignore:
                 return text
 
+    def silent(self, seconds=0.2, ignore=("PING",)):
+        """Nada más que lo ignorado durante `seconds`."""
+        deadline = time.monotonic() + seconds
+        try:
+            while (left := deadline - time.monotonic()) > 0:
+                self.sock.settimeout(left)
+                text = self.receive(ignore)
+                raise AssertionError(f"La URC envió {text!r}")
+        except socket.timeout:
+            return True
+        finally:
+            self.sock.settimeout(3)
+
     def close(self):
         self.sock.close()
 
@@ -200,6 +213,138 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(state["status"]["position"], [1, 2, 3, 4])
 
 
+class SegmentTests(unittest.TestCase):
+    """Tramos PTP: un SEG por vez, el siguiente con el OK del anterior (D6)."""
+
+    def setUp(self):
+        self.session = Session(port=0)
+        self.addCleanup(self.session.close)
+        self.uci = FakeUci(self.session.port)
+        self.addCleanup(self.uci.close)
+        self.assertEqual(self.uci.receive(), "HELLO")
+        self.uci.send("S IDLE 15 0 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["referenced"])
+
+    def segment(self):
+        fields = self.uci.receive().split()
+        self.assertEqual(fields[0], "SEG", fields)
+        return int(fields[1]), [int(value) for value in fields[3:]]
+
+    def test_the_urc_waits_for_each_ok(self):
+        plan = self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        self.assertGreater(plan["segments"], 20)
+        # Con la cola del firmware llena, el OK 17 se demora: la URC tiene
+        # todo el tramo listo, pero no envía de más.
+        for expected in range(1, 18):
+            number, _ = self.segment()
+            self.assertEqual(number, expected)
+            self.assertTrue(self.uci.silent(0.05))
+            if number < 17:
+                self.uci.send(f"OK {number}")
+        self.assertTrue(self.uci.silent(0.3))
+        self.uci.send("OK 17")
+        last = None
+        for expected in range(18, plan["segments"] + 1):
+            number, last = self.segment()
+            self.assertEqual(number, expected)
+            self.uci.send(f"OK {number}")
+        self.assertEqual(last, [900, 0, 0, 12000])
+        self.assertTrue(self.uci.silent(0.1))
+        self.uci.send(f"S IDLE 15 900 0 0 12000 0 16 {plan['segments']}")
+        state = wait_for(lambda: (s := self.session.snapshot())["status"]["last"] and s)
+        self.assertEqual(state["tramo"]["done"], plan["segments"])
+        self.assertIsNone(state["tramo"]["cancelled"])
+        self.assertEqual(state["segments"], {"pending": 0, "in_flight": None, "last_ok": plan["segments"]})
+
+    def test_stop_discards_the_rest_of_the_tramo(self):
+        self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        self.assertEqual(self.segment()[0], 1)
+        self.session.stop()
+        self.assertEqual(self.uci.receive(), "STOP")
+        # El OK que llega tarde no reanuda nada.
+        self.uci.send("OK 1")
+        self.assertTrue(self.uci.silent(0.2))
+        state = self.session.snapshot()
+        self.assertEqual(state["segments"]["pending"], 0)
+        self.assertEqual(state["tramo"]["cancelled"], "frenado por el operador")
+        # Los números no se repiten: un tramo nuevo sigue la cuenta.
+        self.uci.send("S IDLE 15 50 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["status"]["position"][0] == 50)
+        self.session.move_ptp((0, 0, 0, 12000), speed=1)
+        self.assertGreater(self.segment()[0], 30)
+
+    def test_stop_after_the_last_segment_was_sent_still_cancels(self):
+        # La URC ya envió todo, pero el robot ejecuta los últimos de la cola.
+        plan = self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        for _ in range(plan["segments"]):
+            number, _ = self.segment()
+            self.uci.send(f"OK {number}")
+        self.uci.send(f"S RUN 15 400 0 0 12000 0 0 {plan['segments'] - 16}")
+        wait_for(lambda: self.session.snapshot()["status"]["mode"] == "RUN")
+        with self.assertRaisesRegex(ValueError, "tramo"):
+            self.session.jog(1, "+")
+        self.session.stop()
+        self.assertEqual(self.uci.receive(), "STOP")
+        self.assertEqual(self.session.snapshot()["tramo"]["cancelled"], "frenado por el operador")
+
+    def test_a_robot_stopped_before_the_end_closes_the_tramo(self):
+        # El firmware frenó por un ERR que la URC no pudo leer: S lo muestra
+        # quieto antes del último segmento, y el jog vuelve a estar permitido.
+        plan = self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        for _ in range(plan["segments"]):
+            number, _ = self.segment()
+            self.uci.send(f"OK {number}")
+        self.uci.send("S IDLE 15 400 0 0 12000 0 16 20")
+        state = wait_for(lambda: (s := self.session.snapshot())["tramo"]["cancelled"] and s)
+        self.assertEqual(state["tramo"]["cancelled"], "el robot se detuvo antes de terminar")
+        self.session.jog(1, "+")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+
+    def test_an_err_cancels_the_tramo(self):
+        self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        self.assertEqual(self.segment()[0], 1)
+        self.uci.send("OK 1")
+        self.assertEqual(self.segment()[0], 2)
+        # Con segmentos, el firmware frena ante todo ERR; la URC no sigue.
+        self.uci.send("ERR 4 watchdog")
+        state = wait_for(lambda: (s := self.session.snapshot())["errors"] and s)
+        self.assertIn("ERR 4", state["tramo"]["cancelled"])
+        self.assertIn("cancelado", state["message"])
+        self.uci.send("OK 2")
+        self.assertTrue(self.uci.silent(0.2))
+
+    def test_a_boot_cancels_the_tramo(self):
+        self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        self.assertEqual(self.segment()[0], 1)
+        self.uci.send("BOOT scara/1 1")
+        wait_for(lambda: self.session.snapshot()["boots"] == 1)
+        self.uci.send("OK 1")
+        self.assertTrue(self.uci.silent(0.2))
+        self.assertEqual(self.session.snapshot()["tramo"]["cancelled"], "la UCI se reinició")
+
+    def test_ptp_needs_a_referenced_robot_at_rest(self):
+        plan = self.session.move_ptp((900, 0, 0, 12000), speed=0.5, dry_run=True)
+        self.assertEqual(plan["start"], [0, 0, 0, 12000])
+        self.assertAlmostEqual(plan["duration_s"], plan["segments"] * 0.02)
+        self.assertTrue(self.uci.silent(0.1))
+        with self.assertRaisesRegex(ValueError, "J1 fuera"):
+            self.session.move_ptp((14000, 0, 0, 12000))
+        self.uci.send("S JOG 15 0 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["status"]["mode"] == "JOG")
+        with self.assertRaisesRegex(ValueError, "moviendo"):
+            self.session.move_ptp((900, 0, 0, 12000))
+        self.uci.send("S IDLE 0 0 0 0 12000 0 16 0")
+        wait_for(lambda: not self.session.snapshot()["referenced"])
+        with self.assertRaisesRegex(ValueError, "referenciado"):
+            self.session.move_ptp((900, 0, 0, 12000))
+
+    def test_no_jog_during_a_tramo(self):
+        self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        self.assertEqual(self.segment()[0], 1)
+        with self.assertRaisesRegex(ValueError, "tramo"):
+            self.session.jog(1, "+")
+
+
 class HttpTests(unittest.TestCase):
     def setUp(self):
         self.session = Session(port=0)
@@ -254,6 +399,46 @@ class HttpTests(unittest.TestCase):
                 status, body = self.request("POST", path, {})
                 self.assertEqual(status, 202, body)
                 self.assertEqual(uci.receive(), line)
+
+    def test_ptp_to_a_pose_written_by_hand(self):
+        uci = FakeUci(self.session.port)
+        self.addCleanup(uci.close)
+        self.assertEqual(uci.receive(), "HELLO")
+        uci.send("S IDLE 15 0 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["referenced"])
+        # Sin confirmar, solo planifica y no envía nada.
+        status, body = self.request("POST", "/api/ptp", {"joints": [30, -60, 10, 60], "speed": 50})
+        self.assertEqual(status, 200, body)
+        plan = json.loads(body)
+        self.assertEqual(plan["target"], [3000, -6000, 1000, 6000])
+        self.assertEqual(plan["speed"], 0.5)
+        self.assertGreater(plan["duration_s"], 1)
+        self.assertTrue(uci.silent(0.1))
+        # La misma pose en XYZ y rumbo, con el codo preferido.
+        status, body = self.request("POST", "/api/ptp", {
+            "pose": {"x": 433.0, "y": 0.0, "z": 34.7, "heading": -20}, "speed": 50})
+        self.assertEqual(status, 200, body)
+        for got, want in zip(json.loads(body)["target"], (3000, -6000, 1000, 6000)):
+            self.assertAlmostEqual(got, want, delta=5)  # X, Y y Z redondeados a 0,1 mm
+        status, body = self.request("POST", "/api/ptp", {"joints": [30, -60, 10, 60], "speed": 50, "confirm": True})
+        self.assertEqual(status, 202, body)
+        self.assertTrue(uci.receive().startswith("SEG 1 20 "))
+        self.assertEqual(json.loads(self.request("GET", "/api/estado")[1])["tramo"]["segments"], plan["segments"])
+
+    def test_ptp_rejects_bad_requests(self):
+        uci = FakeUci(self.session.port)
+        self.addCleanup(uci.close)
+        self.assertEqual(uci.receive(), "HELLO")
+        uci.send("S IDLE 15 0 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["referenced"])
+        for request in ({"joints": [0, 0, 0]}, {"joints": [0, 0, 0, "x"]}, {"joints": [0, 0, 0, 120], "speed": 0},
+                        {"joints": [0, 0, 0, 120], "speed": 101}, {}, {"pose": {"x": 900, "y": 0, "z": 0, "heading": 0}},
+                        {"pose": {"x": 300, "y": 0, "z": 0, "heading": 0, "elbow": True}},
+                        {"joints": [0, 140, 0, 120]}):
+            with self.subTest(request=request):
+                status, body = self.request("POST", "/api/ptp", request)
+                self.assertEqual(status, 400, body)
+        self.assertTrue(uci.silent(0.1))
 
 
 if __name__ == "__main__":

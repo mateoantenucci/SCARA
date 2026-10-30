@@ -91,6 +91,27 @@ void restIsExact() {
         "J4 = 120 mm es un número entero de pasos", scara::unitsToSteps(3, 12000), 0);
 }
 
+bool within(int32_t j1, int32_t j2, int32_t j3, int32_t j4, int32_t ms) {
+  const int32_t from[scara::MOTOR_COUNT] = {1000, -2000, 3000, 6000};
+  const int32_t to[scara::MOTOR_COUNT] = {1000 + j1, -2000 + j2, 3000 + j3, 6000 + j4};
+  return scara::segmentWithinMotorSpeed(from, to, ms);
+}
+
+// Límites de los motores de D45 en un segmento de 20 ms, con 2 centésimas de
+// tolerancia por el redondeo: J1 y J1 + J2 a 20 °/s (40 centésimas), J3 a
+// 28 °/s (56) y J4 a 30 mm/s (60). No dependen del microstepping.
+void segmentSpeed() {
+  check(within(42, 0, 0, 0, 20) && !within(43, 0, 0, 0, 20), "M1 hasta 20 °/s", 42, 43);
+  check(within(-42, 0, 0, 0, 20) && !within(-43, 0, 0, 0, 20), "en los dos sentidos", -42, -43);
+  check(within(0, 42, 0, 0, 20) && !within(0, 43, 0, 0, 20), "M2 sigue a J1 + J2", 42, 43);
+  check(!within(30, 30, 0, 0, 20), "J1 y J2 en el mismo sentido gastan el margen de M2", 30, 30);
+  check(within(42, -42, 0, 0, 20), "J1 y J2 opuestos dejan quieto a M2", 42, -42);
+  check(within(0, 0, 58, 0, 20) && !within(0, 0, 59, 0, 20), "M3 hasta 28 °/s", 58, 59);
+  check(within(0, 0, 0, -62, 20) && !within(0, 0, 0, -63, 20), "M4 hasta 30 mm/s", -62, -63);
+  check(within(2002, 0, 0, 0, 1000) && !within(2003, 0, 0, 0, 1000), "en un segundo, 20 °/s", 2002, 2003);
+  check(within(0, 0, 0, 0, 1), "un segmento quieto siempre vale", 0, 0);
+}
+
 }  // namespace
 
 int main() {
@@ -98,5 +119,6 @@ int main() {
   roundTrip();
   coupling();
   restIsExact();
+  segmentSpeed();
   return failures == 0 ? 0 : 1;
 }

@@ -5,6 +5,8 @@ Cada `.txt` es una conversación `scara/1` entre la URC y la UCI. Son la definic
 - **Firmware** (seam 1 de la spec #2): el núcleo real, compilado para la PC con una capa de hardware falsa: reloj controlable, contadores de pasos por motor y corriente de los drivers (los Hall a voluntad llegan con el homing, issue #8).
 - **URC** (seam 2): una UCI falsa en Python se conecta por TCP a la URC real. Envía las líneas `<` y comprueba que la URC pueda enviar cada `>`. Si el firmware rechaza una orden por su forma (`ERR 1`, `2` o `3`), la URC tiene que negarse a enviarla con el mismo código. `+`, `=` y `!` no los ve la URC.
 
+Los `SEG` siguen el control de flujo (D50): en el archivo, cada `> SEG` va después del `< OK` del anterior, porque la URC no envía uno nuevo sin ese `OK`. Un `SEG` que el firmware rechaza con `ERR 9 cola` es uno que una URC correcta no envía: la prueba de la URC comprueba que lo retenga.
+
 ## Cómo se corren
 
 Con la suite de Python, desde la raíz del repo:

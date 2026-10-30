@@ -30,7 +30,10 @@
     button.active { background: #086e78; border-color: #086e78; color: white; }
     button:disabled { opacity: .45; cursor: not-allowed; }
     kbd { border: 1px solid #a9bcc4; border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; font-size: .85rem; background: #f7fafb; }
-    #feedback { min-height: 1.5em; font-size: .9rem; color: #a62929; }
+    #feedback, .feedback { min-height: 1.5em; font-size: .9rem; color: #a62929; }
+    .fields { margin: 10px 0; }
+    .fields input { width: 7em; }
+    input, select { font: inherit; padding: 6px; border: 1px solid #a9bcc4; border-radius: 6px; }
     pre { white-space: pre-wrap; font: .8rem ui-monospace, monospace; background: #f4f7f8; padding: 10px; border-radius: 6px; max-height: 260px; overflow: auto; margin: 0; }
   </style>
 </head>
@@ -87,6 +90,35 @@
     <div id="feedback" role="status" aria-live="polite"></div>
   </section>
 
+  <section class="card" aria-label="Ir a una pose">
+    <h2>Ir a una pose (PTP)</h2>
+    <p class="muted">Todas las articulaciones se mueven a la vez y llegan juntas. La URC verifica límites y choques, muestra la duración y pide confirmación. Exige el robot referenciado y quieto.</p>
+    <div class="row">
+      <label><input type="radio" name="ptp-kind" value="joints" checked> Articulaciones</label>
+      <label><input type="radio" name="ptp-kind" value="pose"> Punto de herramienta</label>
+      <button id="ptp-here" type="button">Copiar la pose actual</button>
+    </div>
+    <div class="row fields" id="ptp-joints">
+      <label>J1 (°) <input type="number" step="0.01" value="0"></label>
+      <label>J2 (°) <input type="number" step="0.01" value="0"></label>
+      <label>J3 (°) <input type="number" step="0.01" value="0"></label>
+      <label>J4 (mm) <input type="number" step="0.01" value="120"></label>
+    </div>
+    <div class="row fields" id="ptp-pose" hidden>
+      <label>X (mm) <input type="number" step="0.1" value="500"></label>
+      <label>Y (mm) <input type="number" step="0.1" value="0"></label>
+      <label>Z (mm) <input type="number" step="0.1" value="0"></label>
+      <label>Rumbo (°) <input type="number" step="0.1" value="0"></label>
+      <label>Codo <select id="ptp-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
+    </div>
+    <div class="row">
+      <label>Velocidad (%) <input id="ptp-speed" type="number" min="1" max="100" step="1" value="25"></label>
+      <button id="ptp-go">Ir a la pose…</button>
+    </div>
+    <p id="tramo" class="muted"></p>
+    <div id="ptp-feedback" class="feedback" role="status" aria-live="polite"></div>
+  </section>
+
   <section class="card" aria-label="Errores">
     <h2>Errores</h2>
     <p class="muted">Los informados por la UCI con <code>ERR</code> y las líneas de la UCI que la URC no entendió.</p>
@@ -95,7 +127,7 @@
 
   <section class="card" aria-label="Tráfico scara/1">
     <h2>Tráfico scara/1</h2>
-    <p class="muted">Sin el estado S (20/s) ni PING (4/s).</p>
+    <p class="muted">Sin el estado S (20/s), PING (4/s) ni los SEG y OK de los tramos (50/s).</p>
     <pre id="traffic"></pre>
   </section>
 </main>
@@ -107,8 +139,8 @@ const KEYS = {
   KeyQ: [3, "-"], KeyE: [3, "+"], KeyR: [4, "-"], KeyF: [4, "+"],
 };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
-const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog" };
-let held = null, timer = null;
+const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos" };
+let held = null, timer = null, lastStatus = null;
 
 function format(joint, value) {
   return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
@@ -119,7 +151,9 @@ async function post(path, body = {}, timeoutMs = null) {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
     signal: timeoutMs === null ? undefined : AbortSignal.timeout(timeoutMs),
   });
-  if (!response.ok) throw new Error((await response.json()).error);
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error);
+  return data;
 }
 
 function show(error) {
@@ -181,7 +215,9 @@ document.addEventListener("keydown", (event) => {
     return;
   }
   const jog = KEYS[event.code];
-  if (jog && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
+  // Escribiendo una pose, las letras no mueven el robot.
+  const typing = event.target.closest && event.target.closest("input[type=number], select");
+  if (jog && !typing && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
     startJog(...jog);
   }
@@ -209,6 +245,62 @@ document.getElementById("zero").addEventListener("click", () => {
   }
 });
 
+// Ir a una pose (PTP): primero planifica y muestra la duración; después envía.
+const ptpKind = () => document.querySelector("input[name=ptp-kind]:checked").value;
+// Un campo vacío no es un cero: se rechaza antes de planificar.
+const values = (id) => [...document.querySelectorAll(`#${id} input`)].map((input) => {
+  if (input.value.trim() === "") throw new Error(`Falta ${input.parentElement.textContent.trim()}`);
+  return Number(input.value);
+});
+const ptpFeedback = (text) => { document.getElementById("ptp-feedback").textContent = text || ""; };
+
+for (const radio of document.querySelectorAll("input[name=ptp-kind]")) {
+  radio.addEventListener("change", () => {
+    document.getElementById("ptp-joints").hidden = ptpKind() !== "joints";
+    document.getElementById("ptp-pose").hidden = ptpKind() !== "pose";
+  });
+}
+document.getElementById("ptp-here").addEventListener("click", () => {
+  if (!lastStatus) return;
+  const inputs = document.querySelectorAll("#ptp-joints input");
+  lastStatus.position.forEach((value, joint) => { inputs[joint].value = (value / 100).toFixed(2); });
+  document.querySelector("input[name=ptp-kind][value=joints]").checked = true;
+  document.querySelector("input[name=ptp-kind][value=joints]").dispatchEvent(new Event("change"));
+});
+document.getElementById("ptp-go").addEventListener("click", async () => {
+  const request = { speed: Number(document.getElementById("ptp-speed").value) };
+  try {
+    if (ptpKind() === "joints") {
+      request.joints = values("ptp-joints");
+    } else {
+      const [x, y, z, heading] = values("ptp-pose");
+      request.pose = { x, y, z, heading, elbow: Number(document.getElementById("ptp-elbow").value) };
+    }
+    const plan = await post("/api/ptp", request);
+    const target = plan.target.map((value, joint) => format(joint, value)).join(", ");
+    if (plan.segments === 0) {
+      ptpFeedback("El robot ya está en esa pose.");
+      return;
+    }
+    if (!confirm(`PTP a ${target} al ${request.speed} %: ${plan.duration_s.toFixed(2)} s en ${plan.segments} segmentos. ¿Mover el robot?`)) return;
+    await post("/api/ptp", { ...request, confirm: true });
+    ptpFeedback(null);
+  } catch (error) {
+    ptpFeedback(error.message);
+  }
+});
+
+function showTramo(tramo) {
+  const text = document.getElementById("tramo");
+  if (!tramo) {
+    text.textContent = "";
+    return;
+  }
+  const state = tramo.cancelled ? `cancelado (${tramo.cancelled})`
+    : tramo.done === tramo.segments ? "terminado" : "en curso";
+  text.textContent = `Último tramo PTP: ${tramo.done} de ${tramo.segments} segmentos, ${tramo.duration_s.toFixed(2)} s · ${state}`;
+}
+
 async function refresh() {
   try {
     const state = await (await fetch("/api/estado")).json();
@@ -220,6 +312,8 @@ async function refresh() {
       ? `Protocolo ${state.firmware.protocol} · firmware ${state.firmware.version} · arranques vistos: ${state.boots}`
       : "";
     const status = state.connected ? state.status : null;
+    lastStatus = status;
+    showTramo(state.tramo);
     const reference = document.getElementById("reference");
     const homed = state.connected && state.referenced;
     reference.textContent = homed ? "Referenciado" : "Sin referencia";

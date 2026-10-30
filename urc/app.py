@@ -6,9 +6,11 @@ scara-dev/1): usan otro puerto HTTP y no se ejecutan a la vez sobre el 9000.
 
 import argparse
 import json
+import math
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from urc import planner
 from urc.session import Session
 
 
@@ -22,6 +24,37 @@ ORDERS = {
     "/api/stop": Session.stop,
     "/api/halt": Session.halt,
 }
+
+
+def _number(value, name):
+    # Acotado: un número enorme desbordaría al pasarlo a centésimas.
+    if (isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)
+            or abs(value) > 1e6):
+        raise ValueError(f"{name} tiene que ser un número de hasta un millón")
+    return value
+
+
+def ptp_order(request):
+    """Destino y velocidad de un PTP pedido por la página.
+
+    joints: J1–J3 en grados y J4 en mm. pose: X, Y, Z en mm, rumbo en grados y
+    codo (−1, J2 negativo, el preferido; o 1). speed: porcentaje de 1 a 100.
+    """
+    speed = _number(request.get("speed", 25), "La velocidad")
+    if not 1 <= speed <= 100:
+        raise ValueError("La velocidad va de 1 % a 100 %")
+    if "joints" in request:
+        joints = request["joints"]
+        if not isinstance(joints, list) or len(joints) != 4:
+            raise ValueError("Se esperan J1–J4")
+        target = tuple(round(_number(value, name) * 100) for value, name in zip(joints, planner.NAMES))
+    elif isinstance(request.get("pose"), dict):
+        pose = request["pose"]
+        values = [_number(pose.get(key), key) for key in ("x", "y", "z", "heading")]
+        target = planner.joints_from_pose(*values, elbow=pose.get("elbow", -1))
+    else:
+        raise ValueError("Se espera joints (J1–J4) o pose (X, Y, Z y rumbo)")
+    return target, speed / 100
 
 
 def handler_for(session):
@@ -65,6 +98,13 @@ def handler_for(session):
                     raise ValueError("Se requiere un objeto JSON")
                 if self.path == "/api/jog":
                     session.jog(request.get("joint"), request.get("direction"), request.get("motor", False))
+                elif self.path == "/api/ptp":
+                    # Sin confirm, solo planifica: la página muestra la duración y pregunta.
+                    target, speed = ptp_order(request)
+                    confirm = request.get("confirm", False) is True
+                    plan = session.move_ptp(target, speed, dry_run=not confirm)
+                    self.reply(202 if confirm else 200, plan)
+                    return
                 elif self.path in ORDERS:
                     ORDERS[self.path](session)
                 else:

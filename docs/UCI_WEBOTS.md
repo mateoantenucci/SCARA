@@ -67,6 +67,7 @@ Hay que correrlo desde la raíz del repo. Llamar a ese `make` desde Git Bash no 
 3. Apretar **Habilitar motores** y, si el robot está en la pose de reposo, **Referencia manual**.
 4. Mantener **D** o **A** con la página enfocada: J1 gira y el antebrazo sigue alineado con el brazo. **W/S** mueven J2, **Q/E** J3 y **R/F** J4 (R sube).
 5. Para ver el acople, marcar **«Modo de prueba: jog por motor»** y mantener **D**: solo gira M1, el antebrazo conserva su orientación en el mundo y el rumbo de la herramienta no cambia.
+6. En **«Ir a una pose (PTP)»**, escribir J1–J4 (o X, Y, Z y rumbo) y apretar **«Ir a la pose…»**: la URC verifica límites y choques, muestra la duración y pide confirmación. Las cuatro articulaciones se mueven a la vez y llegan juntas. **Esc** o **Stop** frenan con rampa.
 
 No se puede usar a la vez con el banco viejo: los dos quieren el puerto 9000 (en uno escucha la URC; en el otro, Webots).
 

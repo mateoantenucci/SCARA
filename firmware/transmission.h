@@ -73,6 +73,30 @@ constexpr bool withinMotorSpeed(uint8_t axis, int32_t speed) {
          static_cast<int64_t>(MOTOR_MAX_SPEED[axis]) * STEPS_PER_REV * STEPS_DEN[axis];
 }
 
+// Unidades del protocolo por vuelta de cada motor: 90° de su articulación en
+// M1–M3 (poleas 4:1) y los 8 mm del ACME en M4.
+const int32_t MOTOR_TURN_UNITS[MOTOR_COUNT] = {TURN_UNITS / PULLEY_RATIO, TURN_UNITS / PULLEY_RATIO,
+                                               TURN_UNITS / PULLEY_RATIO, LEAD_UNITS};
+// La URC redondea cada destino a la centésima, y M2 suma dos articulaciones.
+const int32_t ROUNDING_UNITS = 2;
+
+// ¿Ir de la configuración articular `from` a `to` en `ms` milisegundos deja
+// a cada motor dentro de MOTOR_MAX_SPEED? Mide el recorrido de cada motor en
+// las unidades de su articulación, con el acople: M2 sigue a J1 + J2 (D45).
+// No depende del microstepping. Admite ROUNDING_UNITS de más por motor.
+inline bool segmentWithinMotorSpeed(const int32_t from[MOTOR_COUNT], const int32_t to[MOTOR_COUNT], int32_t ms) {
+  for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) {
+    int32_t travel = to[motor] - from[motor];
+    if (motor == 1) travel += to[0] - from[0];
+    if (travel < 0) travel = -travel;
+    if (static_cast<int64_t>(travel - ROUNDING_UNITS) * 360 * 1000 >
+        static_cast<int64_t>(MOTOR_MAX_SPEED[motor]) * MOTOR_TURN_UNITS[motor] * ms) {
+      return false;
+    }
+  }
+  return true;
+}
+
 }  // namespace scara
 
 #endif

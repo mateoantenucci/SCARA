@@ -1,0 +1,16 @@
+# Si la URC deja de hablar más de 1 s con segmentos en ejecución, el firmware
+# frena con rampa como STOP (D41, falla F4) y conserva la referencia.
+< BOOT scara/1 1
+> ENABLE
+> ZERO
+> SEG 1 1000 1800 0 0 12000
+< OK 1
+> SEG 2 1000 3600 0 0 12000
+< OK 2
+# El segmento 1 termina a los 1000 ms y el 2 sigue a 18 °/s.
++ 1001
+< ERR 4 watchdog
++ 530
+= M1 405 M2 405
+> STATUS
+< S IDLE 15 2278 0 0 12000 0 16 1

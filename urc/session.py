@@ -3,6 +3,10 @@
 La URC escucha (D1) y la UCI se conecta: el controlador de Webots, socat o un
 Arduino con Ethernet. Un hilo posee los sockets; la interfaz HTTP solo consulta
 el estado y deja órdenes en una cola.
+
+Los segmentos de un tramo salen de a uno: la URC envía el próximo SEG cuando
+llega el OK del anterior (D6). Con la cola del firmware llena, el OK se demora
+y la URC espera.
 """
 
 from collections import deque
@@ -12,7 +16,10 @@ import socket
 import threading
 import time
 
-from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message
+from scara.collisions import CollisionChecker
+from scara.kinematics import load_config
+from urc import planner
+from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message, segment_line
 
 
 PING_PERIOD = 0.25           # s (D27)
@@ -44,6 +51,15 @@ class Session:
         self.status_time = None
         self.jogging = None          # (eje, sentido, por motor) enviado a la UCI
         self.jog_deadline = 0.0
+        self.segments = deque()      # SEG por enviar, en orden
+        self.in_flight = None        # número del SEG enviado que espera su OK
+        self.next_segment = 1        # los números no se repiten en la sesión
+        self.last_ok = None
+        self.tramo = None            # el último tramo planificado, para la página
+        # El modelo para planificar se lee una vez.
+        self.config = load_config()
+        self.checker = CollisionChecker(self.config)
+        self.limits = planner.default_limits(self.config)
         self.message = f"Esperando a la UCI en el puerto {self.port}"
         self.closed = threading.Event()
         self.thread = threading.Thread(target=self._run, name="scara-uci", daemon=True)
@@ -55,12 +71,48 @@ class Session:
         """Envía una orden de scara/1 tal cual, si su forma es válida.
 
         Un JOG enviado así no vence como el de jog(): solo lo frenan JOG STOP,
-        STOP o HALT. Por eso la página no lo expone.
+        STOP o HALT. Por eso la página no lo expone. Un SEG espera su turno
+        detrás de los demás segmentos, con el control de flujo.
         """
         line = check_order(line)
         with self.lock:
             self._require_robot()
-            self._queue(line)
+            if line.split()[0] == "SEG":
+                self.segments.append(line)
+            else:
+                self._queue(line)
+
+    def move_ptp(self, target, speed=0.25, dry_run=False):
+        """Tramo PTP desde la posición estimada hasta target (J1–J4 en centésimas).
+
+        Valida límites y choques en todo el camino. Con dry_run solo planifica:
+        la página muestra la duración y pide confirmación.
+        """
+        with self.lock:
+            self._require_robot()
+            status = self.status
+            if status is None or status["homed"] != ALL_HOMED:
+                raise ValueError("El robot tiene que estar referenciado para un tramo PTP")
+            if status["mode"] != "IDLE" or self.jogging is not None or self._segments_pending():
+                raise ValueError("El robot se está moviendo: esperá a que frene")
+            start = tuple(status["position"])
+        planner.check_target(start, target, self.config, self.checker)
+        plan = planner.plan_ptp(start, target, speed, self.limits)
+        summary = {"start": list(start), "target": list(target), "speed": speed, "segments": len(plan.segments),
+                   "duration_s": len(plan.segments) * planner.SEGMENT_MS / 1000}
+        if dry_run or not plan.segments:
+            return summary
+        with self.lock:
+            self._require_robot()
+            if self.status is None or tuple(self.status["position"]) != start or self._segments_pending():
+                raise ValueError("El robot cambió de estado mientras se planificaba; volvé a intentar")
+            first = self.next_segment
+            lines = [segment_line(first + index, ms, units) for index, (ms, units) in enumerate(plan.segments)]
+            self.next_segment += len(lines)
+            self.segments.extend(lines)
+            self.tramo = dict(summary, kind="PTP", first=first, last=first + len(lines) - 1, cancelled=None)
+            self.message = f"Tramo PTP en curso: {len(lines)} segmentos, {summary['duration_s']:.2f} s"
+        return summary
 
     def jog(self, joint, direction, motor=False):
         """Mantiene el jog mientras la página lo renueve antes de jog_hold.
@@ -76,6 +128,8 @@ class Session:
             raise ValueError("motor debe ser true o false")
         with self.lock:
             self._require_robot()
+            if self._tramo_running():
+                raise ValueError("Hay un tramo en curso: frenalo con Stop antes del jog")
             self.jog_deadline = time.monotonic() + self.jog_hold
             if self.jogging != (joint, direction, motor):
                 self.jogging = (joint, direction, motor)
@@ -107,6 +161,11 @@ class Session:
             status = None
             if self.status is not None:
                 status = dict(self.status, age_s=round(time.monotonic() - self.status_time, 3))
+            tramo = None
+            if self.tramo is not None:
+                tramo = dict(self.tramo)
+                done = 0 if status is None else status["last"] - tramo["first"] + 1
+                tramo["done"] = max(0, min(done, tramo["segments"]))
             return {
                 "protocol": PROTOCOL,
                 "connected": self.connected,
@@ -118,6 +177,8 @@ class Session:
                 "status": status,
                 "referenced": status is not None and status["homed"] == ALL_HOMED,
                 "jog": None if self.jogging is None else dict(zip(("joint", "direction", "motor"), self.jogging)),
+                "segments": {"pending": len(self.segments), "in_flight": self.in_flight, "last_ok": self.last_ok},
+                "tramo": tramo,
                 "traffic": list(self.traffic),
                 "errors": list(self.errors),
                 "rejected": list(self.rejected),
@@ -134,7 +195,25 @@ class Session:
         with self.lock:
             self._require_robot()
             self.jogging = None
+            self._cancel_segments("frenado por el operador")
             self._queue(line)
+
+    def _segments_pending(self):
+        return bool(self.segments) or self.in_flight is not None
+
+    def _tramo_running(self):
+        """Quedan segmentos por enviar, o el robot todavía no terminó los enviados."""
+        if self._segments_pending():
+            return True
+        return (self.tramo is not None and self.tramo["cancelled"] is None
+                and (self.status is None or self.status["last"] < self.tramo["last"]))
+
+    def _cancel_segments(self, reason):
+        """Descarta lo que falta enviar del tramo; un OK que llegue tarde se ignora."""
+        if self.tramo is not None and self._tramo_running():
+            self.tramo["cancelled"] = reason
+        self.segments.clear()
+        self.in_flight = None
 
     def _require_robot(self):
         if not self.connected:
@@ -157,6 +236,7 @@ class Session:
         with self.lock:
             self.connected = True
             self.peer = f"{address[0]}:{address[1]}"
+            self._cancel_segments("la UCI se volvió a conectar")
             self.firmware = None
             self.status = None
             self.greeted = False
@@ -171,6 +251,7 @@ class Session:
             self.peer = None
             self.jogging = None
             self._discard_outgoing()
+            self._cancel_segments("la UCI se desconectó")
             self.message = f"UCI desconectada: {reason}. Esperando que se vuelva a conectar."
 
     def _receive(self, raw):
@@ -186,7 +267,8 @@ class Session:
                 return
             if not line.strip():
                 return
-            if not line.startswith("S "):
+            # El estado y los OK llegan decenas de veces por segundo.
+            if not line.startswith(("S ", "OK ")):
                 self.traffic.append({"direction": "<", "line": line})
             try:
                 message = parse_message(line)
@@ -201,13 +283,28 @@ class Session:
             elif kind == "S":
                 self.status = {key: value for key, value in message.items() if key != "kind"}
                 self.status_time = time.monotonic()
+                # Todo enviado y el robot quieto antes del último segmento: el
+                # firmware frenó por algo que la URC no vio (un ERR ilegible).
+                if (self.status["mode"] == "IDLE" and not self._segments_pending()
+                        and self._tramo_running()):
+                    self._cancel_segments("el robot se detuvo antes de terminar")
+            elif kind == "OK":
+                self.last_ok = message["number"]
+                if message["number"] == self.in_flight:
+                    self.in_flight = None
             elif kind == "ERR":
                 self.errors.append(f"ERR {message['code']} {message['word']}: {message['cause']}")
+                # Con segmentos en ejecución, el firmware frena con rampa ante
+                # todo ERR: el resto del tramo ya no se envía.
+                if self._tramo_running():
+                    self._cancel_segments(f"la UCI respondió ERR {message['code']} {message['word']}")
+                    self.message = f"Tramo cancelado: ERR {message['code']} {message['word']}"
             self.greeted = True
 
     def _booted(self):
         """La UCI arrancó: toda referencia y toda orden pendiente quedan sin valor."""
         self.boots += 1
+        self._cancel_segments("la UCI se reinició")
         self.status = None
         self.jogging = None
         self._discard_outgoing()
@@ -230,6 +327,11 @@ class Session:
                     break
             for line in lines:
                 self.traffic.append({"direction": ">", "line": line})
+            # Un solo SEG sin confirmar: el próximo sale con el OK.
+            if self.in_flight is None and self.segments:
+                line = self.segments.popleft()
+                self.in_flight = int(line.split()[1])
+                lines.append(line)
         if now - self.last_ping >= PING_PERIOD:
             self.last_ping = now
             lines.append("PING")

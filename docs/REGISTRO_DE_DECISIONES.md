@@ -450,3 +450,45 @@ Decisiones tomadas al escribir la capa de hardware del UNO y ensayar el camino s
 - **Por qué:** así se prueba sin la placa justo lo que va a correr con ella: la receta de socat y la URC sin cambios. La prueba entra en `python -m unittest discover` y se omite si no hay socat.
 - **Descartado:** que socat cree el PTY (`PTY,link=…`): en MSYS2 no espera a que lo abran (`wait-slave`) y se cierra con un error de E/S; además la receta dejaría de ser la del robot real. Un par de puertos COM virtuales (com0com): exige instalar un driver con permisos de administrador.
 - **Estado:** Aceptada.
+
+## Segmentos temporizados y tramo PTP (issue #9)
+
+Decisiones tomadas al implementar la cola de segmentos del firmware y el planificador PTP de la URC. La forma de los mensajes está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#segmentos); cómo funciona y la evidencia, en la [validación de segmentos](../validation/segmentos/INFORME.md).
+
+**D50 · Un `SEG` sin confirmar por vez; con la cola llena, el firmware retiene uno y demora su `OK`.**
+- **Decisión:**
+  - La cola tiene 16 lugares y el segmento en ejecución ocupa uno (`libres` en `S`). `OK n` sale cuando el segmento entró en la cola.
+  - La URC envía un `SEG` y espera su `OK` para enviar el siguiente. Con la cola llena, el firmware guarda el segmento recibido aparte y envía su `OK` recién cuando termina el que se ejecuta. Un `SEG` más antes de ese `OK` es `ERR 9 cola`.
+  - `SEG n ms q1 q2 q3 q4`: `n` de 1 a 999999999, que la URC no repite en la sesión; `ms` de 1 a 1000; `q` enteros de hasta ±99999. Cada segmento empieza cuando termina el anterior, en el reloj del firmware.
+- **Por qué:** es el control de flujo de GRBL (*send-response*): simple de explicar y de probar, y la URC nunca puede desbordar la cola. Con 16 segmentos de 20 ms, la cola cubre 320 ms de demora del enlace sin que se note; por TCP local o 115200 baudios, una ida y vuelta tarda mucho menos que un segmento, así que la cola se mantiene llena. Guardar uno aparte permite que el `OK` se demore sin dejar de leer el enlace: `PING` y `STOP` siguen llegando. Hasta 1000 ms por segmento, la interpolación cabe en enteros de 32 bits aun con 1/32, y las esperas largas son varios segmentos.
+- **Descartado:** contar caracteres pendientes como GRBL o créditos según `libres` (más rendimiento, que a 50 segmentos por segundo no hace falta, y un caso más para probar), y dejar de leer el enlace con la cola llena (el watchdog y `STOP` quedarían esperando).
+- **Estado:** Aceptada.
+
+**D51 · El firmware valida cada `SEG` contra la velocidad de los motores, en unidades articulares.**
+- **Decisión:**
+  - `SEG` exige corriente (`ERR 6`), los cuatro ejes referenciados (`ERR 7 referencia`) y ningún otro movimiento: con jog o frenando, `ERR 5`. Con segmentos en ejecución se rechazan `JOG` y `ZERO`.
+  - El firmware calcula el recorrido de cada motor en el segmento con el acople (M2 sigue a J1 + J2) y lo compara con su velocidad de D45. Admite 2 centésimas de más: la URC redondea cada destino a la centésima y M2 suma dos articulaciones. Si no alcanza, `ERR 8 velocidad`.
+  - No verifica aceleraciones, límites articulares ni choques: son del planificador (ADR 0005).
+- **Por qué:** sin referencia, la URC no sabe dónde está el robot y ningún plan vale. La verificación de velocidad protege a los motores de un error de la URC (por ejemplo, unidades equivocadas) al costo de una cuenta por segmento. Medirla en unidades articulares, y no en pasos, la hace independiente del microstepping: el redondeo a pasos agregaría hasta un paso por segmento, el 14 % de M1 en 20 ms.
+- **Descartado:** verificar en pasos con tolerancia de un paso (rechazaba planes válidos) y copiar al firmware los límites articulares (son provisionales y viven en `config/scara.json`).
+- **Estado:** Aceptada.
+
+**D52 · `STOP` frena con rampa en la dirección del segmento; todo `ERR` con segmentos frena igual.**
+- **Decisión:**
+  - `STOP` y el watchdog, con segmentos en ejecución: cada motor sigue en el sentido del segmento actual y baja su velocidad en línea recta hasta cero. Todos tardan lo mismo, lo que necesita el motor más exigido con su aceleración de D45, así el robot sigue en la misma dirección en articulaciones. La cola se vacía y la referencia se conserva. Mientras frena, `S` dice `RUN`.
+  - `HALT` sigue parando en seco (D41). El jog sigue frenando en seco: a su velocidad baja no pierde pasos.
+  - Con segmentos en ejecución, toda orden rechazada (`ERR`) frena con rampa. La URC, ante cualquier `ERR` con el tramo en marcha, deja de enviarlo y no envía `STOP`. Si `S` muestra el robot quieto antes del último segmento, con todo enviado, la URC también da el tramo por terminado: el firmware frenó por algo que no vio.
+- **Por qué:** frenar de golpe desde 20 °/s pide una aceleración infinita y es justo lo que pierde pasos (ADR 0006). La velocidad del segmento actual ya está en la cola, así que el firmware frena sin cálculos de la URC; con 34 °/s² en J1, desde 20 °/s son 0,59 s y 5,9°. Si se rechaza un segmento a mitad de un tramo, lo encolado termina en un punto intermedio del plan, quizás a plena velocidad: frenar es lo seguro, y que los dos lados den el tramo por terminado evita un `STOP` duplicado.
+- **Descartado:** rampa por motor con tiempos distintos (cada articulación frenaría en otro momento y el robot se desviaría del camino) y `STOP` automático de la URC ante un `ERR` (el firmware ya frena).
+- **Estado:** Aceptada.
+
+**D53 · Tramo PTP: un perfil trapezoidal común, limitado por articulaciones y motores.**
+- **Decisión:**
+  - Todas las articulaciones siguen el mismo perfil s(t), de 0 a 1: q(t) = inicio + s(t) · recorrido. Así empiezan, aceleran, frenan y llegan a la vez.
+  - El perfil es trapezoidal, o triangular si no llega a la velocidad máxima. Sus máximos los fija la restricción más exigente entre las articulaciones del modelo (`config/scara.json`, que son también los `maxVelocity` de Webots) y los motores de D45 con el acople: M2 recorre J1 + J2.
+  - La velocidad del tramo (porcentaje) reduce las velocidades máximas; la aceleración queda en su máximo.
+  - El perfil se parte en segmentos de 20 ms; si la duración no es múltiplo de 20 ms, se estira hasta el siguiente, sin pasar ningún máximo. Las posiciones se redondean a la centésima y el último segmento es el destino exacto.
+  - «Ir a una pose» acepta J1–J4 o X, Y, Z y rumbo (con el codo preferido, J2 negativo, D31, o el otro). Verifica límites articulares y choques en todo el camino, que en un PTP es la recta en articulaciones, muestra la duración y pide confirmación. El inicio puede estar fuera del recorrido (un jog lo llevó ahí): un PTP de vuelta se acepta, y el chequeo de choques arranca desde el punto más cercano dentro del recorrido.
+- **Por qué:** es el PTP sincronizado de los robots industriales y la definición de tramo PTP del glosario. Limitar solo por motores dejaría a J2 a 40 °/s cuando J1 gira al revés, y Webots lo saturaría (D45). La URC conoce los límites de los motores en las unidades de cada articulación, no el microstepping (ADR 0003); una prueba verifica que coincidan con `firmware/config.h`. Bajar también la aceleración al reducir la velocidad alargaría las rampas sin hacer falta: la aceleración es lo que limita el par.
+- **Descartado:** un perfil por articulación (cada una llegaría en otro momento), un perfil de quinto grado como el del banco viejo (más suave, pero llega a la aceleración máxima solo en un instante y alarga el tramo) y leer los límites del motor desde `config.h` en tiempo de ejecución.
+- **Estado:** Aceptada.
