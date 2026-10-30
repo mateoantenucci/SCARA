@@ -53,7 +53,8 @@ def check_order(line):
             raise ProtocolError(2, f"{command} no lleva argumentos")
     elif command == "JOG":
         if arguments != ["STOP"] and not _valid_jog(arguments):
-            raise ProtocolError(2, "se espera JOG j ± vel (j de 1 a 4, vel de 1 a 1000) o JOG STOP")
+            raise ProtocolError(2, "se espera JOG j ± vel, JOG Mm ± vel (j y m de 1 a 4, vel de 1 a 1000) "
+                                   "o JOG STOP")
     else:
         raise ProtocolError(1, f"{command} no es una orden de {PROTOCOL}")
     return line
@@ -62,8 +63,10 @@ def check_order(line):
 def _valid_jog(arguments):
     if len(arguments) != 3:
         return False
-    joint, sign, speed = arguments
-    return (UNSIGNED.fullmatch(joint) is not None and 1 <= int(joint) <= 4 and sign in ("+", "-")
+    axis, sign, speed = arguments
+    if axis.startswith("M"):     # jog por motor (D46)
+        axis = axis[1:]
+    return (UNSIGNED.fullmatch(axis) is not None and 1 <= int(axis) <= 4 and sign in ("+", "-")
             and UNSIGNED.fullmatch(speed) is not None and 1 <= int(speed) <= JOG_SPEED_MAX)
 
 

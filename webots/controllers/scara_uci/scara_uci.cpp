@@ -2,9 +2,9 @@
 // (firmware/, ADR 0002) con una capa de hardware de simulación.
 //   - Enlace: cliente TCP hacia la URC (D1), con reintentos.
 //   - Reloj: tiempo simulado (D26).
-//   - Planta simulada mínima: cuenta los pasos de M1..M4 y los convierte en
-//     posiciones de J1..J4 con la transmisión y el acople M1/M2 (D8, N1 sin
-//     pérdida de pasos todavía).
+//   - Planta simulada, transmisión N1 (D8): cuenta los pasos de M1..M4 y los
+//     convierte en posiciones de J1..J4 con el microstepping, las poleas 4:1,
+//     el acople M1/M2 y el ACME. Todavía sin pérdida de pasos (N2, #15).
 // Argumentos (controllerArgs): --host 127.0.0.1 --port 9000
 #include <webots/Motor.hpp>
 #include <webots/Node.hpp>
@@ -36,6 +36,7 @@ typedef int Socket;
 const Socket NO_SOCKET = -1;
 #endif
 
+#include "config.h"
 #include "firmware.h"
 
 namespace {
@@ -232,12 +233,14 @@ private:
   std::string input_, output_;
 };
 
-// --- Planta simulada mínima (N1 sin pérdida de pasos) --------------------
+// --- Planta simulada: transmisión N1, sin pérdida de pasos ---------------
 
-// Hechos del hardware simulado. Coinciden con los que supone el firmware,
-// pero son independientes: la planta es el robot, no lo que el firmware cree.
-const double STEPS_PER_REV = 200.0 * 8.0;  // NEMA de 200 pasos, TB6600 a 1/8 (D9)
-const double PULLEY_RATIO = 4.0;           // poleas 2GT 20:80
+// Hechos del hardware simulado. La mecánica coincide con la que supone el
+// firmware, pero se escribe aparte: la planta es el robot, no lo que el
+// firmware cree. El microstepping, en cambio, es uno solo (config.h, D44): en
+// el robot real son las llaves DIP de los TB6600.
+const double STEPS_PER_REV = scara::STEPS_PER_REV;  // NEMA de 200 pasos y el microstepping de config.h
+const double PULLEY_RATIO = 4.0;                    // poleas 2GT 20:80
 const double LEAD_M = 0.008;               // ACME de 8 mm por vuelta
 const double TWO_PI = 6.283185307179586;
 // Pose inicial de la simulación: la pose de reposo (D30), en radianes y metros.

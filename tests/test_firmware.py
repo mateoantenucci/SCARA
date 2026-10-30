@@ -20,6 +20,8 @@ CONVERSATIONS = sorted((FIRMWARE / "test" / "conversaciones").glob("*.txt"))
 FLAGS = ["-std=c++11", "-Wall", "-Wextra", "-Werror", "-pedantic"]
 # Lo que el Arduino UNO no tiene: el núcleo se compila sin ellos.
 CORE_FLAGS = ["-fno-exceptions", "-fno-rtti"]
+# Lo que admiten las llaves DIP del TB6600 (D9: 8 por defecto).
+MICROSTEPPING = (1, 2, 4, 8, 16, 32)
 DYNAMIC_MEMORY = ("malloc", "calloc", "realloc", "free", "_Znwm", "_Znwj", "_Znam", "_Znaj")
 
 
@@ -57,10 +59,11 @@ class FirmwareConversationTests(unittest.TestCase):
         cls.build.cleanup()
 
     @classmethod
-    def compile(cls, arguments):
+    def compile(cls, arguments, cleanup=True):
         result = subprocess.run([COMPILER, *FLAGS, *arguments], capture_output=True, text=True, env=cls.env)
         if result.returncode != 0:
-            cls.build.cleanup()
+            if cleanup:  # desde setUpClass, tearDownClass no llega a correr
+                cls.build.cleanup()
             raise AssertionError("No compila:\n" + result.stdout + result.stderr)
 
     def test_conversations(self):
@@ -69,6 +72,15 @@ class FirmwareConversationTests(unittest.TestCase):
             with self.subTest(conversacion=path.name):
                 result = subprocess.run([str(self.program), str(path)], capture_output=True, text=True,
                                         env=self.env, timeout=30)
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_transmission_for_every_microstepping(self):
+        for microsteps in MICROSTEPPING:
+            with self.subTest(microstepping=f"1/{microsteps}"):
+                program = Path(self.build.name) / f"transmision_{microsteps}"
+                self.compile([f"-DSCARA_MICROSTEPS={microsteps}", str(FIRMWARE / "test" / "transmision.cpp"),
+                              "-o", str(program)], cleanup=False)
+                result = subprocess.run([str(program)], capture_output=True, text=True, env=self.env, timeout=30)
                 self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_core_has_no_dynamic_memory(self):

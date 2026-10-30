@@ -64,7 +64,7 @@ def handler_for(session):
                 if not isinstance(request, dict):
                     raise ValueError("Se requiere un objeto JSON")
                 if self.path == "/api/jog":
-                    session.jog(request.get("joint"), request.get("direction"))
+                    session.jog(request.get("joint"), request.get("direction"), request.get("motor", False))
                 elif self.path in ORDERS:
                     ORDERS[self.path](session)
                 else:

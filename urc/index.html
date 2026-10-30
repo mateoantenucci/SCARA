@@ -38,7 +38,7 @@
 <main>
   <div class="eyebrow">Unidad Remota de Coordinación · protocolo scara/1</div>
   <h1>SCARA · URC</h1>
-  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. La UCI arranca con los motores sin corriente: habilitalos primero. Mantené <kbd>A</kbd> o <kbd>D</kbd> para mover J1; al soltar, frena. <kbd>Esc</kbd> frena todo.</p>
+  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. La UCI arranca con los motores sin corriente: habilitalos primero. Mantené una tecla de jog para mover una articulación; al soltar, frena. <kbd>Esc</kbd> frena todo.</p>
 
   <section class="card" aria-label="Conexión">
     <div class="row">
@@ -62,13 +62,26 @@
       <thead><tr><th>Articulación</th><th>Estimada</th></tr></thead>
       <tbody id="joints"></tbody>
     </table>
+    <p class="muted">Rumbo de la herramienta (J1 + J2 + J3): <strong id="heading">—</strong></p>
   </section>
 
-  <section class="card" aria-label="Jog articular">
-    <h2>Jog articular de J1</h2>
+  <section class="card" aria-label="Jog">
+    <h2 id="jog-title">Jog articular</h2>
+    <p class="muted" id="jog-help">Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos.</p>
     <div class="row">
-      <button id="jog-minus" data-direction="-">J1 − <kbd>A</kbd></button>
-      <button id="jog-plus" data-direction="+">J1 + <kbd>D</kbd></button>
+      <button data-axis="1" data-direction="-"><span>J1</span> − <kbd>A</kbd></button>
+      <button data-axis="1" data-direction="+"><span>J1</span> + <kbd>D</kbd></button>
+      <button data-axis="2" data-direction="-"><span>J2</span> − <kbd>S</kbd></button>
+      <button data-axis="2" data-direction="+"><span>J2</span> + <kbd>W</kbd></button>
+    </div>
+    <div class="row" style="margin-top: 8px">
+      <button data-axis="3" data-direction="-"><span>J3</span> − <kbd>Q</kbd></button>
+      <button data-axis="3" data-direction="+"><span>J3</span> + <kbd>E</kbd></button>
+      <button data-axis="4" data-direction="-"><span>J4</span> sube <kbd>R</kbd></button>
+      <button data-axis="4" data-direction="+"><span>J4</span> baja <kbd>F</kbd></button>
+    </div>
+    <div class="row" style="margin-top: 12px">
+      <label><input type="checkbox" id="by-motor"> Modo de prueba: jog por motor (M1–M4, sin compensar el acople)</label>
       <button id="zero">Referencia manual (pose de reposo)…</button>
     </div>
     <div id="feedback" role="status" aria-live="polite"></div>
@@ -88,7 +101,11 @@
 </main>
 <script>
 const NAMES = ["J1", "J2", "J3", "J4"];
-const KEYS = { KeyA: "-", KeyD: "+" };
+// Jog articular (D12): A/D J1, W/S J2, Q/E J3, R/F J4. J4 es positivo hacia abajo.
+const KEYS = {
+  KeyA: [1, "-"], KeyD: [1, "+"], KeyS: [2, "-"], KeyW: [2, "+"],
+  KeyQ: [3, "-"], KeyE: [3, "+"], KeyR: [4, "-"], KeyF: [4, "+"],
+};
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
 const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog" };
 let held = null, timer = null;
@@ -110,16 +127,22 @@ function show(error) {
   document.getElementById("feedback").textContent = text || "";
 }
 
-function startJog(direction) {
-  if (held === direction) return;
+const byMotor = document.getElementById("by-motor");
+
+function jogButton(joint, direction) {
+  return document.querySelector(`[data-axis="${joint}"][data-direction="${direction}"]`);
+}
+
+function startJog(joint, direction) {
+  const key = `${joint}${direction}`;
+  if (held === key) return;
   stopJog();
-  held = direction;
-  for (const button of document.querySelectorAll("[data-direction]")) {
-    button.classList.toggle("active", button.dataset.direction === direction);
-  }
+  held = key;
+  jogButton(joint, direction).classList.add("active");
+  const motor = byMotor.checked;
   // Un pedido que no llega a tiempo se cancela: si la URC estaba caída, no
   // debe llegar tarde y mover el robot con la tecla ya suelta.
-  const send = () => post("/api/jog", { joint: 1, direction }, 2 * REFRESH_MS).then(() => show(null), show);
+  const send = () => post("/api/jog", { joint, direction, motor }, 2 * REFRESH_MS).then(() => show(null), show);
   send();
   timer = setInterval(send, REFRESH_MS);
 }
@@ -128,9 +151,22 @@ function stopJog() {
   if (held === null) return;
   held = null;
   clearInterval(timer);
-  for (const button of document.querySelectorAll("[data-direction]")) button.classList.remove("active");
+  for (const button of document.querySelectorAll("[data-axis]")) button.classList.remove("active");
   post("/api/jog/stop").catch(show);
 }
+
+// El modo de prueba renombra los botones: cada uno mueve un solo motor.
+byMotor.addEventListener("change", () => {
+  stopJog();
+  const motor = byMotor.checked;
+  for (const button of document.querySelectorAll("[data-axis]")) {
+    button.querySelector("span").textContent = (motor ? "M" : "J") + button.dataset.axis;
+  }
+  document.getElementById("jog-title").textContent = motor ? "Jog por motor (modo de prueba)" : "Jog articular";
+  document.getElementById("jog-help").textContent = motor
+    ? "Cada tecla mueve un solo motor. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo."
+    : "Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos.";
+});
 
 // Frenar corta primero el jog de la página: si no, el próximo pedido lo reanuda.
 function order(path) {
@@ -144,19 +180,20 @@ document.addEventListener("keydown", (event) => {
     order("/api/stop");
     return;
   }
-  const direction = KEYS[event.code];
-  if (direction && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
+  const jog = KEYS[event.code];
+  if (jog && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
-    startJog(direction);
+    startJog(...jog);
   }
 });
 document.addEventListener("keyup", (event) => {
-  if (KEYS[event.code] === held) stopJog();
+  const jog = KEYS[event.code];
+  if (jog && jog.join("") === held) stopJog();
 });
 window.addEventListener("blur", stopJog);
 document.addEventListener("visibilitychange", () => { if (document.hidden) stopJog(); });
-for (const button of document.querySelectorAll("[data-direction]")) {
-  button.addEventListener("pointerdown", () => startJog(button.dataset.direction));
+for (const button of document.querySelectorAll("[data-axis]")) {
+  button.addEventListener("pointerdown", () => startJog(Number(button.dataset.axis), button.dataset.direction));
   button.addEventListener("pointerup", stopJog);
   button.addEventListener("pointerleave", stopJog);
 }
@@ -192,6 +229,8 @@ async function refresh() {
     mode.className = "badge" + (status && status.mode === "OFF" ? " warn" : "");
     document.getElementById("joints").innerHTML = NAMES.map((name, joint) =>
       `<tr><td>${name}</td><td>${status ? format(joint, status.position[joint]) : "—"}</td></tr>`).join("");
+    document.getElementById("heading").textContent = status
+      ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—";
     document.getElementById("errors").textContent = state.errors.concat(state.rejected.map((line) => `No entendida: ${line}`)).join("\n");
     document.getElementById("traffic").textContent = state.traffic.map((entry) => `${entry.direction} ${entry.line}`).join("\n");
   } catch (error) {

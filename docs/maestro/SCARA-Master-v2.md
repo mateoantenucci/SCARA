@@ -35,7 +35,7 @@ Las dos propuestas ya se están implementando: el profesor puede aceptarlas, cor
 
 **Qué dice el maestro v1.** Los cuatro TB6600 configurados a 400 pulsos por vuelta (medio paso), p. 14.
 
-**Qué proponemos.** Configurar los TB6600 a 1/8 de paso, 1600 pulsos por vuelta de motor, con sus llaves DIP. El firmware tiene el valor como una constante: cambiarlo no toca la URC ni el protocolo, que habla en unidades articulares ([ADR 0003](../adr/0003-protocolo-en-unidades-articulares.md)).
+**Qué proponemos.** Configurar los TB6600 a 1/8 de paso, 1600 pulsos por vuelta de motor, con sus llaves DIP. El valor es un único parámetro del firmware (`firmware/config.h`, D44), que comparten el Arduino y la planta simulada: cambiarlo no toca la URC ni el protocolo, que habla en unidades articulares ([ADR 0003](../adr/0003-protocolo-en-unidades-articulares.md)).
 
 **Por qué.** Con 400 pulsos, un pulso de M1 mueve J1 0,225°. Con el brazo estirado (500 mm del eje de J1 al punto de herramienta) eso es casi 2 mm en el extremo, y un tramo LIN se vería escalonado. Con 1/8 baja a medio milímetro.
 
@@ -164,11 +164,21 @@ J4 = 8 mm · vueltas de M4
 3. **El rumbo del extremo depende solo de M2 y M3:** ψ = J1 + J2 + J3 = (θM2 + θM3)/4.
 4. **M2 recorre más de lo que dice el maestro.** Con J1 y J2 en ±135°, el antebrazo cubre 540° absolutos: 9600 pulsos a 1/8 (2400 a 400 pulsos/vuelta), no 1200.
 
-**Conversión a pulsos con 1/8** (6400 pulsos por vuelta de articulación): 17,78 pulsos por grado en J1–J3 y 200 pulsos por mm en J4. Los pulsos de M2 salen de J1 + J2.
+**Conversión a pulsos con 1/8** (6400 pulsos por vuelta de articulación): 17,78 pulsos por grado en J1–J3 y 200 pulsos por mm en J4. Los pulsos de M2 salen de J1 + J2. El firmware lo hace con enteros: 8 pasos cada 45 centésimas de grado y 2 pasos por centésima de mm.
 
-Detalle y contraste con los planos: [Transmisión](../TRANSMISION.md).
+**Límites de los motores (D45).** La limitación física está en los motores, no en las articulaciones. Se fijan por motor (provisionales hasta tener las curvas de par) y se derivan con el acople: M1 limita a J1, y M2 limita a **J1 + J2**, el ángulo absoluto del antebrazo. Con M1 y M2 a 80 °/s, J1 llega a 20 °/s; si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s.
 
-> **Pendiente de evidencia:** contraste de la planta simulada (N1) contra estas ecuaciones: un jog de J1 con M2 quieto cambia J2 en Webots igual que en el cálculo.
+**Jog por motor (D46).** Un modo de prueba de la URC mueve un solo motor. Es la forma de mostrar el punto 1 en la defensa.
+
+**Evidencia (N1 en Webots, 30/10/2026).** Un supervisor aparte midió la posición física simulada contra la estimada por pasos ([informe](../../validation/transmision/INFORME.md)):
+
+| Orden | Cambio físico simulado |
+| --- | --- |
+| Jog articular de J1 | J1 +6,24°; J2, J3 y J4 sin cambio |
+| Jog por motor de M1 | J1 +6,24°, J2 −6,24°; rumbo de la herramienta sin cambio |
+| Jog lento de J3 | Escalones de 0,05625°: un paso de 1/8 |
+
+Detalle, tabla por microstepping y contraste con los planos: [Transmisión](../TRANSMISION.md).
 
 ## 5. Electrónica
 

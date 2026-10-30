@@ -1,0 +1,41 @@
+# Jog por motor (modo de prueba): JOG Mm ± vel mueve un solo motor, sin
+# compensar el acople. La velocidad va en las unidades de la articulación de
+# ese motor (θM/4 en M1–M3, mm de J4 en M4): 450 durante 1 s son 80 pasos.
+< BOOT scara/1 1
+> JOG M1 + 450
+< ERR 6 deshabilitado
+> ENABLE
+# M1 solo: el brazo gira y el antebrazo conserva su orientación, así que J2
+# cambia al revés que J1 y el rumbo J1 + J2 + J3 no cambia.
+> JOG M1 + 450
++ 1000
+> JOG STOP
+= M1 80 M2 0 M3 0 M4 0
+> STATUS
+< S IDLE 0 450 -450 0 0 0 16 0
+# M2 solo mueve J2 (y el rumbo).
+> JOG M2 + 450
++ 1000
+> STOP
+= M1 80 M2 80 M3 0 M4 0
+> STATUS
+< S IDLE 0 450 0 0 0 0 16 0
+> JOG M3 - 450
++ 1000
+> JOG M4 + 100
++ 1000
+> JOG STOP
+= M1 80 M2 80 M3 -80 M4 200
+> STATUS
+< S IDLE 0 450 0 -450 100 0 16 0
+# Mal formados: la forma se revisa como en el jog articular.
+> JOG M5 + 100
+< ERR 2 argumentos
+> JOG M0 + 100
+< ERR 2 argumentos
+> JOG M + 100
+< ERR 2 argumentos
+> JOG m1 + 100
+< ERR 2 argumentos
+> JOG M1 + 1001
+< ERR 2 argumentos

@@ -42,7 +42,7 @@ class Session:
         self.greeted = False                 # la UCI ya habló en esta conexión
         self.status = None
         self.status_time = None
-        self.jogging = None          # (articulación, sentido) enviado a la UCI
+        self.jogging = None          # (eje, sentido, por motor) enviado a la UCI
         self.jog_deadline = 0.0
         self.message = f"Esperando a la UCI en el puerto {self.port}"
         self.closed = threading.Event()
@@ -62,18 +62,24 @@ class Session:
             self._require_robot()
             self._queue(line)
 
-    def jog(self, joint, direction):
-        """Mantiene el jog mientras la página lo renueve antes de jog_hold."""
+    def jog(self, joint, direction, motor=False):
+        """Mantiene el jog mientras la página lo renueve antes de jog_hold.
+
+        Con motor=True mueve solo el motor M<joint>, sin compensar el acople
+        M1/M2: es el modo de prueba que muestra la cadena híbrida (D46).
+        """
         if type(joint) is not int or joint not in range(1, 5):
             raise ValueError("La articulación debe ser 1, 2, 3 o 4")
         if direction not in ("+", "-"):
             raise ValueError("El sentido debe ser + o -")
+        if type(motor) is not bool:
+            raise ValueError("motor debe ser true o false")
         with self.lock:
             self._require_robot()
             self.jog_deadline = time.monotonic() + self.jog_hold
-            if self.jogging != (joint, direction):
-                self.jogging = (joint, direction)
-                self._queue(f"JOG {joint} {direction} {self.jog_speed}")
+            if self.jogging != (joint, direction, motor):
+                self.jogging = (joint, direction, motor)
+                self._queue(f"JOG {'M' if motor else ''}{joint} {direction} {self.jog_speed}")
 
     def jog_stop(self):
         self._stop("JOG STOP")
@@ -111,7 +117,7 @@ class Session:
                 "received": self.received,
                 "status": status,
                 "referenced": status is not None and status["homed"] == ALL_HOMED,
-                "jog": None if self.jogging is None else {"joint": self.jogging[0], "direction": self.jogging[1]},
+                "jog": None if self.jogging is None else dict(zip(("joint", "direction", "motor"), self.jogging)),
                 "traffic": list(self.traffic),
                 "errors": list(self.errors),
                 "rejected": list(self.rejected),

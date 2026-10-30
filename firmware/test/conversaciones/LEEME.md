@@ -17,7 +17,7 @@ En Windows, `python` en lugar de `python3`. La prueba del firmware busca un comp
 
 ## Formato
 
-El firmware arranca al empezar cada archivo (envía `BOOT`). El reloj empieza en 0 ms.
+El firmware arranca al empezar cada archivo (envía `BOOT`). El reloj empieza en 0 ms. Los pasos de las líneas `=` están escritos para el microstepping por defecto, 1/8 (`firmware/config.h`, D44); la conversión con los demás valores la prueba [`transmision.cpp`](../transmision.cpp).
 
 | Renglón | Significado |
 | --- | --- |
