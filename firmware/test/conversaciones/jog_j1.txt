@@ -1,0 +1,21 @@
+# Jog articular de J1: M1 y M2 giran juntos, así J2 relativo no cambia.
+# J1 = θM1/4, J2 = (θM2 − θM1)/4, 1600 pasos por vuelta de motor:
+# 1° de J1 son 4 · 1600 / 360 = 160/9 pasos; 4,5° son 80 pasos.
+< BOOT scara/1 1
+> JOG 1 + 450
++ 1000
+= M1 80 M2 80 M3 0 M4 0
+> STATUS
+< S JOG 0 450 0 0 0 0 16 0
+> JOG STOP
++ 500
+= M1 80 M2 80 M3 0 M4 0
+> STATUS
+< S IDLE 0 450 0 0 0 0 16 0
+# Hacia el otro lado, de vuelta al punto de partida.
+> JOG 1 - 450
++ 1000
+> JOG STOP
+= M1 0 M2 0 M3 0 M4 0
+> STATUS
+< S IDLE 0 0 0 0 0 0 16 0

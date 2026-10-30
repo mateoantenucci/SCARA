@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCARA · URC</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #172b36; background: #eef3f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 960px; margin: auto; padding: 28px 20px 40px; }
+    h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 3px 0 8px; }
+    h2 { font-size: 1.1rem; margin: 0 0 12px; }
+    p { line-height: 1.5; margin: 8px 0; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; font-weight: 700; color: #496570; }
+    .muted { color: #49616b; }
+    .card { background: white; border: 1px solid #d3dfe3; border-radius: 14px; padding: 20px; margin: 16px 0; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .badge { display: inline-block; background: #e7edef; border-radius: 20px; padding: 5px 10px; font-size: .82rem; font-weight: 700; }
+    .badge.ok { background: #d9f0e6; color: #0b6748; }
+    .badge.warn { background: #fff1d6; color: #7a5200; }
+    table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+    th, td { text-align: right; padding: 8px 6px; border-bottom: 1px solid #e4ebee; font-variant-numeric: tabular-nums; }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-size: .78rem; color: #49616b; }
+    button { font: inherit; border: 1px solid #a9bcc4; background: #fff; color: #173d47; border-radius: 7px; padding: 10px 14px; cursor: pointer; font-weight: 650; touch-action: none; }
+    button:hover { background: #eaf4f5; }
+    button.active { background: #086e78; border-color: #086e78; color: white; }
+    button:disabled { opacity: .45; cursor: not-allowed; }
+    kbd { border: 1px solid #a9bcc4; border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; font-size: .85rem; background: #f7fafb; }
+    #feedback { min-height: 1.5em; font-size: .9rem; color: #a62929; }
+    pre { white-space: pre-wrap; font: .8rem ui-monospace, monospace; background: #f4f7f8; padding: 10px; border-radius: 6px; max-height: 260px; overflow: auto; margin: 0; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Unidad Remota de Coordinación · protocolo scara/1</div>
+  <h1>SCARA · URC</h1>
+  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. Mantené <kbd>A</kbd> o <kbd>D</kbd> para mover J1; al soltar, frena.</p>
+
+  <section class="card" aria-label="Conexión">
+    <div class="row">
+      <span class="badge" id="connection">Sin UCI</span>
+      <span class="badge" id="reference">Sin referencia</span>
+      <span class="badge" id="mode">—</span>
+    </div>
+    <p id="message" class="muted">Consultando a la URC…</p>
+    <p id="firmware" class="muted"></p>
+  </section>
+
+  <section class="card" aria-label="Posición estimada por pasos">
+    <h2>Posición estimada por pasos</h2>
+    <table>
+      <thead><tr><th>Articulación</th><th>Estimada</th></tr></thead>
+      <tbody id="joints"></tbody>
+    </table>
+  </section>
+
+  <section class="card" aria-label="Jog articular">
+    <h2>Jog articular de J1</h2>
+    <div class="row">
+      <button id="jog-minus" data-direction="-">J1 − <kbd>A</kbd></button>
+      <button id="jog-plus" data-direction="+">J1 + <kbd>D</kbd></button>
+      <button id="zero">Referencia manual (pose de reposo)…</button>
+    </div>
+    <div id="feedback" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="card" aria-label="Tráfico scara/1">
+    <h2>Tráfico scara/1</h2>
+    <p class="muted">Sin el estado S (20/s) ni PING (4/s).</p>
+    <pre id="traffic"></pre>
+  </section>
+</main>
+<script>
+const NAMES = ["J1", "J2", "J3", "J4"];
+const KEYS = { KeyA: "-", KeyD: "+" };
+const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
+let held = null, timer = null;
+
+function format(joint, value) {
+  return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
+}
+
+async function post(path, body = {}, timeoutMs = null) {
+  const response = await fetch(path, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    signal: timeoutMs === null ? undefined : AbortSignal.timeout(timeoutMs),
+  });
+  if (!response.ok) throw new Error((await response.json()).error);
+}
+
+function show(error) {
+  const text = error && error.name === "TimeoutError" ? "La URC no responde" : error && error.message;
+  document.getElementById("feedback").textContent = text || "";
+}
+
+function startJog(direction) {
+  if (held === direction) return;
+  stopJog();
+  held = direction;
+  for (const button of document.querySelectorAll("[data-direction]")) {
+    button.classList.toggle("active", button.dataset.direction === direction);
+  }
+  // Un pedido que no llega a tiempo se cancela: si la URC estaba caída, no
+  // debe llegar tarde y mover el robot con la tecla ya suelta.
+  const send = () => post("/api/jog", { joint: 1, direction }, 2 * REFRESH_MS).then(() => show(null), show);
+  send();
+  timer = setInterval(send, REFRESH_MS);
+}
+
+function stopJog() {
+  if (held === null) return;
+  held = null;
+  clearInterval(timer);
+  for (const button of document.querySelectorAll("[data-direction]")) button.classList.remove("active");
+  post("/api/jog/stop").catch(show);
+}
+
+document.addEventListener("keydown", (event) => {
+  const direction = KEYS[event.code];
+  if (direction && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    event.preventDefault();
+    startJog(direction);
+  }
+});
+document.addEventListener("keyup", (event) => {
+  if (KEYS[event.code] === held) stopJog();
+});
+window.addEventListener("blur", stopJog);
+document.addEventListener("visibilitychange", () => { if (document.hidden) stopJog(); });
+for (const button of document.querySelectorAll("[data-direction]")) {
+  button.addEventListener("pointerdown", () => startJog(button.dataset.direction));
+  button.addEventListener("pointerup", stopJog);
+  button.addEventListener("pointerleave", stopJog);
+}
+document.getElementById("zero").addEventListener("click", () => {
+  if (confirm("¿El robot está en la pose de reposo? Brazo estirado (J1 = J2 = J3 = 0°) y J4 abajo.")) {
+    post("/api/zero").then(() => show(null), show);
+  }
+});
+
+async function refresh() {
+  try {
+    const state = await (await fetch("/api/estado")).json();
+    const connection = document.getElementById("connection");
+    connection.textContent = state.connected ? `UCI conectada · ${state.peer}` : "Sin UCI";
+    connection.className = "badge" + (state.connected ? " ok" : "");
+    document.getElementById("message").textContent = state.message;
+    document.getElementById("firmware").textContent = state.firmware
+      ? `Protocolo ${state.firmware.protocol} · firmware ${state.firmware.version} · arranques vistos: ${state.boots}`
+      : "";
+    const status = state.connected ? state.status : null;
+    const reference = document.getElementById("reference");
+    const homed = status ? status.homed === 15 : false;
+    reference.textContent = homed ? "Referenciado" : "Sin referencia";
+    reference.className = "badge" + (homed ? " ok" : " warn");
+    document.getElementById("mode").textContent = status ? `Modo ${status.mode}` : "—";
+    document.getElementById("joints").innerHTML = NAMES.map((name, joint) =>
+      `<tr><td>${name}</td><td>${status ? format(joint, status.position[joint]) : "—"}</td></tr>`).join("");
+    document.getElementById("traffic").textContent = state.traffic.map((entry) => `${entry.direction} ${entry.line}`).join("\n");
+  } catch (error) {
+    document.getElementById("message").textContent = "La URC no responde.";
+  }
+}
+refresh();
+setInterval(refresh, 200);
+</script>
+</body>
+</html>

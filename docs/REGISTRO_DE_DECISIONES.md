@@ -308,3 +308,43 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 **D19 · Compilación en Windows.**
 - **Decisión:** se valida en la bala trazadora. Si no se logra, se documenta que solo se validó en Mac.
 - **Estado:** Aceptada.
+- **Resultado (30/10/2026):** compila y corre en Windows 11 con el `g++` 14.2 que trae Webots R2025a en su MSYS2, sin instalar nada más. Hay que usar el `bash` de Webots con `mingw64/bin/cpp` en el PATH, donde Webots guarda las DLL de C++. Detalle en [UCI en Webots](UCI_WEBOTS.md#resultado-en-windows-d19). macOS queda pendiente de verificar.
+
+## Bala trazadora (issue #5)
+
+Decisiones tomadas al construir el primer camino completo. El protocolo completo (issue #6) puede revisarlas.
+
+**D35 · Forma de los mensajes de la bala trazadora.**
+- **Decisión:**
+  - `BOOT` y `HI` llevan el protocolo y la versión de firmware como entero: `HI scara/1 1`.
+  - `S` tiene nueve campos fijos: `S modo ref J1 J2 J3 J4 hall libres último`. El modo es una palabra (`IDLE`, `JOG`); el resto, enteros.
+  - `ERR` lleva un código entero y una palabra: 1 `comando`, 2 `argumentos`, 3 `largo`, 4 `watchdog`, 5 `ocupado`.
+  - `JOG j ± vel` usa centésimas por segundo, de 1 a 1000 (10 °/s o 10 mm/s). `JOG`, `ZERO` y `PING` no tienen respuesta: el efecto se ve en el próximo `S`.
+- **Por qué:** una palabra para el modo se lee a simple vista con `nc` o el monitor serie y cuesta lo mismo en un UNO. Un código numérico en `ERR` deja que la URC decida sin comparar textos. Responder a cada `JOG` duplicaría el tráfico sin informar nada que `S` no diga.
+- **Descartado:** modo como número (ilegible a mano) y textos de error con espacios (complican el parser).
+- **Estado:** Aceptada. Ver [`scara/1`](PROTOCOLO_SCARA_1.md).
+
+**D36 · En Webots, el firmware arranca con la primera conexión.**
+- **Decisión:** el controlador espera a conectarse con la URC para arrancar el firmware, que entonces envía `BOOT`. Si después la conexión se corta y vuelve, el firmware no se reinicia: la URC saluda con `HELLO` y se entera del estado por `HI` y `S`.
+- **Por qué:** imita al UNO por USB, que se reinicia cuando socat abre el puerto. Si el firmware arrancara antes de la conexión, el `BOOT` se perdería. Reiniciarlo en cada reconexión haría perder una referencia válida por un corte de red.
+- **Descartado:** guardar las líneas mientras no hay conexión (el UNO no tiene memoria para eso).
+- **Estado:** Aceptada.
+
+**D37 · Tres frenos para el jog.**
+- **Decisión:**
+  - La página renueva el pedido de jog cada 150 ms mientras se mantiene la tecla y frena al soltarla, al perder el foco o al ocultarse.
+  - La URC envía `JOG` una sola vez y envía `JOG STOP` si la página no renueva el pedido en 500 ms.
+  - El firmware frena si pasa más de 1 s sin mensajes de la URC; la URC envía `PING` cada 250 ms. `PING` y el watchdog entran ya en la bala trazadora.
+- **Por qué:** cada frente puede caerse por separado: el navegador (pestaña cerrada con la tecla apretada), la URC o el enlace. Sin el watchdog, cortar la URC en pleno jog deja al robot girando hasta el tope; en el ensayo, J1 se detuvo solo.
+- **Estado:** Aceptada.
+
+**D38 · Mundo nuevo al lado del viejo, arrancando en la pose de reposo.**
+- **Decisión:** `scara_uci.wbt` usa el mismo `SCARA.proto` con el controlador `scara_uci`; `scara.wbt` no se toca. La planta lleva las articulaciones a la pose de reposo al arrancar (supervisor) y desde ahí suma lo que dan los motores. J4 abajo es 120 mm.
+- **Por qué:** el banco viejo tiene que seguir funcionando (D16). Arrancar en reposo hace que `ZERO` sea verdad en la simulación; el desvío aleatorio de ±10° llega con el homing (D11, issue #8).
+- **Estado:** Aceptada.
+
+**D39 · Pruebas del firmware como conversaciones.**
+- **Decisión:** las pruebas del firmware son archivos de texto con lo que envía la URC, lo que tiene que responder la UCI, avances del reloj y pasos esperados por motor. Un programa C++ las corre contra el núcleo real con una capa de hardware falsa, y `python -m unittest discover` lo compila y lo ejecuta (se omite si no hay compilador). El núcleo se compila sin excepciones ni RTTI y la prueba verifica que no use memoria dinámica.
+- **Por qué:** es el seam 1 de la spec: se prueba el comportamiento por el protocolo, no detalles internos. Los mismos archivos servirán para la UCI falsa de Python (seam 2). Integrarlas a `unittest` evita una segunda herramienta (`cmake` no está en todas las máquinas).
+- **Estado:** Aceptada.
+

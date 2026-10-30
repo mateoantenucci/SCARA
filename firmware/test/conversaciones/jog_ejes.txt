@@ -1,0 +1,28 @@
+# Jog de J2, J3 y J4: cada articulación mueve solo su motor.
+< BOOT scara/1 1
+# J2 depende solo de M2 respecto de M1.
+> JOG 2 + 450
++ 1000
+> JOG STOP
+= M1 0 M2 80 M3 0 M4 0
+# J3 = θM3/4.
+> JOG 3 - 450
++ 1000
+> JOG STOP
+= M1 0 M2 80 M3 -80 M4 0
+# J4 en centésimas de mm: 8 mm por vuelta, 2 pasos por centésima.
+> JOG 4 + 100
++ 1000
+> JOG STOP
+= M1 0 M2 80 M3 -80 M4 200
+> STATUS
+< S IDLE 0 0 450 -450 100 0 16 0
+# Un jog nuevo reemplaza al anterior sin pasar por STOP.
+> JOG 1 + 450
++ 1000
+> JOG 2 - 450
++ 1000
+> JOG STOP
+= M1 80 M2 80 M3 -80 M4 200
+> STATUS
+< S IDLE 0 450 0 -450 100 0 16 0
