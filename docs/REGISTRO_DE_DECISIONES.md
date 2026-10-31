@@ -606,4 +606,38 @@ Decisiones tomadas al implementar el canal que solo existe en la simulación (AD
   - La carga cambia `toolMass` del `SCARA.proto` (de 0 a 5 kg). Hoy cambia la física de la herramienta; la pérdida de pasos por carga llega con N2 (#15).
   - `RECARGA` recarga el mundo: el controlador se vuelve a conectar a los dos canales y la UCI arranca de nuevo.
 - **Por qué:** cerrar la conexión sería otra falla (la URC la vería como una desconexión de Webots). El reinicio tiene que ser del firmware, no del mundo, para que se vea que la URC detecta el `BOOT` con el robot en la misma pose.
+
+## Captura de puntos y gestor de trayectorias (issue #12)
+
+Decisiones tomadas al implementar el gestor de trayectorias en la URC: [`urc/trajectories.py`](../urc/trajectories.py) (modelo, archivo y validación de puntos) y [`urc/trajectories.js`](../urc/trajectories.js) (panel y teclas de la página). Pruebas por los endpoints HTTP en [`tests/test_trajectories.py`](../tests/test_trajectories.py).
+
+**D62 · La trayectoria en edición vive en la URC, y cada una es un archivo `scara-trayectoria` versión 1 en el que mandan las articulaciones.**
+- **Decisión:**
+  - La URC guarda la trayectoria abierta, su nombre, su archivo y si tiene cambios sin guardar. La página la muestra y pide cada cambio por `/api/trayectoria/*`: capturar, punto, editar, sobrescribir, borrar, mover, ir, nueva, guardar y cargar.
+  - Un pedido que descartaría trabajo devuelve 409 y se repite con permiso explícito: «nueva» y «cargar» con cambios sin guardar (`discard`), y «guardar como» sobre un archivo que ya existe (`overwrite`). La página pregunta en el medio.
+  - Archivo: uno por trayectoria, en la carpeta `trayectorias/` de la URC (`--trayectorias` la cambia). El nombre del archivo sale del de la trayectoria, sin tildes ni signos: «Pick & place» → `pick-place.json`. Se rechazan los nombres de dispositivo de Windows (`con`, `nul`, `com1`…), que no pueden ser archivos. Se escribe en un temporal y se reemplaza, así un corte no deja un archivo a medias.
+  - Contenido: `format` (`scara-trayectoria`), `version` (1), `name`, `saved` (fecha ISO 8601), `units` y `points`. Cada punto lleva `joints` (enteros en las unidades de `scara/1`: centésimas de grado en J1–J3 y de mm en J4), `tool` (X, Y, Z en mm y rumbo en grados, derivados), `kind`, `speed` (% entero) y `wait` (s).
+  - Al cargar, mandan las articulaciones. `tool` es opcional, pero si está tiene que coincidir con ellas (±0,01): si alguien editó el XYZ a mano, se rechaza en vez de ignorarlo en silencio. Se rechazan una versión distinta de la 1, otras unidades, claves desconocidas o faltantes y una trayectoria sin puntos. El mensaje dice el archivo, el punto y por qué, y la trayectoria abierta no cambia.
+- **Por qué:**
+  - La reproducción (#13) necesita la trayectoria en la URC, que es la que planifica (ADR 0005). Con el estado en la URC, la página no puede perder la trayectoria al recargarse, y las pruebas del seam 2 cubren el gestor entero.
+  - Las articulaciones guardan la configuración del codo y las vueltas de J1 y J3, que un XYZ con rumbo no determina (D13). En centésimas enteras, guardar y cargar no redondea nada: la trayectoria cargada es exactamente la guardada.
+  - Un archivo con claves estrictas detecta los errores de una edición a mano, por ejemplo `velocidad` en lugar de `speed`, que con valores por defecto pasarían inadvertidos.
+- **Descartado:** guardar solo XYZ y rumbo (pierde el codo y las vueltas), guardar las articulaciones en grados con decimales (redondeo al ir y volver), la trayectoria solo en la página (se pierde al recargar y la reproducción no la vería) y elegir cualquier archivo de la PC (la URC solo lee y escribe en su carpeta, sin rutas).
+- **Estado:** Aceptada.
+
+**D63 · Capturar exige el robot referenciado y quieto; un punto escrito o editado conserva su codo y se valida solo.**
+- **Decisión:**
+  - Capturar y sobrescribir usan la posición estimada por pasos del último estado `S`. Exigen robot referenciado (D21) y quieto: modo `IDLE`, sin jog y sin segmentos de un tramo por ejecutar (justo después de enviarlos, `S` todavía dice `IDLE`). El estado tiene que tener menos de 1 s: si la UCI dejó de informar, la posición no está al día.
+  - Capturar inserta después del seleccionado y selecciona el punto nuevo. Retroceso borra el seleccionado: después de capturar es el último capturado, y varios Retroceso deshacen hacia atrás. Enter abre el diálogo del nombre y guarda.
+  - Un punto escrito en XYZ y rumbo usa el codo preferido (J2 negativo, D31) o el que se elija. De las vueltas posibles de J1 y J3, toma la más cercana al punto anterior de la lista. Al editar en XYZ, el punto conserva su codo (un J2 = 0 cuenta como el preferido) y las vueltas más cercanas a las suyas. Para cambiar el codo se edita en J1–J4.
+  - Cada punto se valida al capturarlo, escribirlo, editarlo, sobrescribirlo y cargarlo: alcance (si se escribió en XYZ), límites articulares y choque en reposo, con el chequeo de colisiones de los tramos. El rechazo dice el número de punto.
+  - Los tramos (recta posible, velocidades, choques en el camino, cambio de codo) no se validan al editar: dependen del orden y del tipo, y los valida la reproducción antes de cada play (D29, D55).
+  - «Ir al punto» es un PTP al 25 %, la velocidad del tramo de aproximación (D33). Primero planifica y muestra la duración; mueve recién con la confirmación, que trae el destino que vio el operador: si el punto cambió en el medio, no se mueve.
+- **Por qué:**
+  - Durante el jog, el estado `S` llega cada 50 ms y el robot sigue frenando con rampa después de soltar la tecla: el punto capturado no sería donde el robot se detiene.
+  - Retroceso «borra el último» en el uso normal, que es capturar al final. Si se captura en el medio, borrar el último de la lista borraría otro punto: el que se acaba de capturar es el que el operador quiere corregir.
+  - Las vueltas más cercanas evitan que un punto escrito haga girar J1 o J3 una vuelta entera respecto de sus vecinos, y que una edición chica cambie mucho la pose.
+  - Validar los tramos en cada edición tardaría segundos (D55) y rechazaría estados intermedios legítimos mientras se arma la trayectoria.
+  - «Ir al punto» arranca, igual que la aproximación, desde una pose que no está en la trayectoria.
+- **Descartado:** capturar en movimiento, que Retroceso borre siempre el último de la lista, y validar la trayectoria entera en cada cambio.
 - **Estado:** Aceptada.

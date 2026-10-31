@@ -280,11 +280,12 @@ def si_to_units(q):
     return tuple(_round(v * s) for v, s in zip(q, SCALE))
 
 
-def joints_from_pose(x, y, z, heading, elbow=-1, config=None):
+def joints_from_pose(x, y, z, heading, elbow=-1, config=None, current=None):
     """Configuración articular para un punto de herramienta en mm y un rumbo en grados.
 
     elbow es la configuración del codo, por el signo de J2: −1 (la preferida,
-    D31) o +1.
+    D31) o +1. De las vueltas posibles de J1 y J3 toma la más cercana a
+    current (centésimas; por defecto, la pose inicial del modelo).
     """
     if isinstance(elbow, bool) or elbow not in (-1, 1):
         raise ValueError("El codo debe ser -1 (J2 negativo) o 1 (J2 positivo)")
@@ -292,7 +293,9 @@ def joints_from_pose(x, y, z, heading, elbow=-1, config=None):
     numbers = [x, y, z, heading]
     if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in numbers):
         raise ValueError("X, Y, Z y rumbo tienen que ser números")
-    q = inverse(x / 1000, y / 1000, z / 1000, math.radians(heading), elbow=elbow, config=config)
+    if current is not None:
+        current = units_to_si(check_units(current, "Pose de referencia"))
+    q = inverse(x / 1000, y / 1000, z / 1000, math.radians(heading), current=current, elbow=elbow, config=config)
     return si_to_units(q)
 
 

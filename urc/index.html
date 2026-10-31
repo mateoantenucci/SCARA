@@ -7,6 +7,7 @@
   <style>
     :root { color-scheme: light; font-family: system-ui, sans-serif; color: #172b36; background: #eef3f4; }
     * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
     body { margin: 0; }
     main { max-width: 960px; margin: auto; padding: 28px 20px 40px; }
     h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 3px 0 8px; }
@@ -152,6 +153,8 @@
     <div id="ptp-feedback" class="feedback" role="status" aria-live="polite"></div>
   </section>
 
+  <section class="card" id="trajectory" aria-label="Trayectoria"></section>
+
   <section class="card" aria-label="Errores">
     <h2>Errores</h2>
     <p class="muted">Los informados por la UCI con <code>ERR</code> y las líneas de la UCI que la URC no entendió.</p>
@@ -251,8 +254,8 @@ document.addEventListener("keydown", (event) => {
     return;
   }
   const jog = KEYS[event.code];
-  // Escribiendo una pose, las letras no mueven el robot.
-  const typing = event.target.closest && event.target.closest("input[type=number], select");
+  // Escribiendo una pose o un nombre, las letras no mueven el robot.
+  const typing = event.target.closest && event.target.closest("input:not([type=checkbox]):not([type=radio]), select, textarea");
   if (jog && !typing && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
     event.preventDefault();
     startJog(...jog);
@@ -411,5 +414,6 @@ async function refresh() {
 refresh();
 setInterval(refresh, 200);
 </script>
+<script src="/trajectories.js"></script>
 </body>
 </html>
