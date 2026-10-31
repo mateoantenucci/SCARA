@@ -576,3 +576,34 @@ Decisiones tomadas al implementar los Hall en la planta de Webots y el homing de
 - **Por qué:** es D21 llevado al firmware: sin referencia, nadie más protege el robot. El ancho del imán es justo lo que hay entre el flanco y el tope, así que salir siempre es posible y entrar no pasa del tope más que el margen, que cubre la tolerancia de montaje del imán.
 - **Descartado:** rechazar el jog rápido con un `ERR` (la página usa una sola velocidad de jog y quedaría inutilizable sin referencia) y frenar el jog solo sin referencia (un fin de carrera protege siempre).
 - **Estado:** Aceptada.
+
+## Canal de instrumentación y banco de ensayo (issue #14)
+
+Decisiones tomadas al implementar el canal que solo existe en la simulación (ADR 0004). Cómo funciona y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md).
+
+**D59 · `scara-sim/1`: un protocolo de texto aparte, en el puerto 9001, que la URC solo muestra.**
+- **Decisión:**
+  - El controlador de Webots se conecta a la URC en el 9001 (`--sim-port`; 0 lo apaga) y envía, 20 veces por segundo, `SIM J1 J2 J3 J4 hall corriente f2 f3 f4 carga`: la posición física simulada en unidades de `scara/1`, leída de los `PositionSensor` de Webots, más los Hall que ve el firmware, los motores con corriente, el estado de las fallas y la carga.
+  - La URC envía `F2 0|1`, `F3 j activo|inactivo|libre`, `F4 0|1`, `F5`, `CARGA gramos` y `RECARGA`.
+  - En la URC, el canal es un módulo aparte (`urc/instrumentation.py`) y el panel, un script aparte (`urc/banco.js`). Sin canal, el panel no aparece.
+  - La sesión con la UCI, el planificador y la validación no importan ese módulo, y una prueba lo verifica: capturar y planificar usan la posición estimada por pasos, como con el robot real.
+- **Por qué:** es lo que pide ADR 0004 para que la URC no dependa sin querer de lo que el robot real no da. Separado en módulo y script, además, no se mezcla con el resto de la página. Un protocolo de texto, como `scara/1`, se lee a mano y no necesita una biblioteca de JSON en el controlador C++.
+- **Descartado:** JSON por el canal (más pesado de escribir en C++ sin ganar nada) y la posición física medida por la orientación de los cuerpos, como el observador de los ensayos (los `PositionSensor` dan lo mismo y más simple).
+- **Estado:** Aceptada.
+
+**D60 · Sin corriente, el motor no hace fuerza y pierde los pasos; al volver la corriente, retiene el eje donde quedó.**
+- **Decisión:**
+  - La planta deja sin fuerza al motor sin corriente, el eje queda libre y J4 cae por su peso. Pasa con `DISABLE`, con la UCI recién arrancada y con la falla F2, que deja sin corriente solo el driver de M4.
+  - Los pulsos que llegan a un motor sin corriente no lo mueven. Cuando vuelve la corriente, la planta toma la posición física como punto de partida: el motor retiene el eje donde quedó, y lo que se movió sin corriente el firmware no lo sabe.
+- **Por qué:** es el comportamiento real de un paso a paso sin corriente (falla F2: «J4 cae; la posición estimada por pasos ya no vale»). Antes, la planta seguía sosteniendo los ejes sin corriente.
+- **Descartado:** que J4 vuelva solo a la posición de los pasos al recuperar la corriente (un motor real no sabe dónde estaba).
+- **Estado:** Aceptada.
+
+**D61 · F4 corta el enlace sin cerrar la conexión; F5 reinicia solo el firmware; la carga es `toolMass`.**
+- **Decisión:**
+  - F4: el controlador descarta lo que llega por `scara/1` y no envía nada, con la conexión TCP abierta, como un cable desenchufado. El watchdog del firmware frena; su `ERR 4` se pierde con el enlace.
+  - F5: el controlador crea el firmware de nuevo y este envía `BOOT`, sin corriente y sin referencia (D40). La planta no se reinicia: J1–J3 quedan donde estaban y J4, sin corriente, cae.
+  - La carga cambia `toolMass` del `SCARA.proto` (de 0 a 5 kg). Hoy cambia la física de la herramienta; la pérdida de pasos por carga llega con N2 (#15).
+  - `RECARGA` recarga el mundo: el controlador se vuelve a conectar a los dos canales y la UCI arranca de nuevo.
+- **Por qué:** cerrar la conexión sería otra falla (la URC la vería como una desconexión de Webots). El reinicio tiene que ser del firmware, no del mundo, para que se vea que la URC detecta el `BOOT` con el robot en la misma pose.
+- **Estado:** Aceptada.

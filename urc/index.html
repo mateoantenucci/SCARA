@@ -163,7 +163,10 @@
     <p class="muted">Sin el estado S (20/s), PING (4/s) ni los SEG y OK de los tramos (50/s).</p>
     <pre id="traffic"></pre>
   </section>
+  <!-- Banco de ensayo (solo simulación, ADR 0004): lo arma banco.js si hay canal de instrumentación. -->
+  <section class="card" id="banco" aria-label="Banco de ensayo" hidden></section>
 </main>
+<script src="/banco.js" defer></script>
 <script>
 const NAMES = ["J1", "J2", "J3", "J4"];
 // Jog articular (D12): A/D J1, W/S J2, Q/E J3, R/F J4. J4 es positivo hacia abajo.

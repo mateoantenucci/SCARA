@@ -144,7 +144,7 @@ def run(label, deviation, jog_test):
     sample_file = Path(tempfile.mkdtemp()) / "fisica.json"
     world = (ROOT / "webots" / "worlds" / "scara_uci.wbt").read_text(encoding="utf-8")
     world = world.replace('controller "scara_uci"', f'controller "scara_uci"\n  controllerArgs ["--port", "{PORT}", '
-                                                     f'"--desvio", "{deviation}"]')
+                                                     f'"--sim-port", "0", "--desvio", "{deviation}"]')
     world += ('Robot {\n  name "observador"\n  controller "_observador_homing"\n'
               f'  controllerArgs ["{sample_file.as_posix()}", "absoluto"]\n  supervisor TRUE\n}}\n')
     WORLD.write_text(world, encoding="utf-8")

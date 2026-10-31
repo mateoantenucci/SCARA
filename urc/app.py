@@ -11,6 +11,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from urc import planner
+from urc.instrumentation import Instrumentation
 from urc.session import Session
 
 
@@ -59,7 +60,8 @@ def ptp_order(request):
     return target, speed / 100
 
 
-def handler_for(session):
+def handler_for(session, bench=None):
+    """bench: el canal de instrumentación, que solo existe en la simulación (ADR 0004)."""
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
             pass
@@ -79,6 +81,10 @@ def handler_for(session):
                 self.reply(200, Path(__file__).with_name("index.html").read_bytes(), "text/html; charset=utf-8")
             elif self.path == "/api/estado":
                 self.reply(200, session.snapshot())
+            elif self.path == "/api/banco":
+                self.reply(200, bench.snapshot() if bench else {"connected": False})
+            elif self.path == "/banco.js":
+                self.reply(200, Path(__file__).with_name("banco.js").read_bytes(), "text/javascript; charset=utf-8")
             else:
                 self.reply(404, {"error": "Ruta desconocida"})
 
@@ -107,6 +113,12 @@ def handler_for(session):
                     plan = session.move_ptp(target, speed, dry_run=not confirm)
                     self.reply(202 if confirm else 200, plan)
                     return
+                elif self.path == "/api/banco":
+                    if bench is None:
+                        raise ConnectionError("No hay canal de instrumentación: solo existe en la simulación")
+                    bench.order(request)
+                    self.reply(202, {"message": "Orden enviada al banco de ensayo"})
+                    return
                 elif self.path in ORDERS:
                     ORDERS[self.path](session)
                 else:
@@ -125,9 +137,11 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--port", type=int, default=8766, help="Puerto HTTP de la página")
     parser.add_argument("--uci-port", type=int, default=9000, help="Puerto TCP de scara/1 (D24)")
+    parser.add_argument("--sim-port", type=int, default=9001, help="Puerto TCP del canal de instrumentación (D24)")
     args = parser.parse_args()
     session = Session(port=args.uci_port)
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), handler_for(session))
+    bench = Instrumentation(port=args.sim_port)
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), handler_for(session, bench))
     print(f"URC scara/1: http://127.0.0.1:{args.port}", flush=True)
     print(f"Esperando a la UCI en TCP 127.0.0.1:{session.port}", flush=True)
     try:
@@ -137,6 +151,7 @@ def main():
     finally:
         server.server_close()
         session.close()
+        bench.close()
 
 
 if __name__ == "__main__":
