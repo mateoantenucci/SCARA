@@ -376,7 +376,7 @@ function showTramo(tramo) {
   }
   const state = tramo.cancelled ? `cancelado (${tramo.cancelled})`
     : tramo.done === tramo.segments ? "terminado" : "en curso";
-  text.textContent = `Último tramo PTP: ${tramo.done} de ${tramo.segments} segmentos, ${tramo.duration_s.toFixed(2)} s · ${state}`;
+  text.textContent = `Último movimiento (${tramo.kind}): ${tramo.done} de ${tramo.segments} segmentos, ${tramo.duration_s.toFixed(2)} s · ${state}`;
 }
 
 async function refresh() {

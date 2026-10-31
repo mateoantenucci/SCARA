@@ -12,6 +12,7 @@ from pathlib import Path
 
 from urc import planner, trajectories
 from urc.instrumentation import Instrumentation
+from urc.playback import APPROACH_SPEED, Player
 from urc.session import Session
 from urc.trajectories import Conflict, TrajectoryManager
 
@@ -23,7 +24,6 @@ ORDERS = {
     "/api/zero": Session.zero,
     "/api/enable": Session.enable,
     "/api/disable": Session.disable,
-    "/api/stop": Session.stop,
     "/api/halt": Session.halt,
     "/api/home": Session.home,
     "/api/park": Session.park,
@@ -61,9 +61,19 @@ def ptp_order(request):
     return target, speed / 100
 
 
-def handler_for(session, bench=None, manager=None):
+# Reproducción de la trayectoria abierta (D29).
+PLAYBACK = {
+    "/api/reproduccion/reproducir": Player.play,
+    "/api/reproduccion/pausa": Player.pause,
+    "/api/reproduccion/reanudar": Player.resume,
+    "/api/reproduccion/stop": Player.stop,
+}
+
+
+def handler_for(session, bench=None, manager=None, player=None):
     """bench: el canal de instrumentación, que solo existe en la simulación (ADR 0004)."""
     manager = manager or TrajectoryManager(session)
+    player = player or Player(session, manager)
 
     class Handler(BaseHTTPRequestHandler):
         def log_message(self, *_):
@@ -95,6 +105,8 @@ def handler_for(session, bench=None, manager=None):
                 self.reply(200, manager.state())
             elif self.path == "/api/trayectorias":
                 self.reply(200, manager.files())
+            elif self.path == "/api/reproduccion":
+                self.reply(200, player.snapshot())
             else:
                 self.reply(404, {"error": "Ruta desconocida"})
 
@@ -129,6 +141,12 @@ def handler_for(session, bench=None, manager=None):
                     bench.order(request)
                     self.reply(202, {"message": "Orden enviada al banco de ensayo"})
                     return
+                elif self.path == "/api/stop":
+                    # Esc: frena todo, también la reproducción en curso o en pausa.
+                    player.stop()
+                elif self.path in PLAYBACK:
+                    self.reply(202, PLAYBACK[self.path](player, request))
+                    return
                 elif self.path in ORDERS:
                     ORDERS[self.path](session)
                 elif (result := trajectories.route(manager, self.path, request)) is not None:
@@ -155,11 +173,14 @@ def main():
     parser.add_argument("--trayectorias", type=Path, default=trajectories.DEFAULT_FOLDER,
                         help="Carpeta de los archivos de trayectoria")
     parser.add_argument("--sim-port", type=int, default=9001, help="Puerto TCP del canal de instrumentación (D24)")
+    parser.add_argument("--aproximacion", type=int, default=round(APPROACH_SPEED * 100), choices=range(1, 101),
+                        metavar="1-100", help="Velocidad del tramo de aproximación, %% de la máxima (D33)")
     args = parser.parse_args()
     session = Session(port=args.uci_port)
     bench = Instrumentation(port=args.sim_port)
     manager = TrajectoryManager(session, args.trayectorias)
-    server = ThreadingHTTPServer(("127.0.0.1", args.port), handler_for(session, bench, manager))
+    player = Player(session, manager, args.aproximacion / 100)
+    server = ThreadingHTTPServer(("127.0.0.1", args.port), handler_for(session, bench, manager, player))
     print(f"URC scara/1: http://127.0.0.1:{args.port}", flush=True)
     print(f"Esperando a la UCI en TCP 127.0.0.1:{session.port}", flush=True)
     try:
@@ -168,6 +189,7 @@ def main():
         pass
     finally:
         server.server_close()
+        player.close()
         session.close()
         bench.close()
 

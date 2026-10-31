@@ -115,13 +115,39 @@ class Session:
             self._require_robot()
             if self.status is None or tuple(self.status["position"]) != start or self._segments_pending():
                 raise ValueError("El robot cambió de estado mientras se planificaba; volvé a intentar")
-            first = self.next_segment
-            lines = [segment_line(first + index, ms, units) for index, (ms, units) in enumerate(plan.segments)]
-            self.next_segment += len(lines)
-            self.segments.extend(lines)
-            self.tramo = dict(summary, kind="PTP", first=first, last=first + len(lines) - 1, cancelled=None)
-            self.message = f"Tramo PTP en curso: {len(lines)} segmentos, {summary['duration_s']:.2f} s"
+            self.tramo = dict(summary, kind="PTP", first=self.next_segment, last=self.next_segment - 1,
+                              cancelled=None)
+            self._enqueue(plan.segments)
+            self.message = f"Tramo PTP en curso: {len(plan.segments)} segmentos, {summary['duration_s']:.2f} s"
         return summary
+
+    def run_segments(self, segments, start=None, follows=None, **summary):
+        """Encola segmentos (ms, J1–J4 en centésimas) ya validados por quien los planificó.
+
+        Con start, empiezan un movimiento nuevo: el robot tiene que estar
+        referenciado, quieto y en start. Con follows (el primer número del
+        movimiento), lo continúan sin pausa, si no se canceló: así la
+        reproducción encola un tramo detrás de otro. Devuelve los números
+        del primero y del último segmento encolados.
+        """
+        if not segments:
+            raise ValueError("No hay segmentos para enviar")
+        with self.lock:
+            self._require_robot()
+            if follows is None:
+                if self.status is None or self.status["homed"] != ALL_HOMED:
+                    raise ValueError("El robot tiene que estar referenciado")
+                self._require_still("mover el robot")
+                if tuple(self.status["position"]) != tuple(start):
+                    raise ValueError("El robot cambió de estado mientras se planificaba; volvé a intentar")
+                self.tramo = dict(summary, segments=0, duration_s=0.0, first=self.next_segment,
+                                  last=self.next_segment - 1, cancelled=None)
+            elif self.tramo is None or self.tramo["first"] != follows or self.tramo["cancelled"] is not None:
+                raise ValueError("El movimiento ya no está en curso")
+            first = self.next_segment
+            self._enqueue(segments)
+            self.tramo["duration_s"] = round(self.tramo["duration_s"] + sum(ms for ms, _ in segments) / 1000, 3)
+            return first, self.next_segment - 1
 
     def home(self):
         """Homing de los cuatro ejes (D11); al terminar, la URC estaciona el robot.
@@ -283,6 +309,14 @@ class Session:
             return
         with self.lock:
             self.message = f"Homing terminado; volviendo al reposo en {plan['duration_s']:.1f} s"
+
+    def _enqueue(self, segments):
+        """Numera los segmentos y los suma al tramo actual: salen de a uno, con cada OK."""
+        first = self.next_segment
+        self.segments.extend(segment_line(first + index, ms, units) for index, (ms, units) in enumerate(segments))
+        self.next_segment += len(segments)
+        self.tramo["last"] = self.next_segment - 1
+        self.tramo["segments"] = self.tramo["last"] - self.tramo["first"] + 1
 
     def _segments_pending(self):
         return bool(self.segments) or self.in_flight is not None

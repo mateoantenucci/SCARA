@@ -682,3 +682,42 @@ Decisiones tomadas al modelar el par de los motores en la planta de Webots y la 
 - **Por qué:** con la corriente nominal el robot no pierde pasos dentro de D45 (D66), ni con los 5 kg que admite el banco. Un TB6600 regulado de menos es una falla real y común, y la pérdida aparece por las dos causas del enunciado: por carga (M4 al 50 % no sube 5 kg) y por aceleración (M1 al 20 % pierde pasos al arrancar el jog sin rampa).
 - **Descartado:** forzar pasos perdidos desde el banco sin causa física (no muestra el modelo) y permitir más carga o más aceleración que lo que planifica la URC (cambia el planificador).
 - **Estado:** Aceptada.
+
+## Reproducción de trayectorias (issue #13)
+
+Decisiones tomadas al implementar la reproducción desde el gestor de trayectorias: [`urc/playback.py`](../urc/playback.py) y el panel de [`urc/trajectories.js`](../urc/trajectories.js). Pruebas por los endpoints HTTP en [`tests/test_playback.py`](../tests/test_playback.py); la evidencia, en el [ensayo en Webots](../validation/reproduccion/INFORME.md).
+
+**D68 · La reproducción valida todo antes de mover y encola un tramo detrás de otro, con sus esperas, en un solo movimiento.**
+- **Decisión:**
+  - Play desde el principio o desde el punto seleccionado, con velocidad global (% entero de 10 a 100, que multiplica la de cada tramo y no se guarda) y loop: N vueltas o sin fin.
+  - Antes de enviar nada, la URC planifica y valida (D55) todo lo que se va a ejecutar: el tramo 0, cada tramo de la trayectoria y, con loop, la vuelta del último punto al primero y los tramos anteriores al punto de partida. El rechazo dice cuál: «Tramo 0», «Tramo 3» o «Tramo de vuelta».
+  - Tramo 0: PTP desde la posición estimada hasta el punto de partida, al 25 % × la velocidad global (`--aproximacion` cambia el 25 %), con espera de 0 s. Se omite si el robot está a lo sumo a 6 centésimas de grado en J1–J3 y a 1 centésima de mm en J4: menos de un paso de 1/8, redondeado hacia arriba. Entonces el primer tramo parte del punto grabado, no de la pose del robot.
+  - Exige el robot referenciado, quieto y sin referencia dudosa (D65). Si en plena reproducción llega un `EV LOST`, la URC la detiene con `STOP`.
+  - La espera de un punto son segmentos sin movimiento en su destino, de hasta 1 s cada uno.
+  - Toda la reproducción es un solo movimiento de la sesión, que crece: cuando quedan menos de 50 segmentos (1 s) por enviar, entra el tramo siguiente entero, con su espera. Cada vuelta del loop arranca con la vuelta al punto 1 (tipo, velocidad y espera del punto 1, D32) y sigue con los tramos 2…n; desde el seleccionado, solo la primera vuelta arranca ahí. El loop sin fin agrega vueltas hasta que llega Stop.
+  - El tramo en ejecución sale de `último` en el estado `S`: el segmento siguiente dice a qué tramo y vuelta pertenece, y si es de la espera. La página resalta el punto al que va.
+- **Por qué:**
+  - D14 y D29: el robot nunca arranca un tramo que no puede terminar, y con loop la vuelta también se ejecuta. Validar al dar play cuesta unos segundos (D55), una sola vez.
+  - Encolar el tramo siguiente antes de que se termine el anterior hace que el firmware los encadene con su reloj, sin huecos: los tiempos son los planificados (ADR 0005). Un segundo de margen es tres veces lo que cubre la cola del firmware (D50). Las esperas como segmentos van con el mismo reloj, sin depender de la red.
+  - Un solo movimiento mantiene, mientras dura la reproducción, las protecciones de la sesión que ya existen: no hay jog, captura ni «Ir al punto» en el medio, y un `ERR`, un `BOOT` o una desconexión la cancelan (D52).
+  - El umbral del tramo 0 está en centésimas porque la URC no conoce el microstepping (ADR 0003). Con 1/8 el robot llega a un punto escrito con un error de hasta medio paso por motor; J2, que es la diferencia de M2 y M1, suma los dos: hasta 5,6 centésimas. Con otro microstepping solo cambia si se omite o no un tramo 0 de una fracción de segundo.
+  - Con la referencia dudosa, la posición estimada puede estar corrida pasos enteros y ningún plan vale: es la opción conservadora. Se limpia con un homing.
+- **Descartado:**
+  - Validar cada tramo recién antes de enviarlo: arrancaría tramos que no puede terminar.
+  - Encolar la trayectoria entera de una vez: no sirve para el loop sin fin.
+  - Medir las esperas en la URC: dependerían de la red.
+  - Reproducir con la referencia dudosa avisando nada más.
+- **Estado:** Aceptada.
+
+**D69 · La pausa es el `STOP` con rampa del firmware; al reanudar, la URC recalcula el resto del tramo desde la pose de la pausa.**
+- **Decisión:**
+  - Pausa envía `STOP` (D52). La reproducción queda en pausa con el primer estado `IDLE` que llega después de la orden.
+  - Con `último`, la URC sabe qué segmento se interrumpió. Si era del movimiento, al reanudar planifica y valida de nuevo ese tramo, con su tipo y su velocidad, desde la posición estimada hasta su destino. Si ya estaba en la espera, queda lo que faltaba de ella. Lo que seguía se encola como antes.
+  - Reanudar exige el robot en la misma pose de la pausa y la trayectoria sin cambios. Si no, hay que frenar con Stop y reproducir de nuevo, con su tramo 0.
+  - Stop (el botón del gestor, el general y Esc) frena con la misma rampa y descarta todo lo pendiente.
+- **Por qué:**
+  - La rampa sigue en la dirección del segmento en ejecución, en articulaciones. En un PTP, ese es exactamente su camino. En un LIN, el robot frena en menos de medio segundo y se aparta de la recta lo que se curva el camino en ese trecho: en el ensayo en Webots, 0,053 mm. El resto, desde ahí hasta el destino, es la misma recta: el tramo la conserva entera.
+  - El firmware ya frena así, con la cola vaciada al instante. Una rampa planificada por la URC sobre la recta tendría que esperar que se ejecute lo ya encolado, hasta 320 ms a plena velocidad.
+  - Si el robot se movió durante la pausa, el resto sería otra recta.
+- **Descartado:** frenar con una rampa planificada por la URC, reanudar desde cualquier pose y repetir la espera completa.
+- **Estado:** Aceptada.
