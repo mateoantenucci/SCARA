@@ -213,7 +213,7 @@ OBSERVER.mkdir()
 shutil.copy(ROOT / "validation" / "transmision" / "observador.py", OBSERVER / "_observador_segmentos.py")
 sample_file = Path(tempfile.mkdtemp()) / "fisica.json"
 world = (ROOT / "webots" / "worlds" / "scara_uci.wbt").read_text(encoding="utf-8")
-world = world.replace('controller "scara_uci"', f'controller "scara_uci"\n  controllerArgs ["--port", "{PORT}", "--desvio", "0"]')
+world = world.replace('controller "scara_uci"', f'controller "scara_uci"\n  controllerArgs ["--port", "{PORT}", "--sim-port", "0", "--desvio", "0"]')
 world += ('Robot {\n  name "observador"\n  controller "_observador_segmentos"\n'
           f'  controllerArgs ["{sample_file.as_posix()}"]\n  supervisor TRUE\n}}\n')
 WORLD.write_text(world, encoding="utf-8")

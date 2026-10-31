@@ -408,8 +408,9 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | Pasos y microstepping (N1) | Las articulaciones avanzan en pasos discretos |
 | Transmisión y acople M1/M2 (N1) | 4:1, 60T–60T al codo, ACME de 8 mm por vuelta; mover M1 cambia J1 y J2 |
 | Par limitado y pérdida de pasos (N2) | Con carga o aceleración excesiva el motor salta pasos y el firmware no se entera |
-| Sensores Hall | `Emitter`/`Receiver` de radio de alcance corto: la activación sale de la geometría |
-| Fallas F1–F5 | Por el canal de instrumentación |
+| Sensores Hall | Imán (`Emitter`) y KY-003 (`Receiver`) del modelo: el Hall se activa por la distancia entre los dos, así que sale de la geometría (D57) |
+| Driver sin corriente | El motor no hace fuerza y sus pasos se pierden; J4 cae por su peso. Al volver la corriente, retiene el eje donde quedó (D60) |
+| Fallas F2–F5 | Desde el banco de ensayo, por el canal de instrumentación (D59, D61). F1 llega con N2 (#15) |
 | Tiempo | Webots a 1× durante teach y play; el firmware usa el reloj simulado (D26) |
 | Arranque | Cerca de la pose de reposo, con un desvío aleatorio de ±10° y sin referencia |
 
@@ -421,9 +422,20 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | Botonera física y teclas en Webots | El jog va por la URC; se puede agregar sin cambiar el firmware |
 | Construcción y cableado del robot real | Se entrega firmware que compila para el UNO y la receta de socat |
 
+**Canal de instrumentación y banco de ensayo (D2, [ADR 0004](../adr/0004-canal-de-instrumentacion-separado.md), D59).** Lo que solo existe en la simulación viaja por otro puerto (9001) y otro protocolo de texto, `scara-sim/1`: el controlador de Webots envía la posición física simulada, leída de los sensores de posición de Webots, y recibe las fallas, la carga y la recarga del mundo. En la URC, un panel aparte, «Banco de ensayo (solo simulación)», muestra la columna «Simulado» junto a la estimada por pasos y la diferencia. Sin el canal, como con el robot real, el panel no aparece y la URC funciona igual. Capturar y planificar usan siempre la posición estimada: la sesión, el planificador y la validación no conocen el canal, y una prueba lo verifica.
+
+| Falla | Qué hace el banco | Qué se ve |
+| --- | --- | --- |
+| F2 | Deja sin corriente el driver de M4 | J4 cae a 120 mm en «Simulado»; la estimada no cambia |
+| F3 | Traba un Hall activo o inactivo | El homing aborta (`ERR 12` o `ERR 11`) sin referencia |
+| F4 | Corta el enlace `scara/1` sin cerrar la conexión | El estado `S` deja de llegar; el watchdog frena el robot |
+| F5 | Reinicia el firmware de la UCI | `BOOT` inesperado: sin referencia y sin corriente, así que J4 cae; J1–J3 quedan donde estaban |
+
 **Datos que faltan para N2.** Las curvas de par de los motores que nombra el maestro. Si no se encuentran, se usan valores típicos de NEMA 23 y NEMA 17 declarados como supuestos.
 
-> **Pendiente de evidencia:** contraste de la planta (N1, N2, Hall) contra la posición física simulada; curvas de par usadas y su fuente.
+El canal y las fallas F2–F5 están ensayados en Webots ([validación del canal de instrumentación](../../validation/instrumentacion/INFORME.md)).
+
+> **Pendiente de evidencia:** contraste de N2 contra la posición física simulada; curvas de par usadas y su fuente.
 
 ## 10. Validación
 
@@ -481,6 +493,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

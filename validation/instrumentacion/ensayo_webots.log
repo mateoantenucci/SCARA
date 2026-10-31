@@ -1,0 +1,10 @@
+0 canal conectado (scara-sim/1): estimada [0, 0, 0, 12000], simulado [0, 0, 0, 12000], motores con corriente 1111, carga 150 g
+1 carga: la herramienta pasa a 500 g (toolMass del SCARA.proto)
+2 F2 con J4 en 60.01 mm: M4 sin corriente (0111); J4 simulado cae a 120.00 mm y el estimado sigue en 60.00 mm (diferencia 60.00 mm)
+   F2 apagada: el motor retiene J4 donde quedó (119.99 mm); la posición estimada ya no vale
+3 F3, Hall de J4 trabado activo: el homing aborta (abortado: ERR 12 trabado: homing abortado: el Hall no se apagó, está trabado activo); referencia 0
+4 F4 en pleno jog de J1: el último S tiene 2.5 s; J1 simulado quieto (523 → 523): frenó solo
+   F4 apagada: vuelve el estado S, con el robot en IDLE (el ERR 4 del watchdog salió con el enlace cortado y se perdió)
+5 F5: BOOT inesperado: la UCI se reinició y perdió la referencia (F5); referenciado False; simulado [523, 0, 0, 11600] → [523, 0, 0, 12000]
+6 recarga: los dos canales vuelven; UCI La UCI arrancó: sin referencia hasta ZERO u homing; simulado [0, 0, 0, 12000], carga 150 g
+ENSAYO OK

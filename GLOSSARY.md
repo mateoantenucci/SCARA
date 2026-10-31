@@ -94,6 +94,10 @@ _Evitar_: Telemetría (el estado que informa la UCI es otra cosa).
 Archivo con un intercambio de ejemplo de `scara/1` (lo que envía la URC y lo que tiene que responder la UCI) que se ejecuta como prueba contra el firmware y contra la URC. Es la definición ejecutable del protocolo.
 _Evitar_: Vector de prueba, caso de prueba (a secas).
 
+**Banco de ensayo**:
+Panel de la URC que solo aparece con la simulación: muestra la posición física simulada junto a la estimada por pasos y permite inyectar fallas, cambiar la carga y recargar el mundo. Lo alimenta el canal de instrumentación.
+_Evitar_: Llamarlo panel de control del robot (el robot real no lo tiene).
+
 **API de Webots**:
 Funciones con las que el controlador de Webots lee sensores y ordena motores del mundo simulado. No comunica a la URC con el robot.
 _Evitar_: Decir que la URC se comunica con Webots "por API".
