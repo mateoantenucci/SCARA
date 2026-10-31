@@ -4,7 +4,7 @@ Lee el SCARA.proto generado: cada KY-003 es un Receiver en la pieza fija y
 cada imán un Emitter, con su alcance, en la que se mueve. Con la articulación
 en J, calcula la distancia entre los dos y dice si el imán está dentro del
 alcance, la misma regla que aplica la planta de Webots (D57). Los flancos que salen de esa geometría tienen que ser los
-de HALL_EDGE (firmware/config.h) y los de la planta falsa de las
+de HALL_EDGE y HALL_FAR_EDGE (firmware/config.h) y los de la planta falsa de las
 conversaciones (firmware/test/conversacion.cpp).
 """
 
@@ -92,6 +92,8 @@ class HallGeometryTests(unittest.TestCase):
         low = [int(v) for v in re.search(r"MAGNET_LOW\[scara::MOTOR_COUNT\] = \{([^}]*)\}", harness).group(1).split(",")]
         high = [int(v) for v in re.search(r"MAGNET_HIGH\[scara::MOTOR_COUNT\] = \{([^}]*)\}", harness).group(1).split(",")]
         self.assertEqual(low, config_array("HALL_EDGE"))
+        # El firmware compara con los dos flancos al buscar pasos perdidos (D65).
+        self.assertEqual(high, config_array("HALL_FAR_EDGE"))
         for joint in range(4):
             with self.subTest(joint=f"J{joint + 1}"):
                 start, step = (0.0, 1e-4) if joint < 3 else (0.06, 1e-5)

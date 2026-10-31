@@ -4,12 +4,16 @@ El controlador de Webots se conecta a la URC en otro puerto (9001) y habla
 scara-sim/1, un protocolo de texto aparte de scara/1:
 
     controlador → URC   SIM HELLO scara-sim/1
-                        SIM J1 J2 J3 J4 hall corriente f2 f3 f4 carga   (20 por segundo)
-    URC → controlador   F2 0|1 · F3 j activo|inactivo|libre · F4 0|1 · F5
-                        CARGA gramos · RECARGA
+                        SIM J1 J2 J3 J4 hall corriente f2 f3 f4 carga i1 i2 i3 i4 p1 p2 p3 p4
+                        (20 por segundo)
+    URC → controlador   F1 m porcentaje · F2 0|1 · F3 j activo|inactivo|libre
+                        F4 0|1 · F5 · CARGA gramos · RECARGA
 
 J1–J4 es la posición física simulada en unidades de scara/1; f3 tiene un
 carácter por articulación: "-" libre, "A" trabado activo, "I" inactivo.
+i1–i4 es la corriente de cada driver en % de la nominal (F1: con menos, el
+motor tiene menos par) y p1–p4, los pasos completos que perdió cada motor
+(D64, D67).
 
 Solo lo usa el banco de ensayo de la página. La sesión con la UCI, el
 planificador y la validación no lo importan: capturan y planifican con la
@@ -26,6 +30,8 @@ import time
 PROTOCOL = "scara-sim/1"
 STUCK = {"-": "libre", "A": "activo", "I": "inactivo"}
 LOAD_MAX = 5000              # gramos
+CURRENT_MIN = 10             # % de la corriente nominal de un driver (F1)
+FIELDS = 19
 
 
 class Instrumentation:
@@ -56,6 +62,8 @@ class Instrumentation:
                 "power": state.get("power"),
                 "faults": state.get("faults"),
                 "load_g": state.get("load_g"),
+                "current_pct": state.get("current_pct"),
+                "lost_steps": state.get("lost_steps"),
                 "age_s": None if self.state_time is None else round(time.monotonic() - self.state_time, 3),
                 "rejected": list(self.rejected),
             }
@@ -83,7 +91,8 @@ class Instrumentation:
             if fields == ["SIM", "HELLO", PROTOCOL]:
                 self.greeted = True
                 return
-            if len(fields) != 11 or fields[0] != "SIM" or len(fields[8]) != 4 or any(c not in STUCK for c in fields[8]):
+            if (len(fields) != FIELDS or fields[0] != "SIM" or len(fields[8]) != 4
+                    or any(c not in STUCK for c in fields[8])):
                 raise ValueError("línea de scara-sim/1 mal formada")
             numbers = [int(value) for value in fields[1:8] + fields[9:]]
         except ValueError as exc:
@@ -95,6 +104,8 @@ class Instrumentation:
             "power": numbers[5],
             "faults": {"F2": numbers[6] == 1, "F3": [STUCK[c] for c in fields[8]], "F4": numbers[7] == 1},
             "load_g": numbers[8],
+            "current_pct": numbers[9:13],
+            "lost_steps": numbers[13:17],
         }
         self.state_time = time.monotonic()
 
@@ -139,6 +150,11 @@ def order_line(request):
     if not isinstance(request, dict):
         raise ValueError("Se requiere un objeto JSON")
     fault = request.get("falla")
+    if fault == "F1":
+        motor, current = request.get("motor"), request.get("corriente")
+        if type(motor) is not int or not 1 <= motor <= 4 or type(current) is not int or not CURRENT_MIN <= current <= 100:
+            raise ValueError(f"F1 lleva motor (1 a 4) y corriente ({CURRENT_MIN} a 100 % de la nominal)")
+        return f"F1 {motor} {current}"
     if fault in ("F2", "F4"):
         active = request.get("activa")
         if not isinstance(active, bool):
@@ -152,7 +168,7 @@ def order_line(request):
     if fault == "F5":
         return "F5"
     if fault is not None:
-        raise ValueError("Las fallas del banco son F2, F3, F4 y F5")
+        raise ValueError("Las fallas del banco son F1, F2, F3, F4 y F5")
     if "carga" in request:
         grams = request["carga"]
         if type(grams) is not int or not 0 <= grams <= LOAD_MAX:

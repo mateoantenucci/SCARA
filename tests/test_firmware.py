@@ -38,17 +38,21 @@ def find_compiler():
 COMPILER = find_compiler()
 
 
+def compiler_env():
+    """Entorno para correr lo compilado: en Windows, el ejecutable necesita las
+    DLL de la misma instalación; Webots guarda las de C++ en mingw64/bin/cpp."""
+    compiler_dir = Path(COMPILER).parent
+    dll_dirs = [str(path) for path in (compiler_dir, compiler_dir / "cpp") if path.is_dir()]
+    return dict(os.environ, PATH=os.pathsep.join(dll_dirs + [os.environ.get("PATH", "")]))
+
+
 @unittest.skipIf(COMPILER is None, "Sin compilador de C++: instalar uno o definir CXX")
 class FirmwareConversationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.build = tempfile.TemporaryDirectory()
         build = Path(cls.build.name)
-        # En Windows, el ejecutable necesita las DLL de la misma instalación;
-        # Webots guarda las de C++ en mingw64/bin/cpp.
-        compiler_dir = Path(COMPILER).parent
-        dll_dirs = [str(path) for path in (compiler_dir, compiler_dir / "cpp") if path.is_dir()]
-        cls.env = dict(os.environ, PATH=os.pathsep.join(dll_dirs + [os.environ.get("PATH", "")]))
+        cls.env = compiler_env()
         cls.core = build / "firmware.o"
         cls.program = build / "conversacion"
         cls.compile(["-c", str(FIRMWARE / "firmware.cpp"), *CORE_FLAGS, "-o", str(cls.core)])

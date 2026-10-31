@@ -2,13 +2,15 @@
 // (firmware/, ADR 0002) con una capa de hardware de simulación.
 //   - Enlace: cliente TCP hacia la URC (D1), con reintentos.
 //   - Reloj: tiempo simulado (D26).
-//   - Planta simulada, transmisión N1 (D8): cuenta los pasos de M1..M4 y los
-//     convierte en posiciones de J1..J4 con el microstepping, las poleas 4:1,
-//     el acople M1/M2 y el ACME. Todavía sin pérdida de pasos (N2, #15).
+//   - Planta simulada, transmisión N1 y par N2 (D8, D64): cuenta los pasos de
+//     M1..M4; cada rotor los sigue con el par que tiene a su velocidad
+//     (stepper.h) y pierde pasos si la carga o la aceleración lo superan. Los
+//     rotores se convierten en posiciones de J1..J4 con las poleas 4:1, el
+//     acople M1/M2 y el ACME.
 //   - Sensores Hall: imanes y KY-003 del modelo; se activan por distancia (D10, D57).
 //   - Arranque cerca de la pose de reposo, con un desvío al azar (D11).
 //   - Canal de instrumentación (ADR 0004): la verdad del simulador y las fallas
-//     F2–F5, la carga y la recarga, por otro puerto.
+//     F1–F5, la carga y la recarga, por otro puerto.
 // Argumentos (controllerArgs): --host 127.0.0.1 --port 9000 --sim-port 9001 --desvio 10
 // (grados; 0 arranca justo en la pose de reposo, como usan los ensayos).
 #include <webots/Emitter.hpp>
@@ -48,6 +50,7 @@ const Socket NO_SOCKET = -1;
 
 #include "config.h"
 #include "firmware.h"
+#include "stepper.h"
 
 namespace {
 
@@ -244,16 +247,27 @@ private:
   std::string input_, output_;
 };
 
-// --- Planta simulada: transmisión N1, sin pérdida de pasos ---------------
+// --- Planta simulada: transmisión N1 y par de los motores N2 -------------
 
 // Hechos del hardware simulado. La mecánica coincide con la que supone el
 // firmware, pero se escribe aparte: la planta es el robot, no lo que el
 // firmware cree. El microstepping, en cambio, es uno solo (config.h, D44): en
 // el robot real son las llaves DIP de los TB6600.
 const double STEPS_PER_REV = scara::STEPS_PER_REV;  // NEMA de 200 pasos y el microstepping de config.h
-const double PULLEY_RATIO = 4.0;                    // poleas 2GT 20:80
-const double LEAD_M = 0.008;               // ACME de 8 mm por vuelta
 const double TWO_PI = 6.283185307179586;
+// Radianes o metros de cada articulación por pulso de su motor: poleas 2GT
+// 20:80 en J1–J3 y ACME de 8 mm por vuelta en J4 (los de stepper.h).
+const double UNIT[scara::MOTOR_COUNT] = {TWO_PI / STEPS_PER_REV / plant::PULLEY_RATIO,
+                                         TWO_PI / STEPS_PER_REV / plant::PULLEY_RATIO,
+                                         TWO_PI / STEPS_PER_REV / plant::PULLEY_RATIO, plant::LEAD / STEPS_PER_REV};
+// Fracción de la distancia al rotor que la articulación corrige en cada paso.
+const double TRACKING = 0.5;
+// Pasos de Webots en que la fuerza de una articulación llega al máximo al
+// volver la corriente: 0,1 s con 2 ms.
+const int RAMP_TICKS = 50;
+// Distancia a la que la articulación se queda de sus topes: 1/8 de paso
+// completo en J1–J3 y un cuarto en J4.
+const double STOP_MARGIN[scara::MOTOR_COUNT] = {1e-4, 1e-4, 1e-4, 1e-5};
 // Pose de reposo (D30), en radianes y metros: la simulación arranca cerca.
 const double REST[scara::MOTOR_COUNT] = {0.0, 0.0, 0.0, 0.12};
 const char* const JOINT_BODIES[scara::MOTOR_COUNT] = {"ARM", "FOREARM", "WRIST", "TOOL"};
@@ -263,12 +277,20 @@ public:
   // Arranca cerca de la pose de reposo: J1–J3 con un desvío al azar de hasta
   // deviation grados, como un robot real que nadie dejó exacto (D11). J4,
   // abajo. El firmware arranca igual sin referencia.
-  Plant(webots::Supervisor& robot, double deviation) {
+  Plant(webots::Supervisor& robot, double deviation)
+      : rotors_{plant::Stepper(plant::MOTORS[0], scara::STEPS_PER_REV),
+                plant::Stepper(plant::MOTORS[1], scara::STEPS_PER_REV),
+                plant::Stepper(plant::MOTORS[2], scara::STEPS_PER_REV),
+                plant::Stepper(plant::MOTORS[3], scara::STEPS_PER_REV)} {
     webots::Node* self = robot.getSelf();
+    // La carga de la herramienta (toolMass, en kg) la cambia el banco de ensayo.
+    tool_ = self ? self->getField("toolMass") : 0;
     std::mt19937 random(static_cast<unsigned>(std::random_device()()));
     std::uniform_real_distribution<double> spread(-deviation, deviation);
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       steps_[i] = 0;
+      current_[i] = 1.0;
+      ramp_[i] = 0;
       start_[i] = REST[i] + (i < 3 ? spread(random) * TWO_PI / 360.0 : 0.0);
       char name[16];
       std::snprintf(name, sizeof name, "j%d_motor", i + 1);
@@ -287,6 +309,14 @@ public:
         joint->setJointPosition(start_[i]);
       } else {
         std::printf("UCI: no se encontró la articulación J%d; queda en la pose del mundo\n", i + 1);
+      }
+      // La articulación va a la posición del rotor con control de velocidad
+      // y sin límite de aceleración: la dinámica ya la puso el rotor (D64).
+      // Va después de setJointPosition, que deja el motor en control de posición.
+      if (motors_[i]) {
+        motors_[i]->setPosition(INFINITY);
+        motors_[i]->setVelocity(0.0);
+        motors_[i]->setAcceleration(-1);
       }
       // Sensores Hall (D10, D57): un KY-003 (Receiver) y dos imanes (Emitter
       // con su alcance) por articulación, en SCARA.proto.
@@ -310,7 +340,7 @@ public:
     drivers_ = false;
     failed_ = 0;
     powered_ = 0;
-    apply();
+    apply(0.0);
   }
 
   // Un motor sin corriente no avanza con los pulsos: esos pasos se pierden.
@@ -331,29 +361,66 @@ public:
   uint8_t powered() const { return powered_; }
   uint8_t failed() const { return failed_; }
 
+  // Cada `dt` segundos, después de que el firmware dio sus pasos: cada rotor
+  // sigue a su estator con el par que tiene (stepper.h), y cada articulación
+  // va adonde la llevan los rotores, con la transmisión:
   // J1 = θM1/4, J2 = (θM2 − θM1)/4, J3 = θM3/4, J4 = 8 mm · vueltas de M4.
   // Sin corriente, el motor no hace fuerza: el eje queda libre, y J4 cae por
   // su peso (falla F2).
-  void apply() {
-    double joints[scara::MOTOR_COUNT];
-    fromSteps(joints);
-    // Los topes mecánicos frenan la articulación aunque el motor siga dando
-    // pasos; el firmware no se entera (no hay encoders).
+  void apply(double dt) {
+    double tool = tool_ ? tool_->getSFFloat() : 0.0;
+    for (int i = 0; dt > 0 && i < scara::MOTOR_COUNT; ++i) {
+      if (powered_ & (1 << i)) rotors_[i].advance(steps_[i], dt, plant::loadOf(i, tool), current_[i]);
+    }
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       if (!motors_[i]) continue;
       bool free = (powered_ & (1 << i)) == 0;
+      // Al volver la corriente, la fuerza sube en rampa: si el eje descansa en
+      // su tope (J4 abajo), ODE le aplica de más en el primer paso que el motor
+      // lo saca de ahí, y lo haría saltar milímetros.
+      if (!free && ramp_[i] < RAMP_TICKS) ++ramp_[i];
+      double effort = free ? 0.0 : effort_[i] * ramp_[i] / RAMP_TICKS;
       if (motors_[i]->getType() == webots::Motor::LINEAR) {
-        motors_[i]->setAvailableForce(free ? 0.0 : effort_[i]);
+        motors_[i]->setAvailableForce(effort);
       } else {
-        motors_[i]->setAvailableTorque(free ? 0.0 : effort_[i]);
+        motors_[i]->setAvailableTorque(effort);
       }
       if (free) continue;
-      double target = start_[i] + joints[i];
+      // En orden: si el tope frena a J1, J2 (relativo) cambia con M2.
+      double target = start_[i] + joint(i);
       double low = motors_[i]->getMinPosition(), high = motors_[i]->getMaxPosition();
-      if (low < high) target = std::max(low, std::min(high, target));  // 0 y 0: sin límites
-      motors_[i]->setPosition(target);
+      if (low < high && (target < low || target > high)) {  // 0 y 0: sin límites
+        // El tope mecánico frena la articulación y el rotor, aunque el motor
+        // siga recibiendo pulsos; el firmware no se entera (no hay encoders).
+        target = std::max(low, std::min(high, target));
+        double pulses = (target - start_[i]) / UNIT[i];
+        rotors_[i].stopAt(i == 1 ? rotors_[0].position() + pulses : pulses);
+      }
+      // Sin apoyarse en el tope: un motor de ODE que empuja contra él vibra.
+      // Ahí la velocidad del rotor ya no se suma: llevaría el eje al tope.
+      double feed = jointSpeed(i);
+      if (low < high && (target < low + STOP_MARGIN[i] || target > high - STOP_MARGIN[i])) {
+        target = std::max(low + STOP_MARGIN[i], std::min(high - STOP_MARGIN[i], target));
+        feed = 0.0;
+      }
+      // Control de velocidad hacia el rotor: su velocidad, más la mitad de lo
+      // que falta por paso de Webots. Corregir todo en un paso hace rebotar a
+      // J4 contra su tope.
+      double now = physical(i), speed = 0.0;
+      if (dt > 0 && !std::isnan(now)) speed = feed + TRACKING * (target - now) / dt;
+      double fastest = motors_[i]->getMaxVelocity();
+      motors_[i]->setVelocity(std::max(-fastest, std::min(fastest, speed)));
     }
   }
+
+  // Corriente del driver del motor `motor`, como fracción de la nominal
+  // (falla F1: un TB6600 regulado de menos tiene menos par).
+  void setCurrent(int motor, double fraction) { current_[motor] = fraction; }
+  double current(int motor) const { return current_[motor]; }
+  // Pasos completos que el motor se corrió de los pulsos que recibió: la
+  // verdad del simulador, para el banco de ensayo. Positivo: el eje quedó
+  // más adelante de lo que contó el firmware.
+  long lost(int motor) const { return -rotors_[motor].lost() / (scara::STEPS_PER_REV / plant::FULL_STEPS_PER_REV); }
 
   // Posición física simulada de Jj+1, en radianes o metros.
   double physical(int joint) const { return truth_[joint] ? truth_[joint]->getValue() : 0.0; }
@@ -387,13 +454,17 @@ public:
   uint8_t hall() const { return hall_; }
 
 private:
-  void fromSteps(double joints[scara::MOTOR_COUNT]) const {
-    double turns[scara::MOTOR_COUNT];
-    for (int i = 0; i < scara::MOTOR_COUNT; ++i) turns[i] = steps_[i] / STEPS_PER_REV;
-    joints[0] = TWO_PI * turns[0] / PULLEY_RATIO;
-    joints[1] = TWO_PI * (turns[1] - turns[0]) / PULLEY_RATIO;
-    joints[2] = TWO_PI * turns[2] / PULLEY_RATIO;
-    joints[3] = LEAD_M * turns[3];
+  // Desplazamiento de la articulación `j` desde el arranque, en radianes o
+  // metros, según dónde están los rotores. J2 es relativo: M2 menos M1.
+  double joint(int j) const {
+    double pulses = rotors_[j].position() - (j == 1 ? rotors_[0].position() : 0.0);
+    return pulses * UNIT[j];
+  }
+
+  // Velocidad de la articulación `j` que dan los rotores, en rad/s o m/s.
+  double jointSpeed(int j) const {
+    double speed = rotors_[j].speed() - (j == 1 ? rotors_[0].speed() : 0.0);  // rad/s de los ejes de los motores
+    return speed * STEPS_PER_REV / TWO_PI * UNIT[j];
   }
 
   // Al volver la corriente, el motor retiene el eje donde quedó: los pasos
@@ -403,19 +474,27 @@ private:
     uint8_t gained = static_cast<uint8_t>(now & ~powered_);
     powered_ = now;
     if (gained == 0) return;
-    double joints[scara::MOTOR_COUNT];
-    fromSteps(joints);
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
+      if (gained & (1 << i)) {
+        rotors_[i].reset(steps_[i]);
+        ramp_[i] = 0;
+      }
+    }
     for (int j = 0; j < scara::MOTOR_COUNT; ++j) {
       // J2 depende de M1 y M2 (el acople).
       uint8_t motors = j == 1 ? 0x03 : static_cast<uint8_t>(1 << j);
-      if ((gained & motors) != 0 && truth_[j]) start_[j] = physical(j) - joints[j];
+      if ((gained & motors) != 0 && truth_[j]) start_[j] = physical(j) - joint(j);
     }
   }
 
   bool drivers_;
   uint8_t failed_;
   uint8_t powered_;
-  double effort_[scara::MOTOR_COUNT];  // fuerza o par máximo de cada motor
+  double effort_[scara::MOTOR_COUNT];  // fuerza o par máximo de cada articulación de Webots
+  plant::Stepper rotors_[scara::MOTOR_COUNT];
+  double current_[scara::MOTOR_COUNT];  // fracción de la corriente nominal de cada driver (F1)
+  int ramp_[scara::MOTOR_COUNT];        // pasos de Webots desde que el motor recuperó la corriente
+  webots::Field* tool_;
   webots::PositionSensor* truth_[scara::MOTOR_COUNT];
   int stuck_[scara::MOTOR_COUNT];
   long steps_[scara::MOTOR_COUNT];
@@ -466,12 +545,13 @@ private:
 // Lo que solo existe en la simulación, por otro puerto (9001) y con otro
 // protocolo de texto, scara-sim/1. El robot real no lo tiene: la URC funciona
 // igual sin él. Hacia la URC, 20 veces por segundo:
-//   SIM J1 J2 J3 J4 hall corriente f2 f3 f4 carga
+//   SIM J1 J2 J3 J4 hall corriente f2 f3 f4 carga i1 i2 i3 i4 p1 p2 p3 p4
 // con la posición física simulada en unidades de scara/1, los Hall que ve el
 // firmware, la máscara de motores con corriente, las fallas (f3: un carácter
-// por articulación, "-" libre, "A" trabado activo, "I" inactivo) y la carga
-// en gramos. Órdenes de la URC: F2 0|1, F3 j activo|inactivo|libre, F4 0|1,
-// F5, CARGA gramos, RECARGA.
+// por articulación, "-" libre, "A" trabado activo, "I" inactivo), la carga
+// en gramos, la corriente de cada driver en % de la nominal (F1) y los pasos
+// completos que perdió cada motor (D64). Órdenes de la URC: F1 m porcentaje,
+// F2 0|1, F3 j activo|inactivo|libre, F4 0|1, F5, CARGA gramos, RECARGA.
 class Bench {
 public:
   Bench(webots::Supervisor& robot, Plant& plant, WebotsHal& hal, TcpClient& link, bool enabled)
@@ -526,7 +606,10 @@ private:
       used = -1;
       return ok;
     };
-    if (whole(std::sscanf(line.c_str(), "F2 %ld%n", &value, &used), 1) && (value == 0 || value == 1)) {
+    if (whole(std::sscanf(line.c_str(), "F1 %d %ld%n", &joint, &value, &used), 2) && joint >= 1 && joint <= 4 &&
+        value >= 10 && value <= 100) {
+      plant_.setCurrent(joint - 1, value / 100.0);  // aquí `joint` es el motor Mm
+    } else if (whole(std::sscanf(line.c_str(), "F2 %ld%n", &value, &used), 1) && (value == 0 || value == 1)) {
       plant_.setFailed(value ? 0x08 : 0x00);  // el driver de M4: J4 cae
     } else if (whole(std::sscanf(line.c_str(), "F3 %d %15s%n", &joint, argument, &used), 2) && joint >= 1 &&
                joint <= 4 && (std::strcmp(argument, "activo") == 0 || std::strcmp(argument, "inactivo") == 0 ||
@@ -547,8 +630,10 @@ private:
     }
   }
 
+  long percent(int motor) const { return std::lround(plant_.current(motor) * 100.0); }
+
   void sendState() {
-    char out[128], stuck[5];
+    char out[192], stuck[5];
     long units[scara::MOTOR_COUNT];
     for (int j = 0; j < scara::MOTOR_COUNT; ++j) {
       // Radianes → centésimas de grado; metros → centésimas de mm.
@@ -558,9 +643,10 @@ private:
     }
     stuck[4] = '\0';
     long grams = load_ ? std::lround(load_->getSFFloat() * 1000.0) : 0;
-    std::snprintf(out, sizeof out, "SIM %ld %ld %ld %ld %d %d %d %s %d %ld\n", units[0], units[1], units[2],
-                  units[3], plant_.hall(), plant_.powered(), plant_.failed() ? 1 : 0, stuck, hal_.cut() ? 1 : 0,
-                  grams);
+    std::snprintf(out, sizeof out, "SIM %ld %ld %ld %ld %d %d %d %s %d %ld %ld %ld %ld %ld %ld %ld %ld %ld\n",
+                  units[0], units[1], units[2], units[3], plant_.hall(), plant_.powered(), plant_.failed() ? 1 : 0,
+                  stuck, hal_.cut() ? 1 : 0, grams, percent(0), percent(1), percent(2), percent(3), plant_.lost(0),
+                  plant_.lost(1), plant_.lost(2), plant_.lost(3));
     link_.write(out);
   }
 
@@ -616,7 +702,7 @@ int main(int argc, char** argv) {
     }
     if (booted) firmware->poll();
     link.flush();
-    plant.apply();
+    plant.apply(timestep / 1000.0);
   }
   return 0;
 }

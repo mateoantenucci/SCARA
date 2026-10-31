@@ -641,3 +641,44 @@ Decisiones tomadas al implementar el gestor de trayectorias en la URC: [`urc/tra
   - «Ir al punto» arranca, igual que la aproximación, desde una pose que no está en la trayectoria.
 - **Descartado:** capturar en movimiento, que Retroceso borre siempre el último de la lista, y validar la trayectoria entera en cada cambio.
 - **Estado:** Aceptada.
+
+## Pérdida de pasos N2 y falla F1 (issue #15)
+
+Decisiones tomadas al modelar el par de los motores en la planta de Webots y la detección de pasos perdidos en el firmware ([ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)). Cómo funciona, los parámetros y su fuente: [Transmisión, N2](TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2). La forma de `EV LOST`: [protocolo](PROTOCOLO_SCARA_1.md#pérdida-de-pasos). La evidencia: [ensayo en Webots](../validation/perdida_pasos/INFORME.md).
+
+**D64 · N2: el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad.**
+- **Decisión:**
+  - Cada motor es una inercia (rotor más carga reflejada) que sigue a los pulsos con `T = T(ω) · sen(π/2 · e / paso completo)`, más un amortiguamiento fijo (ζ = 0,6). `T(ω)` es plana hasta la velocidad de esquina, `V / (2 L I)`, y cae como `1/ω` arriba; a baja velocidad vale 0,7 del par de retención por los micropasos.
+  - A dos pasos completos de atraso, el rotor cae al equilibrio siguiente: se pierden pasos de a cuatro. El firmware no se entera.
+  - El modelo está en `webots/controllers/scara_uci/stepper.h`, sin Webots, con pruebas en la PC. Se integra en 10 subpasos de 0,2 ms dentro de cada paso de 2 ms de Webots.
+  - La carga de cada motor sale de las masas del proto, con el brazo estirado, sin términos cruzados entre M1 y M2, y con `toolMass`. El peso de J4 pasa por el ACME con eficiencias distintas al subir y al bajar.
+  - Webots lleva cada articulación hacia sus rotores con control de velocidad, sin su límite de aceleración y sin apoyarse en los topes. Al volver la corriente, la fuerza de la articulación sube en rampa durante 0,1 s: con J4 apoyado en su tope, ODE le aplica de más en el primer paso que el motor lo saca de ahí. En el mundo de la UCI, el par de las articulaciones de Webots se sube (campos `j1MaxTorque`… de `SCARA.proto`): quien limita es el modelo del motor.
+  - Las hojas de datos exactas de los motores del maestro no aparecieron: M1 y M2 toman la familia Minebea 23KM-K3 (23KM-K349B), M3 el STP-42D201-37 y el resto son supuestos típicos declarados, con 24 V en los TB6600.
+- **Por qué:** es lo que hace un paso a paso real cuando se le pide más par del que tiene: pierde pasos en múltiplos de cuatro, y con micropasos el atraso normal es una fracción de paso. La curva par–ángulo da el arranque sin rampa y la carga con la misma regla, sin una cota aparte por cada caso. La investigación del 29/10 proponía usar el control de posición de Webots con par limitado y medir el atraso; pero ese control se atrasa por su propia ganancia y por los límites de velocidad y aceleración del proto (con el jog sin rampa, J1 se atrasaría 1,5°, más que medio ciclo eléctrico), y no puede repartir el par de M1 y M2 entre J1 y J2 con el acople. Un modelo aparte, además, se prueba sin Webots.
+- **Descartado:** el control de posición de Webots con par limitado (falsas pérdidas de pasos), un modelo cuasiestático que compara el par pedido con el disponible en cada paso de 2 ms (la aceleración, estimada de pulsos de a uno, es puro ruido), y N3 (ADR 0006).
+- **Estado:** Aceptada. Los parámetros son provisionales hasta tener las hojas de datos.
+
+**D65 · `EV LOST` al entrar en un imán, con 2 pasos completos de tolerancia, sin corregir la cuenta.**
+- **Decisión:**
+  - Con el eje referenciado y fuera del homing, al activarse su Hall el firmware compara los pasos contados con los del flanco del imán más cercano: `HALL_EDGE` o `HALL_FAR_EDGE` (nuevo en `config.h`, verificado contra la geometría del proto). J2 cuenta los pasos de M2 menos los de M1.
+  - Si difieren en 2 pasos completos o más, envía `EV LOST j pasos`: los reales menos los contados, en pasos completos, con signo.
+  - No corrige la cuenta ni frena. La URC marca la referencia de ese eje como dudosa (`doubtful` en su estado, un registro por eje) y lo avisa en el mensaje y en la lista de errores; la duda se limpia con el `EV HOMED` del eje, `BOOT` o al perder la referencia, no con `ZERO` (menos precisa y el firmware puede rechazarla).
+  - Un Hall trabado activo (F3) a mitad de carrera también da `EV LOST`: sin encoders, el firmware no distingue un motor corrido de un sensor que miente.
+  - De paso, la marca del Hall que frenó un jog (D58) se borra cuando ese Hall se apaga: si no, después de bajar con segmentos al imán del otro extremo, un jog para salir de él se rechazaba.
+- **Por qué:** sin encoders, el Hall es la única medida absoluta: se activa siempre en el mismo lugar. Dos pasos completos son la mitad de lo mínimo que se pierde (cuatro), y quedan por encima de lo que yerra la lectura del Hall en movimiento. Informarlo en pasos completos no depende del microstepping (ADR 0003). Corregir la cuenta en movimiento escondería la falla con una medida menos precisa que la del homing, y frenar es una decisión de la URC, que es la que sabe qué está haciendo el robot.
+- **Descartado:** comparar solo en el imán de la referencia (J4 nunca pasaría por él al estacionar), informarlo en pulsos (depende del microstepping), corregir la cuenta y que el firmware quite la referencia (cortaría la reproducción con `ERR 7` en medio de un tramo).
+- **Estado:** Aceptada.
+
+**D66 · N2 confirma los límites de D45.**
+- **Decisión:** se conservan los valores de D45. Con la corriente nominal, el par que piden en su velocidad y aceleración máximas, con 5 kg, queda entre 1,4 veces (M4) y 22 veces por debajo del disponible, y las pruebas lo verifican también con el jog que arranca sin rampa.
+- **Por qué:** dejan margen en todos los motores, y subir los de J1–J3 no se puede sin cambiar los límites articulares del modelo de Webots que también usa el planificador.
+- **Descartado:** subirlos ahora (cambia el modelo y el planificador en paralelo con #11 y #13).
+- **Estado:** Aceptada.
+
+**D67 · F1 se provoca bajando la corriente de un driver: `F1 m porcentaje`.**
+- **Decisión:**
+  - El canal de instrumentación acepta `F1 m porcentaje` (10 a 100 % de la corriente nominal del driver de Mm) y `SIM` informa, además, la corriente de cada driver y los pasos completos que perdió cada motor según la planta.
+  - El banco de ensayo lo ofrece junto a la carga, y muestra la referencia dudosa que informó el firmware.
+- **Por qué:** con la corriente nominal el robot no pierde pasos dentro de D45 (D66), ni con los 5 kg que admite el banco. Un TB6600 regulado de menos es una falla real y común, y la pérdida aparece por las dos causas del enunciado: por carga (M4 al 50 % no sube 5 kg) y por aceleración (M1 al 20 % pierde pasos al arrancar el jog sin rampa).
+- **Descartado:** forzar pasos perdidos desde el banco sin causa física (no muestra el modelo) y permitir más carga o más aceleración que lo que planifica la URC (cambia el planificador).
+- **Estado:** Aceptada.

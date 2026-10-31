@@ -29,6 +29,7 @@ public:
       steps[i] = 0;
       pose[i] = 0;
       stuck[i] = -1;
+      slip[i] = 0;
     }
   }
   uint32_t millis() { return now; }
@@ -38,7 +39,7 @@ public:
   uint8_t readHall() {
     uint8_t bits = 0;
     int32_t motors[scara::MOTOR_COUNT], joints[scara::MOTOR_COUNT];
-    for (int i = 0; i < scara::MOTOR_COUNT; ++i) motors[i] = static_cast<int32_t>(steps[i]);
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i) motors[i] = static_cast<int32_t>(steps[i] + slip[i]);
     scara::motorsToJoints(motors, joints);
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       long position = pose[i] + joints[i];
@@ -62,6 +63,7 @@ public:
   bool magnets;                   // "! iman": los Hall siguen a la geometría
   long pose[scara::MOTOR_COUNT];  // pose real al arrancar, en unidades del protocolo
   int stuck[scara::MOTOR_COUNT];  // -1 libre, 0 trabado inactivo, 1 trabado activo
+  long slip[scara::MOTOR_COUNT];  // pulsos que el motor se corrió de los emitidos (falla F1)
   std::deque<char> input;
   std::string output;
 };
@@ -183,6 +185,8 @@ private:
   //   "! iman J1 J2 J3 J4": los Hall siguen a la geometría, con el robot en
   //     esa pose real al arrancar (unidades del protocolo).
   //   "! hall j activo|inactivo|libre": traba el Hall de Jj (falla F3).
+  //   "! desliza Mm n": el motor Mm se corre n pasos completos (con signo)
+  //     de lo que le emitió el firmware, que no se entera (falla F1).
   bool plant(const std::string& body) {
     std::vector<std::string> items = fields(body);
     if (items.size() == 1 && items[0] == "reinicio") {
@@ -201,6 +205,11 @@ private:
       else if (items[2] == "inactivo") hal_.stuck[joint] = 0;
       else if (items[2] == "libre") hal_.stuck[joint] = -1;
       else return fail("se esperaba activo, inactivo o libre");
+      return true;
+    }
+    if (items.size() == 3 && items[0] == "desliza" && items[1].size() == 2 && items[1][0] == 'M' &&
+        items[1][1] >= '1' && items[1][1] <= '4') {
+      hal_.slip[items[1][1] - '1'] += std::atol(items[2].c_str()) * scara::MICROSTEPS;
       return true;
     }
     return fail("renglón ! desconocido: " + body);

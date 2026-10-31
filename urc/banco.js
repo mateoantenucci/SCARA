@@ -1,5 +1,5 @@
 // Banco de ensayo (solo simulación, ADR 0004, D59): la verdad del simulador
-// junto a lo que sabe el robot, y las fallas F2–F5. Sin canal de
+// junto a lo que sabe el robot, y las fallas F1–F5. Sin canal de
 // instrumentación, como con el robot real, el panel no aparece.
 (() => {
   const panel = document.getElementById("banco");
@@ -10,11 +10,18 @@
     <h2>Banco de ensayo (solo simulación)</h2>
     <p class="muted">Llega por el canal de instrumentación, que el robot real no tiene. La URC no usa estos datos para capturar ni planificar: siempre usa la posición estimada por pasos.</p>
     <table>
-      <thead><tr><th>Articulación</th><th>Estimada</th><th>Simulado</th><th>Diferencia</th><th>Motor con corriente</th></tr></thead>
+      <thead><tr><th>Articulación</th><th>Estimada</th><th>Simulado</th><th>Diferencia</th><th>Motor con corriente</th><th>Corriente del driver</th><th>Pasos perdidos</th></tr></thead>
       <tbody id="banco-joints"></tbody>
     </table>
     <p class="muted" id="banco-link"></p>
+    <p id="banco-doubt" role="status" aria-live="polite"></p>
     <h3>Fallas</h3>
+    <div class="row">
+      <label>F1 · Corriente del driver de <select id="banco-f1-motor"></select></label>
+      <label><input type="number" id="banco-f1-current" min="10" max="100" step="10" value="100"> % de la nominal</label>
+      <button id="banco-f1-set">Aplicar</button>
+      <span class="muted">Con menos corriente el motor tiene menos par: con carga o al arrancar, pierde pasos.</span>
+    </div>
     <div class="row">
       <label><input type="checkbox" id="banco-f2"> F2 · Driver de M4 sin corriente (J4 cae)</label>
     </div>
@@ -31,6 +38,8 @@
     </div>
     <div id="banco-feedback" class="feedback" role="status" aria-live="polite"></div>`;
 
+  const f1 = document.getElementById("banco-f1-motor");
+  NAMES.forEach((_, index) => f1.add(new Option(`M${index + 1}`, String(index + 1))));
   const f3 = document.getElementById("banco-f3");
   NAMES.forEach((name, index) => {
     const label = document.createElement("label");
@@ -57,6 +66,9 @@
     }
   }
 
+  document.getElementById("banco-f1-set").addEventListener("click", () => order({
+    falla: "F1", motor: Number(f1.value), corriente: Number(document.getElementById("banco-f1-current").value),
+  }));
   document.getElementById("banco-f2").addEventListener("change", (event) =>
     order({ falla: "F2", activa: event.target.checked }));
   document.getElementById("banco-f4").addEventListener("change", (event) =>
@@ -94,7 +106,8 @@
         const simulated = bench.simulated[joint];
         const motor = bench.power >> joint & 1 ? "sí" : "no";
         for (const text of [name, estimated === null ? "—" : format(joint, estimated), format(joint, simulated),
-          estimated === null ? "—" : format(joint, simulated - estimated), `M${joint + 1}: ${motor}`]) {
+          estimated === null ? "—" : format(joint, simulated - estimated), `M${joint + 1}: ${motor}`,
+          `M${joint + 1}: ${bench.current_pct[joint]} %`, `M${joint + 1}: ${bench.lost_steps[joint]}`]) {
           row.insertCell().textContent = text;
         }
       });
@@ -103,6 +116,12 @@
         `Hall que ve el firmware: ${bench.hall.toString(2).padStart(4, "0")} (bit 0 = J1) · ` +
         (age === null ? "sin estado S de la UCI" : `último estado S hace ${age.toFixed(1)} s`) +
         (bench.faults.F4 ? " · enlace scara/1 cortado" : "");
+      // F1 (D65): lo que el robot real también sabría, por EV LOST al cruzar un Hall.
+      const doubtful = state.connected ? state.doubtful : [];
+      document.getElementById("banco-doubt").textContent = doubtful.length === 0 ? "" :
+        "Referencia dudosa (EV LOST): " + doubtful.map((item) =>
+          `J${item.joint} ${item.steps > 0 ? "+" : ""}${item.steps} pasos`).join(", ") + ". Conviene hacer homing.";
+      sync("banco-f1-current", bench.current_pct[Number(f1.value) - 1]);
       sync("banco-f2", bench.faults.F2);
       sync("banco-f4", bench.faults.F4);
       sync("banco-load", bench.load_g);

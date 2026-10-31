@@ -154,6 +154,10 @@ Declarar como referencia la pose actual, después de llevar el robot con jog has
 **Robot referenciado**:
 Robot cuyas articulaciones tienen una referencia válida desde el último homing o referencia manual, sin reinicio de la UCI desde entonces.
 
+**Referencia dudosa**:
+Referencia de una articulación después de que el firmware detectó, al cruzar su Hall, que la posición estimada por pasos no coincidía con la del sensor. El robot sigue referenciado, pero conviene volver a hacer homing.
+_Evitar_: Referencia perdida (eso es sin referencia, después de un reinicio de la UCI o de cortar la corriente).
+
 **Pose de reposo**:
 Pose definida, con el brazo estirado, en la que se deja el robot al apagarlo y desde la que arranca el homing sin riesgo de choque.
 _Evitar_: Home, cero, pose segura, parking (la referencia que encuentra el homing es otra pose).

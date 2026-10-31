@@ -169,7 +169,17 @@ J4 = 8 mm · vueltas de M4
 
 **Conversión a pulsos con 1/8** (6400 pulsos por vuelta de articulación): 17,78 pulsos por grado en J1–J3 y 200 pulsos por mm en J4. Los pulsos de M2 salen de J1 + J2. El firmware lo hace con enteros: 8 pasos cada 45 centésimas de grado y 2 pasos por centésima de mm.
 
-**Límites de los motores (D45).** La limitación física está en los motores, no en las articulaciones. Se fijan por motor (provisionales hasta tener las curvas de par) y se derivan con el acople: M1 limita a J1, y M2 limita a **J1 + J2**, el ángulo absoluto del antebrazo. Con M1 y M2 a 80 °/s, J1 llega a 20 °/s; si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s.
+**Límites de los motores (D45, D66).** La limitación física está en los motores, no en las articulaciones. Se fijan por motor y se derivan con el acople: M1 limita a J1, y M2 limita a **J1 + J2**, el ángulo absoluto del antebrazo. Con M1 y M2 a 80 °/s, J1 llega a 20 °/s; si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s. Con las curvas de par de N2 (sección 9), estos límites dejan margen: con la corriente nominal y 5 kg en la herramienta, el par que piden queda entre 1,4 (M4) y 22 veces por debajo del disponible.
+
+**Par de los motores (N2, D64).** Cada motor tiene el par que le da su curva par–velocidad, reflejado por la transmisión:
+
+| Motor | Par de retención | A baja velocidad | Velocidad de esquina | Fuente |
+| --- | --- | --- | --- | --- |
+| M1, M2 | 0,80 N·m | 0,56 N·m | 1308 °/s | Familia Minebea 23KM-K3 (23KM-K349B) |
+| M3 | 0,31 N·m | 0,22 N·m | 3375 °/s | STP-42D201-37, de la misma serie |
+| M4 | 0,20 N·m | 0,14 N·m | 7714 °/s | Supuesto: NEMA 17 corto a 0,7 A |
+
+Las hojas de datos exactas no aparecieron; las fuentes y los supuestos de cada parámetro (inercia, inductancia, eficiencias del ACME y la correa) están en [Transmisión](../TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2).
 
 **Jog por motor (D46).** Un modo de prueba de la URC mueve un solo motor. Es la forma de mostrar el punto 1 en la defensa.
 
@@ -191,8 +201,8 @@ Detalle, tabla por microstepping y contraste con los planos: [Transmisión](../T
 | Enlace | USB-serie a 115200 baudios, puenteado a TCP con socat. Alternativa: shield Ethernet | D1, D18 |
 | Drivers | Un TB6600 por motor | Del maestro |
 | Microstepping | 1/8, 1600 pulsos por vuelta | Propuesta (P1, D9) |
-| M1, M2 | Minebea 23KM-K381-P1, NEMA 23, 1,8° | Del maestro; faltan corriente y curva de par |
-| M3 | Shinano Kenshi STP-42D221-03, NEMA 17 | Del maestro; falta corriente |
+| M1, M2 | Minebea 23KM-K381-P1, NEMA 23, 1,8° | Del maestro; corriente y par de la familia 23KM-K3 (D64) |
+| M3 | Shinano Kenshi STP-42D221-03, NEMA 17 | Del maestro; par del STP-42D201-37, corriente supuesta (D64) |
 | M4 | 42D265, NEMA 17, 1,9 V, 0,7 A | Del maestro |
 | Sensores | 4 × KY-003 (Hall digital) y 8 imanes | Propuesta (P2, D10) |
 | Alimentación | 36 V 10 A para drivers; 12 V 2 A para Arduino y ventiladores | Del maestro |
@@ -452,10 +462,10 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | --- | --- |
 | Pasos y microstepping (N1) | Las articulaciones avanzan en pasos discretos |
 | Transmisión y acople M1/M2 (N1) | 4:1, 60T–60T al codo, ACME de 8 mm por vuelta; mover M1 cambia J1 y J2 |
-| Par limitado y pérdida de pasos (N2) | Con carga o aceleración excesiva el motor salta pasos y el firmware no se entera |
+| Par limitado y pérdida de pasos (N2) | El rotor sigue a los pulsos con el par de su curva par–velocidad; si la carga o la aceleración piden más, cae cuatro pasos completos y el firmware no se entera (D64) |
 | Sensores Hall | Imán (`Emitter`) y KY-003 (`Receiver`) del modelo: el Hall se activa por la distancia entre los dos, así que sale de la geometría (D57) |
 | Driver sin corriente | El motor no hace fuerza y sus pasos se pierden; J4 cae por su peso. Al volver la corriente, retiene el eje donde quedó (D60) |
-| Fallas F2–F5 | Desde el banco de ensayo, por el canal de instrumentación (D59, D61). F1 llega con N2 (#15) |
+| Fallas F1–F5 | Desde el banco de ensayo, por el canal de instrumentación (D59, D61, D67) |
 | Tiempo | Webots a 1× durante teach y play; el firmware usa el reloj simulado (D26) |
 | Arranque | Cerca de la pose de reposo, con un desvío aleatorio de ±10° y sin referencia |
 
@@ -471,16 +481,25 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 
 | Falla | Qué hace el banco | Qué se ve |
 | --- | --- | --- |
+| F1 | Baja la corriente de un driver: el motor tiene menos par | Con 5 kg, J4 no sube y «Simulado» se aparta en múltiplos de 4 pasos completos; al cruzar un Hall, `EV LOST` y la referencia queda dudosa |
 | F2 | Deja sin corriente el driver de M4 | J4 cae a 120 mm en «Simulado»; la estimada no cambia |
 | F3 | Traba un Hall activo o inactivo | El homing aborta (`ERR 12` o `ERR 11`) sin referencia |
 | F4 | Corta el enlace `scara/1` sin cerrar la conexión | El estado `S` deja de llegar; el watchdog frena el robot |
 | F5 | Reinicia el firmware de la UCI | `BOOT` inesperado: sin referencia y sin corriente, así que J4 cae; J1–J3 quedan donde estaban |
 
-**Datos que faltan para N2.** Las curvas de par de los motores que nombra el maestro. Si no se encuentran, se usan valores típicos de NEMA 23 y NEMA 17 declarados como supuestos.
+**Pérdida de pasos (N2, F1; D64–D67).** El rotor de cada motor es una inercia que sigue a los pulsos con la curva par–ángulo del motor híbrido. Con un paso completo de atraso da su par máximo, el de la curva par–velocidad; con dos (medio ciclo eléctrico), cae al equilibrio siguiente y pierde cuatro pasos completos. El firmware sigue contando los pulsos que emitió. Lo descubre al entrar en un imán: con el eje referenciado, el Hall se activa siempre en el mismo flanco, y si la cuenta difiere en 2 pasos completos o más, envía `EV LOST j pasos`. La URC marca la referencia como dudosa hasta un homing. Con la corriente nominal no se pierden pasos dentro de los límites que planifica la URC; para provocarlo, el banco baja la corriente de un driver (F1):
 
-El canal y las fallas F2–F5 están ensayados en Webots ([validación del canal de instrumentación](../../validation/instrumentacion/INFORME.md)).
+| Ensayo en Webots | Qué pasa |
+| --- | --- |
+| Homing y reposo, sin falla | Ningún `EV LOST`; «Simulado» coincide con lo estimado en menos de un paso |
+| 5 kg con la corriente nominal | J4 sube y baja a 30 mm/s sin perder pasos |
+| F1 por carga: M4 al 50 % con 5 kg | J4 no sube; al volver al reposo, el Hall de abajo da `EV LOST 4` con los pasos que perdió la planta |
+| F1 por aceleración: M1 al 20 % con 5 kg | El jog de J1, que arranca sin rampa, pierde pasos; al llegar a su imán, `EV LOST 1` |
+| Homing de nuevo | La referencia deja de ser dudosa |
 
-> **Pendiente de evidencia:** contraste de N2 contra la posición física simulada; curvas de par usadas y su fuente.
+Las hojas de datos exactas de los motores no aparecieron: se usan la familia más cercana y supuestos típicos, cada uno declarado ([Transmisión](../TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2)).
+
+El canal y las fallas F2–F5 están ensayados en Webots ([validación del canal de instrumentación](../../validation/instrumentacion/INFORME.md)), y F1 y N2, en su propio ensayo ([validación de la pérdida de pasos](../../validation/perdida_pasos/INFORME.md)).
 
 ## 10. Validación
 
@@ -538,6 +557,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

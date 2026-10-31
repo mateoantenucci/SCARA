@@ -32,5 +32,6 @@ El firmware arranca al empezar cada archivo (envía `BOOT`). El reloj empieza en
 | `! reinicio` | La UCI se reinicia sin cortar el enlace (falla F5): el firmware vuelve a arrancar y envía `BOOT`. Los motores conservan los pasos dados. |
 | `! iman J1 J2 J3 J4` | Los Hall siguen a la geometría, con el robot en esa pose real al arrancar. Sin este renglón, los Hall nunca se activan. |
 | `! hall j activo` | Traba el Hall de Jj activo (falla F3); `inactivo` lo traba apagado y `libre` lo devuelve a la geometría. |
+| `! desliza Mm n` | El motor Mm se corre `n` pasos completos, con signo, de los que le emitió el firmware, que no se entera (pérdida de pasos, falla F1). Los Hall siguen a la posición real. Se acumula. |
 
 Reglas de `<`: las líneas `S` periódicas que no se esperan se saltean; cualquier otra línea inesperada es un error, también si queda alguna al terminar el archivo. Toda línea que envía la UCI tiene que medir hasta 64 bytes.

@@ -62,6 +62,9 @@ class Session:
         self.tramo = None            # el último tramo planificado, para la página
         self.homing = None           # el último homing: ejes encontrados y estado
         self.park_requested = False  # homing terminado: falta volver al reposo
+        # EV LOST desde la última referencia (F1, D65): la referencia de esos
+        # ejes es dudosa hasta su homing.
+        self.doubtful = []
         # El modelo para planificar se lee una vez.
         self.config = load_config()
         self.checker = CollisionChecker(self.config)
@@ -204,6 +207,7 @@ class Session:
                 "received": self.received,
                 "status": status,
                 "referenced": status is not None and status["homed"] == ALL_HOMED,
+                "doubtful": [dict(item) for item in self.doubtful],
                 "jog": None if self.jogging is None else dict(zip(("joint", "direction", "motor"), self.jogging)),
                 "segments": {"pending": len(self.segments), "in_flight": self.in_flight, "last_ok": self.last_ok},
                 "tramo": tramo,
@@ -366,12 +370,18 @@ class Session:
                 self.status = {key: value for key, value in message.items() if key != "kind"}
                 self.status_time = time.monotonic()
                 self._follow_homing()
+                # Un eje sin referencia ya no tiene una referencia dudosa.
+                self.doubtful = [item for item in self.doubtful
+                                 if self.status["homed"] >> (item["joint"] - 1) & 1]
                 # Todo enviado y el robot quieto antes del último segmento: el
                 # firmware frenó por algo que la URC no vio (un ERR ilegible).
                 if (self.status["mode"] == "IDLE" and not self._segments_pending()
                         and self._tramo_running()):
                     self._cancel_segments("el robot se detuvo antes de terminar")
+            elif kind == "EV" and message["event"] == "LOST":
+                self._lost_steps(message["joint"], message["steps"])
             elif kind == "EV":
+                self.doubtful = [item for item in self.doubtful if item["joint"] != message["joint"]]
                 if self.homing is not None and message["joint"] not in self.homing["axes"]:
                     self.homing["axes"].append(message["joint"])
                     if sorted(self.homing["axes"]) == sorted(HOME_ORDER) and self.homing["state"] == "en curso":
@@ -392,9 +402,24 @@ class Session:
                     self._end_homing(f"ERR {message['code']} {message['word']}: {message['cause']}")
             self.greeted = True
 
+    def _lost_steps(self, joint, steps):
+        """F1: al cruzar su Hall, el eje no estaba donde contó el firmware (D65).
+
+        El firmware sigue referenciado y no corrige su cuenta; la URC marca la
+        referencia como dudosa y lo avisa, también en la lista de errores, que
+        no se pisa con el próximo mensaje. Solo el homing de ese eje la limpia.
+        Cada eje aparece una vez, con lo último que informó.
+        """
+        self.doubtful = [item for item in self.doubtful if item["joint"] != joint]
+        self.doubtful.append({"joint": joint, "steps": steps})
+        self.message = (f"Pérdida de pasos en J{joint}: {steps:+d} pasos completos al cruzar su Hall. "
+                        "La referencia es dudosa: conviene hacer homing.")
+        self.errors.append(f"EV LOST {joint} {steps}: referencia dudosa de J{joint}, conviene hacer homing")
+
     def _booted(self):
         """La UCI arrancó: toda referencia y toda orden pendiente quedan sin valor."""
         self.boots += 1
+        self.doubtful = []
         self._cancel_segments("la UCI se reinició")
         self._end_homing("la UCI se reinició")
         self.status = None

@@ -139,6 +139,10 @@ void Firmware::poll() {
   // órdenes nuevas, que rigen desde este instante.
   lastHall_ = hall_;
   hall_ = hal_.readHall();
+  // Un Hall que se apagó ya no frena nada, aunque después se active con el
+  // imán del otro extremo.
+  endHalls_ &= hall_;
+  if (motion_ != HOMING) checkLostSteps();
   if (motion_ == JOG) checkJogHall();
   if (motion_ == HOMING) advanceHoming(now);
   advanceJog(now);
@@ -279,8 +283,7 @@ void Firmware::handleJog(char* arguments) {
   int8_t direction = sign[0] == '+' ? 1 : -1;
   // Lo que frenó un Hall no vuelve a empujar hacia el tope mientras el Hall
   // siga activo: solo sale para el otro lado.
-  endHalls_ &= hall_;
-  if ((endHalls_ & hall_) != 0 && (motors & endMotors_) != 0 && direction == endDirection_) {
+  if (endHalls_ != 0 && (motors & endMotors_) != 0 && direction == endDirection_) {
     stopJog();
     sendError(ERR_END, "fin");
     return;
@@ -306,6 +309,31 @@ void Firmware::checkJogHall() {
     endDirection_ = jogDirection_;
     stopJog();
     sendError(ERR_END, "fin");
+  }
+}
+
+// F1 (D65): con el eje referenciado, su Hall se activa siempre en el mismo
+// flanco. Al entrar en un imán, compara los pasos contados con los del flanco:
+// si difieren en 2 pasos completos o más (medio ciclo eléctrico, D64), el
+// motor se corrió sin que el firmware lo supiera, y lo informa con
+// EV LOST j pasos: los reales menos los contados, en pasos completos. No
+// corrige la cuenta: solo el homing vuelve a referenciar. El homing se salta
+// porque es justamente el que define los flancos.
+void Firmware::checkLostSteps() {
+  uint8_t entered = hall_ & ~lastHall_ & homed_;
+  for (uint8_t axis = 0; entered != 0 && axis < MOTOR_COUNT; ++axis) {
+    if ((entered & (1 << axis)) == 0) continue;
+    // J2 se mide relativo a J1 (D10): sus pasos son los de M2 menos los de M1.
+    int32_t counted = axis == 1 ? steps_[1] - steps_[0] : steps_[axis];
+    // Un imán en cada extremo: el que está más cerca de la posición estimada.
+    int32_t middle = (HALL_EDGE[axis] + HALL_FAR_EDGE[axis]) / 2;
+    int32_t edge = stepsToUnits(axis, counted) < middle ? HALL_EDGE[axis] : HALL_FAR_EDGE[axis];
+    int32_t difference = unitsToSteps(axis, edge) - counted;
+    if (difference < 2 * MICROSTEPS && difference > -2 * MICROSTEPS) continue;
+    char out[LINE_MAX];
+    char* end = append(append(append(out, "EV LOST "), static_cast<int32_t>(axis + 1)), " ");
+    append(append(end, divideRounded(difference, MICROSTEPS)), "\n")[0] = '\0';
+    hal_.write(out);
   }
 }
 

@@ -36,6 +36,10 @@ constexpr int32_t MOTOR_MAX_ACCELERATION[MOTOR_COUNT] = {136, 136, 204, 2700};
 // unidades del protocolo. Parámetro provisional: en el robot real se mide; en
 // Webots sale de dónde están el imán y el sensor (tools/generate_world.py).
 constexpr int32_t HALL_EDGE[MOTOR_COUNT] = {-13000, -13000, -14500, 300};
+// Flanco del imán del otro extremo (J4: abajo), donde el Hall se activa al
+// llegar desde el centro del recorrido. El homing no lo usa; la detección de
+// pasos perdidos, sí (D65).
+constexpr int32_t HALL_FAR_EDGE[MOTOR_COUNT] = {13000, 13000, 14500, 11700};
 // Ancho del imán del lado alcanzable: desde el flanco hasta el tope.
 constexpr int32_t HALL_WIDTH[MOTOR_COUNT] = {500, 500, 500, 300};
 

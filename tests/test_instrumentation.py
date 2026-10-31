@@ -47,17 +47,20 @@ class InstrumentationTests(unittest.TestCase):
 
     def test_reads_the_simulator_truth(self):
         client = self.connect()
-        client.send("SIM 3001 -5995 2003 8001 8 15 0 -A-- 0 150")
+        client.send("SIM 3001 -5995 2003 8001 8 15 0 -A-- 0 150 100 100 100 40 0 0 0 -12")
         state = wait_for(lambda: (s := self.bench.snapshot())["simulated"] and s)
         self.assertEqual(state["simulated"], [3001, -5995, 2003, 8001])
         self.assertEqual(state["hall"], 8)
         self.assertEqual(state["power"], 15)
         self.assertEqual(state["faults"], {"F2": False, "F3": ["libre", "activo", "libre", "libre"], "F4": False})
         self.assertEqual(state["load_g"], 150)
+        self.assertEqual(state["current_pct"], [100, 100, 100, 40])
+        self.assertEqual(state["lost_steps"], [0, 0, 0, -12])
 
     def test_orders_reach_the_controller(self):
         client = self.connect()
-        for request, line in (({"falla": "F2", "activa": True}, "F2 1"),
+        for request, line in (({"falla": "F1", "motor": 4, "corriente": 40}, "F1 4 40"),
+                              ({"falla": "F2", "activa": True}, "F2 1"),
                               ({"falla": "F2", "activa": False}, "F2 0"),
                               ({"falla": "F3", "articulacion": 2, "estado": "inactivo"}, "F3 2 inactivo"),
                               ({"falla": "F4", "activa": True}, "F4 1"),
@@ -70,14 +73,17 @@ class InstrumentationTests(unittest.TestCase):
 
     def test_rejects_bad_orders_and_lines(self):
         client = self.connect()
-        for request in ({"falla": "F1"}, {"falla": "F2", "activa": 1}, {"falla": "F3", "articulacion": 5,
+        for request in ({"falla": "F1"}, {"falla": "F1", "motor": 5, "corriente": 50},
+                        {"falla": "F1", "motor": 1, "corriente": 5}, {"falla": "F1", "motor": 1, "corriente": 101},
+                        {"falla": "F1", "motor": 1, "corriente": 50.5}, {"falla": "F2", "activa": 1}, {"falla": "F3", "articulacion": 5,
                         "estado": "activo"}, {"falla": "F3", "articulacion": 1, "estado": "roto"},
                         {"carga": -1}, {"carga": 9000}, {"carga": True}, {}):
             with self.subTest(request=request), self.assertRaises(ValueError):
                 self.bench.order(request)
         client.send("SIM 1 2 3")
+        client.send("SIM 3001 -5995 2003 8001 8 15 0 -A-- 0 150")  # sin corrientes ni pasos perdidos
         client.send("RUIDO")
-        wait_for(lambda: len(self.bench.snapshot()["rejected"]) == 2)
+        wait_for(lambda: len(self.bench.snapshot()["rejected"]) == 3)
         self.assertIsNone(self.bench.snapshot()["simulated"])
 
 
@@ -105,7 +111,7 @@ class IsolationTests(unittest.TestCase):
         uci.send("S IDLE 15 0 0 0 12000 8 16 0")
         # La física dice otra cosa (por ejemplo, J4 cayó sin corriente).
         sim.send("SIM HELLO scara-sim/1")
-        sim.send("SIM 1000 0 0 6000 0 7 1 ---- 0 150")
+        sim.send("SIM 1000 0 0 6000 0 7 1 ---- 0 150 100 100 100 100 0 0 0 0")
         wait_for(lambda: session.snapshot()["referenced"] and bench.snapshot()["simulated"])
         plan = session.move_ptp((900, 0, 0, 12000), dry_run=True)
         self.assertEqual(plan["start"], [0, 0, 0, 12000])

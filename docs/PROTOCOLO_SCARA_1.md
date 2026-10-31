@@ -2,7 +2,7 @@
 
 Especificación del contrato de mensajes entre la URC y el firmware de la UCI. Reemplaza al borrador de la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md#5-protocolo-propuesto-scara1-borrador) y, cuando se retire (issue #17), al banco provisional [`scara-dev/1`](PROTOCOLO_SCARA_DEV_1.md).
 
-**Estado:** completo para conexión, corriente, jog, paradas, watchdog y reinicio (issue #6), para los segmentos temporizados `SEG` y `OK` (issue #9) y para el homing, `HOME` y `EV HOMED` (issue #8). `EV LOST` tiene su forma fijada acá, pero lo implementa la pérdida de pasos (#15). Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37, D40–D43, D46, D50–D53 y D56–D58.
+**Estado:** completo para conexión, corriente, jog, paradas, watchdog y reinicio (issue #6), para los segmentos temporizados `SEG` y `OK` (issue #9) para el homing, `HOME` y `EV HOMED` (issue #8) y para la detección de pasos perdidos, `EV LOST` (issue #15). Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37, D40–D43, D46, D50–D53, D56–D58 y D65.
 
 ## Transporte y formato
 
@@ -45,7 +45,7 @@ Ninguna orden tiene respuesta si sale bien: el efecto se ve en el próximo `S` (
 | `ERR código palabra` | Ante una orden rechazada o un evento que frena. |
 | `OK n` | Cuando el segmento `n` entró en la cola; es el control de flujo (D6, D50). |
 | `EV HOMED j` | Eje `j` referenciado por el homing (D56). |
-| `EV LOST j pasos` | Al cruzar el Hall de `j`, la cuenta de pasos difiere en `pasos` de lo esperado (F1). **Issue #15.** |
+| `EV LOST j pasos` | Al entrar en un imán de `j`, con `j` referenciado, la cuenta de pasos difiere de la del flanco en 2 pasos completos o más (F1, D65). `pasos` son los reales menos los contados, en pasos completos del motor, con signo: no dependen del microstepping. Ver [Pérdida de pasos](#pérdida-de-pasos). |
 
 Campos de `S`:
 
@@ -104,6 +104,17 @@ Un sensor Hall por articulación y dos imanes, centrados en los extremos del rec
 - La búsqueda está acotada en recorrido y en 60 s por eje. Si el Hall no aparece, `ERR 11 ausente`; si no se apaga, `ERR 12 trabado`. Al abortar, y también con `STOP`, `HALT`, `DISABLE` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
 - `S` informa `HOMING` mientras dura. El firmware termina en los flancos; la URC vuelve sola a la pose de reposo con un tramo PTP («Estacionar»).
 - Sin referencia, el jog va a 5 °/s como máximo, y el Hall lo frena como fin de carrera (D58). Con ese Hall todavía activo, un jog hacia el mismo lado se rechaza con `ERR 10 fin`: solo sale para el otro.
+
+## Pérdida de pasos
+
+Sin encoders, el firmware no ve los pasos que un motor no siguió (F1, [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)). Lo descubre al pasar por un Hall (D65):
+
+- Con el eje referenciado, su Hall se activa siempre en el mismo lugar: al entrar en el imán de abajo, en el flanco de la referencia (`HALL_EDGE`); al entrar en el del otro extremo, en `HALL_FAR_EDGE` (J1 y J2 en +130°, J3 en +145°, J4 a 117 mm). El firmware elige el imán más cercano a la posición estimada.
+- Si los pasos contados difieren de los del flanco en 2 pasos completos o más, envía `EV LOST j pasos`. Dos pasos completos son medio ciclo eléctrico: un motor pierde pasos de a cuatro, y lo que puede errar la lectura del Hall en movimiento queda por debajo.
+- Para J2, que se mide relativo a J1, cuentan los pasos de M2 menos los de M1: un paso perdido por M1 se ve en J1 y, al revés, en J2.
+- No corrige la cuenta ni frena: la referencia la vuelve a fijar el homing. Durante el homing no compara, porque es el que define los flancos. Sin referencia, no hay con qué comparar.
+- La URC marca la referencia de `j` como dudosa y lo avisa en el mensaje y en la lista de errores. La duda se limpia con el `EV HOMED j` de ese eje, con un `BOOT` o cuando el eje pierde la referencia; no con `ZERO`, que es menos preciso que el homing.
+- El firmware no distingue un motor que perdió pasos de un Hall que miente: un Hall trabado activo (F3) a mitad de carrera también da `EV LOST`, con muchos pasos. En los dos casos la referencia es dudosa.
 
 ## Seguridad del enlace
 

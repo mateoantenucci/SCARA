@@ -1,0 +1,51 @@
+# F1: pérdida de pasos detectada al cruzar un Hall (D65). Con el eje
+# referenciado, el Hall se activa siempre en el mismo flanco: si al entrar en
+# un imán la cuenta de pasos no coincide, el motor se corrió sin que el
+# firmware lo supiera. J4 arranca en el reposo, sobre su imán de abajo.
+< BOOT scara/1 1
+! iman 0 0 0 12000
+> ENABLE
+> ZERO
+# Sin pasos perdidos, cruzar un Hall no informa nada: J4 sube hasta su imán
+# de arriba y el jog frena en el flanco.
+> JOG 4 - 1000
+~ 12000
+< ERR 10 fin
+> STATUS
+< S IDLE 15 0 0 0 300 8 16 0
+# M4 se corre 8 pasos completos hacia abajo sin que el firmware lo sepa (en
+# Webots, por falta de par). J4 baja con segmentos: el Hall de abajo se activa
+# 0,32 mm antes de lo que espera el firmware, que lo informa y sigue.
+! desliza M4 8
+> SEG 1 1000 0 0 0 2300
+< OK 1
+> SEG 2 1000 0 0 0 4300
+< OK 2
+> SEG 3 1000 0 0 0 6300
+< OK 3
+> SEG 4 1000 0 0 0 8300
+< OK 4
+> SEG 5 1000 0 0 0 10300
+< OK 5
+> SEG 6 750 0 0 0 11800
+< OK 6
+~ 6000
+< EV LOST 4 8
+# No corrige la cuenta: solo el homing vuelve a referenciar.
+> STATUS
+< S IDLE 15 0 0 0 11800 8 16 6
+# Una diferencia de menos de 2 pasos completos no se informa: es lo que puede
+# errar la lectura del Hall en movimiento. Queda 1 paso completo.
+! desliza M4 -7
+> JOG 4 - 1000
+~ 12000
+< ERR 10 fin
+> STATUS
+< S IDLE 15 0 0 0 296 8 16 6
+# Sin referencia, no hay cuenta esperada con qué comparar.
+> DISABLE
+> ENABLE
+! desliza M4 7
+> JOG 4 + 1000
+~ 24000
+< ERR 10 fin
