@@ -134,7 +134,7 @@ def build():
       jointParameters JointParameters {{ axis 0 0 -1 position {q[3]:.15g}
         minStop {c['limits'][3][0]} maxStop {c['limits'][3][1]} dampingConstant 0.2 }}
       device [ LinearMotor {{ name "j4_motor" minPosition {c['limits'][3][0]} maxPosition {c['limits'][3][1]}
-        maxVelocity {c['max_velocity'][3]} acceleration {c['max_acceleration'][3]} maxForce {c['max_effort'][3]} }}
+        maxVelocity {c['max_velocity'][3]} acceleration {c['max_acceleration'][3]} maxForce IS j4MaxForce }}
         PositionSensor {{ name "j4_sensor" }} ] endPoint {tool} }}"""
     endpoint = f"""DEF WRIST Solid {{
       translation {g['l2']:.15g} 0 0 rotation 0 0 1 {q[2]:.15g} name "conjunto_z"
@@ -150,7 +150,7 @@ def build():
             dampingConstant 0.01 }}
           device [ RotationalMotor {{ name "j{axis+1}_motor" minPosition {c['limits'][axis][0]}
             maxPosition {c['limits'][axis][1]} maxVelocity {c['max_velocity'][axis]}
-            acceleration {c['max_acceleration'][axis]} maxTorque {c['max_effort'][axis]} }}
+            acceleration {c['max_acceleration'][axis]} maxTorque IS j{axis+1}MaxTorque }}
             PositionSensor {{ name "j{axis+1}_sensor" }} ] endPoint {endpoint} }}"""
         if axis:
             group = 'forearm' if axis == 2 else 'arm'
@@ -171,6 +171,12 @@ PROTO SCARA [
   field SFFloat toolMass {tool_mass:.15g}
   field MFVec3f toolCenterOfMass [ {numbers(tool_center)} ]
   field MFVec3f toolInertiaMatrix [ {numbers(tool_inertia[:3])}, {numbers(tool_inertia[3:])} ]
+  # Esfuerzo máximo de cada articulación. El mundo de la UCI los sube: ahí el
+  # límite lo pone el modelo de los motores de la planta (D64).
+  field SFFloat j1MaxTorque {c['max_effort'][0]}
+  field SFFloat j2MaxTorque {c['max_effort'][1]}
+  field SFFloat j3MaxTorque {c['max_effort'][2]}
+  field SFFloat j4MaxForce {c['max_effort'][3]}
 ] {{
   DEF BASE Robot {{ translation IS translation rotation IS rotation
     name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"

@@ -1,0 +1,24 @@
+# F1 con el acople M1/M2 (D65): J2 se mide relativo a J1, así que un paso
+# perdido por M1 corre a J1 y, al revés, a J2. El signo es el de los pasos
+# reales menos los contados.
+< BOOT scara/1 1
+! iman 0 0 0 12000
+> ENABLE
+> ZERO
+# M1 queda 4 pasos completos atrás (en sentido negativo) de lo que contó.
+! desliza M1 -4
+# El jog de J1 mueve M1 y M2 juntos: J1 llega a su imán 1,8° antes de lo esperado.
+> JOG 1 - 1000
+~ 14000
+< EV LOST 1 -4
+< ERR 10 fin
+# J1 sale de su imán: con ese Hall activo, ningún jog de M1 o M2 sigue hacia
+# el tope (D58).
+> JOG 1 + 1000
+~ 1000
+> JOG STOP
+# J2, con M2 solo: el mismo corrimiento de M1 lo deja 1,8° más adelante.
+> JOG 2 - 1000
+~ 14000
+< EV LOST 2 4
+< ERR 10 fin

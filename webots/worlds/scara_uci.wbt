@@ -65,4 +65,8 @@ DEF ENV_pedestal_de_ensayo Solid {
 }
 DEF SCARA SCARA {
   controller "scara_uci"
+  j1MaxTorque 6
+  j2MaxTorque 6
+  j3MaxTorque 2.4
+  j4MaxForce 210
 }

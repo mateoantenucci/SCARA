@@ -1,7 +1,7 @@
 // Núcleo del firmware de la UCI: protocolo scara/1, corriente de los
 // drivers, jog articular y por motor, cola de segmentos temporizados,
-// paradas, watchdog y conversión de unidades articulares a pasos con el
-// acople M1/M2 (transmission.h).
+// paradas, watchdog, homing, detección de pasos perdidos y conversión de
+// unidades articulares a pasos con el acople M1/M2 (transmission.h).
 // Portable al Arduino UNO: sin memoria dinámica, buffers fijos y sin
 // flotantes. Ver docs/PROTOCOLO_SCARA_1.md.
 #ifndef SCARA_FIRMWARE_H
@@ -67,6 +67,7 @@ private:
   void finishHomeAxis();
   void abortHoming();
   void checkJogHall();
+  void checkLostSteps();
   void sendIdentity(const char* greeting);
   void disable();
   void stopJog();

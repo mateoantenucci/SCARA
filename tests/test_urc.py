@@ -435,6 +435,72 @@ class HomingTests(unittest.TestCase):
         self.assertTrue(self.uci.receive().startswith("SEG 1 20 "))
 
 
+class LostStepsTests(unittest.TestCase):
+    """F1 (D65): EV LOST deja la referencia dudosa hasta volver a referenciar."""
+
+    def setUp(self):
+        self.session = Session(port=0)
+        self.addCleanup(self.session.close)
+        self.uci = FakeUci(self.session.port)
+        self.addCleanup(self.uci.close)
+        self.assertEqual(self.uci.receive(), "HELLO")
+        self.uci.send("S IDLE 15 0 0 0 12000 8 16 0")
+        wait_for(lambda: self.session.snapshot()["referenced"])
+
+    def lose(self, line):
+        self.uci.send(line)
+        return wait_for(lambda: (s := self.session.snapshot())["doubtful"] and s)
+
+    def test_lost_steps_make_the_reference_doubtful(self):
+        state = self.lose("EV LOST 4 8")
+        self.assertEqual(state["doubtful"], [{"joint": 4, "steps": 8}])
+        # El firmware sigue referenciado: la URC avisa, no decide por él.
+        self.assertTrue(state["referenced"])
+        self.assertIn("dudosa", state["message"])
+        self.uci.send("EV LOST 1 -4")
+        state = wait_for(lambda: len((s := self.session.snapshot())["doubtful"]) == 2 and s)
+        self.assertEqual(state["doubtful"][1], {"joint": 1, "steps": -4})
+
+    def test_homing_the_axis_clears_its_doubt(self):
+        self.lose("EV LOST 4 8")
+        self.uci.send("EV LOST 1 -4")
+        self.uci.send("EV HOMED 4")
+        state = wait_for(lambda: len((s := self.session.snapshot())["doubtful"]) == 1 and s)
+        self.assertEqual(state["doubtful"], [{"joint": 1, "steps": -4}])
+
+    def test_only_homing_clears_the_doubt(self):
+        self.lose("EV LOST 2 5")
+        # La referencia manual es menos precisa que el homing, y el firmware
+        # puede rechazarla: la duda sigue.
+        self.session.zero()
+        self.assertEqual(self.uci.receive(), "ZERO")
+        self.assertEqual(self.session.snapshot()["doubtful"], [{"joint": 2, "steps": 5}])
+
+    def test_each_axis_keeps_its_last_report(self):
+        self.lose("EV LOST 4 8")
+        self.uci.send("EV LOST 4 9")
+        state = wait_for(lambda: (s := self.session.snapshot())["doubtful"][0]["steps"] == 9 and s)
+        self.assertEqual(state["doubtful"], [{"joint": 4, "steps": 9}])
+        # La lista de errores lo conserva aunque el mensaje cambie.
+        self.assertTrue(state["errors"][-1].startswith("EV LOST 4 9"))
+
+    def test_losing_the_reference_or_a_boot_clears_the_doubt(self):
+        self.lose("EV LOST 4 8")
+        # Sin referencia en J4 (DISABLE, HALT), ya no hay nada de qué dudar.
+        self.uci.send("S OFF 7 0 0 0 12000 8 16 0")
+        wait_for(lambda: not self.session.snapshot()["doubtful"])
+        self.uci.send("S IDLE 15 0 0 0 12000 8 16 0")
+        self.lose("EV LOST 3 -2")
+        self.uci.send("BOOT scara/1 1")
+        wait_for(lambda: not self.session.snapshot()["doubtful"])
+
+    def test_malformed_lost_events_are_rejected(self):
+        for line in ("EV LOST 5 3", "EV LOST 4", "EV LOST 4 x", "EV LOST 4 0"):
+            self.uci.send(line)
+        state = wait_for(lambda: len((s := self.session.snapshot())["rejected"]) == 4 and s)
+        self.assertEqual(state["doubtful"], [])
+
+
 class HttpTests(unittest.TestCase):
     def setUp(self):
         self.session = Session(port=0)

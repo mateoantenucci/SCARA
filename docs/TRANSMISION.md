@@ -1,6 +1,6 @@
 # Cómo llega el movimiento de los motores a las articulaciones
 
-El maestro identifica transmisiones nominales. En el camino nuevo (UCI en Webots), la planta simulada las implementa a nivel N1: el firmware da pasos a los motores y la planta los convierte en movimiento de las articulaciones ([abajo](#transmisión-n1-en-el-firmware-y-en-la-planta)). En el banco viejo (`scara.wbt`), Webots todavía acciona directamente las cuatro articulaciones. Las poleas visuales no implementan por sí solas la transmisión ni cambian masas o esfuerzos.
+El maestro identifica transmisiones nominales. En el camino nuevo (UCI en Webots), la planta simulada las implementa a nivel N1: el firmware da pasos a los motores y la planta los convierte en movimiento de las articulaciones ([abajo](#transmisión-n1-en-el-firmware-y-en-la-planta)). A nivel N2, cada motor tiene el par que le da su curva par–velocidad y pierde pasos si la carga o la aceleración lo superan ([N2](#par-de-los-motores-y-pérdida-de-pasos-n2)). En el banco viejo (`scara.wbt`), Webots todavía acciona directamente las cuatro articulaciones. Las poleas visuales no implementan por sí solas la transmisión ni cambian masas o esfuerzos.
 
 | Motor | Qué mueve | Transmisión indicada en el maestro |
 | --- | --- | --- |
@@ -62,7 +62,7 @@ J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8
 - **Jog por motor (D46).** `JOG M1 + vel` mueve solo M1: el brazo gira, el antebrazo conserva su orientación, J2 cambia al revés que J1 y el rumbo J1 + J2 + J3 no cambia.
 - **J4 es más fino que el protocolo.** Desde 1/8, un paso de M4 (0,005 mm) es menor que la centésima de mm: dos pasos seguidos pueden informarse con el mismo valor en `S`.
 
-**Límites (D45).** Se fijan por motor, en grados de su eje, como parámetro provisional hasta tener las curvas de par (N2, #15). Se derivan a las articulaciones por la transmisión:
+**Límites (D45).** Se fijan por motor, en grados de su eje. Eran un parámetro provisional hasta tener las curvas de par; N2 los confirma con margen ([abajo](#los-límites-de-d45-con-n2), D66). Se derivan a las articulaciones por la transmisión:
 
 | Motor | Velocidad | Aceleración | Qué limita |
 | --- | --- | --- | --- |
@@ -73,7 +73,7 @@ J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8
 
 Con 1/8, la velocidad de M4 son 6000 pulsos/s y la de M1 y M2, 356 pulsos/s. Por el acople, J2 no tiene un límite propio: si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s. El jog (hasta 10 °/s o 10 mm/s, sin rampa) queda dentro de todos; el firmware lo verifica al compilar. El planificador PTP de la URC (#9) planifica dentro de estos límites por motor y de los de cada articulación (D53), y el firmware rechaza un segmento que los supere (`ERR 8`, D51); el LIN (#10) no planifica dentro de ellos: los verifica en cada segmento y rechaza el tramo antes de enviarlo (D54, D55). **Ojo:** las articulaciones de Webots tienen sus propios límites (`maxVelocity` en `SCARA.proto`, de `config/scara.json`: 0,35 rad/s en J2). Si un tramo pide J2 por encima de 20 °/s, aunque M2 lo permita, Webots lo satura y la física se atrasa como si se perdieran pasos. Hasta ajustar el modelo, los tramos respetan también esos límites por articulación.
 
-**La planta simulada** ([`scara_uci.cpp`](../webots/controllers/scara_uci/scara_uci.cpp)) cuenta los pasos de cada motor, los convierte en ángulos con su propia copia de la mecánica y el microstepping de `config.h`, y ordena esas posiciones a las articulaciones de Webots. Todavía no pierde pasos (N2, #15). Webots lleva cada articulación a esa posición con un control de posición de velocidad, aceleración y par limitados: durante el movimiento la posición física simulada va unas centésimas detrás de la estimada, y se asienta en una fracción de segundo al frenar.
+**La planta simulada** ([`scara_uci.cpp`](../webots/controllers/scara_uci/scara_uci.cpp)) cuenta los pasos de cada motor, los convierte en ángulos con su propia copia de la mecánica y el microstepping de `config.h`, y lleva las articulaciones de Webots adonde están los rotores. Desde N2, cada rotor sigue a sus pasos con el par que tiene ([abajo](#par-de-los-motores-y-pérdida-de-pasos-n2)).
 
 **Pruebas y evidencia.**
 
@@ -81,8 +81,67 @@ Con 1/8, la velocidad de M4 son 6000 pulsos/s y la de M1 y M2, 356 pulsos/s. Por
 - Conversaciones [`jog_j1.txt`](../firmware/test/conversaciones/jog_j1.txt), [`jog_ejes.txt`](../firmware/test/conversaciones/jog_ejes.txt) y [`jog_motor.txt`](../firmware/test/conversaciones/jog_motor.txt): pasos emitidos por motor y posición estimada.
 - [Ensayo en Webots](../validation/transmision/INFORME.md): la posición física simulada contra la estimada en el jog de J1–J4 y de M1, y la resolución de un paso.
 
+## Par de los motores y pérdida de pasos (N2)
+
+Issue #15, decisiones D64–D67 y [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md). El modelo está en [`stepper.h`](../webots/controllers/scara_uci/stepper.h), sin Webots, y tiene sus pruebas en la PC ([`test/stepper.cpp`](../webots/controllers/scara_uci/test/stepper.cpp), `tests/test_planta.py`).
+
+**Cómo funciona.** Cada pulso del firmware adelanta el campo del estator un micropaso. El rotor es una inercia (la suya más la de la carga, reflejada por la transmisión) que sigue al campo con la curva par–ángulo del motor híbrido:
+
+```text
+T = T(ω) · sen(π/2 · e / paso completo) + amortiguamiento
+```
+
+con `e` el atraso del rotor. El par máximo, con un paso completo de atraso, es el de la curva par–velocidad `T(ω)`. Si la carga o la aceleración piden más, el atraso crece; a dos pasos completos (medio ciclo eléctrico) el equilibrio se vuelve inestable y el rotor cae al siguiente, **cuatro pasos completos** más atrás. Así pierde pasos un paso a paso real, y el firmware no se entera: sigue contando los pulsos que emitió. La planta mueve las articulaciones con los rotores, así que «Simulado» se aparta de lo estimado en múltiplos de cuatro pasos completos.
+
+- **Curva par–velocidad.** Plana hasta la velocidad de esquina, `V / (2 L I)` pasos completos por segundo, donde el driver todavía lleva la corriente a su valor en cada paso; más rápido, la inductancia la recorta y el par cae como `1/ω`. A baja velocidad, con micropasos, el par es 0,7 del de retención (corrientes senoidales: alrededor de 1/√2).
+- **Carga.** M1 mueve el brazo y todo lo que cuelga del codo; M2, el ángulo absoluto del antebrazo con la muñeca; M3, la muñeca; M4, la herramienta. Las inercias se toman con el brazo estirado, la pose más exigente, sin los términos cruzados entre M1 y M2. La masa de la herramienta es `toolMass`, que cambia el banco de ensayo. J1–J3 giran en el plano y el peso no les hace par; en J4 el peso pasa por el ACME: pesa 1/η al subir y η' al bajar o quieto.
+- **Topes.** Un tope mecánico frena el eje y el rotor. Si el firmware sigue dando pulsos, el motor pierde pasos contra el tope.
+- **Sin modelo eléctrico (N3).** Corrientes, inductancia y resonancias quedan resumidas en la curva y en un amortiguamiento fijo (ζ = 0,6). El rotor se integra en 10 subpasos de 0,2 ms dentro de cada paso de 2 ms de Webots: el paso de la simulación no cambia.
+- **En Webots.** Cada articulación va hacia la posición de los rotores con control de velocidad: la velocidad del rotor más la mitad de lo que le falta por paso, sin el límite de aceleración del proto (la dinámica ya la puso el rotor), y quedándose a 1/8 de paso completo de sus topes, porque un motor de ODE que empuja contra su tope vibra. Al volver la corriente, su fuerza sube en rampa durante 0,1 s: con J4 apoyado en su tope, ODE le aplica de más en el primer paso que el motor lo saca de ahí, y lo haría saltar milímetros. El par de las articulaciones de Webots se sube en el mundo de la UCI (campos `j1MaxTorque`… de `SCARA.proto`) para que no sea Webots el que limita; el mundo viejo conserva sus valores (D64).
+
+**Parámetros y su fuente.** El maestro nombra los modelos, pero sus hojas de datos exactas no aparecieron, ni en esta búsqueda (31/10/2026) ni en la de la sesión 3 ([fuentes físicas](../validation/physics_sources.json)). Cada número es de la familia más cercana o un supuesto típico declarado:
+
+| Parámetro | M1, M2 | M3 | M4 | Fuente o supuesto |
+| --- | --- | --- | --- | --- |
+| Modelo | Minebea 23KM-K381-P1 | Shinano Kenshi STP-42D221-03 | 42D265 | Maestro, p. 14 |
+| Par de retención | 0,80 N·m | 0,31 N·m | 0,20 N·m | M1/M2: familia 23KM-K3 (cuerpo de 50 mm), bipolar 23KM-K349B, [catálogo Minebea 23KM-K](https://hallaweb.jlab.org/tech/Detectors/public_html/manuals/data_sheets-manuals/M-N/M/minebea/23km-k.shtml). M3: el STP-42D201-37 de la misma serie, 3200 g·cm ([Jameco](https://www.jameco.com/z/STP-42D201-37-Shinano-Kenshi-12-Volt-1-8-Step-Angle-Bipolar-Stepper-Motor_2158531.html)). M4: supuesto, NEMA 17 corto a 0,7 A |
+| Inercia del rotor | 180 g·cm² | 54 g·cm² | 35 g·cm² | M1/M2: 23KM-K349B. M3 y M4: supuestos típicos de NEMA 17 de 40 y 34 mm |
+| Inductancia por fase | 11,8 mH | 8 mH | 4 mH | M1/M2: 23KM-K349B. M3 y M4: supuestos |
+| Corriente por fase | 1,4 A | 0,8 A | 0,7 A | M1/M2: 23KM-K349B. M3: supuesto. M4: maestro (1,9 V, 0,7 A) |
+| Velocidad de esquina | 1308 °/s | 3375 °/s | 7714 °/s | Calculada con 24 V en los TB6600. Supuesto: el maestro da una fuente de 36 V; 24 V es más conservador |
+| Par a baja velocidad | 0,7 × retención | ← | ← | Supuesto: micropasos con corrientes senoidales |
+| Correa 2GT 4:1 | η = 0,95 | ← | — | Supuesto típico de correa dentada |
+| ACME de 8 mm por vuelta | — | — | η = 0,67 al subir, 0,55 al bajar | Supuesto: ~7 mm de diámetro medio (hélice de 20°), tuerca de bronce, fricción 0,15. Reversible: sin corriente, J4 cae (D60) |
+| Fricción seca | 3 % del par de retención | ← | ← | Supuesto |
+| Masas e inercias | Brazo 0,3 kg, antebrazo 0,5 kg, muñeca 0,35 kg, herramienta `toolMass` | ← | ← | `config/scara.json` y `SCARA.proto` (provisionales) |
+| Amortiguamiento | ζ = 0,6 | ← | ← | Supuesto del modelo, en lugar de N3 |
+
+### Los límites de D45 con N2
+
+Con la corriente nominal, el par que piden los límites de D45 (aceleración máxima a velocidad máxima, más el peso al subir y la fricción) queda muy por debajo del disponible. La tabla sale de `test/stepper.cpp --tabla`:
+
+| Motor | Disponible a velocidad máxima | Pedido, herramienta sola (0,15 kg) | Margen | Pedido con 5 kg | Margen |
+| --- | --- | --- | --- | --- | --- |
+| M1 | 0,560 N·m | 0,035 N·m | 16× | 0,082 N·m | 6,8× |
+| M2 | 0,560 N·m | 0,031 N·m | 18× | 0,078 N·m | 7,2× |
+| M3 | 0,217 N·m | 0,009 N·m | 23× | 0,010 N·m | 22× |
+| M4 | 0,140 N·m | 0,009 N·m | 16× | 0,100 N·m | 1,4× |
+
+Las pruebas simulan además cada motor en sus límites de D45 y en el jog más rápido arrancando sin rampa, con 0,15 y 5 kg: ninguno pierde pasos y el atraso no llega a un paso completo. **D45 se conserva** (D66): el más justo es M4 con 5 kg, y subir los de J1–J3 no se puede todavía, porque también los limitan las articulaciones del modelo de Webots (`maxVelocity` del proto, el mismo que usa el planificador). Con la corriente nominal, entonces, el robot no pierde pasos dentro de lo que planifica la URC: para provocarlos hace falta la falla F1.
+
+### F1: pérdida de pasos y `EV LOST`
+
+**Provocarla (D67).** El banco de ensayo baja la corriente de un driver (`F1 m porcentaje`, de 10 a 100 %): es lo que pasa con un TB6600 regulado de menos. Con menos corriente, el motor tiene menos par a baja velocidad:
+
+- **Por carga:** con el driver de M4 al 50 %, 5 kg se sostienen pero no suben: el motor pierde pasos de a cuatro mientras el firmware cree que J4 sube.
+- **Por aceleración:** con el driver de M1 al 20 % y 5 kg, el jog de J1, que arranca sin rampa, pierde pasos al arrancar; con la rampa de D45, a la misma velocidad, no.
+
+**Detectarla (D65).** Al entrar en un imán con el eje referenciado, el firmware compara los pasos contados con los del flanco y envía `EV LOST j pasos` ([protocolo](PROTOCOLO_SCARA_1.md#pérdida-de-pasos)). La URC marca la referencia como dudosa hasta un homing. El banco muestra, además, los pasos que perdió cada motor según la planta: la verdad del simulador contra lo que el firmware descubrió.
+
+Evidencia: [ensayo de la pérdida de pasos en Webots](../validation/perdida_pasos/INFORME.md).
+
 ## Qué falta
 
-Confirmar revisión, fijaciones, recorrido de correas, sentidos, ceros, códigos de motores, conexión y corriente de drivers, curvas torque–velocidad, fricción/eficiencia y sostén vertical. Con las curvas se reemplazan los límites provisionales de D45 y se modela la pérdida de pasos (N2, #15).
+Confirmar revisión, fijaciones, recorrido de correas, sentidos, ceros, códigos de motores, conexión y corriente de drivers, curvas torque–velocidad, fricción/eficiencia y sostén vertical. Con las hojas de datos exactas de los motores se reemplazan los supuestos de N2 (D64).
 
 Respaldo: [fuentes de transmisión](../validation/transmission_sources.json), [montaje de salidas](../validation/pulley_mounts.json), [conteo geométrico](../validation/pulley_geometry.json), [montaje restante](../validation/remaining_mounts.json) y [nominales y fuentes físicas](../validation/physics_sources.json). Los ensayos del montaje están centralizados en [Validación](VALIDACION_WEBOTS.md).

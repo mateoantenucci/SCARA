@@ -12,7 +12,8 @@ Cada renglón se lee desde el lado de la URC:
   anterior: no envía de más.
 - `< LÍNEA`: la UCI falsa la envía (`*` vale 0) y la URC tiene que entenderla:
   un `S` actualiza el estado, un `BOOT` deja el robot sin referencia, un `OK`
-  confirma el segmento y un `ERR` queda registrado con su código.
+  confirma el segmento, un `EV LOST` deja la referencia dudosa y un `ERR`
+  queda registrado con su código.
 - `+`, `=` y `!` son del reloj, los motores y el reinicio de la UCI: la URC
   no los ve.
 """
@@ -109,6 +110,8 @@ class ConformanceTests(unittest.TestCase):
         elif kind == "OK":
             self.assertEqual(state["segments"]["last_ok"], message["number"], where)
             self.assertIsNone(state["segments"]["in_flight"], where)
+        elif kind == "EV" and message["event"] == "LOST":
+            self.assertEqual(state["doubtful"][-1], {"joint": message["joint"], "steps": message["steps"]}, where)
         elif kind == "ERR":
             self.assertTrue(state["errors"][-1].startswith(f"ERR {message['code']} {message['word']}:"), where)
             # Ante un ERR, lo que faltaba del tramo ya no se envía.

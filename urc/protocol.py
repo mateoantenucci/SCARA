@@ -123,12 +123,18 @@ def parse_message(line):
     if kind == "S":
         return dict(parse_status(rest), kind="S")
     if kind == "EV":
-        if len(rest) != 2 or rest[0] != "HOMED":
+        # EV HOMED j · EV LOST j pasos (F1, D65)
+        if not rest or (rest[0], len(rest)) not in (("HOMED", 2), ("LOST", 3)):
             raise ValueError("EV mal formado")
         joint = integer(rest[1])
         if not 1 <= joint <= 4:
-            raise ValueError("EV HOMED de un eje que no existe")
-        return {"kind": "EV", "event": "HOMED", "joint": joint}
+            raise ValueError(f"EV {rest[0]} de un eje que no existe")
+        if rest[0] == "HOMED":
+            return {"kind": "EV", "event": "HOMED", "joint": joint}
+        steps = integer(rest[2])
+        if steps == 0:
+            raise ValueError("EV LOST sin pasos perdidos")
+        return {"kind": "EV", "event": "LOST", "joint": joint, "steps": steps}
     if kind == "OK":
         if len(rest) != 1:
             raise ValueError("OK mal formado")
