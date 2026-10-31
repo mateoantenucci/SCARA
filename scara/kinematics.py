@@ -48,6 +48,19 @@ def forward(q, config=None):
     ]
 
 
+def arm_angles(x, y, elbow, config=None):
+    """q1 y q2 para un punto del plano con el codo del signo elbow, sin limites articulares."""
+    config = config or load_config()
+    l1, l2 = config["geometry"]["l1"], config["geometry"]["l2"]
+    cosine = (x * x + y * y - l1 * l1 - l2 * l2) / (2 * l1 * l2)
+    if abs(cosine) > 1 + 1e-10:
+        raise ValueError("El objetivo queda fuera del alcance horizontal")
+    if math.hypot(x, y) < 1e-10:
+        raise ValueError("El origen es una configuracion singular; elegir otro objetivo")
+    q2 = elbow * math.acos(max(-1.0, min(1.0, cosine)))
+    return math.atan2(y, x) - math.atan2(l2 * math.sin(q2), l1 + l2 * math.cos(q2)), q2
+
+
 def inverse(x, y, z, yaw=None, current=None, config=None, elbow=None):
     """elbow: -1 o 1 restringe la configuracion del codo al signo de q2."""
     config = config or load_config()
@@ -61,19 +74,12 @@ def inverse(x, y, z, yaw=None, current=None, config=None, elbow=None):
         yaw = _numbers([yaw], 1, "Orientacion")[0]
         yaw = math.atan2(math.sin(yaw), math.cos(yaw))
     g = config["geometry"]
-    l1, l2 = g["l1"], g["l2"]
-    cosine = (x * x + y * y - l1 * l1 - l2 * l2) / (2 * l1 * l2)
-    if abs(cosine) > 1 + 1e-10:
-        raise ValueError("El objetivo queda fuera del alcance horizontal")
-    if math.hypot(x, y) < 1e-10:
-        raise ValueError("El origen es una configuracion singular; elegir otro objetivo")
     q4 = g["shoulder_z"] + g["elbow_z_offset"] + g["tool_z_offset"] - z
-    bend = math.acos(max(-1.0, min(1.0, cosine)))
     candidates = []
-    for q2 in (bend, -bend):
-        if elbow is not None and q2 * elbow < 0:
+    for side in (1, -1):
+        if elbow is not None and side != elbow:
             continue
-        shoulder = math.atan2(y, x) - math.atan2(l2 * math.sin(q2), l1 + l2 * math.cos(q2))
+        shoulder, q2 = arm_angles(x, y, side, config)
         for turn1, turn3 in itertools.product((-1, 0, 1), (0,) if preserve_heading else (-1, 0, 1)):
             q1 = shoulder + turn1 * math.tau
             q3 = yaw - q1 - q2 + turn3 * math.tau
