@@ -397,6 +397,51 @@ Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 ten
 
 > **Pendiente de evidencia:** teach & play LIN en Webots, con trayectorias de demostración versionadas; desvío de la recta medido contra la posición física simulada. El PTP y los segmentos ya tienen su ensayo en Webots ([validación de segmentos](../../validation/segmentos/INFORME.md)).
 
+### Captura de puntos y gestor de trayectorias
+
+Implementado en el issue #12, en la URC ([`urc/trajectories.py`](../../urc/trajectories.py)) y en un panel de su página. La reproducción (#13) lo usa.
+
+**Dónde vive la trayectoria (D62).** La URC guarda la trayectoria abierta. La página la muestra y pide cada cambio por HTTP. Así, recargar la página no la pierde, y la reproducción planifica desde los mismos datos.
+
+**Teclas y lista (D12, D29, D63).**
+
+| Acción | Cómo |
+| --- | --- |
+| Capturar | Espacio: la posición estimada por pasos, después del punto seleccionado. Exige robot referenciado y quieto. |
+| Borrar | Retroceso: el seleccionado, que después de capturar es el último capturado. |
+| Terminar | Enter: pide el nombre y guarda. |
+| Editar cómo se llega | En cada fila: tipo de tramo (LIN o PTP), velocidad (%) y espera (s). Nacen LIN, 50 % y 0 s (D22). |
+| Reordenar | Arrastrando la fila, o con ↑ y ↓. |
+| Sobrescribir | Reemplaza la pose del seleccionado por la actual; cómo se llega no cambia. |
+| Ir al punto | PTP al 25 %: muestra la duración y mueve recién con la confirmación. |
+
+La lista muestra, por punto, X, Y, Z, rumbo y configuración del codo (D31).
+
+**Puntos escritos (D34, D63).** Se agregan en X, Y, Z y rumbo o en J1–J4. En XYZ el codo es el preferido (J2 negativo) o el elegido; al editar en XYZ, el punto conserva el suyo. Para cambiarlo se edita en J1–J4. Cada punto se valida al capturarlo, escribirlo, editarlo y cargarlo: alcance, límites articulares y choque en reposo. El rechazo dice qué punto falla y por qué:
+
+```text
+Punto 3: colisión en reposo, <pieza> puede tocar 0-Torre-1 (envolventes y margen de N mm)
+```
+
+Los tramos entre puntos se validan antes de cada play (D55), no al editar: dependen del orden y del tipo.
+
+**Archivo (D13, D62).** Uno por trayectoria, en la carpeta `trayectorias/`, con «Nueva», «Cargar», «Guardar» y «Guardar como». Si hay cambios sin guardar o el archivo ya existe, la URC pregunta. Cada punto guarda las articulaciones en las unidades de `scara/1`, que son las que valen. También guarda el XYZ y el rumbo derivados, para leerlo, y cómo se llega a él:
+
+```json
+{
+  "format": "scara-trayectoria", "version": 1, "name": "Demostración 1",
+  "saved": "2026-10-31T12:00:00-03:00",
+  "units": {"joints": "centésimas de grado (J1–J3) y de mm (J4)", "tool": "mm (x, y, z) y grados (rumbo)",
+            "speed": "% de la velocidad máxima", "wait": "s"},
+  "points": [
+    {"joints": [3000, -6000, 1000, 6000], "tool": {"x": 433.01, "y": 0.0, "z": 34.67, "heading": -20.0},
+     "kind": "LIN", "speed": 50, "wait": 0}
+  ]
+}
+```
+
+Al cargar, la URC verifica el formato, la versión, las unidades y cada punto. Un XYZ que no coincide con las articulaciones se rechaza: el archivo se puede editar a mano, pero no se promociona (D34).
+
 ## 9. Qué se simula y qué no
 
 El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 0001](../adr/0001-simulacion-del-diseno-sin-hardware.md)). Cada parámetro declara su procedencia.
@@ -493,6 +538,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.
