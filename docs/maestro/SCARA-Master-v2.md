@@ -405,7 +405,7 @@ o usá un tramo PTP.
 
 Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 tendría que arrancar de golpe. Por eso el primer movimiento de un programa es el tramo de aproximación PTP (D32).
 
-> **Pendiente de evidencia:** teach & play LIN en Webots, con trayectorias de demostración versionadas; desvío de la recta medido contra la posición física simulada. El PTP y los segmentos ya tienen su ensayo en Webots ([validación de segmentos](../../validation/segmentos/INFORME.md)).
+> **Evidencia:** en el [ensayo de la reproducción](../../validation/reproduccion/INFORME.md) (#13), los tramos LIN de una trayectoria en Webots se apartan de la recta a lo sumo 0,21 mm, con la posición estimada y con la física simulada, dentro de la cota de 0,32 mm (0,069 mm del plan más medio paso de M1 y M2). El PTP y los segmentos tienen su propio ensayo ([validación de segmentos](../../validation/segmentos/INFORME.md)). **Pendiente:** las trayectorias de demostración versionadas (#20).
 
 ### Captura de puntos y gestor de trayectorias
 
@@ -451,6 +451,43 @@ Los tramos entre puntos se validan antes de cada play (D55), no al editar: depen
 ```
 
 Al cargar, la URC verifica el formato, la versión, las unidades y cada punto. Un XYZ que no coincide con las articulaciones se rechaza: el archivo se puede editar a mano, pero no se promociona (D34).
+
+### Reproducción
+
+Implementada en el issue #13, en la URC ([`urc/playback.py`](../../urc/playback.py)) y en el panel del gestor.
+
+**Antes de mover (D32, D33, D68).** Play arranca desde el principio o desde el punto seleccionado, con la velocidad global (10 % a 100 %, no se guarda) y el loop elegidos. La URC planifica y valida todo lo que se va a ejecutar, y recién entonces envía el primer `SEG`:
+
+| Tramo | Desde → hasta | Cómo |
+| --- | --- | --- |
+| 0, aproximación | Pose actual → punto de partida | PTP al 25 % × la velocidad global, sin espera. Se omite si el robot está a menos de un paso. |
+| 2 … n | Punto anterior → punto | Con el tipo, la velocidad × la global y la espera del punto. |
+| Vuelta (loop) | Último punto → punto 1 | Con los parámetros del punto 1. Abre cada vuelta nueva. |
+
+Si un tramo falla, el mensaje dice cuál («Tramo 0», «Tramo 3», «Tramo de vuelta»), por qué y qué probar. Sin referencia, o con la referencia dudosa por una pérdida de pasos, la reproducción no arranca:
+
+```text
+Para reproducir, el robot tiene que estar referenciado (homing o referencia manual)
+```
+
+**Sin huecos entre tramos (D68).** Cada tramo se encola entero, con su espera como segmentos sin movimiento, y el siguiente entra cuando queda menos de un segundo por enviar. El firmware los encadena con su reloj: los tiempos son los planificados. La página resalta el punto al que va el tramo en ejecución, que la URC deduce del último segmento terminado que informa el estado `S`.
+
+**Pausa, reanudación y stop (D69).** La pausa es el `STOP` con rampa del firmware. Al reanudar, la URC recalcula lo que faltaba del tramo desde la pose en la que frenó, con el mismo tipo. En un LIN, la rampa se aparta de la recta centésimas de milímetro y el resto es la misma recta. Si el robot se movió durante la pausa, o cambió la trayectoria, hay que empezar de nuevo. Stop y Esc frenan igual y descartan todo lo pendiente.
+
+```text
+LIN P1 → P2:  ───────────●  pausa: STOP, rampa          reanudar: LIN ●──────────── P2
+                         (frena sobre la recta)                 (desde la pose de la pausa)
+```
+
+**Evidencia ([ensayo en Webots](../../validation/reproduccion/INFORME.md)).** Una trayectoria mixta de 4 puntos (LIN, PTP, un LIN vertical con espera de 1 s), en loop de 2 vueltas desde el reposo:
+
+| Qué | Planificado | Medido |
+| --- | --- | --- |
+| Loop completo, con tramo 0 y vuelta | 61,46 s | 61,45 s (cada tramo dentro de 0,04 s) |
+| Distancia a la recta en los LIN | ≤ 0,32 mm | 0,18 mm (estimada), 0,17 mm (simulada) |
+| Pausa a mitad de un LIN | — | Frena a 0,053 mm de la recta; con la reanudación, el tramo entero queda a 0,21 mm |
+
+Los tiempos se miden con el reloj de la simulación, que es el del firmware: ese día Webots corrió a 0,82× del reloj de la PC.
 
 ## 9. Qué se simula y qué no
 
@@ -511,7 +548,7 @@ Qué va a traer:
 - Escenarios en Webots: homing desde el reposo; teach & play LIN y PTP; fallas F1–F5; comparación de lo simulado contra lo estimado.
 - Compilación en Windows y en Mac (D19).
 
-Ya hay ensayos de la ronda: [segmentos y tramo PTP](../../validation/segmentos/INFORME.md) (issue #9) y [transmisión N1](../../validation/transmision/INFORME.md) (issue #7).
+Ya hay ensayos de la ronda: [segmentos y tramo PTP](../../validation/segmentos/INFORME.md) (issue #9), [transmisión N1](../../validation/transmision/INFORME.md) (issue #7) y [reproducción de trayectorias](../../validation/reproduccion/INFORME.md) (issue #13).
 
 <!-- SALTO DE PAGINA -->
 
@@ -557,6 +594,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver. Las de la reproducción: D68, validar todo antes de mover y encolar un tramo detrás de otro con sus esperas; D69, la pausa es el `STOP` con rampa y al reanudar se recalcula el resto del tramo.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

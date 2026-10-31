@@ -266,21 +266,7 @@ class TrajectoryManager:
     # --- Ayudas (con self.lock tomado) ---------------------------------------
 
     def _robot_pose(self):
-        """La posición estimada por pasos, con el robot referenciado y quieto."""
-        state = self.session.snapshot()
-        if not state["connected"]:
-            raise ConnectionError("No hay una UCI conectada")
-        status = state["status"]
-        if status is None or not state["referenced"]:
-            raise ValueError("Para capturar, el robot tiene que estar referenciado (homing o referencia manual)")
-        tramo, segments = state["tramo"], state["segments"]
-        running = (segments["pending"] or segments["in_flight"] is not None
-                   or (tramo is not None and tramo["cancelled"] is None and tramo["done"] < tramo["segments"]))
-        if status["mode"] != "IDLE" or state["jog"] is not None or running:
-            raise ValueError("El robot se está moviendo: capturá con el robot quieto")
-        if status["age_s"] > STATUS_AGE:
-            raise ValueError(f"El último estado de la UCI tiene {status['age_s']:.1f} s: la posición no está al día")
-        return tuple(status["position"])
+        return robot_pose(self.session.snapshot(), "capturar")
 
     def _check_point(self, joints, number):
         """Límites articulares y choque en reposo (D34)."""
@@ -338,6 +324,26 @@ class TrajectoryManager:
             os.replace(temporary, self.folder / file)
         finally:
             temporary.unlink(missing_ok=True)
+
+
+def robot_pose(state, action):
+    """La posición estimada por pasos de un snapshot de la sesión, con el robot referenciado y quieto.
+
+    action dice para qué se pide («capturar», «reproducir»), para el mensaje.
+    """
+    if not state["connected"]:
+        raise ConnectionError("No hay una UCI conectada")
+    status = state["status"]
+    if status is None or not state["referenced"]:
+        raise ValueError(f"Para {action}, el robot tiene que estar referenciado (homing o referencia manual)")
+    tramo, segments = state["tramo"], state["segments"]
+    running = (segments["pending"] or segments["in_flight"] is not None
+               or (tramo is not None and tramo["cancelled"] is None and tramo["done"] < tramo["segments"]))
+    if status["mode"] != "IDLE" or state["jog"] is not None or running:
+        raise ValueError(f"El robot se está moviendo: para {action}, esperá a que quede quieto")
+    if status["age_s"] > STATUS_AGE:
+        raise ValueError(f"El último estado de la UCI tiene {status['age_s']:.1f} s: la posición no está al día")
+    return tuple(status["position"])
 
 
 def _joints(values):
