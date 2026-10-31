@@ -1,0 +1,13 @@
+A: arranque con desvío de hasta 0°: física [-0.0, -0.0, 0.0, 11998.8], Hall 1000 (bit 0 = J1), sin referencia
+   jog de J4 hacia arriba pedido a 10 mm/s: fue a 5.00 mm/s, salió del imán de abajo y frenó solo con ERR 10 fin en J4 = 2.51 mm (flanco del Hall: 3.0 mm)
+   de vuelta hacia abajo: frenó en J4 = 117.49 mm (flanco del imán de fin: 117 mm)
+   homing: ejes en orden [4, 1, 2, 3]; en los flancos, física [-13010.6, -13010.6, -14498.0, 290.4] y estimada [-12999, -12999, -14501, 300]
+   vuelta al reposo (PTP de 26.3 s al 50 %): física [-11.3, -11.3, -11.3, 11990.4], estimada [0, 0, 0, 12000], referenciado True, Hall 1000
+   camino físico completo (12726 muestras, cada 50 ms al chequear): sin choques
+   Webots: UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
+B: arranque con desvío de hasta 10°: física [24.0, -698.2, 426.6, 11999.4], Hall 1000 (bit 0 = J1), sin referencia
+   homing: ejes en orden [4, 1, 2, 3]; en los flancos, física [-13009.1, -13011.3, -14502.1, 290.4] y estimada [-12999, -12999, -14934, 300]
+   vuelta al reposo (PTP de 26.3 s al 50 %): física [-9.8, -12.0, -6.6, 11990.4], estimada [0, 0, 0, 12000], referenciado True, Hall 1000
+   camino físico completo (9115 muestras, cada 50 ms al chequear): sin choques
+   Webots: UCI: arranca a 0.24°, -6.98°, 4.27° de la pose de reposo
+ENSAYO OK

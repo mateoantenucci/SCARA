@@ -30,6 +30,15 @@ const int32_t STEPS_PER_REV = FULL_STEPS_PER_REV * MICROSTEPS;
 constexpr int32_t MOTOR_MAX_SPEED[MOTOR_COUNT] = {80, 80, 112, 1350};
 constexpr int32_t MOTOR_MAX_ACCELERATION[MOTOR_COUNT] = {136, 136, 204, 2700};
 
+// Sensores Hall (D10, D56): un KY-003 por articulación y dos imanes, centrados
+// en los extremos de su recorrido. El homing busca el imán del lado negativo
+// (J4: arriba) y toma como referencia el flanco donde el Hall se activa, en
+// unidades del protocolo. Parámetro provisional: en el robot real se mide; en
+// Webots sale de dónde están el imán y el sensor (tools/generate_world.py).
+constexpr int32_t HALL_EDGE[MOTOR_COUNT] = {-13000, -13000, -14500, 300};
+// Ancho del imán del lado alcanzable: desde el flanco hasta el tope.
+constexpr int32_t HALL_WIDTH[MOTOR_COUNT] = {500, 500, 500, 300};
+
 }  // namespace scara
 
 #endif

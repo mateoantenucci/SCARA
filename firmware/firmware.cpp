@@ -90,12 +90,28 @@ const int32_t ERR_DISABLED = 6;   // no se acepta sin corriente en los drivers
 const int32_t ERR_REFERENCE = 7;  // SEG sin los cuatro ejes referenciados
 const int32_t ERR_SPEED = 8;      // el segmento le pide a un motor más velocidad que la suya
 const int32_t ERR_QUEUE = 9;      // SEG antes del OK del anterior, con la cola llena
+const int32_t ERR_END = 10;       // el jog frenó al activarse un Hall: fin de carrera
+const int32_t ERR_MISSING = 11;   // homing: el Hall no apareció en el recorrido o el tiempo máximos
+const int32_t ERR_STUCK = 12;     // homing: el Hall no se apagó, está trabado activo
+
+namespace {
+
+// Orden del homing (D11): J4 sube primero, después J1, J2 y J3.
+const uint8_t HOME_ORDER[MOTOR_COUNT] = {3, 0, 1, 2};
+// Hall de los ejes que mueve cada motor solo, en el jog por motor: M1 mueve
+// J1 y J2.
+const uint8_t MOTOR_HALLS[MOTOR_COUNT] = {0x03, 0x02, 0x04, 0x08};
+// Margen para salir de un imán, además de su ancho: tolerancia de montaje.
+const int32_t HALL_MARGIN = 100;
+
+}  // namespace
 
 Firmware::Firmware(Hal& hal)
     : hal_(hal), length_(0), invalid_(false), overflow_(false), homed_(0), enabled_(false), motion_(NONE),
-      jogMotors_(0), jogAxis_(0), jogDirection_(0), jogSpeed_(0), jogAccumulator_(0), lastJog_(0), head_(0),
-      count_(0), holding_(false), started_(0), done_(0), rampMs_(0), rampStarted_(0), lastStatus_(0),
-      lastMessage_(0) {
+      jogMotors_(0), jogAxis_(0), jogDirection_(0), jogSpeed_(0), jogAccumulator_(0), jogSteps_(0), lastJog_(0),
+      hall_(0), lastHall_(0), jogHalls_(0), jogStartHalls_(0), endHalls_(0), endMotors_(0), endDirection_(0), homeCount_(0), homeIndex_(0), homePhase_(SEARCH),
+      homeStarted_(0), homedNow_(0), homeWasHomed_(0), head_(0), count_(0), holding_(false), started_(0), done_(0), rampMs_(0),
+      rampStarted_(0), lastStatus_(0), lastMessage_(0) {
   for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) steps_[motor] = 0;
 }
 
@@ -104,6 +120,7 @@ void Firmware::begin() {
   hal_.enableDrivers(false);
   uint32_t now = hal_.millis();
   lastJog_ = lastStatus_ = lastMessage_ = now;
+  hall_ = lastHall_ = hal_.readHall();
   sendIdentity("BOOT ");
 }
 
@@ -117,8 +134,13 @@ void Firmware::sendIdentity(const char* greeting) {
 
 void Firmware::poll() {
   uint32_t now = hal_.millis();
-  // Primero el movimiento hasta ahora con la orden vigente; después las
+  // Primero los Hall, que pueden frenar el jog o cambiar la fase del homing;
+  // después el movimiento hasta ahora con la orden vigente, y por último las
   // órdenes nuevas, que rigen desde este instante.
+  lastHall_ = hall_;
+  hall_ = hal_.readHall();
+  if (motion_ == JOG) checkJogHall();
+  if (motion_ == HOMING) advanceHoming(now);
   advanceJog(now);
   if (motion_ == RUN) advanceRun(now);
   if (motion_ == STOPPING) advanceStopping(now);
@@ -128,7 +150,7 @@ void Firmware::poll() {
   }
   // Quieto no hay nada que frenar, y frenando ya se frena. Frena como STOP
   // (D41): los drivers siguen con corriente.
-  if ((motion_ == JOG || motion_ == RUN) && now - lastMessage_ > WATCHDOG_MS) {
+  if ((motion_ == JOG || motion_ == RUN || motion_ == HOMING) && now - lastMessage_ > WATCHDOG_MS) {
     stop(now);
     sendError(ERR_WATCHDOG, "watchdog");
   }
@@ -174,6 +196,10 @@ void Firmware::handle(char* line) {
   }
   if (strcmp(command, "SEG") == 0) {
     handleSegment(cursor);
+    return;
+  }
+  if (strcmp(command, "HOME") == 0) {
+    handleHome(cursor);
     return;
   }
   // Órdenes sin argumentos.
@@ -246,12 +272,199 @@ void Firmware::handleJog(char* arguments) {
     reject(ERR_BUSY, "ocupado");
     return;
   }
+  // Sin referencia, solo jog lento (D21).
+  if (homed_ != 0x0F && speed > JOG_UNREFERENCED_MAX) speed = JOG_UNREFERENCED_MAX;
+  uint8_t index = static_cast<uint8_t>(axis - 1);
+  uint8_t motors = byMotor ? static_cast<uint8_t>(1 << index) : JOINT_MOTORS[index];
+  int8_t direction = sign[0] == '+' ? 1 : -1;
+  // Lo que frenó un Hall no vuelve a empujar hacia el tope mientras el Hall
+  // siga activo: solo sale para el otro lado.
+  endHalls_ &= hall_;
+  if ((endHalls_ & hall_) != 0 && (motors & endMotors_) != 0 && direction == endDirection_) {
+    stopJog();
+    sendError(ERR_END, "fin");
+    return;
+  }
   motion_ = JOG;
-  jogAxis_ = static_cast<uint8_t>(axis - 1);
-  jogMotors_ = byMotor ? static_cast<uint8_t>(1 << jogAxis_) : JOINT_MOTORS[jogAxis_];
-  jogDirection_ = sign[0] == '+' ? 1 : -1;
+  startDrive(index, motors, direction, speed);
+  jogHalls_ = byMotor ? MOTOR_HALLS[index] : static_cast<uint8_t>(1 << index);
+  jogStartHalls_ = hall_ & jogHalls_;
+}
+
+// El Hall es también el fin de carrera (D21): un jog que activa el Hall de un
+// eje que mueve frena en seco. Si arrancó sobre un imán, puede salir de él,
+// pero frena si recorre más que el ancho del imán sin que se apague: iba
+// hacia el tope.
+void Firmware::checkJogHall() {
+  uint8_t active = hall_ & jogHalls_;
+  jogStartHalls_ &= active;  // ya salió de los que se apagaron
+  bool rose = (active & ~lastHall_ & ~jogStartHalls_) != 0;
+  bool deep = jogStartHalls_ != 0 && jogSteps_ > unitsToSteps(jogAxis_, HALL_WIDTH[jogAxis_] + HALL_MARGIN);
+  if (rose || deep) {
+    endHalls_ = active;
+    endMotors_ = jogMotors_;
+    endDirection_ = jogDirection_;
+    stopJog();
+    sendError(ERR_END, "fin");
+  }
+}
+
+void Firmware::startDrive(uint8_t axis, uint8_t motors, int8_t direction, int32_t speed) {
+  jogAxis_ = axis;
+  jogMotors_ = motors;
+  jogDirection_ = direction;
   jogSpeed_ = speed;
   jogAccumulator_ = 0;
+  jogSteps_ = 0;
+}
+
+// HOME [j]: homing de los cuatro ejes, en el orden de D11, o solo del eje j.
+// Cada eje encontrado se informa con EV HOMED j. La vuelta a la pose de
+// reposo la planifica la URC (D56).
+void Firmware::handleHome(char* arguments) {
+  char* axisText = nextField(&arguments);
+  int32_t axis = 0;
+  if ((axisText != 0 && (!parseUnsigned(axisText, &axis) || axis < 1 || axis > MOTOR_COUNT)) ||
+      !noMoreFields(arguments)) {
+    reject(ERR_ARGUMENTS, "argumentos");
+    return;
+  }
+  if (!enabled_) {
+    reject(ERR_DISABLED, "deshabilitado");
+    return;
+  }
+  if (moving()) {
+    reject(ERR_BUSY, "ocupado");
+    return;
+  }
+  homeCount_ = 0;
+  homeWasHomed_ = homed_;
+  for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
+    uint8_t candidate = HOME_ORDER[i];
+    if (axis == 0 || candidate == axis - 1) {
+      homeOrder_[homeCount_++] = candidate;
+      homed_ &= static_cast<uint8_t>(~(1 << candidate));
+    }
+  }
+  homeIndex_ = 0;
+  homedNow_ = 0;
+  motion_ = HOMING;
+  startHomeAxis(hal_.millis());
+}
+
+// Con el Hall activo al empezar, el sensor no dice sobre qué imán está. Si el
+// eje tenía referencia y está en el flanco de la suya (otro HOME después de un
+// homing), retrocede como después de encontrarlo. Si no, es el imán del otro
+// extremo (desde el reposo, J4 descansa abajo, sobre el suyo) y sale de él
+// hacia la referencia.
+void Firmware::startHomeAxis(uint32_t now) {
+  uint8_t axis = homeOrder_[homeIndex_];
+  homeStarted_ = now;
+  if ((hall_ & (1 << axis)) == 0) {
+    startHomePhase(SEARCH);
+    return;
+  }
+  int32_t joints[MOTOR_COUNT];
+  motorsToJoints(steps_, joints);
+  bool onReference = (homeWasHomed_ & (1 << axis)) != 0 && joints[axis] <= HALL_EDGE[axis] + HALL_MARGIN;
+  startHomePhase(onReference ? BACKOFF : LEAVE);
+}
+
+// LEAVE y SEARCH van hacia la referencia; BACKOFF y CLEAR retroceden;
+// APPROACH vuelve al mismo flanco, siempre desde el mismo lado. Solo SEARCH y
+// CLEAR van rápido: las fases que miden cuánto falta para salir de un imán
+// van lento, así la cota del ancho del imán no depende de la velocidad.
+void Firmware::startHomePhase(HomePhase phase) {
+  uint8_t axis = homeOrder_[homeIndex_];
+  homePhase_ = phase;
+  bool back = phase == BACKOFF || phase == CLEAR;
+  bool fast = phase == SEARCH || phase == CLEAR;
+  startDrive(axis, JOINT_MOTORS[axis], back ? 1 : -1, fast ? HOME_FAST : HOME_SLOW);
+}
+
+// Decide con los Hall de este poll; los pasos los da advanceJog.
+void Firmware::advanceHoming(uint32_t now) {
+  uint8_t axis = homeOrder_[homeIndex_];
+  bool active = (hall_ & (1 << axis)) != 0;
+  int32_t traveled = stepsToUnits(axis, jogSteps_);
+  int32_t onMagnet = HALL_WIDTH[axis] + HALL_MARGIN;
+  if (now - homeStarted_ > HOME_AXIS_MS) {
+    abortHoming();
+    sendError(ERR_MISSING, "ausente");
+    return;
+  }
+  switch (homePhase_) {
+    case LEAVE:
+      if (!active) {
+        startHomePhase(SEARCH);
+      } else if (traveled > onMagnet) {
+        abortHoming();
+        sendError(ERR_STUCK, "trabado");
+      }
+      break;
+    case SEARCH:
+      if (active) {
+        startHomePhase(BACKOFF);
+      } else if (traveled > HOME_SEARCH_MAX[axis]) {
+        abortHoming();
+        sendError(ERR_MISSING, "ausente");
+      }
+      break;
+    case BACKOFF:
+      if (!active) {
+        startHomePhase(CLEAR);
+      } else if (traveled > onMagnet) {
+        abortHoming();
+        sendError(ERR_STUCK, "trabado");
+      }
+      break;
+    case CLEAR:
+      if (traveled >= HOME_BACKOFF) startHomePhase(APPROACH);
+      break;
+    case APPROACH:
+      if (active) {
+        finishHomeAxis();
+      } else if (traveled > HOME_BACKOFF + onMagnet) {
+        abortHoming();
+        sendError(ERR_MISSING, "ausente");
+      }
+      break;
+  }
+}
+
+// El flanco del Hall está en HALL_EDGE. J1 mueve M1 y M2 juntos, así que
+// corre los dos: J2, que todavía no tiene referencia, no cambia. J2 se mide
+// relativo a J1: M2 = M1 + los pasos de J2.
+void Firmware::finishHomeAxis() {
+  uint8_t axis = homeOrder_[homeIndex_];
+  int32_t edge = unitsToSteps(axis, HALL_EDGE[axis]);
+  if (axis == 0) {
+    steps_[1] += edge - steps_[0];
+    steps_[0] = edge;
+  } else if (axis == 1) {
+    steps_[1] = steps_[0] + edge;
+  } else {
+    steps_[axis] = edge;
+  }
+  homed_ |= static_cast<uint8_t>(1 << axis);
+  homedNow_ |= static_cast<uint8_t>(1 << axis);
+  char out[LINE_MAX];
+  append(append(append(out, "EV HOMED "), static_cast<int32_t>(axis + 1)), "\n")[0] = '\0';
+  hal_.write(out);
+  if (++homeIndex_ < homeCount_) {
+    startHomeAxis(hal_.millis());
+  } else {
+    motion_ = NONE;
+    jogMotors_ = 0;
+  }
+}
+
+// Sin declarar referencia: los ejes de este HOME vuelven a quedar sin ella.
+void Firmware::abortHoming() {
+  homed_ &= static_cast<uint8_t>(~homedNow_);
+  homedNow_ = 0;
+  motion_ = NONE;
+  jogMotors_ = 0;
 }
 
 // SEG n ms q1 q2 q3 q4: llegar a esa configuración articular en ms
@@ -354,12 +567,14 @@ void Firmware::stopJog() {
 // la cola se vacía.
 void Firmware::stop(uint32_t now) {
   stopJog();
+  if (motion_ == HOMING) abortHoming();
   if (motion_ == RUN) startRamp(now);
 }
 
 // Parada inmediata: descarta la cola sin rampa.
 void Firmware::halt() {
   stopJog();
+  if (motion_ == HOMING) abortHoming();
   count_ = 0;
   holding_ = false;
   motion_ = NONE;
@@ -408,15 +623,17 @@ bool Firmware::moving() const { return motion_ != NONE; }
 // Integra la velocidad con aritmética entera: cada vez que el acumulador
 // junta una unidad de paso, emite un paso en cada motor del jog. La velocidad
 // está en unidades del eje jogAxis_, y todos sus motores dan los mismos pasos.
+// El homing mueve cada eje de la misma forma.
 void Firmware::advanceJog(uint32_t now) {
   uint32_t elapsed = now - lastJog_;
   lastJog_ = now;
-  if (motion_ != JOG) return;
+  if (motion_ != JOG && motion_ != HOMING) return;
   if (elapsed > JOG_MAX_ELAPSED_MS) elapsed = JOG_MAX_ELAPSED_MS;
   jogAccumulator_ += jogSpeed_ * STEPS_NUM[jogAxis_] * static_cast<int32_t>(elapsed);
   const int32_t threshold = STEPS_DEN[jogAxis_] * 1000;
   while (jogAccumulator_ >= threshold) {
     jogAccumulator_ -= threshold;
+    ++jogSteps_;
     for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) {
       if (jogMotors_ & (1 << motor)) {
         hal_.step(motor, jogDirection_);
@@ -489,7 +706,11 @@ void Firmware::stepTo(const int32_t target[MOTOR_COUNT]) {
 // S modo referenciados J1 J2 J3 J4 hall libres último
 void Firmware::sendStatus() {
   char out[96];  // con holgura: en uso normal la línea no pasa de 64 bytes
-  const char* mode = !enabled_ ? "OFF" : motion_ == JOG ? "JOG" : moving() ? "RUN" : "IDLE";
+  const char* mode = !enabled_          ? "OFF"
+                     : motion_ == JOG     ? "JOG"
+                     : motion_ == HOMING  ? "HOMING"
+                     : moving()           ? "RUN"
+                                          : "IDLE";
   char* end = append(append(append(out, "S "), mode), " ");
   end = append(end, static_cast<int32_t>(homed_));
   // Posición estimada por pasos, en unidades del protocolo.

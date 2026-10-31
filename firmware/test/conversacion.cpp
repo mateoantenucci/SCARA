@@ -12,18 +12,42 @@
 #include <vector>
 
 #include "../firmware.h"
+#include "../transmission.h"
 
 namespace {
 
+// Imanes de la planta falsa, en unidades del protocolo: cada Hall se activa
+// cerca de los dos extremos de su articulación (D10). Coinciden con los de
+// Webots (tools/generate_world.py) y con HALL_EDGE del firmware.
+const long MAGNET_LOW[scara::MOTOR_COUNT] = {-13000, -13000, -14500, 300};
+const long MAGNET_HIGH[scara::MOTOR_COUNT] = {13000, 13000, 14500, 11700};
+
 class FakeHal : public scara::Hal {
 public:
-  FakeHal() : now(0), enabled(true) {
-    for (int i = 0; i < scara::MOTOR_COUNT; ++i) steps[i] = 0;
+  FakeHal() : now(0), enabled(true), magnets(false) {
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
+      steps[i] = 0;
+      pose[i] = 0;
+      stuck[i] = -1;
+    }
   }
   uint32_t millis() { return now; }
   void step(uint8_t motor, int8_t direction) { steps[motor] += direction; }
   void enableDrivers(bool on) { enabled = on; }
-  uint8_t readHall() { return 0; }  // los Hall a voluntad llegan con el homing (#8)
+  // Sin "! iman", los Hall no se activan nunca.
+  uint8_t readHall() {
+    uint8_t bits = 0;
+    int32_t motors[scara::MOTOR_COUNT], joints[scara::MOTOR_COUNT];
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i) motors[i] = static_cast<int32_t>(steps[i]);
+    scara::motorsToJoints(motors, joints);
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
+      long position = pose[i] + joints[i];
+      bool active = magnets && (position <= MAGNET_LOW[i] || position >= MAGNET_HIGH[i]);
+      if (stuck[i] >= 0) active = stuck[i] == 1;
+      if (active) bits |= static_cast<uint8_t>(1 << i);
+    }
+    return bits;
+  }
   int readByte() {
     if (input.empty()) return -1;
     int byte = static_cast<unsigned char>(input.front());
@@ -35,6 +59,9 @@ public:
   uint32_t now;
   long steps[scara::MOTOR_COUNT];
   bool enabled;  // arranca en true: el firmware tiene que cortarlos al arrancar
+  bool magnets;                   // "! iman": los Hall siguen a la geometría
+  long pose[scara::MOTOR_COUNT];  // pose real al arrancar, en unidades del protocolo
+  int stuck[scara::MOTOR_COUNT];  // -1 libre, 0 trabado inactivo, 1 trabado activo
   std::deque<char> input;
   std::string output;
 };
@@ -77,9 +104,10 @@ public:
       switch (line[0]) {
         case '>': ok = send(body); break;
         case '<': ok = expect(body); break;
-        case '+': ok = advance(std::atol(body.c_str())); break;
+        case '+': ok = advance(std::atol(body.c_str()), false); break;
+        case '~': ok = advance(std::atol(body.c_str()), true); break;
         case '=': ok = checkSteps(body); break;
-        case '!': ok = reboot(body); break;
+        case '!': ok = plant(body); break;
         default: ok = fail("renglón desconocido: " + line);
       }
       if (!ok) return false;
@@ -122,31 +150,60 @@ private:
   bool expect(const std::string& expected) {
     collect();
     if (!tooLong_.empty()) return fail("línea de más de 64 bytes: " + tooLong_.front());
+    std::string skipped;
     while (!pending_.empty()) {
       std::string actual = pending_.front();
       pending_.pop_front();
       if (matches(expected, actual)) return true;
       if (!isStatus(actual)) return fail("se esperaba «" + expected + "» y llegó «" + actual + "»");
+      skipped = actual;
     }
-    return fail("se esperaba «" + expected + "» y la UCI no envió nada más");
+    return fail("se esperaba «" + expected + "» y la UCI no envió nada más" +
+                (skipped.empty() ? "" : " (último S: «" + skipped + "»)"));
   }
 
-  bool advance(long milliseconds) {
+  // "~ N" avanza como "+ N", pero la URC envía PING cada 250 ms, como lo
+  // hace siempre: para movimientos que duran más que el watchdog.
+  bool advance(long milliseconds, bool pinging) {
     if (milliseconds <= 0) return fail("el avance debe ser positivo");
-    for (long i = 0; i < milliseconds; ++i) {
+    for (long i = 1; i <= milliseconds; ++i) {
       ++hal_.now;
+      if (pinging && i % 250 == 0) {
+        const char ping[] = "PING\n";
+        for (const char* c = ping; *c; ++c) hal_.input.push_back(*c);
+      }
       firmware_->poll();
     }
     return true;
   }
 
-  // "! reinicio": la UCI se reinicia sin que se corte el enlace. Los motores
-  // conservan los pasos dados; el firmware arranca de cero y envía BOOT.
-  bool reboot(const std::string& body) {
-    if (body != "reinicio") return fail("se esperaba «! reinicio»");
-    firmware_.reset(new scara::Firmware(hal_));
-    firmware_->begin();
-    return true;
+  // La planta, desde afuera del firmware:
+  //   "! reinicio": la UCI se reinicia sin que se corte el enlace. Los motores
+  //     conservan los pasos dados; el firmware arranca de cero y envía BOOT.
+  //   "! iman J1 J2 J3 J4": los Hall siguen a la geometría, con el robot en
+  //     esa pose real al arrancar (unidades del protocolo).
+  //   "! hall j activo|inactivo|libre": traba el Hall de Jj (falla F3).
+  bool plant(const std::string& body) {
+    std::vector<std::string> items = fields(body);
+    if (items.size() == 1 && items[0] == "reinicio") {
+      firmware_.reset(new scara::Firmware(hal_));
+      firmware_->begin();
+      return true;
+    }
+    if (items.size() == 5 && items[0] == "iman") {
+      hal_.magnets = true;
+      for (int i = 0; i < scara::MOTOR_COUNT; ++i) hal_.pose[i] = std::atol(items[i + 1].c_str());
+      return true;
+    }
+    if (items.size() == 3 && items[0] == "hall" && items[1].size() == 1 && items[1][0] >= '1' && items[1][0] <= '4') {
+      int joint = items[1][0] - '1';
+      if (items[2] == "activo") hal_.stuck[joint] = 1;
+      else if (items[2] == "inactivo") hal_.stuck[joint] = 0;
+      else if (items[2] == "libre") hal_.stuck[joint] = -1;
+      else return fail("se esperaba activo, inactivo o libre");
+      return true;
+    }
+    return fail("renglón ! desconocido: " + body);
   }
 
   // "= M1 400 M2 400 M3 0 M4 0": pasos netos emitidos a cada motor.

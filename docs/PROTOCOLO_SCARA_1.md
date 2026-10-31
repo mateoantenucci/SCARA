@@ -2,7 +2,7 @@
 
 Especificación del contrato de mensajes entre la URC y el firmware de la UCI. Reemplaza al borrador de la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md#5-protocolo-propuesto-scara1-borrador) y, cuando se retire (issue #17), al banco provisional [`scara-dev/1`](PROTOCOLO_SCARA_DEV_1.md).
 
-**Estado:** completo para conexión, corriente, jog, paradas, watchdog y reinicio (issue #6), y para los segmentos temporizados `SEG` y `OK` (issue #9). `HOME` y `EV` tienen su forma fijada acá, pero los implementan el homing (#8) y la pérdida de pasos (#15); hasta entonces el firmware responde `ERR 1 comando` a `HOME`, y la URC no lo envía. Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37, D40–D43, D46 y D50–D53.
+**Estado:** completo para conexión, corriente, jog, paradas, watchdog y reinicio (issue #6), para los segmentos temporizados `SEG` y `OK` (issue #9) y para el homing, `HOME` y `EV HOMED` (issue #8). `EV LOST` tiene su forma fijada acá, pero lo implementa la pérdida de pasos (#15). Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37, D40–D43, D46, D50–D53 y D56–D58.
 
 ## Transporte y formato
 
@@ -24,13 +24,13 @@ Ninguna orden tiene respuesta si sale bien: el efecto se ve en el próximo `S` (
 | `STATUS` | Pide el estado ya. Responde `S`. | — |
 | `ENABLE` | Da corriente a los cuatro drivers (D40). Si ya tenían, no cambia nada. | — |
 | `DISABLE` | Frena, corta la corriente y pierde la referencia (D40). | — |
-| `JOG j ± vel` | Jog articular de `j` (1–4) a `vel` centésimas por segundo (1–1000). Reemplaza al jog anterior. | `ERR 6` sin corriente |
-| `JOG Mm ± vel` | Jog por motor, un modo de prueba (D46): mueve solo el motor `m` (1–4), sin compensar el acople M1/M2. `vel` va en las unidades de la articulación de ese motor (θM/4 en M1–M3, mm de J4 en M4), 1–1000. Reemplaza al jog anterior. | `ERR 6` sin corriente |
+| `JOG j ± vel` | Jog articular de `j` (1–4) a `vel` centésimas por segundo (1–1000). Reemplaza al jog anterior. Sin referencia, el firmware lo baja a 500 (D58). Frena solo si activa el Hall del eje: `ERR 10 fin`. | `ERR 6` sin corriente; `ERR 5` con otro movimiento |
+| `JOG Mm ± vel` | Jog por motor, un modo de prueba (D46): mueve solo el motor `m` (1–4), sin compensar el acople M1/M2. `vel` va en las unidades de la articulación de ese motor (θM/4 en M1–M3, mm de J4 en M4), 1–1000. Reemplaza al jog anterior. Igual que el articular, lento sin referencia y frenado por los Hall de los ejes que mueve (M1: J1 y J2). | `ERR 6` sin corriente; `ERR 5` con otro movimiento |
 | `JOG STOP` | Frena el jog, articular o por motor. | — |
 | `STOP` | Frena todo y conserva la referencia (D41). Los segmentos frenan con rampa y la cola se vacía (D52); el jog, en seco. | — |
 | `HALT` | Parada inmediata. Si había movimiento, la referencia se pierde (D41). | — |
 | `ZERO` | Referencia manual: declara que el robot está en la pose de reposo (D30) y deja los cuatro ejes referenciados. | `ERR 6` sin corriente; `ERR 5` con movimiento |
-| `HOME [j]` | Homing de todos los ejes o de `j` (D11). **Issue #8.** | |
+| `HOME [j]` | Homing de los cuatro ejes, en el orden J4, J1, J2, J3, o solo de `j` (1–4). Envía `EV HOMED j` por cada eje. Ver [Homing](#homing). | `ERR 6` sin corriente; `ERR 5` con movimiento; `ERR 11` o `ERR 12` si aborta |
 | `SEG n ms q1 q2 q3 q4` | Encola el segmento `n` (1–999999999): llegar a la configuración articular `q1`–`q4` (enteros de hasta ±99999) en `ms` milisegundos (1–1000), interpolando lineal en articulaciones (D6). Responde `OK n` cuando entra en la cola. Ver [Segmentos](#segmentos). | `ERR 6` sin corriente; `ERR 7` sin referencia; `ERR 5` con jog o frenando; `ERR 8` si un motor no llega; `ERR 9` si el anterior todavía espera su `OK` |
 
 `STOP` y `HALT` dejan los drivers con corriente: J4 no cae. Para cortarla está `DISABLE`.
@@ -44,17 +44,17 @@ Ninguna orden tiene respuesta si sale bien: el efecto se ve en el próximo `S` (
 | `S modo ref J1 J2 J3 J4 hall libres último` | 20 veces por segundo y ante `STATUS`. |
 | `ERR código palabra` | Ante una orden rechazada o un evento que frena. |
 | `OK n` | Cuando el segmento `n` entró en la cola; es el control de flujo (D6, D50). |
-| `EV HOMED j` | Eje `j` referenciado por el homing. **Issue #8.** |
+| `EV HOMED j` | Eje `j` referenciado por el homing (D56). |
 | `EV LOST j pasos` | Al cruzar el Hall de `j`, la cuenta de pasos difiere en `pasos` de lo esperado (F1). **Issue #15.** |
 
 Campos de `S`:
 
 | Campo | Significado |
 | --- | --- |
-| `modo` | `OFF` (drivers sin corriente), `IDLE` (quieto, con corriente), `JOG` o `RUN` (ejecutando segmentos o frenando con la rampa de `STOP`). Llegará `HOMING` (#8). |
+| `modo` | `OFF` (drivers sin corriente), `IDLE` (quieto, con corriente), `JOG`, `RUN` (ejecutando segmentos o frenando con la rampa de `STOP`) u `HOMING`. |
 | `ref` | Máscara de ejes referenciados: bit 0 = J1 … bit 3 = J4; 15 = todos. |
 | `J1`–`J4` | Posición estimada por pasos. Sin referencia, cuenta desde el arranque. |
-| `hall` | Bits de los Hall (bit 0 = J1). Siempre 0 hasta el issue #8. |
+| `hall` | Bits de los Hall (bit 0 = J1), 1 = imán cerca del sensor. En la pose de reposo vale 8: J4 descansa abajo, sobre su imán de fin. |
 | `libres` | Lugares libres en la cola de segmentos, de 16; el que se ejecuta ocupa uno. |
 | `último` | Número del último segmento terminado; 0 si todavía no terminó ninguno desde el arranque. |
 
@@ -71,6 +71,9 @@ Códigos de `ERR`. Son estables: un código nuevo se agrega al final y ninguno s
 | 7 | `referencia` | `SEG` sin los cuatro ejes referenciados. |
 | 8 | `velocidad` | El segmento le pide a un motor más velocidad que su límite (D45, D51). |
 | 9 | `cola` | `SEG` antes del `OK` del anterior, con la cola llena: la URC envió de más. |
+| 10 | `fin` | El jog frenó al activarse el Hall de un eje que mueve: fin de carrera (D58). |
+| 11 | `ausente` | Homing abortado: el Hall no apareció dentro del recorrido o del tiempo máximos (Hall trabado inactivo, F3). |
+| 12 | `trabado` | Homing abortado: el Hall no se apagó dentro del ancho del imán (Hall trabado activo, F3). |
 
 Con segmentos en ejecución, todo `ERR` frena con rampa, como `STOP` (D52).
 
@@ -91,6 +94,16 @@ La URC planifica y el firmware ejecuta (D6, [ADR 0005](adr/0005-la-urc-planifica
 - Con segmentos en ejecución, todo `ERR` frena con rampa como `STOP`. La URC, ante cualquier `ERR`, deja de enviar el tramo: los dos lados dan el tramo por terminado.
 
 **Números.** `n` va de 1 a 999999999. La URC no los repite en una sesión, así un `OK` que llega tarde, después de un `STOP`, no se confunde con el de un tramo nuevo. `último` en `S` dice hasta dónde llegó el tramo.
+
+## Homing
+
+Un sensor Hall por articulación y dos imanes, centrados en los extremos del recorrido (D10). La referencia es el flanco del lado negativo, donde el Hall se activa: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba (D56).
+
+- `HOME` busca J4, J1 (M1 y M2 juntos: J2 no cambia), J2 (M2 solo) y J3, en ese orden (D11). `HOME j`, solo el eje `j`.
+- En cada eje: si el Hall está activo al empezar, sale del imán; busca a 8 °/s (8 mm/s) hasta que se activa; retrocede hasta que se apaga y 3° (3 mm) más; vuelve a 1 °/s al mismo flanco. Ahí fija la referencia y envía `EV HOMED j`.
+- La búsqueda está acotada en recorrido y en 60 s por eje. Si el Hall no aparece, `ERR 11 ausente`; si no se apaga, `ERR 12 trabado`. Al abortar, y también con `STOP`, `HALT`, `DISABLE` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
+- `S` informa `HOMING` mientras dura. El firmware termina en los flancos; la URC vuelve sola a la pose de reposo con un tramo PTP («Estacionar»).
+- Sin referencia, el jog va a 5 °/s como máximo, y el Hall lo frena como fin de carrera (D58). Con ese Hall todavía activo, un jog hacia el mismo lado se rechaza con `ERR 10 fin`: solo sale para el otro.
 
 ## Seguridad del enlace
 
@@ -174,6 +187,27 @@ UCI → OK 1
 URC → STOP                         (a los 500 ms, con J1 en 9°)
 UCI → S RUN 15 1260 0 0 12000 0 16 0  (frenando, cola vacía)
 UCI → S IDLE 15 1378 0 0 12000 0 16 0 (530 ms después: 4,8° más, v²/2a)
+```
+
+Homing ([`homing.txt`](../firmware/test/conversaciones/homing.txt)), desde la pose de reposo:
+
+```text
+URC → HOME
+UCI → S HOMING 0 0 0 0 0 8 16 0       (J4 abajo, sobre su imán de fin)
+UCI → EV HOMED 4                      (J4 sube, sale del imán y busca el de arriba)
+UCI → EV HOMED 1
+UCI → EV HOMED 2
+UCI → EV HOMED 3
+UCI → S IDLE 15 -12999 -12999 -14501 300 15 16 0
+```
+
+Hall trabado ([`homing_hall_trabado.txt`](../firmware/test/conversaciones/homing_hall_trabado.txt)):
+
+```text
+URC → HOME
+UCI → EV HOMED 4
+UCI → ERR 12 trabado                  (el Hall de J1 no se apaga)
+UCI → S IDLE 0 -602 0 0 300 9 16 0    (sin referencia, ni siquiera J4)
 ```
 
 Corte de la URC ([`watchdog.txt`](../firmware/test/conversaciones/watchdog.txt)):

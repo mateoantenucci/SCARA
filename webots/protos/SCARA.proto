@@ -53,7 +53,10 @@ PROTO SCARA [
 # 0-6203-2RS-registro-2 | accepted_mesh | registered_mount_visual_only
               DEF CAD_0_6203_2RS_registro_2 Pose { translation -3.10569712308473e-16 -5.6134567480437e-16 0.1552375
                 rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/0-6203-2RS.stl" ] } castShadows FALSE } ] } HingeJoint {
+                  geometry Mesh { url [ "../../cad/derivados/stl/0-6203-2RS.stl" ] } castShadows FALSE } ] } Receiver { translation -0.06 0 0.2913625 name "hall1"
+      type "radio" channel 1
+      children [ Shape { appearance PBRAppearance { baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }
+        geometry Box { size 0.008 0.008 0.004 } } ] } HingeJoint {
           jointParameters HingeJointParameters { axis 0 0 1 anchor 0 0 0.2913625
             position 0 minStop -2.356194490192345 maxStop 2.356194490192345
             dampingConstant 0.01 }
@@ -97,7 +100,17 @@ PROTO SCARA [
 # 2GT_80Teet_16Bore-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_2GT_80Teet_16Bore_registro_1 Pose { translation -3.15936513062277e-16 -5.47549202159491e-16 -0.161310602168056
                 rotation 1.91468362370882e-17 3.07694490460436e-16 -1 2.47717228726017 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_80Teet_16Bore.stl" ] } castShadows FALSE } ] } HingeJoint {
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_80Teet_16Bore.stl" ] } castShadows FALSE } ] } Emitter { translation 0.0424264068711928 -0.0424264068711929 0 name "iman1_inicio"
+      type "radio" range 0.00523432648384032 maxRange 0.00523432648384032 channel 1
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.0424264068711929 0.0424264068711929 0 name "iman1_fin"
+      type "radio" range 0.00523432648384032 maxRange 0.00523432648384032 channel 1
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] }
+                Receiver { translation 0.210000000000002 0 -0.078 name "hall2"
+      type "radio" channel 2
+      children [ Shape { appearance PBRAppearance { baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }
+        geometry Box { size 0.008 0.008 0.004 } } ] } HingeJoint {
           jointParameters HingeJointParameters { axis 0 0 1 anchor 0.250000000000002 0 -0.078
             position 1.5707963267949 minStop -2.356194490192345 maxStop 2.356194490192345
             dampingConstant 0.01 }
@@ -149,7 +162,17 @@ PROTO SCARA [
 # 2GT_60Teet_8Bore-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_2GT_60Teet_8Bore_registro_1 Pose { translation -2.38730403890997e-15 -2.17701047215633e-16 0.0686220904676403
                 rotation 1.76449930510342e-17 6.98084009839835e-16 1 1.55004996500151 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_60Teet_8Bore.stl" ] } castShadows FALSE } ] } HingeJoint {
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_60Teet_8Bore.stl" ] } castShadows FALSE } ] } Emitter { translation 0.0282842712474619 -0.0282842712474619 0 name "iman2_inicio"
+      type "radio" range 0.00348955098922688 maxRange 0.00348955098922688 channel 2
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.0282842712474619 0.0282842712474619 0 name "iman2_fin"
+      type "radio" range 0.00348955098922688 maxRange 0.00348955098922688 channel 2
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] }
+                Receiver { translation 0.219999999999997 0 0 name "hall3"
+      type "radio" channel 3
+      children [ Shape { appearance PBRAppearance { baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }
+        geometry Box { size 0.008 0.008 0.004 } } ] } HingeJoint {
           jointParameters HingeJointParameters { axis 0 0 1 anchor 0.249999999999997 0 0
             position -1.5707963267949 minStop -2.6179938779914944 maxStop 2.6179938779914944
             dampingConstant 0.01 }
@@ -185,7 +208,17 @@ PROTO SCARA [
 # 2GT_80Teet_40Bore-registro-R | accepted_mesh | registered_mount_visual_only
               DEF CAD_2GT_80Teet_40Bore_registro_R Pose { translation -1.08853898117545e-16 2.08166817117217e-17 -0.00700000000000023
                 rotation 8.61966122537478e-16 -3.79981391299516e-16 1 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.68 0.72 0.76 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_80Teet_40Bore.stl" ] } castShadows FALSE } ] } SliderJoint {
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_80Teet_40Bore.stl" ] } castShadows FALSE } ] } Emitter { translation 0.0259807621135332 -0.015 0 name "iman3_inicio"
+      type "radio" range 0.00261716324192016 maxRange 0.00261716324192016 channel 3
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.0259807621135332 0.015 0 name "iman3_fin"
+      type "radio" range 0.00261716324192016 maxRange 0.00261716324192016 channel 3
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] }
+        Receiver { translation 0.03 0 -0.118695641135201 name "hall4"
+      type "radio" channel 4
+      children [ Shape { appearance PBRAppearance { baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }
+        geometry Box { size 0.008 0.008 0.004 } } ] } SliderJoint {
       jointParameters JointParameters { axis 0 0 -1 position 0.06
         minStop 0.0 maxStop 0.12 dampingConstant 0.2 }
       device [ LinearMotor { name "j4_motor" minPosition 0.0 maxPosition 0.12
@@ -199,7 +232,13 @@ PROTO SCARA [
 # Z-SoporteEfector-1 | accepted_mesh | structural_group_from_assembly
               DEF CAD_Z_SoporteEfector_1 Pose { translation -4.27392496393786e-16 1.89084858881472e-16 0
                 rotation 8.61966122537479e-16 -1.718145741823e-16 1 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.62 0.48 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/Z-SoporteEfector.stl" ] } castShadows FALSE } ] }
+                  geometry Mesh { url [ "../../cad/derivados/stl/Z-SoporteEfector.stl" ] } castShadows FALSE } ] } Emitter { translation 0.03 0 0 name "iman4_inicio"
+      type "radio" range 0.003 maxRange 0.003 channel 4
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.03 0 0.12 name "iman4_fin"
+      type "radio" range 0.003 maxRange 0.003 channel 4
+      children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
+        geometry Cylinder { radius 0.004 height 0.004 } } ] }
         # Marcador del TCP provisional; no es geometría de una pinza.
         Shape { appearance PBRAppearance { baseColor 0.1 0.9 0.3 roughness 0.5 metalness 0 }
           geometry Sphere { radius 0.004 } } ]

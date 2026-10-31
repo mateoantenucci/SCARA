@@ -1,0 +1,16 @@
+# Falla F3: un Hall trabado hace abortar el homing sin declarar referencia.
+# Trabado activo: J1 intenta salir del imán, recorre más que su ancho (5°,
+# más 1° de margen) y
+# el Hall sigue activo.
+< BOOT scara/1 1
+! iman 0 0 0 12000
+! hall 1 activo
+> ENABLE
+> HOME
+~ 25000
+< EV HOMED 4
+~ 8000
+< ERR 12 trabado
+# J4 se había referenciado en este mismo HOME: también la pierde.
+> STATUS
+< S IDLE 0 -602 0 0 300 9 16 0

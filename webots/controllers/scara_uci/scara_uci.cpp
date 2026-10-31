@@ -5,9 +5,14 @@
 //   - Planta simulada, transmisión N1 (D8): cuenta los pasos de M1..M4 y los
 //     convierte en posiciones de J1..J4 con el microstepping, las poleas 4:1,
 //     el acople M1/M2 y el ACME. Todavía sin pérdida de pasos (N2, #15).
-// Argumentos (controllerArgs): --host 127.0.0.1 --port 9000
+//   - Sensores Hall: imanes y KY-003 del modelo; se activan por distancia (D10, D57).
+//   - Arranque cerca de la pose de reposo, con un desvío al azar (D11).
+// Argumentos (controllerArgs): --host 127.0.0.1 --port 9000 --desvio 10
+// (grados; 0 arranca justo en la pose de reposo, como usan los ensayos).
+#include <webots/Emitter.hpp>
 #include <webots/Motor.hpp>
 #include <webots/Node.hpp>
+#include <webots/Receiver.hpp>
 #include <webots/Supervisor.hpp>
 
 #include <algorithm>
@@ -16,6 +21,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <random>
 #include <string>
 
 #ifdef _WIN32
@@ -243,16 +249,22 @@ const double STEPS_PER_REV = scara::STEPS_PER_REV;  // NEMA de 200 pasos y el mi
 const double PULLEY_RATIO = 4.0;                    // poleas 2GT 20:80
 const double LEAD_M = 0.008;               // ACME de 8 mm por vuelta
 const double TWO_PI = 6.283185307179586;
-// Pose inicial de la simulación: la pose de reposo (D30), en radianes y metros.
+// Pose de reposo (D30), en radianes y metros: la simulación arranca cerca.
 const double REST[scara::MOTOR_COUNT] = {0.0, 0.0, 0.0, 0.12};
 const char* const JOINT_BODIES[scara::MOTOR_COUNT] = {"ARM", "FOREARM", "WRIST", "TOOL"};
 
 class Plant {
 public:
-  explicit Plant(webots::Supervisor& robot) {
+  // Arranca cerca de la pose de reposo: J1–J3 con un desvío al azar de hasta
+  // deviation grados, como un robot real que nadie dejó exacto (D11). J4,
+  // abajo. El firmware arranca igual sin referencia.
+  Plant(webots::Supervisor& robot, double deviation) {
     webots::Node* self = robot.getSelf();
+    std::mt19937 random(static_cast<unsigned>(std::random_device()()));
+    std::uniform_real_distribution<double> spread(-deviation, deviation);
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       steps_[i] = 0;
+      start_[i] = REST[i] + (i < 3 ? spread(random) * TWO_PI / 360.0 : 0.0);
       char name[16];
       std::snprintf(name, sizeof name, "j%d_motor", i + 1);
       motors_[i] = robot.getMotor(name);
@@ -260,11 +272,29 @@ public:
       webots::Node* body = self ? self->getFromProtoDef(JOINT_BODIES[i]) : 0;
       webots::Node* joint = body ? body->getParentNode() : 0;
       if (joint) {
-        joint->setJointPosition(REST[i]);
+        joint->setJointPosition(start_[i]);
       } else {
         std::printf("UCI: no se encontró la articulación J%d; queda en la pose del mundo\n", i + 1);
       }
+      // Sensores Hall (D10, D57): un KY-003 (Receiver) y dos imanes (Emitter
+      // con su alcance) por articulación, en SCARA.proto.
+      std::snprintf(name, sizeof name, "hall%d", i + 1);
+      webots::Receiver* sensor = robot.getReceiver(name);
+      sensors_[i] = sensor ? robot.getFromDevice(sensor) : 0;
+      for (int end = 0; end < 2; ++end) {
+        std::snprintf(name, sizeof name, "iman%d_%s", i + 1, end == 0 ? "inicio" : "fin");
+        webots::Emitter* magnet = robot.getEmitter(name);
+        magnets_[2 * i + end] = magnet ? robot.getFromDevice(magnet) : 0;
+        reach_[2 * i + end] = magnet ? magnet->getRange() : 0.0;
+      }
+      if (!sensors_[i] || !magnets_[2 * i] || !magnets_[2 * i + 1]) {
+        std::printf("UCI: faltan el sensor o los imanes de J%d en el modelo; su Hall no se activa\n", i + 1);
+      }
     }
+    std::printf("UCI: arranca a %.2f°, %.2f°, %.2f° de la pose de reposo\n", (start_[0] - REST[0]) * 360 / TWO_PI,
+                (start_[1] - REST[1]) * 360 / TWO_PI, (start_[2] - REST[2]) * 360 / TWO_PI);
+    std::fflush(stdout);
+    hall_ = 0;
     apply();
   }
 
@@ -284,16 +314,43 @@ public:
     // pasos; el firmware no se entera (no hay encoders).
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       if (!motors_[i]) continue;
-      double target = REST[i] + joints[i];
+      double target = start_[i] + joints[i];
       double low = motors_[i]->getMinPosition(), high = motors_[i]->getMaxPosition();
       if (low < high) target = std::max(low, std::min(high, target));  // 0 y 0: sin límites
       motors_[i]->setPosition(target);
     }
   }
 
+  // El KY-003 se activa si uno de sus imanes está más cerca que su alcance.
+  // Es la regla del Emitter de radio de Webots, pero Webots no entrega
+  // paquetes entre dispositivos del mismo robot: la planta mide la distancia
+  // entre las posiciones de los dos nodos en el mundo (D57). Sale de la
+  // geometría del modelo, no de la posición de las articulaciones.
+  void sense() {
+    hall_ = 0;
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
+      if (!sensors_[i]) continue;
+      const double* sensor = sensors_[i]->getPosition();
+      for (int end = 0; end < 2; ++end) {
+        webots::Node* magnet = magnets_[2 * i + end];
+        if (!magnet) continue;
+        const double* position = magnet->getPosition();
+        double dx = position[0] - sensor[0], dy = position[1] - sensor[1], dz = position[2] - sensor[2];
+        if (std::sqrt(dx * dx + dy * dy + dz * dz) <= reach_[2 * i + end]) hall_ |= static_cast<uint8_t>(1 << i);
+      }
+    }
+  }
+
+  uint8_t hall() const { return hall_; }
+
 private:
   long steps_[scara::MOTOR_COUNT];
+  double start_[scara::MOTOR_COUNT];  // pose real al arrancar, en radianes y metros
   webots::Motor* motors_[scara::MOTOR_COUNT];
+  webots::Node* sensors_[scara::MOTOR_COUNT];
+  webots::Node* magnets_[2 * scara::MOTOR_COUNT];
+  double reach_[2 * scara::MOTOR_COUNT];  // alcance de cada imán, en metros
+  uint8_t hall_;
 };
 
 // --- Capa de hardware de simulación ------------------------------------
@@ -310,7 +367,7 @@ public:
     std::printf("UCI: drivers %s\n", on ? "con corriente" : "sin corriente");
     std::fflush(stdout);
   }
-  uint8_t readHall() { return 0; }  // los Hall llegan con el homing (#8)
+  uint8_t readHall() { return plant_.hall(); }
   int readByte() { return link_.readByte(); }
   void write(const char* text) { link_.write(text); }
 
@@ -325,19 +382,22 @@ private:
 int main(int argc, char** argv) {
   std::string host = "127.0.0.1";
   int port = 9000;
+  double deviation = 10.0;
   for (int i = 1; i + 1 < argc; i += 2) {
     if (std::strcmp(argv[i], "--host") == 0) host = argv[i + 1];
     else if (std::strcmp(argv[i], "--port") == 0) port = std::atoi(argv[i + 1]);
+    else if (std::strcmp(argv[i], "--desvio") == 0) deviation = std::atof(argv[i + 1]);
   }
   webots::Supervisor robot;
   const int timestep = static_cast<int>(robot.getBasicTimeStep());
-  Plant plant(robot);
+  Plant plant(robot, deviation);
   TcpClient link(host, port);
   WebotsHal hal(robot, plant, link);
   scara::Firmware firmware(hal);
   bool booted = false;
   while (robot.step(timestep) != -1) {
     link.service();
+    plant.sense();
     // Como el UNO, que se reinicia cuando se abre el puerto USB, el firmware
     // arranca con la primera conexión y anuncia BOOT. Las reconexiones
     // siguientes no lo reinician: la URC saluda con HELLO.

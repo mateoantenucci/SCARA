@@ -1,0 +1,17 @@
+# Falla F3: trabado inactivo. J3 recorre todo su camino sin que su Hall se
+# active y el homing aborta sin declarar referencia (búsqueda acotada).
+< BOOT scara/1 1
+! iman 0 0 0 12000
+! hall 3 inactivo
+> ENABLE
+> HOME
+~ 25000
+< EV HOMED 4
+~ 21000
+< EV HOMED 1
+~ 21000
+< EV HOMED 2
+~ 40000
+< ERR 11 ausente
+> STATUS
+< S IDLE 0 * * * 300 * 16 0
