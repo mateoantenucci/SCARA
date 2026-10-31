@@ -15,7 +15,7 @@ JOG_SPEED_MAX = 1000         # centésimas por segundo
 SEG_NUMBER_MAX = 999999999   # n de SEG: hasta 9 cifras, desde 1
 SEG_MS_MAX = 1000            # duración máxima de un segmento
 SEG_UNITS_MAX = 99999        # |q| máximo de un segmento, en centésimas
-MODES = ("OFF", "IDLE", "JOG", "RUN")
+MODES = ("OFF", "IDLE", "JOG", "RUN", "HOMING")
 # Órdenes sin argumentos.
 SIMPLE_ORDERS = ("HELLO", "PING", "STATUS", "ENABLE", "DISABLE", "STOP", "HALT", "ZERO")
 # Código: (palabra, causa). Son estables: se agregan, no se renumeran.
@@ -29,6 +29,9 @@ ERRORS = {
     7: ("referencia", "SEG sin el robot referenciado"),
     8: ("velocidad", "el segmento supera la velocidad de un motor"),
     9: ("cola", "SEG antes del OK del anterior, con la cola llena"),
+    10: ("fin", "el jog frenó al activarse un Hall: fin de carrera"),
+    11: ("ausente", "homing abortado: el Hall no apareció en el recorrido o el tiempo máximos"),
+    12: ("trabado", "homing abortado: el Hall no se apagó, está trabado activo"),
 }
 INTEGER = re.compile(r"-?[0-9]+")
 UNSIGNED = re.compile(r"[0-9]{1,9}")      # como parseUnsigned del firmware
@@ -62,6 +65,9 @@ def check_order(line):
         if arguments != ["STOP"] and not _valid_jog(arguments):
             raise ProtocolError(2, "se espera JOG j ± vel, JOG Mm ± vel (j y m de 1 a 4, vel de 1 a 1000) "
                                    "o JOG STOP")
+    elif command == "HOME":
+        if len(arguments) > 1 or (arguments and not (UNSIGNED.fullmatch(arguments[0]) and 1 <= int(arguments[0]) <= 4)):
+            raise ProtocolError(2, "se espera HOME o HOME j, con j de 1 a 4")
     elif command == "SEG":
         if not _valid_segment(arguments):
             raise ProtocolError(2, f"se espera SEG n ms q1 q2 q3 q4 (n de 1 a {SEG_NUMBER_MAX}, ms de 1 a "
@@ -116,6 +122,13 @@ def parse_message(line):
         return {"kind": kind, "protocol": rest[0], "version": integer(rest[1])}
     if kind == "S":
         return dict(parse_status(rest), kind="S")
+    if kind == "EV":
+        if len(rest) != 2 or rest[0] != "HOMED":
+            raise ValueError("EV mal formado")
+        joint = integer(rest[1])
+        if not 1 <= joint <= 4:
+            raise ValueError("EV HOMED de un eje que no existe")
+        return {"kind": "EV", "event": "HOMED", "joint": joint}
     if kind == "OK":
         if len(rest) != 1:
             raise ValueError("OK mal formado")

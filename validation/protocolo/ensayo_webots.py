@@ -50,7 +50,7 @@ def launch():
 
 # El mismo mundo, con el controlador apuntando al puerto 9100.
 world = (ROOT / "webots" / "worlds" / "scara_uci.wbt").read_text(encoding="utf-8")
-WORLD.write_text(world.replace('controller "scara_uci"', 'controller "scara_uci"\n  controllerArgs ["--port", "9100"]'),
+WORLD.write_text(world.replace('controller "scara_uci"', 'controller "scara_uci"\n  controllerArgs ["--port", "9100", "--desvio", "0"]'),
                  encoding="utf-8")
 session = Session(port=9100)
 webots = launch()

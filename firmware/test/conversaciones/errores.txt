@@ -37,9 +37,9 @@
 # Solo ASCII imprimible: cualquier otro byte invalida la línea entera.
 > HELLO ñ
 < ERR 1 comando
-# HOME llega con el issue #8; hasta entonces no se conoce.
+# HOME bien escrito, pero sin corriente.
 > HOME
-< ERR 1 comando
+< ERR 6 deshabilitado
 # La forma se revisa antes que el estado: sin corriente, un JOG mal escrito
 # es ERR 2 y uno bien escrito, ERR 6.
 > JOG 1 + 0

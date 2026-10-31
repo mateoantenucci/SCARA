@@ -345,6 +345,96 @@ class SegmentTests(unittest.TestCase):
             self.session.jog(1, "+")
 
 
+class HomingTests(unittest.TestCase):
+    """Homing (D11) y estacionar: la URC sigue los EV HOMED y vuelve al reposo."""
+
+    def setUp(self):
+        self.session = Session(port=0)
+        self.addCleanup(self.session.close)
+        self.uci = FakeUci(self.session.port)
+        self.addCleanup(self.uci.close)
+        self.assertEqual(self.uci.receive(), "HELLO")
+        self.uci.send("S IDLE 0 0 0 0 12000 8 16 0")
+        wait_for(lambda: self.session.snapshot()["status"])
+
+    def test_homing_follows_the_axes_and_parks(self):
+        self.session.home()
+        self.assertEqual(self.uci.receive(), "HOME")
+        self.uci.send("S HOMING 0 0 0 0 11000 0 16 0")
+        for joint in (4, 1, 2):
+            self.uci.send(f"EV HOMED {joint}")
+        state = wait_for(lambda: (s := self.session.snapshot())["homing"]["axes"] == [4, 1, 2] and s)
+        self.assertEqual(state["homing"]["state"], "en curso")
+        with self.assertRaisesRegex(ValueError, "homing"):
+            self.session.jog(1, "+")
+        self.uci.send("EV HOMED 3")
+        self.uci.send("S IDLE 15 -12999 -12999 -14501 300 15 16 0")
+        # Con los cuatro ejes, la URC vuelve sola al reposo con un PTP.
+        fields = self.uci.receive().split()
+        self.assertEqual(fields[:2], ["SEG", "1"])
+        state = self.session.snapshot()
+        self.assertEqual(state["homing"]["state"], "terminado")
+        self.assertEqual(state["tramo"]["target"], [0, 0, 0, 12000])
+        self.assertEqual(state["tramo"]["speed"], 0.5)
+
+    def test_a_stuck_hall_aborts_without_parking(self):
+        self.session.home()
+        self.assertEqual(self.uci.receive(), "HOME")
+        self.uci.send("EV HOMED 4")
+        self.uci.send("ERR 12 trabado")
+        state = wait_for(lambda: (s := self.session.snapshot())["homing"]["state"] != "en curso" and s)
+        self.assertIn("ERR 12 trabado", state["homing"]["state"])
+        self.uci.send("S IDLE 0 -500 0 0 300 9 16 0")
+        self.assertTrue(self.uci.silent(0.3))
+
+    def test_a_rejected_or_silent_end_closes_the_homing(self):
+        # El firmware rechaza el HOME: S nunca muestra HOMING.
+        self.session.home()
+        self.assertEqual(self.uci.receive(), "HOME")
+        with self.assertRaisesRegex(ValueError, "ya está en curso"):
+            self.session.home()
+        self.uci.send("ERR 5 ocupado")
+        self.uci.send("S IDLE 0 0 0 0 12000 8 16 0")
+        self.assertEqual(self.session.snapshot()["homing"]["state"], "en curso")
+        time.sleep(1.1)
+        self.uci.send("S IDLE 0 0 0 0 12000 8 16 0")
+        wait_for(lambda: "no empezó" in self.session.snapshot()["homing"]["state"])
+        # Empezó y el robot quedó quieto sin los cuatro ejes: un ERR que no llegó.
+        self.uci.send("S IDLE 0 0 0 0 12000 8 16 0")
+        self.session.home()
+        self.assertEqual(self.uci.receive(), "HOME")
+        self.uci.send("S HOMING 0 0 0 0 11000 0 16 0")
+        self.uci.send("EV HOMED 4")
+        self.uci.send("S IDLE 0 0 0 0 300 8 16 0")
+        wait_for(lambda: "sin terminar" in self.session.snapshot()["homing"]["state"])
+
+    def test_stop_aborts_the_homing(self):
+        self.session.home()
+        self.assertEqual(self.uci.receive(), "HOME")
+        self.session.stop()
+        self.assertEqual(self.uci.receive(), "STOP")
+        self.assertIn("frenado", self.session.snapshot()["homing"]["state"])
+
+    def test_homing_needs_power_and_a_still_robot(self):
+        self.uci.send("S OFF 0 0 0 0 12000 8 16 0")
+        wait_for(lambda: self.session.snapshot()["status"]["mode"] == "OFF")
+        with self.assertRaisesRegex(ValueError, "sin corriente"):
+            self.session.home()
+        self.uci.send("S JOG 0 0 0 0 12000 8 16 0")
+        wait_for(lambda: self.session.snapshot()["status"]["mode"] == "JOG")
+        with self.assertRaisesRegex(ValueError, "moviendo"):
+            self.session.home()
+
+    def test_park_needs_a_referenced_robot(self):
+        with self.assertRaisesRegex(ValueError, "referenciado"):
+            self.session.park()
+        self.uci.send("S IDLE 15 3000 -6000 2000 8000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["referenced"])
+        plan = self.session.park()
+        self.assertEqual(plan["target"], [0, 0, 0, 12000])
+        self.assertTrue(self.uci.receive().startswith("SEG 1 20 "))
+
+
 class HttpTests(unittest.TestCase):
     def setUp(self):
         self.session = Session(port=0)
@@ -383,7 +473,7 @@ class HttpTests(unittest.TestCase):
         self.assertEqual(status, 400)
         status, _ = self.request("POST", "/api/nada", {})
         self.assertEqual(status, 404)
-        for path in ("/api/enable", "/api/disable", "/api/stop", "/api/halt"):
+        for path in ("/api/enable", "/api/disable", "/api/stop", "/api/halt", "/api/home", "/api/park"):
             with self.subTest(path=path):
                 status, _ = self.request("POST", path, {})
                 self.assertEqual(status, 409)

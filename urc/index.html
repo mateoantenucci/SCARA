@@ -34,6 +34,7 @@
     .fields { margin: 10px 0; }
     .fields input { width: 7em; }
     input, select { font: inherit; padding: 6px; border: 1px solid #a9bcc4; border-radius: 6px; }
+    dialog { border: 1px solid #a9bcc4; border-radius: 14px; max-width: 420px; }
     pre { white-space: pre-wrap; font: .8rem ui-monospace, monospace; background: #f4f7f8; padding: 10px; border-radius: 6px; max-height: 260px; overflow: auto; margin: 0; }
   </style>
 </head>
@@ -59,10 +60,43 @@
     </div>
   </section>
 
+  <section class="card" aria-label="Referencia">
+    <h2>Referencia</h2>
+    <p class="muted">Sin referencia, el robot no sabe dónde está: solo se permite jog articular lento, que el Hall de cada eje frena como fin de carrera. El homing busca los Hall en orden J4, J1, J2, J3 y después vuelve a la pose de reposo.</p>
+    <div class="row">
+      <button id="home">Homing…</button>
+      <button id="zero">Referencia manual…</button>
+      <button id="park">Estacionar…</button>
+    </div>
+    <p class="muted">Homing: <strong id="homing">—</strong></p>
+    <div id="reference-feedback" class="feedback" role="status" aria-live="polite"></div>
+  </section>
+
+  <dialog id="rest-dialog">
+    <h2 id="rest-title">¿El robot está en la pose de reposo?</h2>
+    <p>Brazo estirado: J1 = J2 = J3 = 0° y J4 abajo. Visto desde arriba:</p>
+    <svg viewBox="0 0 320 120" width="320" height="120" role="img" aria-label="Pose de reposo vista desde arriba: brazo y antebrazo alineados hacia adelante desde la torre">
+      <circle cx="40" cy="60" r="26" fill="#d3dfe3" stroke="#49616b"/>
+      <text x="40" y="104" font-size="11" text-anchor="middle" fill="#49616b">torre</text>
+      <rect x="40" y="52" width="120" height="16" rx="8" fill="#c96a55"/>
+      <rect x="160" y="54" width="120" height="12" rx="6" fill="#3a7bb0"/>
+      <circle cx="40" cy="60" r="5" fill="#172b36"/><circle cx="160" cy="60" r="5" fill="#172b36"/>
+      <circle cx="280" cy="60" r="7" fill="#3aa078"/>
+      <text x="100" y="44" font-size="11" text-anchor="middle" fill="#49616b">brazo</text>
+      <text x="220" y="44" font-size="11" text-anchor="middle" fill="#49616b">antebrazo</text>
+      <text x="280" y="90" font-size="11" text-anchor="middle" fill="#49616b">J4 abajo</text>
+    </svg>
+    <p id="rest-help" class="muted"></p>
+    <div class="row">
+      <button id="rest-confirm">Sí, está en reposo</button>
+      <button id="rest-cancel">Cancelar</button>
+    </div>
+  </dialog>
+
   <section class="card" aria-label="Posición estimada por pasos">
     <h2>Posición estimada por pasos</h2>
     <table>
-      <thead><tr><th>Articulación</th><th>Estimada</th></tr></thead>
+      <thead><tr><th>Articulación</th><th>Estimada</th><th>Hall</th></tr></thead>
       <tbody id="joints"></tbody>
     </table>
     <p class="muted">Rumbo de la herramienta (J1 + J2 + J3): <strong id="heading">—</strong></p>
@@ -85,7 +119,6 @@
     </div>
     <div class="row" style="margin-top: 12px">
       <label><input type="checkbox" id="by-motor"> Modo de prueba: jog por motor (M1–M4, sin compensar el acople)</label>
-      <button id="zero">Referencia manual (pose de reposo)…</button>
     </div>
     <div id="feedback" role="status" aria-live="polite"></div>
   </section>
@@ -139,7 +172,7 @@ const KEYS = {
   KeyQ: [3, "-"], KeyE: [3, "+"], KeyR: [4, "-"], KeyF: [4, "+"],
 };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
-const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos" };
+const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos", HOMING: "Homing" };
 let held = null, timer = null, lastStatus = null;
 
 function format(joint, value) {
@@ -239,11 +272,50 @@ document.getElementById("halt").addEventListener("click", () => order("/api/halt
 document.getElementById("disable").addEventListener("click", () => {
   if (confirm("Sin corriente, J4 cae y la referencia se pierde. ¿Deshabilitar los motores?")) order("/api/disable");
 });
-document.getElementById("zero").addEventListener("click", () => {
-  if (confirm("¿El robot está en la pose de reposo? Brazo estirado (J1 = J2 = J3 = 0°) y J4 abajo.")) {
-    post("/api/zero").then(() => show(null), show);
+// Homing y referencia manual parten de la pose de reposo (D30): la página la
+// dibuja y pide confirmarla. Sin referencia, nadie verifica choques.
+const restDialog = document.getElementById("rest-dialog");
+const referenceFeedback = (error) => {
+  document.getElementById("reference-feedback").textContent = error ? error.message : "";
+};
+let restAction = null;
+function askRest(title, help, path) {
+  stopJog();
+  document.getElementById("rest-title").textContent = title;
+  document.getElementById("rest-help").textContent = help;
+  restAction = path;
+  restDialog.showModal();
+}
+document.getElementById("rest-confirm").addEventListener("click", () => {
+  restDialog.close();
+  post(restAction).then(() => referenceFeedback(null), referenceFeedback);
+});
+document.getElementById("rest-cancel").addEventListener("click", () => restDialog.close());
+document.getElementById("home").addEventListener("click", () => askRest(
+  "Homing: ¿el robot está en la pose de reposo?",
+  "Si no lo está, cancelá y llevalo con jog articular. El homing sube J4 y busca J1, J2 y J3 en su extremo negativo; al terminar, vuelve a esta pose.",
+  "/api/home"));
+document.getElementById("zero").addEventListener("click", () => askRest(
+  "Referencia manual: ¿el robot está exactamente en la pose de reposo?",
+  "Se declara esta pose como referencia, por las marcas visuales. Es menos precisa que el homing.",
+  "/api/zero"));
+document.getElementById("park").addEventListener("click", () => {
+  stopJog();
+  if (confirm("¿Estacionar? El robot va a la pose de reposo con un tramo PTP al 50 %.")) {
+    post("/api/park").then(() => referenceFeedback(null), referenceFeedback);
   }
 });
+
+const AXES = [4, 1, 2, 3];
+function showHoming(homing) {
+  const text = document.getElementById("homing");
+  if (!homing) {
+    text.textContent = "—";
+    return;
+  }
+  const axes = AXES.map((axis) => `J${axis} ${homing.axes.includes(axis) ? "✓" : "…"}`).join(" · ");
+  text.textContent = `${axes} · ${homing.state}`;
+}
 
 // Ir a una pose (PTP): primero planifica y muestra la duración; después envía.
 const ptpKind = () => document.querySelector("input[name=ptp-kind]:checked").value;
@@ -314,6 +386,7 @@ async function refresh() {
     const status = state.connected ? state.status : null;
     lastStatus = status;
     showTramo(state.tramo);
+    showHoming(state.homing);
     const reference = document.getElementById("reference");
     const homed = state.connected && state.referenced;
     reference.textContent = homed ? "Referenciado" : "Sin referencia";
@@ -322,7 +395,8 @@ async function refresh() {
     mode.textContent = status ? MODES[status.mode] : "—";
     mode.className = "badge" + (status && status.mode === "OFF" ? " warn" : "");
     document.getElementById("joints").innerHTML = NAMES.map((name, joint) =>
-      `<tr><td>${name}</td><td>${status ? format(joint, status.position[joint]) : "—"}</td></tr>`).join("");
+      `<tr><td>${name}</td><td>${status ? format(joint, status.position[joint]) : "—"}</td>` +
+      `<td>${status ? (status.hall >> joint & 1 ? "activo" : "—") : ""}</td></tr>`).join("");
     document.getElementById("heading").textContent = status
       ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—";
     document.getElementById("errors").textContent = state.errors.concat(state.rejected.map((line) => `No entendida: ${line}`)).join("\n");

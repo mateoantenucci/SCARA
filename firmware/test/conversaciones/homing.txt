@@ -1,0 +1,53 @@
+# Homing desde la pose de reposo (D11): J4, J1, J2 y J3. En cada eje: rápido
+# hasta el Hall, retroceso hasta que se apague y 3° (3 mm) más, y vuelta
+# lenta al mismo flanco. La referencia es el flanco (HALL_EDGE en config.h):
+# J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba.
+# Los imanes siguen a la geometría: el robot está en reposo, J4 abajo, sobre
+# su imán de fin.
+< BOOT scara/1 1
+! iman 0 0 0 12000
+> ENABLE
+> STATUS
+< S IDLE 0 0 0 0 0 8 16 0
+> HOME
+> STATUS
+< S HOMING 0 0 0 0 * 8 16 0
+# J4 sale de su imán de abajo, sube hasta el de arriba y se referencia.
+~ 25000
+< EV HOMED 4
+# J1, con M1 y M2 juntos: J2 no cambia mientras se busca J1.
+~ 21000
+< EV HOMED 1
+# J2, con M2 solo.
+~ 21000
+< EV HOMED 2
+~ 23000
+< EV HOMED 3
+> STATUS
+< S IDLE 15 -12999 -12999 -14501 300 15 16 0
+# La referencia queda a menos de un paso del flanco: −13000 centésimas no son
+# un número entero de pasos (5,625 centésimas cada uno con 1/8).
+= M1 -2312 M2 -4624 M3 -2578 M4 -23399
+# Otro homing de J4, que ya tenía referencia y está sobre su imán: retrocede,
+# se aparta y vuelve lento al mismo flanco.
+> HOME 4
+~ 9000
+< EV HOMED 4
+> STATUS
+< S IDLE 15 -12999 -12999 -14501 300 15 16 0
+# STOP en pleno homing (mientras busca J4): frena y los ejes de ese HOME
+# quedan sin referencia.
+> HOME
+~ 1000
+> STOP
+> STATUS
+< S IDLE 0 -12999 -12999 -14501 * * 16 0
+# Errores: argumento fuera de rango y homing en pleno jog.
+> HOME 5
+< ERR 2 argumentos
+> HOME 1 2
+< ERR 2 argumentos
+> JOG 3 + 100
+> HOME
+< ERR 5 ocupado
+> JOG STOP

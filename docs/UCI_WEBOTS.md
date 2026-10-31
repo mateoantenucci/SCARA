@@ -64,7 +64,7 @@ Hay que correrlo desde la raíz del repo. Llamar a ese `make` desde Git Bash no 
 
 1. `python3 -m urc.app` (Windows: `python -m urc.app`) y abrir <http://127.0.0.1:8766>.
 2. En Webots, abrir `webots/worlds/scara_uci.wbt` y darle play. La consola anuncia `UCI: conectada a la URC`. El orden no importa: si Webots arranca primero, reintenta.
-3. Apretar **Habilitar motores** y, si el robot está en la pose de reposo, **Referencia manual**.
+3. Apretar **Habilitar motores** y después **Homing…**: la página dibuja la pose de reposo y pide confirmarla. La simulación arranca cerca del reposo, con un desvío al azar de hasta ±10° en J1–J3 (`--desvio` en `controllerArgs`; 0 arranca justo en el reposo). El homing referencia J4, J1, J2 y J3 con sus sensores Hall y vuelve solo al reposo. **Referencia manual…** declara la pose de reposo sin homing, y **Estacionar…** lleva el robot al reposo con un PTP.
 4. Mantener **D** o **A** con la página enfocada: J1 gira y el antebrazo sigue alineado con el brazo. **W/S** mueven J2, **Q/E** J3 y **R/F** J4 (R sube).
 5. Para ver el acople, marcar **«Modo de prueba: jog por motor»** y mantener **D**: solo gira M1, el antebrazo conserva su orientación en el mundo y el rumbo de la herramienta no cambia.
 6. En **«Ir a una pose (PTP)»**, escribir J1–J4 (o X, Y, Z y rumbo) y apretar **«Ir a la pose…»**: la URC verifica límites y choques, muestra la duración y pide confirmación. Las cuatro articulaciones se mueven a la vez y llegan juntas. **Esc** o **Stop** frenan con rampa.

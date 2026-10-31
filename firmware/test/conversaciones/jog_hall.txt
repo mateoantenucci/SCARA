@@ -1,0 +1,45 @@
+# Sin referencia, el jog es lento y el Hall hace de fin de carrera (D21).
+# J1 arranca en −125°, a 5° de su imán.
+< BOOT scara/1 1
+! iman -12500 0 0 6000
+> ENABLE
+# Sin referencia, el firmware limita el jog a 5 °/s: en 1 s, 88 pasos.
+> JOG 1 - 1000
++ 1000
+> STATUS
+< S JOG 0 -495 0 0 0 0 16 0
+# Al activarse el Hall, el jog frena solo.
++ 200
+< ERR 10 fin
+> STATUS
+< S IDLE 0 * 0 0 0 1 16 0
+# Sobre el imán, el jog puede salir de él.
+> JOG 1 + 450
+~ 1000
+> JOG STOP
+> STATUS
+< S IDLE 0 * 0 0 0 0 16 0
+# De vuelta hacia el imán: frena otra vez al activarse.
+> JOG 1 - 450
+~ 2000
+< ERR 10 fin
+> STATUS
+< S IDLE 0 * 0 0 0 1 16 0
+# Con ese Hall activo, otro jog hacia el mismo lado no arranca: iría al tope.
+> JOG 1 - 450
+< ERR 10 fin
++ 500
+> STATUS
+< S IDLE 0 * 0 0 0 1 16 0
+# Si el jog arranca sobre un imán sin haber frenado ahí (la UCI se reinició
+# encima), puede ir para cualquier lado; si sigue hacia el tope, frena después
+# de recorrer el ancho del imán (5°) y 1° de margen: en el robot real, el imán
+# termina en el tope.
+! reinicio
+< BOOT scara/1 1
+> ENABLE
+> JOG 1 - 450
+~ 2000
+< ERR 10 fin
+> STATUS
+< S IDLE 0 -608 0 0 0 1 16 0

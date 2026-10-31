@@ -26,6 +26,10 @@ PING_PERIOD = 0.25           # s (D27)
 JOG_SPEED = 500              # centésimas por segundo: jog articular lento
 JOG_HOLD = 0.5               # s sin renovar el jog desde la página => JOG STOP
 ALL_HOMED = 0x0F
+REST = (0, 0, 0, 12000)      # pose de reposo (D30), en centésimas
+PARK_SPEED = 0.5             # «Estacionar» y la vuelta al reposo del homing (D56)
+HOME_ORDER = (4, 1, 2, 3)    # D11
+HOME_START = 1.0             # s para que S muestre HOMING después de enviar HOME
 
 
 class Session:
@@ -56,6 +60,8 @@ class Session:
         self.next_segment = 1        # los números no se repiten en la sesión
         self.last_ok = None
         self.tramo = None            # el último tramo planificado, para la página
+        self.homing = None           # el último homing: ejes encontrados y estado
+        self.park_requested = False  # homing terminado: falta volver al reposo
         # El modelo para planificar se lee una vez.
         self.config = load_config()
         self.checker = CollisionChecker(self.config)
@@ -114,6 +120,26 @@ class Session:
             self.message = f"Tramo PTP en curso: {len(lines)} segmentos, {summary['duration_s']:.2f} s"
         return summary
 
+    def home(self):
+        """Homing de los cuatro ejes (D11); al terminar, la URC estaciona el robot.
+
+        La página pide antes confirmar que el robot está en la pose de reposo
+        (D30): sin referencia, nadie verifica choques.
+        """
+        with self.lock:
+            self._require_robot()
+            if self.homing is not None and self.homing["state"] == "en curso":
+                raise ValueError("El homing ya está en curso")
+            self._require_still("el homing")
+            self.homing = {"axes": [], "state": "en curso", "park": True, "seen": False,
+                           "sent": time.monotonic()}
+            self.message = "Homing en curso: J4, J1, J2 y J3"
+            self._queue("HOME")
+
+    def park(self):
+        """Estacionar: PTP a la pose de reposo (D30), con el robot referenciado."""
+        return self.move_ptp(REST, PARK_SPEED)
+
     def jog(self, joint, direction, motor=False):
         """Mantiene el jog mientras la página lo renueve antes de jog_hold.
 
@@ -130,6 +156,8 @@ class Session:
             self._require_robot()
             if self._tramo_running():
                 raise ValueError("Hay un tramo en curso: frenalo con Stop antes del jog")
+            if self.status is not None and self.status["mode"] == "HOMING":
+                raise ValueError("El homing está en curso: frenalo con Stop antes del jog")
             self.jog_deadline = time.monotonic() + self.jog_hold
             if self.jogging != (joint, direction, motor):
                 self.jogging = (joint, direction, motor)
@@ -179,6 +207,7 @@ class Session:
                 "jog": None if self.jogging is None else dict(zip(("joint", "direction", "motor"), self.jogging)),
                 "segments": {"pending": len(self.segments), "in_flight": self.in_flight, "last_ok": self.last_ok},
                 "tramo": tramo,
+                "homing": None if self.homing is None else dict(self.homing, axes=list(self.homing["axes"])),
                 "traffic": list(self.traffic),
                 "errors": list(self.errors),
                 "rejected": list(self.rejected),
@@ -196,7 +225,60 @@ class Session:
             self._require_robot()
             self.jogging = None
             self._cancel_segments("frenado por el operador")
+            self._end_homing("frenado por el operador")
             self._queue(line)
+
+    def _require_still(self, what):
+        if self.status is None:
+            raise ValueError("Todavía no llegó el estado de la UCI")
+        if self.status["mode"] == "OFF":
+            raise ValueError("Los motores están sin corriente: habilitalos primero")
+        if self.status["mode"] != "IDLE" or self.jogging is not None or self._tramo_running():
+            raise ValueError(f"El robot se está moviendo: esperá a que frene antes de {what}")
+
+    def _follow_homing(self):
+        """El modo de S dice cómo va el homing.
+
+        Si terminó sin los cuatro ejes, abortó; si nunca empezó, la UCI rechazó
+        el HOME (el ERR dice por qué). Con los cuatro y el robot quieto, pide
+        volver al reposo.
+        """
+        homing, mode = self.homing, self.status["mode"]
+        if homing is None:
+            return
+        if homing["state"] == "terminado" and homing["park"] and mode == "IDLE" and self.status["homed"] == ALL_HOMED:
+            homing["park"] = False
+            self.park_requested = True
+        if homing["state"] != "en curso":
+            return
+        if mode == "HOMING":
+            homing["seen"] = True
+        elif homing["seen"] and len(homing["axes"]) < len(HOME_ORDER):
+            self._end_homing("el robot se detuvo sin terminar")
+        elif not homing["seen"] and time.monotonic() - homing["sent"] > HOME_START:
+            self._end_homing("la UCI no empezó el homing")
+
+    def _end_homing(self, reason):
+        if self.homing is not None and self.homing["state"] == "en curso":
+            self.homing.update(state=f"abortado: {reason}", park=False)
+
+    def _park_after_homing(self):
+        """Con los cuatro ejes encontrados y el robot quieto, vuelve al reposo (D11, D56).
+
+        Lo planifica la URC, como cualquier PTP: verifica choques en el camino
+        desde las referencias, con J1 y J2 plegados en −130°.
+        """
+        if not self.park_requested:
+            return
+        self.park_requested = False
+        try:
+            plan = self.park()
+        except (ValueError, ConnectionError) as exc:
+            with self.lock:
+                self.message = f"Homing terminado, pero no se pudo volver al reposo: {exc}"
+            return
+        with self.lock:
+            self.message = f"Homing terminado; volviendo al reposo en {plan['duration_s']:.1f} s"
 
     def _segments_pending(self):
         return bool(self.segments) or self.in_flight is not None
@@ -283,11 +365,18 @@ class Session:
             elif kind == "S":
                 self.status = {key: value for key, value in message.items() if key != "kind"}
                 self.status_time = time.monotonic()
+                self._follow_homing()
                 # Todo enviado y el robot quieto antes del último segmento: el
                 # firmware frenó por algo que la URC no vio (un ERR ilegible).
                 if (self.status["mode"] == "IDLE" and not self._segments_pending()
                         and self._tramo_running()):
                     self._cancel_segments("el robot se detuvo antes de terminar")
+            elif kind == "EV":
+                if self.homing is not None and message["joint"] not in self.homing["axes"]:
+                    self.homing["axes"].append(message["joint"])
+                    if sorted(self.homing["axes"]) == sorted(HOME_ORDER) and self.homing["state"] == "en curso":
+                        self.homing["state"] = "terminado"
+                        self.message = "Homing terminado: los cuatro ejes referenciados"
             elif kind == "OK":
                 self.last_ok = message["number"]
                 if message["number"] == self.in_flight:
@@ -299,12 +388,15 @@ class Session:
                 if self._tramo_running():
                     self._cancel_segments(f"la UCI respondió ERR {message['code']} {message['word']}")
                     self.message = f"Tramo cancelado: ERR {message['code']} {message['word']}"
+                if message["code"] in (4, 11, 12):  # los que abortan el homing
+                    self._end_homing(f"ERR {message['code']} {message['word']}: {message['cause']}")
             self.greeted = True
 
     def _booted(self):
         """La UCI arrancó: toda referencia y toda orden pendiente quedan sin valor."""
         self.boots += 1
         self._cancel_segments("la UCI se reinició")
+        self._end_homing("la UCI se reinició")
         self.status = None
         self.jogging = None
         self._discard_outgoing()
@@ -364,6 +456,7 @@ class Session:
                     # Lo que pasa de 64 bytes sin LF ya es una línea inválida.
                     buffer = buffer[:LINE_MAX]
                 self._send_pending(client, time.monotonic())
+                self._park_after_homing()
             except OSError as exc:
                 if client is not None:
                     client.close()

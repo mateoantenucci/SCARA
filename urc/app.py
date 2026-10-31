@@ -23,6 +23,8 @@ ORDERS = {
     "/api/disable": Session.disable,
     "/api/stop": Session.stop,
     "/api/halt": Session.halt,
+    "/api/home": Session.home,
+    "/api/park": Session.park,
 }
 
 

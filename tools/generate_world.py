@@ -1,6 +1,7 @@
 """Genera el SCARA articulado con visuales CAD y física equivalente provisional."""
 
 import json
+import math
 import os
 from pathlib import Path
 import sys
@@ -17,6 +18,53 @@ from integrate_cad import BODY_DEFS, derive
 
 def numbers(values):
     return " ".join(f"{v:.15g}" for v in values)
+
+
+# Sensores Hall (D10, D56): un KY-003 por articulación, en la pieza fija, y dos
+# imanes en la que se mueve, centrados en los extremos del recorrido. En
+# Webots, el imán es un Emitter con su alcance y el KY-003 un Receiver del
+# mismo canal: el Hall se activa cuando el imán está a menos del alcance, así
+# que la activación sale de la geometría, no de leer la posición de las
+# articulaciones. Webots no entrega paquetes dentro de un mismo robot: la
+# distancia la mide la planta (scara_uci.cpp, D57).
+# Por articulación: radio desde el eje (m), ángulo del sensor (rad), centros
+# de los imanes (rad o m) y medio ancho de la zona activa. El flanco del lado
+# negativo es HALL_EDGE en firmware/config.h (tests/test_hall.py lo verifica).
+HALL_HALF_WIDTH = (math.radians(5), math.radians(5), math.radians(5), 0.003)
+HALL_RADIUS = (0.06, 0.04, 0.03, 0.03)
+
+
+def hall_range(joint):
+    """Alcance del imán para que la zona activa mida ±HALL_HALF_WIDTH."""
+    if joint == 3:
+        return HALL_HALF_WIDTH[3]  # imán y sensor alineados: la distancia es el desplazamiento
+    return 2 * HALL_RADIUS[joint] * math.sin(HALL_HALF_WIDTH[joint] / 2)
+
+
+def hall_sensor(joint, origin, height):
+    """KY-003 de Jj+1 en el marco de la pieza fija; origin es el eje de la articulación."""
+    x = origin[0] + (HALL_RADIUS[joint] if joint == 3 else -HALL_RADIUS[joint])
+    return f"""Receiver {{ translation {numbers([x, origin[1], height])} name "hall{joint+1}"
+      type "radio" channel {joint+1}
+      children [ Shape {{ appearance PBRAppearance {{ baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }}
+        geometry Box {{ size 0.008 0.008 0.004 }} }} ] }}"""
+
+
+def hall_magnets(joint, limits, height):
+    """Imanes de Jj+1 en el marco de la pieza que se mueve, con su origen en el eje."""
+    nodes = []
+    for name, center in (("inicio", limits[0]), ("fin", limits[1])):
+        if joint == 3:
+            # J4 baja cuando crece: el imán queda alineado con el sensor con J4 = center.
+            position = [HALL_RADIUS[3], 0, height + center]
+        else:
+            angle = math.pi - center  # el sensor está a 180°: con J = center, el imán queda debajo
+            position = [HALL_RADIUS[joint] * math.cos(angle), HALL_RADIUS[joint] * math.sin(angle), height]
+        nodes.append(f"""Emitter {{ translation {numbers(position)} name "iman{joint+1}_{name}"
+      type "radio" range {hall_range(joint):.15g} maxRange {hall_range(joint):.15g} channel {joint+1}
+      children [ Shape {{ appearance PBRAppearance {{ baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }}
+        geometry Cylinder {{ radius 0.004 height 0.004 }} }} ] }}""")
+    return ' '.join(nodes)
 
 
 def box(size, center, color):
@@ -74,7 +122,7 @@ def build():
 
     tool = f"""DEF TOOL Solid {{
       translation 0 0 {g['tool_z_offset']-q[3]:.15g} name "piston_y_soporte"
-      children [ {visual('tool')}
+      children [ {visual('tool')} {hall_magnets(3, c['limits'][3], 0)}
         # Marcador del TCP provisional; no es geometría de una pinza.
         Shape {{ appearance PBRAppearance {{ baseColor 0.1 0.9 0.3 roughness 0.5 metalness 0 }}
           geometry Sphere {{ radius 0.004 }} }} ]
@@ -90,7 +138,8 @@ def build():
         PositionSensor {{ name "j4_sensor" }} ] endPoint {tool} }}"""
     endpoint = f"""DEF WRIST Solid {{
       translation {g['l2']:.15g} 0 0 rotation 0 0 1 {q[2]:.15g} name "conjunto_z"
-      children [ {visual('wrist')} {slider} ]
+      children [ {visual('wrist')} {hall_magnets(2, c['limits'][2], 0)}
+        {hall_sensor(3, [0, 0], g['tool_z_offset'])} {slider} ]
       boundingObject {collision(cad,'wrist')}
       physics {physics(bodies[2])} }}"""
     anchors = [[0,0,g['shoulder_z']], [g['l1'],0,g['elbow_z_offset']], [g['l2'],0,0]]
@@ -107,7 +156,8 @@ def build():
             group = 'forearm' if axis == 2 else 'arm'
             endpoint = f"""DEF {BODY_DEFS[group]} Solid {{
               translation {numbers(anchors[axis-1])} rotation 0 0 1 {q[axis-1]:.15g} name "{group}"
-              children [ {visual(group)} {joint} ]
+              children [ {visual(group)} {hall_magnets(axis-1, c['limits'][axis-1], 0)}
+                {hall_sensor(axis, anchors[axis][:2], anchors[axis][2])} {joint} ]
               boundingObject {collision(cad,group)}
               physics {physics(bodies[axis-1])} }}"""
     tool_mass, tool_center, tool_inertia = box_with_payload(bodies[3])
@@ -125,7 +175,7 @@ PROTO SCARA [
   DEF BASE Robot {{ translation IS translation rotation IS rotation
     name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"
     supervisor TRUE controller IS controller controllerArgs IS controllerArgs selfCollision FALSE
-    children [ {visual('base')} {joint} ]
+    children [ {visual('base')} {hall_sensor(0, [0, 0], g['shoulder_z'])} {joint} ]
     boundingObject {collision(cad,'base')}
   }}
 }}

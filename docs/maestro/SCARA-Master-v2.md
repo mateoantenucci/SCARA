@@ -134,10 +134,13 @@ SCARA de cuatro articulaciones: J1 (hombro), J2 (codo) y J3 (muñeca) rotacional
 | Punto de herramienta | Centro de la cara exterior de `Z-SoporteEfector`, sin pinza | Provisional hasta que se defina la herramienta |
 | Envolventes de colisión | Cajas simplificadas por cuerpo rígido | Provisional; cubren ciertos pares, no todos los contactos internos |
 | Masas e inercias | Calculadas del CAD con densidades nominales | Provisional ([propiedades](../PROPIEDADES_GEOMETRICAS_CAD.md)) |
+| Sensores Hall | Un KY-003 por articulación, en la pieza fija, y dos imanes en la que se mueve, centrados en los extremos del recorrido, con una zona activa de ±5° (±3 mm en J4). Radios desde el eje: 60, 40 y 30 mm en J1–J3 | Propuesta al profesor (D10, D56); en el modelo de Webots desde el issue #8 |
 
 El montaje del modelo y sus elecciones están en [Montaje y autocolisiones](../MONTAJE_Y_AUTOCOLISIONES.md) y [Ensamble CAD](../ENSAMBLE_CAD.md).
 
-> **Pendiente de evidencia:** confirmar en la campaña que el chequeo de colisiones deja libre el recorrido completo del homing y la pose de reposo con el modelo final de Webots (imanes y sensores incluidos).
+**Hall en Webots (D57).** El KY-003 es un `Receiver` y el imán un `Emitter` con su alcance. Webots no entrega paquetes dentro de un mismo robot, así que la planta mide la distancia entre los dos nodos y activa el Hall cuando el imán está más cerca que su alcance. La activación sale de la geometría del modelo: si se corre un imán, se corre el flanco.
+
+El chequeo de colisiones deja libre el camino físico completo del homing y de la vuelta al reposo, medido en Webots ([validación del homing](../../validation/homing/INFORME.md)). Vale con las envolventes provisionales.
 
 ## 4. Transmisión y cinemática híbrida
 
@@ -264,11 +267,24 @@ La URC y la UCI se comunican con un protocolo de texto propio, al nivel de un Ar
 
 **Pose de reposo (D30).** J1 = J2 = J3 = 0° (brazo estirado) y J4 abajo. Se deja ahí al apagar, con el botón «Estacionar», y desde ahí arranca el homing. Contraída (J2 = ±135°) toca la torre incluso quieta; estirada queda libre y J1 puede barrer hasta los dos extremos.
 
-**Homing (D11).** Ver la propuesta P2: J4, J1 (M1 y M2 juntos), J2 (M2 solo), J3; rápido, retroceso y aproximación lenta desde el mismo lado; búsqueda acotada; vuelta al reposo al terminar. Antes de empezar, la URC muestra un dibujo de la pose de reposo y pide confirmarla.
+**Homing (D11, D56).** Implementado en el issue #8. Antes de empezar, la URC muestra un dibujo de la pose de reposo y pide confirmarla. `HOME` busca J4, J1 (M1 y M2 juntos), J2 (M2 solo) y J3. En cada eje:
+
+1. Si el Hall ya está activo, sale del imán (desde el reposo, J4 descansa sobre el de abajo).
+2. Busca a 8 °/s (8 mm/s) hasta que el Hall se activa.
+3. Retrocede hasta que se apaga y 3° (3 mm) más.
+4. Vuelve a 1 °/s al mismo flanco, que fija la referencia: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba.
+
+La búsqueda está acotada en recorrido y en 60 s por eje. Un Hall que no aparece (`ERR 11 ausente`) o que no se apaga (`ERR 12 trabado`) aborta el homing sin declarar referencia. Con los cuatro ejes encontrados, la URC vuelve sola a la pose de reposo con un tramo PTP al 50 %, verificado contra choques; «Estacionar» es el mismo tramo.
+
+| Paso | J4 | J1 | J2 | J3 |
+| --- | --- | --- | --- | --- |
+| Motores | M4 | M1 y M2 juntos | M2 | M3 |
+| Sentido de búsqueda | Arriba | Negativo | Negativo | Negativo |
+| Flanco de referencia | 3 mm | −130° | −130° | −145° |
 
 **Referencia manual.** Botón con confirmación que declara referenciada la pose actual, después de llevar el robot con jog hasta las marcas de la pose de reposo. Es menos precisa que el homing.
 
-**Sin referencia (D21).** Solo jog articular lento; el Hall de fin de carrera detiene el eje igual. Capturar y reproducir quedan bloqueados.
+**Sin referencia (D21, D58).** El firmware baja todo jog a 5 °/s (5 mm/s). El Hall hace de fin de carrera: un jog que lo activa frena solo (`ERR 10 fin`), y uno que arranca sobre un imán puede salir de él, pero no seguir hacia el tope. Capturar y reproducir quedan bloqueados: `SEG` exige referencia.
 
 **Con referencia (D28).** La URC planifica también el jog en segmentos cortos, verificados contra límites, alcance y colisiones; el jog frena antes de un límite o de un choque con la torre.
 
@@ -287,7 +303,9 @@ La URC y la UCI se comunican con un protocolo de texto propio, al nivel de un Ar
 | F5 | Reinicio inesperado de la UCI | `BOOT`: referencia perdida |
 | F6 | Correa que patina o se corta | Opcional, si sobra tiempo |
 
-> **Pendiente de evidencia:** homing desde el reposo en Webots, homing abortado por Hall trabado y las fallas F1–F5, con capturas y registros de la campaña.
+El homing desde el reposo y desde un arranque con desvío está ensayado en Webots, y el homing abortado por un Hall trabado, activo o inactivo, en las conversaciones de conformidad del firmware ([validación del homing](../../validation/homing/INFORME.md)).
+
+> **Pendiente de evidencia:** las fallas F1–F5 en Webots, con capturas y registros de la campaña.
 
 <!-- SALTO DE PAGINA -->
 
@@ -463,6 +481,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

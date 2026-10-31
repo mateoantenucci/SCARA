@@ -22,6 +22,13 @@ const int32_t JOG_SPEED_MAX = 1000;     // centésimas por segundo
 const uint8_t QUEUE_SIZE = 16;          // segmentos (D27), contando el que se ejecuta
 const int32_t SEG_MS_MAX = 1000;        // duración máxima de un segmento
 const int32_t SEG_UNITS_MAX = 99999;    // |q| máximo de un segmento, en centésimas
+const int32_t JOG_UNREFERENCED_MAX = 500;  // jog sin referencia: lento (D21)
+// Homing (D11, D56), en centésimas y centésimas por segundo.
+const int32_t HOME_FAST = 800;
+const int32_t HOME_SLOW = 100;
+const int32_t HOME_BACKOFF = 300;       // retroceso después de que el Hall se apaga
+const int32_t HOME_SEARCH_MAX[MOTOR_COUNT] = {28000, 28000, 31000, 12500};  // todo el recorrido y algo más
+const uint32_t HOME_AXIS_MS = 60000;    // tiempo máximo por eje
 
 class Firmware {
 public:
@@ -33,8 +40,12 @@ public:
 
 private:
   // Qué mueve los motores. Uno por vez: una orden de otro movimiento se
-  // rechaza con ERR 5 hasta volver a NONE. El homing (#8) se suma acá.
-  enum Motion { NONE, JOG, RUN, STOPPING };
+  // rechaza con ERR 5 hasta volver a NONE.
+  enum Motion { NONE, JOG, RUN, STOPPING, HOMING };
+  // Fases del homing de un eje (D11): salir del imán si está encima, buscar
+  // rápido, retroceder hasta que se apague y un poco más, y acercarse lento
+  // al mismo flanco.
+  enum HomePhase { LEAVE, SEARCH, BACKOFF, CLEAR, APPROACH };
 
   // Un segmento encolado: llegar a `target`, en pasos de cada motor, en `ms`
   // milisegundos. 22 bytes en el UNO: la cola entera ocupa unos 370.
@@ -48,6 +59,14 @@ private:
   void handle(char* line);
   void handleJog(char* arguments);
   void handleSegment(char* arguments);
+  void handleHome(char* arguments);
+  void startDrive(uint8_t axis, uint8_t motors, int8_t direction, int32_t speed);
+  void startHomeAxis(uint32_t now);
+  void startHomePhase(HomePhase phase);
+  void advanceHoming(uint32_t now);
+  void finishHomeAxis();
+  void abortHoming();
+  void checkJogHall();
   void sendIdentity(const char* greeting);
   void disable();
   void stopJog();
@@ -80,7 +99,25 @@ private:
   int8_t jogDirection_;
   int32_t jogSpeed_;             // centésimas por segundo
   int32_t jogAccumulator_;
+  int32_t jogSteps_;             // pasos dados por el jog o la fase de homing en curso
   uint32_t lastJog_;
+  uint8_t hall_;                 // Hall leídos en este poll y en el anterior
+  uint8_t lastHall_;
+  uint8_t jogHalls_;             // Hall de los ejes que mueve el jog
+  uint8_t jogStartHalls_;        // de esos, los activos al arrancar: el jog puede salir de ellos
+  // El último jog frenado por un Hall: con ese Hall activo, otro jog de los
+  // mismos motores en el mismo sentido no arranca (iría hacia el tope).
+  uint8_t endHalls_;
+  uint8_t endMotors_;
+  int8_t endDirection_;
+  // Homing: ejes en orden, el que se busca y su fase.
+  uint8_t homeOrder_[MOTOR_COUNT];
+  uint8_t homeCount_;
+  uint8_t homeIndex_;
+  HomePhase homePhase_;
+  uint32_t homeStarted_;         // inicio del eje en curso
+  uint8_t homedNow_;             // ejes referenciados por este HOME
+  uint8_t homeWasHomed_;         // ejes con referencia antes de este HOME
   // Cola circular: queue_[head_] es el segmento en ejecución.
   Segment queue_[QUEUE_SIZE];
   uint8_t head_;

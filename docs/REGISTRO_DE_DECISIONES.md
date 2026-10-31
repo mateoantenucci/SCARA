@@ -536,4 +536,43 @@ Decisiones tomadas al implementar el tramo LIN y la validación de tramos en la 
 - **Descartado:**
   - Muestrear el camino en puntos sueltos: entre dos muestras podría haber un choque.
   - Verificar choques en la recta en articulaciones entre los extremos del tramo: no es el camino de un LIN.
+## Sensores Hall y homing (issue #8)
+
+Decisiones tomadas al implementar los Hall en la planta de Webots y el homing del firmware. La forma de `HOME` y `EV HOMED` está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#homing); la evidencia, en la [validación del homing](../validation/homing/INFORME.md).
+
+**D56 · Homing por flanco, en cinco fases, y vuelta al reposo planificada por la URC.**
+- **Decisión:**
+  - Los imanes están centrados en los extremos del recorrido, con una zona activa de ±5° (±3 mm en J4). La referencia es el flanco del lado alcanzable: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba (`HALL_EDGE` en `firmware/config.h`, parámetro provisional).
+  - `HOME [j]` busca J4, J1 (M1 y M2 juntos), J2 (M2) y J3, o solo el eje `j`. En cada eje:
+    1. Si el Hall está activo al empezar, sale del imán hacia la referencia, a 1 °/s (desde el reposo, J4 descansa sobre el de abajo). Si el eje tenía referencia y está en su flanco, retrocede directamente.
+    2. Busca a 8 °/s (8 mm/s) hasta que el Hall se activa.
+    3. Retrocede a 1 °/s hasta que se apaga, y 3° (3 mm) más a 8 °/s.
+    4. Vuelve a 1 °/s (1 mm/s) al mismo flanco, que fija la referencia, y envía `EV HOMED j`.
+  - La búsqueda está acotada en recorrido (todo el recorrido del eje y algo más) y en tiempo (60 s por eje). Si el Hall no aparece, `ERR 11 ausente`; si no se apaga dentro del ancho del imán más 1° (1 mm) de margen, `ERR 12 trabado`. Las fases que miden esa cota van lento: así no depende de la velocidad, ni del atraso con que Webots sigue a los pasos. Al abortar, y también con `STOP`, `HALT` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
+  - El firmware termina en los flancos. La vuelta a la pose de reposo es un tramo PTP de la URC al 50 %, con el chequeo de choques, que la URC envía sola al recibir los cuatro `EV HOMED`. «Estacionar» es el mismo tramo.
+- **Por qué:**
+  - El flanco al que se llega lento y siempre desde el mismo lado es repetible: no depende de la velocidad ni del lado de llegada. Centrar el imán en el extremo deja el flanco 5° antes del tope: el homing nunca empuja contra él.
+  - Un solo sensor no distingue los dos imanes. Desde el reposo, el único Hall activo es el de J4, sobre su imán de fin; la referencia previa resuelve el caso de un segundo homing.
+  - La vuelta al reposo mueve los cuatro ejes desde una pose plegada (J1 y J2 en −130°): planificarla en la URC, como cualquier PTP, verifica choques en todo el camino (ADR 0005) y no agrega un generador de trayectorias al UNO. Al 25 % tardaría 52 s, porque M2 recorre J1 + J2 = 260°.
+- **Descartado:** referenciar con el centro del imán (exige recorrerlo entero, hasta el tope), que el firmware vuelva solo al reposo eje por eje (sin chequeo de choques y con más código en el UNO), y conservar las referencias de los ejes ya encontrados cuando el homing aborta (el operador no sabría qué quedó valiendo).
+- **Estado:** Aceptada. Las posiciones de los imanes siguen siendo propuesta al profesor (D10).
+
+**D57 · En Webots, el Hall se activa por la distancia entre el imán y el sensor.**
+- **Decisión:**
+  - Cada KY-003 es un `Receiver` en la pieza fija y cada imán, un `Emitter` en la que se mueve, con su alcance en `range`. Los genera `tools/generate_world.py` en `SCARA.proto`.
+  - La planta (`scara_uci.cpp`) activa el Hall cuando un imán de su articulación está a menos de su alcance, midiendo la distancia entre las posiciones de los dos nodos en el mundo. No lee la posición de las articulaciones.
+  - `tests/test_hall.py` calcula los flancos desde la geometría del proto y verifica que coincidan con `HALL_EDGE` del firmware y con los imanes de la planta falsa de las conversaciones.
+  - La simulación arranca con un desvío al azar de hasta ±10° en J1–J3 (`--desvio`, D11); los ensayos usan `--desvio 0`.
+- **Por qué:** D10 preveía que el `Receiver` recibiera los paquetes del `Emitter`, pero Webots no entrega paquetes entre dispositivos de un mismo robot (verificado con un mundo de prueba: otro robot recibe y el propio no), y los imanes y los sensores son todos del SCARA. Medir la distancia entre los nodos es la misma regla que aplica el `Emitter` de radio y sigue saliendo de la geometría: si se mueve un imán en el modelo, el flanco se mueve.
+- **Descartado:** un robot aparte para los imanes (no puede ir montado sobre los cuerpos del SCARA), un `DistanceSensor` apuntando a un imán sólido (le agrega volumen de choque al modelo) y calcular el Hall con la posición de las articulaciones (D10).
+- **Estado:** Aceptada.
+
+**D58 · Sin referencia, el firmware limita el jog y el Hall lo frena como fin de carrera.**
+- **Decisión:**
+  - Sin los cuatro ejes referenciados, el firmware baja todo `JOG` a 5 °/s (5 mm/s), aunque la URC pida más.
+  - Con o sin referencia, un jog que activa el Hall de un eje que mueve frena en seco y avisa `ERR 10 fin`. En el jog por motor, M1 mueve J1 y J2 y frena con cualquiera de los dos.
+  - Si el jog arranca sobre un imán, puede salir de él; si recorre más que el ancho del imán (5°, 3 mm en J4) y 1° (1 mm) de margen sin que se apague, iba hacia el tope y frena.
+  - Mientras siga activo el Hall que frenó un jog, otro jog de los mismos motores en el mismo sentido no arranca (`ERR 10 fin`): solo se puede salir para el otro lado. Sin esto, cada toque de tecla avanzaría otro ancho de imán contra el tope.
+- **Por qué:** es D21 llevado al firmware: sin referencia, nadie más protege el robot. El ancho del imán es justo lo que hay entre el flanco y el tope, así que salir siempre es posible y entrar no pasa del tope más que el margen, que cubre la tolerancia de montaje del imán.
+- **Descartado:** rechazar el jog rápido con un `ERR` (la página usa una sola velocidad de jog y quedaría inutilizable sin referencia) y frenar el jog solo sin referencia (un fin de carrera protege siempre).
 - **Estado:** Aceptada.
