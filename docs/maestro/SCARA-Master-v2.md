@@ -338,6 +338,45 @@ UCI: cola de 16 ──→ reloj del firmware ──→ interpolación ──→ 
 
 **Paradas (D52).** `STOP` y el watchdog frenan con rampa: cada motor sigue en su sentido y baja la velocidad en línea recta hasta cero, todos en el mismo tiempo, con la aceleración del motor más exigido. Desde 20 °/s, J1 frena en 0,59 s y 5,9°. La cola se vacía y la referencia se conserva. `HALT` para en seco.
 
+### Tramo LIN y validación previa
+
+Implementado en el issue #10, como API de Python del planificador (`plan_lin`) y de la validación (`check_lin`, `check_tramo`). El gestor de trayectorias (#12) y la reproducción (#13) la conectan con la página.
+
+**Cómo se traza la recta (D54).** El punto de herramienta recorre la recta entre los dos puntos, y el rumbo va del de un punto al del otro, con el mismo perfil trapezoidal del PTP. La velocidad del tramo es un porcentaje de 30 mm/s sobre la recta y de 20 °/s de rumbo, que son las velocidades de J4 y de M1. En cada muestra de 20 ms la URC resuelve la cinemática inversa con la configuración del codo del tramo y envía el resultado como un `SEG`.
+
+```text
+recta y rumbo → perfil s(t) → muestra cada 20 ms → cinemática inversa (codo fijo) → SEG
+```
+
+**Cuánto se aparta de la recta.** El firmware interpola lineal en articulaciones entre dos muestras, y la URC redondea cada destino a la centésima. El extremo se aparta de la recta a lo sumo **0,069 mm**:
+
+| Efecto | Cálculo | Cota |
+| --- | --- | --- |
+| Redondeo a la centésima | J1 y J2 media centésima de grado cada uno, el antebrazo una entera: l1·e + l2·2e | 0,066 mm |
+| Cuerda de cada segmento | Brazo y antebrazo giran a lo sumo 0,4° en 20 ms: (l1·Δ1² + l2·Δφ²)/8 | 0,003 mm |
+
+El plan mide su propio apartamiento: en una recta típica al 50 % es de 0,02 mm. La ejecución suma medio paso de M1 y de M2 (hasta 0,25 mm con 1/8) y el atraso de seguimiento de Webots. Eso lo mide el ensayo.
+
+**Qué se verifica antes de arrancar (D14, D55).** Cada segmento que se va a enviar, en este orden:
+
+| Motivo | Cuándo se rechaza |
+| --- | --- |
+| Límite articular | Un extremo fuera de su recorrido, o el camino lleva J1 o J3 más allá (por ejemplo, al pasar por detrás del robot). |
+| Cambio de codo | J2 cambia de signo entre los extremos. Para cambiar de lado el brazo tendría que estirarse, que es una singularidad. |
+| Fuera de alcance | La recta pasa a menos de 191 mm del eje de J1, el radio mínimo con J2 a ±135°. |
+| Velocidad excesiva | Una articulación o un motor supera su velocidad o aceleración. Pasa cerca del brazo estirado, donde J2 tiene que girar cada vez más rápido para el mismo avance. |
+| Colisión | El chequeo de colisiones existente, en cada segmento. Por ejemplo, una recta entre dos puntos libres que acerca el soporte del efector a la torre. |
+
+El rechazo dice el tramo, el motivo y dónde ocurre, y sugiere PTP. Si el motivo es la velocidad, sugiere primero bajarla. Por ejemplo:
+
+```text
+Tramo 3 (LIN), velocidad excesiva: J2 necesitaría velocidad de 20.24 °/s (máximo 20.05)
+al 94 % del tramo, con el brazo casi estirado (J2 = -22.7°). Bajá la velocidad del tramo
+o usá un tramo PTP.
+```
+
+Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 tendría que arrancar de golpe. Por eso el primer movimiento de un programa es el tramo de aproximación PTP (D32).
+
 > **Pendiente de evidencia:** teach & play LIN en Webots, con trayectorias de demostración versionadas; desvío de la recta medido contra la posición física simulada. El PTP y los segmentos ya tienen su ensayo en Webots ([validación de segmentos](../../validation/segmentos/INFORME.md)).
 
 ## 9. Qué se simula y qué no
@@ -424,6 +463,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

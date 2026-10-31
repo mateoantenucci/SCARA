@@ -1,0 +1,209 @@
+"""Tramo LIN y validación previa como módulos puros (seam 2 de la spec #2)."""
+
+import math
+import unittest
+
+from scara.collisions import CollisionChecker
+from scara.kinematics import forward, load_config
+from urc import planner, validation
+from urc.planner import SEGMENT_MS, plan_lin
+from urc.validation import Rejection, check_lin, check_tramo
+
+
+CONFIG = load_config()
+LIMITS = planner.default_limits(CONFIG)
+CHECKER = CollisionChecker(CONFIG)
+
+
+def pose(radius, angle, z, heading, elbow=-1):
+    """Configuración para un punto de herramienta en coordenadas polares (mm y grados)."""
+    a = math.radians(angle)
+    return planner.joints_from_pose(radius * math.cos(a), radius * math.sin(a), z, heading, elbow, CONFIG)
+
+
+def tool(units):
+    return [v * 1000 for v in forward(planner.units_to_si(units), CONFIG)[:3]]
+
+
+def off_line(point, origin, end):
+    """Distancia en mm de un punto a la recta origin–end, calculada aparte del planificador."""
+    path = [b - a for a, b in zip(origin, end)]
+    s = sum((p - a) * d for p, a, d in zip(point, origin, path)) / sum(d * d for d in path)
+    return math.dist(point, [a + d * s for a, d in zip(origin, path)])
+
+
+START = pose(350, -16, 50, 0)
+TARGET = pose(360, 23, 20, 30)
+
+
+class LinTests(unittest.TestCase):
+    def test_the_tool_stays_on_the_line(self):
+        plan = plan_lin(START, TARGET, 0.5, LIMITS, CONFIG)
+        self.assertEqual(plan.segments[-1][1], TARGET)
+        origin, end = tool(START), tool(TARGET)
+        tolerance = planner.lin_tolerance(CONFIG, LIMITS)
+        # Lo que ejecuta el firmware: interpolación lineal en articulaciones
+        # entre los destinos redondeados de cada segmento.
+        worst, previous = 0.0, START
+        for _, units in plan.segments:
+            for u in (0.1, 0.3, 0.5, 0.7, 0.9, 1.0):
+                q = [a + (b - a) * u for a, b in zip(previous, units)]
+                worst = max(worst, off_line(tool(q), origin, end))
+            previous = units
+        self.assertLessEqual(worst, tolerance)
+        self.assertLessEqual(plan.deviation, tolerance)
+        self.assertAlmostEqual(plan.deviation, worst, delta=0.01)
+
+    def test_tolerance_is_rounding_plus_chord(self):
+        # Media centésima en J1 y J2 (una entera en el antebrazo): 0,0654 mm
+        # en el plano, con J4, 0,0656. Cuerda con M1 y M2 a 20 °/s en 20 ms:
+        # 0,4° por segmento, (250 + 250)·(0,4°)²/8 = 0,0030 mm.
+        self.assertAlmostEqual(planner.lin_tolerance(CONFIG, LIMITS), 0.0656 + 0.0030, delta=0.0002)
+
+    def test_the_heading_goes_along_with_the_tool(self):
+        plan = plan_lin(START, TARGET, 1.0, LIMITS, CONFIG)
+        origin, end = tool(START), tool(TARGET)
+        length = math.dist(origin, end)
+        for q in plan.samples:
+            along = math.dist(origin, tool(q)) / length
+            heading = (sum(q[:3]) - sum(START[:3])) / (sum(TARGET[:3]) - sum(START[:3]))
+            self.assertAlmostEqual(along, heading, delta=0.001)
+
+    def test_the_tool_moves_at_the_speed_of_the_tramo(self):
+        # 50 % de 30 mm/s, con 30 mm/s² de rampa: trapecio en la recta.
+        plan = plan_lin(START, TARGET, 0.5, LIMITS, CONFIG)
+        length = math.dist(tool(START), tool(TARGET))
+        self.assertAlmostEqual(plan.duration, length / 15 + 15 / 30, places=6)
+        # Sin redondear: en 0,3 mm por segmento, el redondeo a la centésima
+        # (hasta 0,066 mm) se notaría como velocidad.
+        speeds, previous = [], tool(START)
+        for units in plan.samples:
+            point = tool(units)
+            speeds.append(math.dist(previous, point) * 1000 / SEGMENT_MS)
+            previous = point
+        self.assertLessEqual(max(speeds), 15 + 0.2)
+        self.assertAlmostEqual(speeds[len(speeds) // 2], 15, delta=0.2)
+
+    def test_turning_in_place_keeps_the_tool_still(self):
+        start, target = pose(350, 0, 30, -40), pose(350, 0, 30, 40)
+        plan = plan_lin(start, target, 1.0, LIMITS, CONFIG)
+        # Solo gira el rumbo: 80° a 20 °/s con 34 °/s².
+        self.assertAlmostEqual(plan.duration, 80 / 20 + 20 / 34, places=6)
+        self.assertLessEqual(plan.deviation, planner.lin_tolerance(CONFIG, LIMITS))
+        self.assertTrue(all(q[:2] == start[:2] for _, q in plan.segments))
+
+    def test_the_elbow_stays_on_its_side(self):
+        start, target = pose(350, -30, 30, 0, elbow=1), pose(300, 40, 30, 0, elbow=1)
+        plan = plan_lin(start, target, 1.0, LIMITS, CONFIG)
+        self.assertEqual(plan.elbow, 1)
+        self.assertTrue(all(q[1] > 0 for _, q in plan.segments))
+
+    def test_from_the_stretched_arm_the_elbow_follows_the_other_end(self):
+        stretched = (0, 0, 0, 6467)
+        for elbow in (-1, 1):
+            target = pose(400, 20 * elbow, 30, 0, elbow)
+            plan = plan_lin(stretched, target, 1.0, LIMITS, CONFIG)
+            self.assertEqual(plan.elbow, elbow)
+            self.assertTrue(all(q[1] * elbow >= 0 for _, q in plan.segments))
+        # Los dos extremos estirados: el codo preferido, J2 negativo (D31).
+        plan = plan_lin(stretched, (2000, 0, 0, 6467), 1.0, LIMITS, CONFIG)
+        self.assertEqual(plan.elbow, -1)
+        self.assertTrue(all(q[1] <= 0 for _, q in plan.segments))
+
+    def test_rejects_an_elbow_change_and_bad_arguments(self):
+        with self.assertRaises(ValueError):
+            plan_lin((3000, -6000, 1000, 6000), (3000, 6000, 1000, 6000), 1.0, LIMITS, CONFIG)
+        for speed in (0, 1.5, True):
+            with self.assertRaises(ValueError):
+                plan_lin(START, TARGET, speed, LIMITS, CONFIG)
+
+    def test_no_motion_needs_no_segments(self):
+        plan = plan_lin(START, START, 1.0, LIMITS, CONFIG)
+        self.assertEqual((plan.segments, plan.duration), ([], 0.0))
+
+
+class ValidationTests(unittest.TestCase):
+    def reject(self, start, target, speed=1.0, kind="LIN"):
+        with self.assertRaises(Rejection) as caught:
+            check_tramo(kind, start, target, speed, 3, LIMITS, CONFIG, CHECKER)
+        rejection = caught.exception
+        self.assertIn(f"Tramo 3 ({kind})", str(rejection))
+        if kind == "LIN":
+            self.assertIn("PTP", str(rejection))
+        return rejection
+
+    def test_a_valid_line_returns_its_plan(self):
+        plan = check_lin(START, TARGET, 0.5, None, LIMITS, CONFIG, CHECKER)
+        self.assertEqual(plan.segments[-1][1], TARGET)
+        # El firmware rechaza con ERR 8 un segmento que supera la velocidad
+        # de un motor por más de 2 centésimas (D51); el plan nunca.
+        previous = START
+        for ms, units in plan.segments:
+            travel = planner.motor_travel([b - a for a, b in zip(previous, units)])
+            for axis in range(4):
+                self.assertLessEqual(abs(travel[axis]), LIMITS.motor_speed[axis] * ms / 1000 + 2)
+            previous = units
+
+    def test_out_of_reach_near_the_tower_axis(self):
+        # La recta pasa a 103 mm del eje de J1; con J2 hasta ±135° el
+        # extremo no llega a menos de 191 mm.
+        rejection = self.reject(pose(300, -60, 30, 0), pose(300, 80, 30, 0))
+        self.assertEqual(rejection.reason, "alcance")
+        self.assertIn("103 mm", str(rejection))
+        self.assertIn("191 mm", str(rejection))
+
+    def test_elbow_change(self):
+        rejection = self.reject((3000, -6000, 1000, 6000), (3000, 6000, 1000, 6000))
+        self.assertEqual(rejection.reason, "codo")
+
+    def test_joint_limit_along_the_way(self):
+        # Por detrás del robot: los dos extremos están en su recorrido, pero
+        # el camino lleva J1 o J3 más allá.
+        rejection = self.reject(pose(480, 145, 30, 161, 1), pose(480, -115, 30, -115, 1))
+        self.assertEqual(rejection.reason, "limite")
+        # Un extremo fuera del recorrido, también.
+        rejection = self.reject(START, (14000, -6000, 0, 6000))
+        self.assertEqual(rejection.reason, "limite")
+        self.assertIn("J1", str(rejection))
+
+    def test_excessive_speed_near_the_stretched_arm(self):
+        # Hacia el brazo estirado, J2 tiene que girar cada vez más rápido
+        # para el mismo avance: al 100 % pasa sus 20 °/s; al 25 %, no.
+        start, target = pose(420, 0, 30, 0), pose(485, 0, 30, 0)
+        rejection = self.reject(start, target, 1.0)
+        self.assertEqual(rejection.reason, "velocidad")
+        self.assertIn("J2", str(rejection))
+        self.assertIn("Bajá la velocidad", str(rejection))
+        check_lin(start, target, 0.25, None, LIMITS, CONFIG, CHECKER)
+        # Saliendo del brazo estirado no alcanza con ir más lento: es la singularidad.
+        rejection = self.reject((0, 0, 0, 6467), pose(400, 0, 30, 0), 0.1)
+        self.assertEqual(rejection.reason, "velocidad")
+        self.assertIn("casi estirado", str(rejection))
+
+    def test_collision_with_the_tower(self):
+        # Los dos extremos están libres, pero la recta acerca el soporte del
+        # efector a la torre.
+        rejection = self.reject(pose(230, 20, 30, -40), pose(230, 60, 30, 0))
+        self.assertEqual(rejection.reason, "colision")
+        self.assertIn("Torre", str(rejection))
+
+    def test_ptp_tramos_are_validated_too(self):
+        plan = check_tramo("PTP", START, TARGET, 0.5, 1, LIMITS, CONFIG, CHECKER)
+        self.assertEqual(plan.segments[-1][1], TARGET)
+        # Codo plegado del todo: el antebrazo toca la torre (D30).
+        rejection = self.reject((0, 0, 0, 12000), (0, 13500, 0, 12000), kind="PTP")
+        self.assertEqual(rejection.reason, "colision")
+        self.assertIsNone(rejection.suggestion)
+        self.assertEqual(self.reject(START, (14000, 0, 0, 6000), kind="PTP").reason, "limite")
+        with self.assertRaises(ValueError):
+            check_tramo("CIRC", START, TARGET, 0.5, 1, LIMITS, CONFIG, CHECKER)
+
+    def test_a_rejection_is_a_value_error_with_every_part(self):
+        rejection = Rejection("codo", "J2 cambia de signo", tramo=2)
+        self.assertIsInstance(rejection, ValueError)
+        self.assertEqual(str(rejection), "Tramo 2 (LIN), cambio de codo: J2 cambia de signo. Usá un tramo PTP.")
+        self.assertEqual(set(validation.REASONS), {"alcance", "codo", "limite", "velocidad", "colision"})
+
+
+if __name__ == "__main__":
+    unittest.main()

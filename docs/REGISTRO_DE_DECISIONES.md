@@ -492,3 +492,48 @@ Decisiones tomadas al implementar la cola de segmentos del firmware y el planifi
 - **Por qué:** es el PTP sincronizado de los robots industriales y la definición de tramo PTP del glosario. Limitar solo por motores dejaría a J2 a 40 °/s cuando J1 gira al revés, y Webots lo saturaría (D45). La URC conoce los límites de los motores en las unidades de cada articulación, no el microstepping (ADR 0003); una prueba verifica que coincidan con `firmware/config.h`. Bajar también la aceleración al reducir la velocidad alargaría las rampas sin hacer falta: la aceleración es lo que limita el par.
 - **Descartado:** un perfil por articulación (cada una llegaría en otro momento), un perfil de quinto grado como el del banco viejo (más suave, pero llega a la aceleración máxima solo en un instante y alarga el tramo) y leer los límites del motor desde `config.h` en tiempo de ejecución.
 - **Estado:** Aceptada.
+
+## Tramo LIN y validación previa (issue #10)
+
+Decisiones tomadas al implementar el tramo LIN y la validación de tramos en la URC: [`urc/planner.py`](../urc/planner.py) (`plan_lin`, `lin_tolerance`) y [`urc/validation.py`](../urc/validation.py) (`check_lin`, `check_ptp`, `check_tramo`). Pruebas en [`tests/test_lin.py`](../tests/test_lin.py).
+
+**D54 · Tramo LIN: velocidad del punto de herramienta, perfil trapezoidal y tolerancia calculada.**
+- **Decisión:**
+  - El punto de herramienta recorre la recta entre los dos puntos y el rumbo (J1 + J2 + J3, sin envolver) va de uno al otro, con el mismo perfil trapezoidal s(t) de D53. En cada muestra de 20 ms la URC resuelve la cinemática inversa con la configuración del codo del tramo y mantiene J1 continuo.
+  - La velocidad del tramo es una fracción de 30 mm/s sobre la recta y de 20 °/s de rumbo, con 60 mm/s² y 34 °/s² al 100 %. Son las de J4 y M1 (D45): una recta vertical o un giro en el lugar al 100 % nunca superan su articulación. A diferencia del PTP, la fracción baja también la aceleración: la rampa dura siempre 0,5 s.
+  - Configuración del codo: la de los extremos. El brazo estirado (J2 = 0) admite las dos: toma la del otro extremo y, si los dos están estirados, la preferida (J2 negativo, D31). Se cuenta el signo exacto de J2: un J2 de +0,03° es el codo positivo.
+  - **Tolerancia sobre la recta: 0,069 mm**, calculada por `lin_tolerance` con la geometría y los límites vigentes. Es lo más que se aparta de la recta el camino que ejecuta el firmware, interpolando lineal en articulaciones entre los destinos redondeados. Suma dos efectos:
+    - Redondeo a la centésima: media centésima de grado en J1 y en J2, una entera en el antebrazo, media centésima de mm en J4. Da l1·e + l2·2e = 0,066 mm.
+    - Cuerda: dentro de un segmento el extremo describe arcos. Con el brazo y el antebrazo girando Δ1 y Δφ, la flecha es a lo sumo (l1·Δ1² + l2·Δφ²)/8. Con M1 y M2 a 20 °/s, son 0,4° por segmento y 0,003 mm.
+  - El plan informa el apartamiento medido (`deviation`), en cuatro puntos de cada segmento. En una recta típica al 50 % es de 0,02 mm.
+- **Por qué:**
+  - Así es el LIN de los robots industriales: el operador elige la velocidad del extremo y el robot la mantiene constante. Con la velocidad fija, una recta que pasa cerca del brazo estirado pide a J2 velocidades sin cota, y eso se puede rechazar con un motivo («velocidad excesiva») que se resuelve bajando la velocidad o con PTP.
+  - Cerca del brazo estirado, la aceleración de J2 crece con la del punto de herramienta. Si la fracción no la bajara, bajar la velocidad no resolvería un rechazo por aceleración. Con la aceleración fija, una recta radial de 420 a 485 mm se rechazaba por la aceleración de J2 aun al 25 %. Así, se rechaza al 100 % por velocidad y pasa al 25 %.
+  - La tolerancia es una cota y no un valor medido: vale para todo tramo que pasó la validación, porque esta acota Δ1 y Δφ.
+  - **Qué no incluye:** el robot da pasos enteros. Con 1/8, medio paso de M1 y de M2 corre el extremo hasta 0,25 mm. La planta de Webots, además, va unas centésimas detrás de la posición estimada (D45). La URC no conoce el microstepping (ADR 0003): ese error es de la ejecución y se mide en el ensayo de Webots.
+- **Descartado:**
+  - Bajar la velocidad del tramo hasta que todas las articulaciones queden dentro de sus límites, como reduce ABB cerca de una singularidad. El tramo entero iría lento por un solo punto y nunca habría un rechazo por velocidad, pero la spec lo pide.
+  - Una velocidad cartesiana más alta, por ejemplo 50 mm/s. Una recta vertical al 100 % superaría J4 y se rechazaría.
+  - Una banda muerta alrededor de J2 = 0. Si el inicio está levemente del otro lado, la primera muestra salta de configuración y se rechaza igual por aceleración.
+- **Estado:** Aceptada. La velocidad cartesiana es un parámetro provisional, como D45.
+
+**D55 · Validación previa: se verifica cada segmento que se va a enviar, y cada rechazo dice el tramo, el motivo y qué probar.**
+- **Decisión:**
+  - Antes de enviar nada, `check_lin` planifica el tramo y verifica, en este orden:
+    1. Extremos dentro de su recorrido, y sin cambio de configuración del codo.
+    2. Alcance: la recta queda en la corona que alcanza el brazo. Por dentro la limita J2: a ±135° el extremo no llega a menos de 191 mm del eje de J1. Por fuera no hace falta verificar: el círculo es convexo y los extremos son poses válidas.
+    3. Límites articulares en cada segmento.
+    4. Velocidad y aceleración de cada articulación y de cada motor, con el acople (M2 = J1 + J2), en cada segmento. Se usan las muestras sin redondear: el redondeo suma a lo sumo una centésima, dentro de lo que admite el firmware (D51).
+    5. Choques: el chequeo de colisiones existente, en la recta en articulaciones de cada segmento, que es lo que ejecuta el firmware.
+  - `check_ptp` verifica el destino y los choques del PTP como «Ir a una pose» (D53). `check_tramo` elige según el tipo; el gestor de trayectorias (#12) lo llama tramo por tramo.
+  - Un rechazo es `Rejection`, subclase de `ValueError`. Lleva el número de tramo, el motivo (`alcance`, `codo`, `limite`, `velocidad`, `colision`) y un detalle con dónde ocurre (porcentaje del tramo, articulación o motor, valor pedido contra máximo; «brazo casi estirado» si |J2| < 30°). Un LIN sugiere PTP; por velocidad, primero bajar la velocidad.
+  - Un LIN exige que el inicio esté dentro del recorrido. El PTP acepta un inicio levemente fuera (D53) y es la sugerencia.
+- **Por qué:**
+  - D14 exige que nunca arranque un tramo que no se puede terminar. Verificar los segmentos que se van a enviar, y no la recta ideal, cubre también el redondeo y las muestras.
+  - El chequeo de colisiones acota el camino solo para una recta en articulaciones. Por eso se aplica a cada segmento y no al tramo entero.
+  - Todo lo que el operador necesita para corregir está en el mensaje, como pide la historia 40 de la spec.
+- **Costo:** unos 3 ms por segmento en el chequeo de colisiones, o 3 s para un LIN de 17 s. Si validar una trayectoria larga antes de cada play resulta lento, se pueden agrupar segmentos.
+- **Descartado:**
+  - Muestrear el camino en puntos sueltos: entre dos muestras podría haber un choque.
+  - Verificar choques en la recta en articulaciones entre los extremos del tramo: no es el camino de un LIN.
+- **Estado:** Aceptada.
