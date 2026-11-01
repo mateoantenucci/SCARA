@@ -140,8 +140,8 @@ class SerialSocatTests(unittest.TestCase):
         session.jog_stop()
         stopped = self.status(lambda s: s["mode"] == "IDLE")
         j1, j2 = stopped["position"][:2]
-        self.assertGreater(j1, 300, "J1 avanzó a 5 °/s durante ~1 s")
-        self.assertLess(j1, 800)
+        self.assertGreater(j1, 600, "J1 avanzó a 10 °/s (con referencia, D70) durante ~1 s")
+        self.assertLess(j1, 1600)
         self.assertEqual(j2, 0, "el acople M1/M2 mantiene J2")
         self.assertEqual(stopped["homed"], ALL_HOMED)
 

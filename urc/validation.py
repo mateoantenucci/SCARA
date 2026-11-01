@@ -54,7 +54,8 @@ def check_ptp(start, target, speed=1.0, tramo=None, limits=None, config=None, ch
     """Tramo PTP: límites del destino y choques en la recta en articulaciones (D53).
 
     Sus velocidades ya las respeta el perfil, y el inicio puede estar fuera
-    del recorrido: un PTP tiene que poder traerlo de vuelta.
+    del recorrido o dentro de la zona de margen de un obstáculo: un PTP tiene
+    que poder traerlo de vuelta.
     """
     config = config or load_config()
     plan = planner.plan_ptp(start, target, speed, limits or planner.default_limits(config))
@@ -62,7 +63,7 @@ def check_ptp(start, target, speed=1.0, tramo=None, limits=None, config=None, ch
     if problem:
         raise Rejection("limite", f"el destino tiene {problem}", "PTP", tramo)
     checker = checker or CollisionChecker(config)
-    conflict = checker.first_conflict(planner.inside_range(start, config), planner.units_to_si(target))
+    conflict = checker.first_conflict_leaving(planner.inside_range(start, config), planner.units_to_si(target))
     if conflict:
         raise Rejection("colision", _collision(conflict, checker), "PTP", tramo)
     return plan

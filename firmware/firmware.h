@@ -23,8 +23,10 @@ const uint8_t QUEUE_SIZE = 16;          // segmentos (D27), contando el que se e
 const int32_t SEG_MS_MAX = 1000;        // duración máxima de un segmento
 const int32_t SEG_UNITS_MAX = 99999;    // |q| máximo de un segmento, en centésimas
 const int32_t JOG_UNREFERENCED_MAX = 500;  // jog sin referencia: lento (D21)
-// Homing (D11, D56), en centésimas y centésimas por segundo.
-const int32_t HOME_FAST = 800;
+// Homing (D11, D56), en centésimas y centésimas por segundo. La búsqueda
+// arranca y frena sin rampa: J4 va como el jog, porque más rápido M4 pierde
+// pasos subiendo 5 kg (N2, D64).
+constexpr int32_t HOME_FAST[MOTOR_COUNT] = {1500, 1500, 1500, 1000};
 const int32_t HOME_SLOW = 100;
 const int32_t HOME_BACKOFF = 300;       // retroceso después de que el Hall se apaga
 const int32_t HOME_SEARCH_MAX[MOTOR_COUNT] = {28000, 28000, 31000, 12500};  // todo el recorrido y algo más
@@ -118,7 +120,11 @@ private:
   HomePhase homePhase_;
   uint32_t homeStarted_;         // inicio del eje en curso
   uint8_t homedNow_;             // ejes referenciados por este HOME
-  uint8_t homeWasHomed_;         // ejes con referencia antes de este HOME
+  // Ejes cuya cuenta de pasos sale de una referencia, aunque un STOP o un
+  // homing abortado la hayan quitado: solo se pierde con HALT en movimiento,
+  // DISABLE o un reinicio. Dice sobre qué imán arranca un homing.
+  uint8_t found_;
+  int32_t homeExtra_;            // BACKOFF: lo que LEAVE avanzó sobre el imán de la referencia
   // Cola circular: queue_[head_] es el segmento en ejecución.
   Segment queue_[QUEUE_SIZE];
   uint8_t head_;

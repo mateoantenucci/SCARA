@@ -306,22 +306,27 @@ def check_target(start, target, config=None, checker=None):
     misma que verifica el chequeo de colisiones. El inicio puede estar fuera
     del recorrido (un jog lo llevó ahí, o el redondeo a pasos junto a un
     límite): un PTP tiene que poder traerlo de vuelta. El chequeo de
-    colisiones arranca entonces desde el punto más cercano dentro del recorrido.
+    colisiones arranca entonces desde el punto más cercano dentro del recorrido,
+    y deja salir de la zona de margen de un obstáculo si el camino se aleja.
     """
     config = config or load_config()
     start, target = check_units(start, "Inicio"), check_units(target, "Destino")
     problem = out_of_range(target, config)
     if problem:
-        raise ValueError(problem)
+        raise ValueError(f"El destino tiene {problem}")
     checker = checker or CollisionChecker(config)
-    checker.validate_path(inside_range(start, config), units_to_si(target))
+    checker.validate_path(inside_range(start, config), units_to_si(target), leaving=True)
+
+
+def travel(config=None):
+    """Recorrido de cada articulación, (mínimo, máximo) en centésimas."""
+    config = config or load_config()
+    return [tuple(_round(b * scale) for b in bounds) for bounds, scale in zip(config["limits"], SCALE)]
 
 
 def out_of_range(units, config=None):
     """La primera articulación fuera de su recorrido, como texto para el operador, o None."""
-    config = config or load_config()
-    for name, value, bounds, scale in zip(NAMES, units, config["limits"], SCALE):
-        low, high = (_round(b * scale) for b in bounds)
+    for name, value, (low, high) in zip(NAMES, units, travel(config)):
         if not low <= value <= high:
             return f"{name} fuera de su recorrido: {value} no está entre {low} y {high} centésimas"
     return None

@@ -23,11 +23,21 @@ from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message, segment
 
 
 PING_PERIOD = 0.25           # s (D27)
-JOG_SPEED = 500              # centésimas por segundo: jog articular lento
+JOG_SPEED = 1000             # centésimas por segundo, con referencia: el máximo sin rampa del firmware
+JOG_SPEED_UNREFERENCED = 500  # sin referencia, el firmware no pasa de acá (D58)
 JOG_HOLD = 0.5               # s sin renovar el jog desde la página => JOG STOP
+# Con referencia, el jog frena antes del límite de recorrido y de un choque
+# (D70). El estado S llega cada 50 ms y el JOG STOP tarda otro tanto: frena
+# si en JOG_STOP_AHEAD pasaría el límite, o si en JOG_LOOKAHEAD entraría en
+# la zona de margen de un obstáculo.
+JOG_STOP_AHEAD = 0.15        # s
+JOG_LOOKAHEAD = (0.15, 0.3)  # s
+# Un pedido de jog que estaba en camino al frenar con Stop, Parada inmediata
+# o Deshabilitar no lo reanuda: la página pide cada 150 ms.
+STOP_GUARD = 0.3             # s
 ALL_HOMED = 0x0F
 REST = (0, 0, 0, 12000)      # pose de reposo (D30), en centésimas
-PARK_SPEED = 0.5             # «Estacionar» y la vuelta al reposo del homing (D56)
+PARK_SPEED = 1.0             # «Estacionar» y la vuelta al reposo del homing (D56)
 HOME_ORDER = (4, 1, 2, 3)    # D11
 HOME_START = 1.0             # s para que S muestre HOMING después de enviar HOME
 
@@ -55,6 +65,7 @@ class Session:
         self.status_time = None
         self.jogging = None          # (eje, sentido, por motor) enviado a la UCI
         self.jog_deadline = 0.0
+        self.stopped_jog = None      # (jog, cuándo) frenado por STOP, HALT o DISABLE
         self.segments = deque()      # SEG por enviar, en orden
         self.in_flight = None        # número del SEG enviado que espera su OK
         self.next_segment = 1        # los números no se repiten en la sesión
@@ -69,6 +80,7 @@ class Session:
         self.config = load_config()
         self.checker = CollisionChecker(self.config)
         self.limits = planner.default_limits(self.config)
+        self.travel = planner.travel(self.config)
         self.message = f"Esperando a la UCI en el puerto {self.port}"
         self.closed = threading.Event()
         self.thread = threading.Thread(target=self._run, name="scara-uci", daemon=True)
@@ -173,7 +185,9 @@ class Session:
         """Mantiene el jog mientras la página lo renueve antes de jog_hold.
 
         Con motor=True mueve solo el motor M<joint>, sin compensar el acople
-        M1/M2: es el modo de prueba que muestra la cadena híbrida (D46).
+        M1/M2 (D46). Con referencia va a jog_speed y no pasa del límite de
+        recorrido ni entra en la zona de choque (D70); sin referencia, el
+        firmware lo lleva lento y solo lo frena el Hall (D58).
         """
         if type(joint) is not int or joint not in range(1, 5):
             raise ValueError("La articulación debe ser 1, 2, 3 o 4")
@@ -181,16 +195,24 @@ class Session:
             raise ValueError("El sentido debe ser + o -")
         if type(motor) is not bool:
             raise ValueError("motor debe ser true o false")
+        jog = (joint, direction, motor)
         with self.lock:
             self._require_robot()
             if self._tramo_running():
                 raise ValueError("Hay un tramo en curso: frenalo con Stop antes del jog")
             if self.status is not None and self.status["mode"] == "HOMING":
                 raise ValueError("El homing está en curso: frenalo con Stop antes del jog")
+            if (self.jogging is None and self.stopped_jog is not None and self.stopped_jog[0] == jog
+                    and time.monotonic() - self.stopped_jog[1] < STOP_GUARD):
+                return
+            blocked = self._jog_blocked(jog)
+            if blocked:
+                raise ValueError(f"Jog frenado: {blocked}")
             self.jog_deadline = time.monotonic() + self.jog_hold
-            if self.jogging != (joint, direction, motor):
-                self.jogging = (joint, direction, motor)
-                self._queue(f"JOG {'M' if motor else ''}{joint} {direction} {self.jog_speed}")
+            if self.jogging != jog:
+                self.jogging = jog
+                speed = self.jog_speed if self._referenced() else min(self.jog_speed, JOG_SPEED_UNREFERENCED)
+                self._queue(f"JOG {'M' if motor else ''}{joint} {direction} {speed}")
 
     def jog_stop(self):
         self._stop("JOG STOP")
@@ -233,6 +255,7 @@ class Session:
                 "received": self.received,
                 "status": status,
                 "referenced": status is not None and status["homed"] == ALL_HOMED,
+                "travel": [list(bounds) for bounds in self.travel],
                 "doubtful": [dict(item) for item in self.doubtful],
                 "jog": None if self.jogging is None else dict(zip(("joint", "direction", "motor"), self.jogging)),
                 "segments": {"pending": len(self.segments), "in_flight": self.in_flight, "last_ok": self.last_ok},
@@ -253,10 +276,59 @@ class Session:
     def _stop(self, line):
         with self.lock:
             self._require_robot()
+            if self.jogging is not None and line != "JOG STOP":
+                self.stopped_jog = (self.jogging, time.monotonic())
             self.jogging = None
             self._cancel_segments("frenado por el operador")
             self._end_homing("frenado por el operador")
             self._queue(line)
+
+    def _referenced(self):
+        return self.status is not None and self.status["homed"] == ALL_HOMED
+
+    def _jog_blocked(self, jog):
+        """Por qué un jog no puede seguir con referencia, o None (D70).
+
+        Mira adelante en el sentido del jog, desde la posición estimada del
+        último S: el límite de recorrido de cada articulación que mueve y la
+        zona de margen de los obstáculos. Dentro de esa zona puede salir: solo
+        frena si la separación disminuye. Sin referencia no sabe dónde está el
+        robot: lo protege el Hall (D21, D58).
+        """
+        if not self._referenced():
+            return None
+        joint, direction, motor = jog
+        # El jog articular mueve una articulación; el de M1 gira el brazo y J2
+        # cambia al revés (D46); M2, M3 y M4 mueven J2, J3 y J4.
+        axes = [0, 0, 0, 0]
+        axes[joint - 1] = 1
+        if motor and joint == 1:
+            axes[1] = -1
+        velocity = [(1 if direction == "+" else -1) * axis * self.jog_speed for axis in axes]
+        position = self.status["position"]
+        for name, value, speed, (low, high) in zip(planner.NAMES, position, velocity, self.travel):
+            ahead = value + speed * JOG_STOP_AHEAD
+            if (speed > 0 and ahead > high) or (speed < 0 and ahead < low):
+                bound, unit = (high if speed > 0 else low) / 100, " mm" if name == "J4" else "°"
+                return f"{name} llegó al límite de su recorrido ({bound:g}{unit})"
+        here = self.checker.clearance(planner.inside_range(position, self.config))
+        for seconds in JOG_LOOKAHEAD:
+            ahead = planner.inside_range([v + s * seconds for v, s in zip(position, velocity)], self.config)
+            if self.checker.clearance(ahead) < min(here, self.checker.margin):
+                conflict = self.checker.first_conflict(ahead, ahead)
+                where = f"{conflict['instance']} tocaría {conflict['obstacle']}" if conflict else "habría un choque"
+                return f"{where} (envolventes y margen de {self.checker.margin * 1000:g} mm)"
+        return None
+
+    def _guard_jog(self):
+        """Con cada S, el jog en curso frena antes del límite o del choque."""
+        if self.jogging is None or self.status["mode"] != "JOG":
+            return
+        blocked = self._jog_blocked(self.jogging)
+        if blocked:
+            # _send_pending envía el JOG STOP; las renovaciones de la página lo rechazan.
+            self.jog_deadline = 0.0
+            self.message = f"Jog frenado: {blocked}"
 
     def _require_still(self, what):
         if self.status is None:
@@ -404,6 +476,7 @@ class Session:
                 self.status = {key: value for key, value in message.items() if key != "kind"}
                 self.status_time = time.monotonic()
                 self._follow_homing()
+                self._guard_jog()
                 # Un eje sin referencia ya no tiene una referencia dudosa.
                 self.doubtful = [item for item in self.doubtful
                                  if self.status["homed"] >> (item["joint"] - 1) & 1]

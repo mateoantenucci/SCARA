@@ -18,6 +18,10 @@ const uint32_t JOG_MAX_ELAPSED_MS = 100;
 static_assert(withinMotorSpeed(0, JOG_SPEED_MAX) && withinMotorSpeed(1, JOG_SPEED_MAX) &&
                   withinMotorSpeed(2, JOG_SPEED_MAX) && withinMotorSpeed(3, JOG_SPEED_MAX),
               "JOG_SPEED_MAX supera la velocidad de algún motor");
+// La búsqueda del homing también arranca y frena sin rampa.
+static_assert(withinMotorSpeed(0, HOME_FAST[0]) && withinMotorSpeed(1, HOME_FAST[1]) &&
+                  withinMotorSpeed(2, HOME_FAST[2]) && withinMotorSpeed(3, HOME_FAST[3]),
+              "HOME_FAST supera la velocidad de algún motor");
 
 char* append(char* out, const char* text) {
   while (*text) *out++ = *text++;
@@ -110,7 +114,7 @@ Firmware::Firmware(Hal& hal)
     : hal_(hal), length_(0), invalid_(false), overflow_(false), homed_(0), enabled_(false), motion_(NONE),
       jogMotors_(0), jogAxis_(0), jogDirection_(0), jogSpeed_(0), jogAccumulator_(0), jogSteps_(0), lastJog_(0),
       hall_(0), lastHall_(0), jogHalls_(0), jogStartHalls_(0), endHalls_(0), endMotors_(0), endDirection_(0), homeCount_(0), homeIndex_(0), homePhase_(SEARCH),
-      homeStarted_(0), homedNow_(0), homeWasHomed_(0), head_(0), count_(0), holding_(false), started_(0), done_(0), rampMs_(0),
+      homeStarted_(0), homedNow_(0), found_(0), homeExtra_(0), head_(0), count_(0), holding_(false), started_(0), done_(0), rampMs_(0),
       rampStarted_(0), lastStatus_(0), lastMessage_(0) {
   for (uint8_t motor = 0; motor < MOTOR_COUNT; ++motor) steps_[motor] = 0;
 }
@@ -228,7 +232,7 @@ void Firmware::handle(char* line) {
   } else if (strcmp(command, "HALT") == 0) {
     // Parada inmediata (D41): como el reset de GRBL, si había movimiento la
     // referencia ya no vale.
-    if (moving()) homed_ = 0;
+    if (moving()) homed_ = found_ = 0;
     halt();
   } else if (strcmp(command, "ZERO") == 0) {
     // Declara que el robot está en la pose de reposo. Sin corriente, los
@@ -242,7 +246,7 @@ void Firmware::handle(char* line) {
       return;
     }
     jointsToMotors(REST, steps_);
-    homed_ = 0x0F;
+    homed_ = found_ = 0x0F;
   }
   // PING solo renueva el watchdog.
 }
@@ -366,7 +370,6 @@ void Firmware::handleHome(char* arguments) {
     return;
   }
   homeCount_ = 0;
-  homeWasHomed_ = homed_;
   for (uint8_t i = 0; i < MOTOR_COUNT; ++i) {
     uint8_t candidate = HOME_ORDER[i];
     if (axis == 0 || candidate == axis - 1) {
@@ -380,11 +383,12 @@ void Firmware::handleHome(char* arguments) {
   startHomeAxis(hal_.millis());
 }
 
-// Con el Hall activo al empezar, el sensor no dice sobre qué imán está. Si el
-// eje tenía referencia y está en el flanco de la suya (otro HOME después de un
-// homing), retrocede como después de encontrarlo. Si no, es el imán del otro
-// extremo (desde el reposo, J4 descansa abajo, sobre el suyo) y sale de él
-// hacia la referencia.
+// Con el Hall activo al empezar, el sensor no dice sobre qué imán está. Si la
+// cuenta de pasos del eje sale de una referencia (found_, aunque un STOP o un
+// homing abortado la hayan quitado) y está en el flanco de la suya, retrocede
+// como después de encontrarlo. Si no, supone el imán del otro extremo (desde
+// el reposo, J4 descansa abajo, sobre el suyo) y sale de él hacia la
+// referencia; si no sale, era el de la referencia (advanceHoming).
 void Firmware::startHomeAxis(uint32_t now) {
   uint8_t axis = homeOrder_[homeIndex_];
   homeStarted_ = now;
@@ -394,7 +398,7 @@ void Firmware::startHomeAxis(uint32_t now) {
   }
   int32_t joints[MOTOR_COUNT];
   motorsToJoints(steps_, joints);
-  bool onReference = (homeWasHomed_ & (1 << axis)) != 0 && joints[axis] <= HALL_EDGE[axis] + HALL_MARGIN;
+  bool onReference = (found_ & (1 << axis)) != 0 && joints[axis] <= HALL_EDGE[axis] + HALL_MARGIN;
   startHomePhase(onReference ? BACKOFF : LEAVE);
 }
 
@@ -405,9 +409,10 @@ void Firmware::startHomeAxis(uint32_t now) {
 void Firmware::startHomePhase(HomePhase phase) {
   uint8_t axis = homeOrder_[homeIndex_];
   homePhase_ = phase;
+  homeExtra_ = 0;
   bool back = phase == BACKOFF || phase == CLEAR;
   bool fast = phase == SEARCH || phase == CLEAR;
-  startDrive(axis, JOINT_MOTORS[axis], back ? 1 : -1, fast ? HOME_FAST : HOME_SLOW);
+  startDrive(axis, JOINT_MOTORS[axis], back ? 1 : -1, fast ? HOME_FAST[axis] : HOME_SLOW);
 }
 
 // Decide con los Hall de este poll; los pasos los da advanceJog.
@@ -426,8 +431,10 @@ void Firmware::advanceHoming(uint32_t now) {
       if (!active) {
         startHomePhase(SEARCH);
       } else if (traveled > onMagnet) {
-        abortHoming();
-        sendError(ERR_STUCK, "trabado");
+        // No era el imán del otro extremo sino el de la referencia (un homing
+        // anterior se cortó sobre él): retrocede, con lo que avanzó de más.
+        startHomePhase(BACKOFF);
+        homeExtra_ = traveled;
       }
       break;
     case SEARCH:
@@ -441,7 +448,7 @@ void Firmware::advanceHoming(uint32_t now) {
     case BACKOFF:
       if (!active) {
         startHomePhase(CLEAR);
-      } else if (traveled > onMagnet) {
+      } else if (traveled > onMagnet + homeExtra_) {
         abortHoming();
         sendError(ERR_STUCK, "trabado");
       }
@@ -475,6 +482,7 @@ void Firmware::finishHomeAxis() {
     steps_[axis] = edge;
   }
   homed_ |= static_cast<uint8_t>(1 << axis);
+  found_ |= static_cast<uint8_t>(1 << axis);
   homedNow_ |= static_cast<uint8_t>(1 << axis);
   char out[LINE_MAX];
   append(append(append(out, "EV HOMED "), static_cast<int32_t>(axis + 1)), "\n")[0] = '\0';
@@ -579,7 +587,7 @@ Firmware::Segment& Firmware::queued(uint8_t index) { return queue_[(head_ + inde
 void Firmware::disable() {
   halt();
   enabled_ = false;
-  homed_ = 0;
+  homed_ = found_ = 0;
   hal_.enableDrivers(false);
 }
 

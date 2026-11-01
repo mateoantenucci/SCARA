@@ -190,7 +190,7 @@ def run(label, deviation, jog_test):
         state = wait(session, lambda s: s["tramo"] is not None and s["tramo"]["done"] == s["tramo"]["segments"]
                      and s["status"]["mode"] == "IDLE", timeout=120)
         final = settled(recorder, list(REST))
-        log(f"   vuelta al reposo (PTP de {state['tramo']['segments'] * 20 / 1000:.1f} s al 50 %): física "
+        log(f"   vuelta al reposo (PTP de {state['tramo']['segments'] * 20 / 1000:.1f} s al {state['tramo']['speed']:.0%}): física "
             f"{rounded(final)}, estimada {state['status']['position']}, referenciado {state['referenced']}, "
             f"Hall {state['status']['hall']:04b}")
         assert state["referenced"] and state["status"]["hall"] == 0b1000

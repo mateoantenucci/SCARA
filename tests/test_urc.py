@@ -10,7 +10,7 @@ from http.server import ThreadingHTTPServer
 
 from urc.app import handler_for
 from urc.protocol import ProtocolError
-from urc.session import Session
+from urc.session import STOP_GUARD, Session
 
 
 def wait_for(predicate, timeout=3):
@@ -147,9 +147,13 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(self.uci.receive(), "ENABLE")
         self.session.jog(1, "+")
         self.assertEqual(self.uci.receive(), "JOG 1 + 500")
-        # Frenar olvida el jog: el próximo pedido de la página lo vuelve a enviar.
+        # Frenar olvida el jog. Un pedido que estaba en camino no lo reanuda;
+        # el próximo pedido de la página, sí.
         self.session.stop()
         self.assertEqual(self.uci.receive(), "STOP")
+        self.session.jog(1, "+")
+        self.assertTrue(self.uci.silent(0.1))
+        time.sleep(STOP_GUARD)
         self.session.jog(1, "+")
         self.assertEqual(self.uci.receive(), "JOG 1 + 500")
         self.session.halt()
@@ -175,8 +179,9 @@ class SessionTests(unittest.TestCase):
         self.assertIn("arrancó", self.session.snapshot()["message"])
         self.uci.send("S IDLE 15 450 0 0 12000 0 16 0")
         self.assertTrue(wait_for(lambda: self.session.snapshot()["referenced"]))
+        # Con referencia, el jog va al doble que sin ella (D70).
         self.session.jog(1, "+")
-        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 1000")
         # A mitad de la conexión: la UCI se reinició sola (F5).
         self.uci.send("BOOT scara/1 1")
         state = wait_for(lambda: (s := self.session.snapshot())["boots"] == 2 and s)
@@ -211,6 +216,73 @@ class SessionTests(unittest.TestCase):
         second.send("S JOG 0 1 2 3 4 0 16 0")
         state = wait_for(lambda: (s := self.session.snapshot())["status"] and s)
         self.assertEqual(state["status"]["position"], [1, 2, 3, 4])
+
+
+class JogGuardTests(unittest.TestCase):
+    """Con referencia, el jog no pasa del recorrido ni entra en la zona de choque (D70)."""
+
+    def setUp(self):
+        self.session = Session(port=0)
+        self.addCleanup(self.session.close)
+        self.uci = FakeUci(self.session.port)
+        self.addCleanup(self.uci.close)
+        self.assertEqual(self.uci.receive(), "HELLO")
+
+    def status(self, line):
+        """Envía un S y espera a que la URC lo tenga."""
+        fields = line.split()
+        self.uci.send(line)
+        wait_for(lambda: (s := self.session.snapshot()["status"]) and s["mode"] == fields[1]
+                 and s["position"] == [int(v) for v in fields[3:7]])
+
+    def test_jog_stops_at_the_end_of_travel(self):
+        # QA R3: J4 bajó medio milímetro de más con F desde el reposo.
+        self.status("S IDLE 15 0 0 0 12050 0 16 0")
+        with self.assertRaisesRegex(ValueError, r"J4 llegó al límite de su recorrido \(120 mm\)"):
+            self.session.jog(4, "+")
+        # Hacia adentro, sí.
+        self.session.jog(4, "-")
+        self.assertEqual(self.uci.receive(), "JOG 4 - 1000")
+        # Por motor, M1 mueve también J2, al revés.
+        self.session.jog_stop()
+        self.assertEqual(self.uci.receive(), "JOG STOP")
+        self.status("S IDLE 15 0 -13450 0 12000 0 16 0")
+        with self.assertRaisesRegex(ValueError, "J2 llegó"):
+            self.session.jog(1, "+", motor=True)
+        self.status("S IDLE 15 13450 0 0 12000 0 16 0")
+        with self.assertRaisesRegex(ValueError, r"J1 llegó al límite de su recorrido \(135°\)"):
+            self.session.jog(1, "+")
+
+    def test_a_running_jog_stops_before_the_limit(self):
+        self.status("S IDLE 15 0 0 0 11000 0 16 0")
+        self.session.jog(4, "+")
+        self.assertEqual(self.uci.receive(), "JOG 4 + 1000")
+        self.session.jog(4, "+")
+        self.status("S JOG 15 0 0 0 11950 0 16 0")
+        self.assertEqual(self.uci.receive(), "JOG STOP")
+        self.assertIn("J4 llegó al límite", self.session.snapshot()["message"])
+        with self.assertRaisesRegex(ValueError, "J4 llegó"):
+            self.session.jog(4, "+")
+
+    def test_jog_stops_before_the_margin_of_an_obstacle(self):
+        # Con J4 abajo, el soporte Z llega a la zona de margen del pedestal
+        # desde J2 ≈ 107,4°: a 10 °/s, frena antes.
+        self.status("S IDLE 15 0 10600 0 12000 0 16 0")
+        with self.assertRaisesRegex(ValueError, "Z-SoporteEfector-1 tocaría pedestal_de_ensayo"):
+            self.session.jog(2, "+")
+        # Para el otro lado, y aun dentro de la zona, puede salir.
+        self.session.jog(2, "-")
+        self.assertEqual(self.uci.receive(), "JOG 2 - 1000")
+        self.session.jog_stop()
+        self.assertEqual(self.uci.receive(), "JOG STOP")
+        self.status("S IDLE 15 0 10760 0 12000 0 16 0")
+        self.session.jog(2, "-")
+        self.assertEqual(self.uci.receive(), "JOG 2 - 1000")
+
+    def test_without_reference_only_the_hall_stops_the_jog(self):
+        self.status("S IDLE 0 0 0 0 12050 0 16 0")
+        self.session.jog(4, "+")
+        self.assertEqual(self.uci.receive(), "JOG 4 + 500")
 
 
 class SegmentTests(unittest.TestCase):
@@ -298,7 +370,7 @@ class SegmentTests(unittest.TestCase):
         state = wait_for(lambda: (s := self.session.snapshot())["tramo"]["cancelled"] and s)
         self.assertEqual(state["tramo"]["cancelled"], "el robot se detuvo antes de terminar")
         self.session.jog(1, "+")
-        self.assertEqual(self.uci.receive(), "JOG 1 + 500")
+        self.assertEqual(self.uci.receive(), "JOG 1 + 1000")
 
     def test_an_err_cancels_the_tramo(self):
         self.session.move_ptp((900, 0, 0, 12000), speed=1)
@@ -375,7 +447,7 @@ class HomingTests(unittest.TestCase):
         state = self.session.snapshot()
         self.assertEqual(state["homing"]["state"], "terminado")
         self.assertEqual(state["tramo"]["target"], [0, 0, 0, 12000])
-        self.assertEqual(state["tramo"]["speed"], 0.5)
+        self.assertEqual(state["tramo"]["speed"], 1.0)
 
     def test_a_stuck_hall_aborts_without_parking(self):
         self.session.home()
