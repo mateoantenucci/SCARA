@@ -144,7 +144,8 @@ def line_deviation(samples, tramo, origin, end, config):
 world = (ROOT / "webots" / "worlds" / "scara_uci.wbt").read_text(encoding="utf-8")
 world = world.replace('controller "scara_uci"', 'controller "scara_uci"\n  controllerArgs ["--port", "{}", "--sim-port", '
                       '"{}", "--desvio", "0"]'.format(PORT, SIM_PORT))
-folder = tempfile.TemporaryDirectory()
+# El observador puede tener abierto su archivo al cerrar: que no impida borrar el resto.
+folder = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
 clock = Path(folder.name) / "fisica.json"
 OBSERVER.mkdir()
 shutil.copy(ROOT / "validation" / "transmision" / "observador.py", OBSERVER / "_observador_reproduccion.py")
@@ -185,7 +186,8 @@ try:
     log(f"1 play en loop de 2 vueltas: validación y arranque en {time.monotonic() - began:.2f} s; tramo 0 "
         f"{state['approach']}; duración planificada {state['duration_s']} s")
     state = wait(lambda: (s := player.snapshot())["state"] in ("terminada", "detenida") and s, "fin del loop",
-                 state["duration_s"] + 30)
+                 # El tiempo es de la PC: Webots puede ir a menos de 1× (0,82× con otro Webots abierto).
+                 2 * state["duration_s"] + 30)
     log(f"  {state['state']}: {state['message']}")
     assert state["state"] == "terminada", state
     time.sleep(0.5)

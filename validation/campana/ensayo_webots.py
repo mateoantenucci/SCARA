@@ -91,7 +91,8 @@ def play(player, request, what):
     began = time.monotonic()
     state = player.play(request)
     planned = state["duration_s"]
-    state = wait(lambda: (s := player.snapshot())["state"] in ("terminada", "detenida") and s, what, planned + 60)
+    # Con el reloj de la PC: Webots puede ir a menos de 1×.
+    state = wait(lambda: (s := player.snapshot())["state"] in ("terminada", "detenida") and s, what, 2 * planned + 60)
     assert state["state"] == "terminada", state
     return planned, time.monotonic() - began
 
@@ -108,7 +109,7 @@ world = (ROOT / "webots" / "worlds" / "scara_uci.wbt").read_text(encoding="utf-8
 world = world.replace('controller "scara_uci"', 'controller "scara_uci"\n  controllerArgs ["--port", "{}", "--sim-port", '
                       '"{}"]'.format(PORT, SIM_PORT))
 WORLD.write_text(world, encoding="utf-8")
-folder = tempfile.TemporaryDirectory()
+folder = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
 session, bench = Session(port=PORT), Instrumentation(port=SIM_PORT)
 taught = TrajectoryManager(session, folder.name)
 demos = TrajectoryManager(session, DEFAULT_FOLDER)
