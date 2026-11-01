@@ -116,7 +116,7 @@
     "max_effort": "esfuerzos equivalentes exploratorios de salida, NO torques de placa ni datos medidos",
     "environment": "Geometría de banco de tools/generate_world.py, centralizada el 15/10/2026; no es parte del diseño CAD",
     "collision_check": "Margen 1 mm y cota 0.25 mm de ensayo. Comprobación continua del entorno y herramienta/carga contra base fija; ver docs/MONTAJE_Y_AUTOCOLISIONES.md",
-    "simulation.basic_time_step_ms": "Paso numérico de ensayo reducido de 16 a 2 ms tras reproducir discontinuidad motor/tope J4. Mantiene carrera, masas y esfuerzo; ver docs/DIAGNOSTICO_TOPE_J4.md. No es frecuencia de hardware."
+    "simulation.basic_time_step_ms": "Paso numérico de ensayo reducido de 16 a 2 ms tras reproducir discontinuidad motor/tope J4. Mantiene carrera, masas y esfuerzo; ver docs/historico/DIAGNOSTICO_TOPE_J4.md. No es frecuencia de hardware."
   },
   "units": {
     "geometry": "m",

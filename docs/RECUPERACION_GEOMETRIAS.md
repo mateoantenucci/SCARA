@@ -114,4 +114,4 @@ La exportación alternativa deja de ser un requisito para mostrar estas tres pie
 3. Si se exporta también STL, entregar un archivo por pieza, declarar sus unidades y tolerancias y conservar el mismo marco. STL no incorpora por sí solo una unidad inequívoca y no sustituye el sólido BREP para propiedades o interferencias volumétricas.
 4. Conservar los archivos alternativos en una ruta separada, con hashes. Comparar cantidad y validez de sólidos, dimensiones, agujeros, volumen, centroide y colocación antes de sustituir derivados activos. Una caja exterior coincidente no basta.
 
-No se requiere redibujar desde los PDF ni medir manualmente colocaciones ya recuperadas. Las consultas sobre revisión, fijaciones, materiales y herramienta siguen reunidas en [Datos para el profesor](DATOS_PARA_EL_PROFESOR.md).
+No se requiere redibujar desde los PDF ni medir manualmente colocaciones ya recuperadas. Las consultas sobre revisión, fijaciones, materiales y herramienta siguen reunidas en [Datos para el profesor](historico/DATOS_PARA_EL_PROFESOR.md).

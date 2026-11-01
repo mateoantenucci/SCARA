@@ -99,4 +99,4 @@ python -B tools/extraer_ejes_cad.py
 
 Los generadores comprueban hashes y la vista fija no sobrescribe `webots/worlds/scara.wbt`. Para otro conjunto, `generate_cad_preview.py` admite `--assembly A-EnsambleBrazo.SLDASM --output /ruta/otra_vista.wbt` dentro del proyecto. No es necesario reconvertir para usar los mundos ya preparados.
 
-Las colocaciones guardadas no resuelven revisión oficial, ceros, homing ni TCP. Una reconstrucción fresca en el CAD de origen serviría como contraste independiente. No se requiere medir a mano posiciones que ya recuperamos; las discrepancias concretas están en [Consultas para el profesor](DATOS_PARA_EL_PROFESOR.md).
+Las colocaciones guardadas no resuelven revisión oficial, ceros, homing ni TCP. Una reconstrucción fresca en el CAD de origen serviría como contraste independiente. No se requiere medir a mano posiciones que ya recuperamos; las discrepancias concretas están en [Consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md).

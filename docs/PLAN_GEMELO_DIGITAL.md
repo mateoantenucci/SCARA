@@ -61,6 +61,6 @@ Una entrega defendible necesita que:
 5. Los informes identifiquen las fuentes y el ejecutable ensayados, sin atribuir aprobaciones anteriores a cambios posteriores.
 6. Otro integrante pueda abrir una copia completa y reproducir la demostración.
 
-El orden de trabajo es revisar montaje y contactos, fundamentar la física, completar comportamiento/contrato y verificar la entrega. Las dependencias externas están en [Consultas para el profesor](DATOS_PARA_EL_PROFESOR.md). Una duda externa limita la parte que depende de ella; no impide avanzar en las otras.
+El orden de trabajo es revisar montaje y contactos, fundamentar la física, completar comportamiento/contrato y verificar la entrega. Las dependencias externas están en [Consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md). Una duda externa limita la parte que depende de ella; no impide avanzar en las otras.
 
 La reunión puede resolver solo parte de esas consultas. Registrar cada respuesta con su fuente y fecha, qué decisión confirma y qué sigue pendiente; la tabla de consultas identifica el trabajo que destraba cada una. Con esas respuestas, elegir una ronda acotada, comprobar sus dependencias y repetir solo los ensayos afectados. No hace falta esperar todas las respuestas para avanzar en un área ya definida, ni convertir una respuesta incompleta en un supuesto aprobado.

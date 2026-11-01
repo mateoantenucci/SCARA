@@ -38,4 +38,4 @@ La comprobación de poses seleccionadas no cubre todo el movimiento. `selfCollis
 
 ## Pendientes mecánicos
 
-Confirmar revisión oficial, fijaciones, fases, anillos de rodamientos, recorrido de correas, ejes y referencias. Mejorar formas de contacto donde una caja ocupa un hueco funcional. Completar materiales y propiedades comerciales antes de reemplazar la física provisional. Las [consultas para el profesor](DATOS_PARA_EL_PROFESOR.md) reúnen las decisiones externas.
+Confirmar revisión oficial, fijaciones, fases, anillos de rodamientos, recorrido de correas, ejes y referencias. Mejorar formas de contacto donde una caja ocupa un hueco funcional. Completar materiales y propiedades comerciales antes de reemplazar la física provisional. Las [consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md) reúnen las decisiones externas.

@@ -57,7 +57,7 @@ También faltan:
 - Sustituir masas, inercias y esfuerzos provisionales por datos de materiales, impresión, componentes comerciales y transmisiones.
 - Completar la ejecución y validación en Windows y Linux.
 
-Las [consultas para el profesor](docs/DATOS_PARA_EL_PROFESOR.md) reúnen esas preguntas. Los ensayos del simulador no certifican prestaciones del diseño físico.
+Las [consultas para el profesor](docs/historico/DATOS_PARA_EL_PROFESOR.md) reúnen esas preguntas. Los ensayos del simulador no certifican prestaciones del diseño físico.
 
 ## Pruebas y lectura adicional
 
@@ -77,7 +77,7 @@ En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. 
 | Geometrías recuperadas | [Recuperación de geometrías](docs/RECUPERACION_GEOMETRIAS.md) |
 | Colocaciones y agrupación de piezas | [Ensamble CAD](docs/ENSAMBLE_CAD.md) y [criterios de integración](docs/INTEGRACION_CAD_CRITERIOS.md) |
 | Propiedades calculadas y datos físicos faltantes | [Propiedades geométricas CAD](docs/PROPIEDADES_GEOMETRICAS_CAD.md) |
-| Ensayos en Webots y eje vertical | [Validación](docs/VALIDACION_WEBOTS.md) y [diagnóstico de J4](docs/DIAGNOSTICO_TOPE_J4.md) |
+| Ensayos en Webots y eje vertical | [Validación](docs/VALIDACION_WEBOTS.md) y [diagnóstico de J4](docs/historico/DIAGNOSTICO_TOPE_J4.md) |
 | Acuerdos y próximos pasos | [Plan](docs/PLAN_GEMELO_DIGITAL.md) y [glosario](GLOSSARY.md) |
 
 Para cambiar el modelo se editan sus fuentes, se regeneran las salidas y se repiten las comprobaciones correspondientes. Las etapas anteriores se conservan en `validation/historico/` como evidencia, fuera de la ruta de lectura. El [mapa de documentos](docs/PROCESO_Y_ARCHIVOS.md#9-mapa-de-archivos-para-explorar) orienta la exploración.

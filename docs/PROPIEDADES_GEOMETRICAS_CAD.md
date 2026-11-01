@@ -165,7 +165,7 @@ La [revisión documental de física](../validation/physics_sources.json) registr
 | Esfuerzo y transmisión | Motor/driver/alimentación/corriente, curva torque–velocidad, poleas y relaciones, acoplamiento M1/M2, paso ACME, eficiencia, fricción/holgura y condiciones de sostén. | Las propiedades inerciales no determinan los esfuerzos disponibles ni la caída por falta de sostén. |
 | Herramienta y contactos | TCP, herramienta/carga nominal, topes, geometrías de colisión y propiedades de contacto pertinentes. | Afecta marcos, carga equivalente, recorridos y respuesta a contactos. |
 
-La lista para consultar al profesor está en [DATOS_PARA_EL_PROFESOR.md](DATOS_PARA_EL_PROFESOR.md). Hall/homing y protocolo también siguen pendientes para cerrar el comportamiento del banco, aunque no impiden calcular estas integrales.
+La lista para consultar al profesor está en [DATOS_PARA_EL_PROFESOR.md](historico/DATOS_PARA_EL_PROFESOR.md). Hall/homing y protocolo también siguen pendientes para cerrar el comportamiento del banco, aunque no impiden calcular estas integrales.
 
 El camino posterior es: revisar montaje, componentes adicionales y solapamientos → documentar materiales/modelos comerciales → agregar masas y tensores en cada marco → revisar cobertura → adaptar el generador y la combinación con carga → repetir comprobaciones físicas y nativas. Una hipótesis de densidad efectiva puede estudiarse como escenario declarado; no se convierte automáticamente en material confirmado.
 

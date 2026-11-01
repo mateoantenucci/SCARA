@@ -108,4 +108,4 @@ No hay comprobación continua general de autocolisiones ni planificación de des
 
 La cota sigue consignas ideales; una falla, gravedad, contacto o atraso del motor pueden separar la posición física de esa referencia. Faltan piezas, cables, herramienta/carga reales y revisión oficial de topes, referencias y transmisión. Las propiedades materiales y de contacto siguen siendo aproximaciones.
 
-La oscilación encontrada al llegar a J4=120 mm se trató como un problema numérico separado: el [diagnóstico](DIAGNOSTICO_TOPE_J4.md) respalda el paso de 2 ms. No se recortó la carrera a 119 mm ni se desplazó el pedestal para ocultar el problema.
+La oscilación encontrada al llegar a J4=120 mm se trató como un problema numérico separado: el [diagnóstico](historico/DIAGNOSTICO_TOPE_J4.md) respalda el paso de 2 ms. No se recortó la carrera a 119 mm ni se desplazó el pedestal para ocultar el problema.

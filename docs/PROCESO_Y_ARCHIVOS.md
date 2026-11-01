@@ -121,7 +121,7 @@ Si se omite orientación, J3 compensa los cambios de J1 y J2 para conservar el r
 
 `Runtime` interpola las articulaciones con un perfil quíntico: arranque y final suaves, con velocidad y aceleración de referencia nulas en los extremos. El extremo puede seguir una curva; no se implementó movimiento cartesiano rectilíneo.
 
-TCP transporta un flujo de bytes. Un mensaje puede llegar partido y varios pueden llegar juntos. `scara/transport.py` reconstruye mensajes completos. El banco usa JSON por línea y se identifica como **`scara-dev/1`**. Su [especificación actual](PROTOCOLO_SCARA_DEV_1.md) reúne mensajes, unidades, respuestas y reglas para revisión docente. Es un contrato de desarrollo; todavía falta el del profesor.
+TCP transporta un flujo de bytes. Un mensaje puede llegar partido y varios pueden llegar juntos. `scara/transport.py` reconstruye mensajes completos. El banco usa JSON por línea y se identifica como **`scara-dev/1`**. Su [especificación actual](historico/PROTOCOLO_SCARA_DEV_1.md) reúne mensajes, unidades, respuestas y reglas para revisión docente. Es un contrato de desarrollo; todavía falta el del profesor.
 
 En esta versión, Python sirve la página en el puerto local 8765 y se conecta al controlador de Webots en el 9000. Son dos conexiones distintas. Pausar Webots pausa también la atención de órdenes de su controlador.
 
@@ -136,7 +136,7 @@ En esta versión, Python sirve la página en el puerto local 8765 y se conecta a
 
 La interfaz separa **ordenado**, **estimado** y **simulador**. El estimado actual sigue la referencia ideal; no cuenta pasos perdidos. La posición física de Webots se observa para comprobar ensayos. El diseño documentado no tiene encoders, de modo que esa observación interna no puede presentarse como un sensor real disponible para controlarlo.
 
-`completed` significa que terminó la secuencia de consignas. Para afirmar llegada y sostén, las pruebas observan después la posición simulada dentro de tolerancias. Precisamente se encontró una oscilación de J4 después de terminar las consignas: se redujo al refinar el paso físico de 16 a 2 ms. El [diagnóstico de J4](DIAGNOSTICO_TOPE_J4.md) conserva la comparación y sus límites.
+`completed` significa que terminó la secuencia de consignas. Para afirmar llegada y sostén, las pruebas observan después la posición simulada dentro de tolerancias. Precisamente se encontró una oscilación de J4 después de terminar las consignas: se redujo al refinar el paso físico de 16 a 2 ms. El [diagnóstico de J4](historico/DIAGNOSTICO_TOPE_J4.md) conserva la comparación y sus límites.
 
 El banco permite fijar una señal Hall, reducir esfuerzo, cortar la conexión y cambiar una carga de ensayo. La carga conocida puede generar un aviso de sobrecarga. La [especificación de fallas](FALLAS_Y_VALIDACION.md) distingue lo implementado de las propuestas.
 
@@ -233,7 +233,7 @@ Usá estas preguntas para verificar tu comprensión; cada una tiene respuesta en
 - ¿Qué fallas están implementadas y cuáles son propuestas?
 - ¿Qué confirma un ensayo aprobado y qué no permite concluir?
 
-Las preguntas que necesitan una decisión externa están en [Consultas para el profesor](DATOS_PARA_EL_PROFESOR.md). Las dudas de comprensión las podemos resolver recorriendo estos bloques y sus archivos, sin estudiar todos los informes a la vez.
+Las preguntas que necesitan una decisión externa están en [Consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md). Las dudas de comprensión las podemos resolver recorriendo estos bloques y sus archivos, sin estudiar todos los informes a la vez.
 
 ## Documentación para profundizar por tema
 
@@ -242,14 +242,14 @@ Las preguntas que necesitan una decisión externa están en [Consultas para el p
 | Operar el robot | [README](../README.md). |
 | Entender alcance, acuerdos y pendientes | [Plan](PLAN_GEMELO_DIGITAL.md) y [decisión de simular sin hardware](adr/0001-simulacion-del-diseno-sin-hardware.md). |
 | Resolver un término | [Glosario](../GLOSSARY.md). |
-| Revisar el protocolo implementado | [Especificación de scara-dev/1](PROTOCOLO_SCARA_DEV_1.md), con ejemplos y puntos para revisión del profesor. |
+| Revisar el protocolo implementado | [Especificación de scara-dev/1](historico/PROTOCOLO_SCARA_DEV_1.md), con ejemplos y puntos para revisión del profesor. |
 | Justificar conversiones y recuperaciones | [Conversión CAD](EVALUACION_CONVERSION_CAD.md), [tres geometrías recuperadas](RECUPERACION_GEOMETRIAS.md) y [torre por cuerpos](../cad/derivados/torre_por_cuerpos/README.md). |
 | Explicar posiciones, ejes y cuerpos | [Ensamble](ENSAMBLE_CAD.md) y [criterios de integración](INTEGRACION_CAD_CRITERIOS.md). |
 | Revisar montaje y transmisión | [Montaje](MONTAJE_Y_AUTOCOLISIONES.md) y [transmisión](TRANSMISION.md). |
 | Justificar física y materiales | [Propiedades geométricas](PROPIEDADES_GEOMETRICAS_CAD.md). |
 | Explicar rechazos y choques | [Colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md). |
-| Revisar pruebas, fallas y referencia | [Validación](VALIDACION_WEBOTS.md), [fallas](FALLAS_Y_VALIDACION.md) y [diagnóstico de J4](DIAGNOSTICO_TOPE_J4.md). |
-| Preparar consultas externas | [Datos para el profesor](DATOS_PARA_EL_PROFESOR.md). |
+| Revisar pruebas, fallas y referencia | [Validación](VALIDACION_WEBOTS.md), [fallas](FALLAS_Y_VALIDACION.md) y [diagnóstico de J4](historico/DIAGNOSTICO_TOPE_J4.md). |
+| Preparar consultas externas | [Datos para el profesor](historico/DATOS_PARA_EL_PROFESOR.md). |
 | Consultar fuentes técnicas | [Referencias](FUENTES_CAD_WEBOTS.md). |
 
 Los documentos especializados se abren cuando aparece esa duda. No hace falta leerlos todos antes de explorar el robot.
