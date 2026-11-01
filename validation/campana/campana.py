@@ -84,7 +84,8 @@ ESCENARIOS = [
      "inicial": "Robot referenciado en el reposo; trayectoria mixta de 4 puntos con espera",
      "esperado": "Loop de 2 vueltas: cada tramo dura lo planificado y los LIN siguen la recta; la pausa frena "
                  "sobre la recta y reanudar la conserva; stop frena y descarta lo pendiente",
-     "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,32 mm (0,069 mm del plan más medio paso de M1 y M2)",
+     "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,32 mm la estimada (0,069 mm del plan más medio paso "
+                   "de M1 y M2) y ≤ 0,40 mm la física (más el atraso del rotor de N2)",
      "ensayos": ["reproduccion"], "pasos": "pasos 1 a 3"},
     {"id": "T3", "nombre": "Trayectorias de demostración",
      "inicial": "Robot referenciado; cada archivo demo-*.json de trayectorias/",
