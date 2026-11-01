@@ -100,7 +100,7 @@ La URC planifica y el firmware ejecuta (D6, [ADR 0005](adr/0005-la-urc-planifica
 Un sensor Hall por articulación y dos imanes, centrados en los extremos del recorrido (D10). La referencia es el flanco del lado negativo, donde el Hall se activa: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba (D56).
 
 - `HOME` busca J4, J1 (M1 y M2 juntos: J2 no cambia), J2 (M2 solo) y J3, en ese orden (D11). `HOME j`, solo el eje `j`.
-- En cada eje: si el Hall está activo al empezar, sale del imán; busca a 15 °/s (J4: 10 mm/s) hasta que se activa; retrocede hasta que se apaga y 3° (3 mm) más; vuelve a 1 °/s al mismo flanco. Ahí fija la referencia y envía `EV HOMED j` (D70).
+- En cada eje: si el Hall está activo al empezar, sale del imán; busca a 15 °/s (J4: 10 mm/s) hasta que se activa; retrocede hasta que se apaga y 3° (3 mm) más; vuelve a 1 °/s al mismo flanco. Ahí fija la referencia y envía `EV HOMED j` (D72).
 - Con el Hall activo al empezar, el firmware decide de qué imán sale con su cuenta de pasos, si sale de una referencia aunque un `STOP` o un homing abortado la hayan quitado. Si no lo sabe, sale hacia la referencia; si el Hall no se apaga, era el imán de la referencia y retrocede.
 - La búsqueda está acotada en recorrido y en 60 s por eje. Si el Hall no aparece, `ERR 11 ausente`; si no se apaga en ningún sentido, `ERR 12 trabado`. Al abortar, y también con `STOP`, `HALT`, `DISABLE` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
 - `S` informa `HOMING` mientras dura. El firmware termina en los flancos; la URC vuelve sola a la pose de reposo con un tramo PTP («Estacionar»).

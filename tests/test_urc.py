@@ -179,7 +179,7 @@ class SessionTests(unittest.TestCase):
         self.assertIn("arrancó", self.session.snapshot()["message"])
         self.uci.send("S IDLE 15 450 0 0 12000 0 16 0")
         self.assertTrue(wait_for(lambda: self.session.snapshot()["referenced"]))
-        # Con referencia, el jog va al doble que sin ella (D68).
+        # Con referencia, el jog va al doble que sin ella (D70).
         self.session.jog(1, "+")
         self.assertEqual(self.uci.receive(), "JOG 1 + 1000")
         # A mitad de la conexión: la UCI se reinició sola (F5).
@@ -219,7 +219,7 @@ class SessionTests(unittest.TestCase):
 
 
 class JogGuardTests(unittest.TestCase):
-    """Con referencia, el jog no pasa del recorrido ni entra en la zona de choque (D68)."""
+    """Con referencia, el jog no pasa del recorrido ni entra en la zona de choque (D70)."""
 
     def setUp(self):
         self.session = Session(port=0)

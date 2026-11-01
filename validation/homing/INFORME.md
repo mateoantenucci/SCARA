@@ -1,6 +1,6 @@
 # Sensores Hall y homing en Webots (issue #8)
 
-Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots y el microstepping por defecto, 1/8. Repetido el mismo día con el modelo de motores N2 (#15) y el homing más rápido de D70: búsqueda a 15 °/s (J4 a 10 mm/s) y vuelta al reposo al 100 %.
+Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots y el microstepping por defecto, 1/8. Repetido el mismo día con el modelo de motores N2 (#15) y el homing más rápido de D72: búsqueda a 15 °/s (J4 a 10 mm/s) y vuelta al reposo al 100 %.
 
 ## Cómo se hizo
 

@@ -555,7 +555,7 @@ Decisiones tomadas al implementar los Hall en la planta de Webots y el homing de
   - Un solo sensor no distingue los dos imanes. Desde el reposo, el único Hall activo es el de J4, sobre su imán de fin; la referencia previa resuelve el caso de un segundo homing.
   - La vuelta al reposo mueve los cuatro ejes desde una pose plegada (J1 y J2 en −130°): planificarla en la URC, como cualquier PTP, verifica choques en todo el camino (ADR 0005) y no agrega un generador de trayectorias al UNO. Al 25 % tardaría 52 s, porque M2 recorre J1 + J2 = 260°.
 - **Descartado:** referenciar con el centro del imán (exige recorrerlo entero, hasta el tope), que el firmware vuelva solo al reposo eje por eje (sin chequeo de choques y con más código en el UNO), y conservar las referencias de los ejes ya encontrados cuando el homing aborta (el operador no sabría qué quedó valiendo).
-- **Estado:** Aceptada. Las posiciones de los imanes siguen siendo propuesta al profesor (D10). D70 cambia las velocidades de búsqueda, la vuelta al reposo y el arranque sobre un imán.
+- **Estado:** Aceptada. Las posiciones de los imanes siguen siendo propuesta al profesor (D10). D72 cambia las velocidades de búsqueda, la vuelta al reposo y el arranque sobre un imán.
 
 **D57 · En Webots, el Hall se activa por la distancia entre el imán y el sensor.**
 - **Decisión:**
@@ -683,11 +683,49 @@ Decisiones tomadas al modelar el par de los motores en la planta de Webots y la 
 - **Descartado:** forzar pasos perdidos desde el banco sin causa física (no muestra el modelo) y permitir más carga o más aceleración que lo que planifica la URC (cambia el planificador).
 - **Estado:** Aceptada.
 
+## Reproducción de trayectorias (issue #13)
+
+Decisiones tomadas al implementar la reproducción desde el gestor de trayectorias: [`urc/playback.py`](../urc/playback.py) y el panel de [`urc/trajectories.js`](../urc/trajectories.js). Pruebas por los endpoints HTTP en [`tests/test_playback.py`](../tests/test_playback.py); la evidencia, en el [ensayo en Webots](../validation/reproduccion/INFORME.md).
+
+**D68 · La reproducción valida todo antes de mover y encola un tramo detrás de otro, con sus esperas, en un solo movimiento.**
+- **Decisión:**
+  - Play desde el principio o desde el punto seleccionado, con velocidad global (% entero de 10 a 100, que multiplica la de cada tramo y no se guarda) y loop: N vueltas o sin fin.
+  - Antes de enviar nada, la URC planifica y valida (D55) todo lo que se va a ejecutar: el tramo 0, cada tramo de la trayectoria y, con loop, la vuelta del último punto al primero y los tramos anteriores al punto de partida. El rechazo dice cuál: «Tramo 0», «Tramo 3» o «Tramo de vuelta».
+  - Tramo 0: PTP desde la posición estimada hasta el punto de partida, al 25 % × la velocidad global (`--aproximacion` cambia el 25 %), con espera de 0 s. Se omite si el robot está a lo sumo a 6 centésimas de grado en J1–J3 y a 1 centésima de mm en J4: menos de un paso de 1/8, redondeado hacia arriba. Entonces el primer tramo parte del punto grabado, no de la pose del robot.
+  - Exige el robot referenciado, quieto y sin referencia dudosa (D65). Si en plena reproducción llega un `EV LOST`, la URC la detiene con `STOP`.
+  - La espera de un punto son segmentos sin movimiento en su destino, de hasta 1 s cada uno.
+  - Toda la reproducción es un solo movimiento de la sesión, que crece: cuando quedan menos de 50 segmentos (1 s) por enviar, entra el tramo siguiente entero, con su espera. Cada vuelta del loop arranca con la vuelta al punto 1 (tipo, velocidad y espera del punto 1, D32) y sigue con los tramos 2…n; desde el seleccionado, solo la primera vuelta arranca ahí. El loop sin fin agrega vueltas hasta que llega Stop.
+  - El tramo en ejecución sale de `último` en el estado `S`: el segmento siguiente dice a qué tramo y vuelta pertenece, y si es de la espera. La página resalta el punto al que va.
+- **Por qué:**
+  - D14 y D29: el robot nunca arranca un tramo que no puede terminar, y con loop la vuelta también se ejecuta. Validar al dar play cuesta unos segundos (D55), una sola vez.
+  - Encolar el tramo siguiente antes de que se termine el anterior hace que el firmware los encadene con su reloj, sin huecos: los tiempos son los planificados (ADR 0005). Un segundo de margen es tres veces lo que cubre la cola del firmware (D50). Las esperas como segmentos van con el mismo reloj, sin depender de la red.
+  - Un solo movimiento mantiene, mientras dura la reproducción, las protecciones de la sesión que ya existen: no hay jog, captura ni «Ir al punto» en el medio, y un `ERR`, un `BOOT` o una desconexión la cancelan (D52).
+  - El umbral del tramo 0 está en centésimas porque la URC no conoce el microstepping (ADR 0003). Con 1/8 el robot llega a un punto escrito con un error de hasta medio paso por motor; J2, que es la diferencia de M2 y M1, suma los dos: hasta 5,6 centésimas. Con otro microstepping solo cambia si se omite o no un tramo 0 de una fracción de segundo.
+  - Con la referencia dudosa, la posición estimada puede estar corrida pasos enteros y ningún plan vale: es la opción conservadora. Se limpia con un homing.
+- **Descartado:**
+  - Validar cada tramo recién antes de enviarlo: arrancaría tramos que no puede terminar.
+  - Encolar la trayectoria entera de una vez: no sirve para el loop sin fin.
+  - Medir las esperas en la URC: dependerían de la red.
+  - Reproducir con la referencia dudosa avisando nada más.
+- **Estado:** Aceptada.
+
+**D69 · La pausa es el `STOP` con rampa del firmware; al reanudar, la URC recalcula el resto del tramo desde la pose de la pausa.**
+- **Decisión:**
+  - Pausa envía `STOP` (D52). La reproducción queda en pausa con el primer estado `IDLE` que llega después de la orden.
+  - Con `último`, la URC sabe qué segmento se interrumpió. Si era del movimiento, al reanudar planifica y valida de nuevo ese tramo, con su tipo y su velocidad, desde la posición estimada hasta su destino. Si ya estaba en la espera, queda lo que faltaba de ella. Lo que seguía se encola como antes.
+  - Reanudar exige el robot en la misma pose de la pausa y la trayectoria sin cambios. Si no, hay que frenar con Stop y reproducir de nuevo, con su tramo 0.
+  - Stop (el botón del gestor, el general y Esc) frena con la misma rampa y descarta todo lo pendiente.
+- **Por qué:**
+  - La rampa sigue en la dirección del segmento en ejecución, en articulaciones. En un PTP, ese es exactamente su camino. En un LIN, el robot frena en menos de medio segundo y se aparta de la recta lo que se curva el camino en ese trecho: en el ensayo en Webots, 0,053 mm. El resto, desde ahí hasta el destino, es la misma recta: el tramo la conserva entera.
+  - El firmware ya frena así, con la cola vaciada al instante. Una rampa planificada por la URC sobre la recta tendría que esperar que se ejecute lo ya encolado, hasta 320 ms a plena velocidad.
+  - Si el robot se movió durante la pausa, el resto sería otra recta.
+- **Descartado:** frenar con una rampa planificada por la URC, reanudar desde cualquier pose y repetir la espera completa.
+
 ## QA de la ronda 3
 
 Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con Webots el 31/10/2026: jog lento y sin límites, un PTP que no podía salir de cerca del pedestal, la «Parada inmediata» que no perdía la referencia durante el jog y un homing que no se podía repetir después de frenarlo.
 
-**D68 · Con referencia, el jog va a 10 °/s y la URC lo frena antes del límite de recorrido y de un choque.**
+**D70 · Con referencia, el jog va a 10 °/s y la URC lo frena antes del límite de recorrido y de un choque.**
 - **Decisión:**
   - Con los cuatro ejes referenciados, la URC pide el jog a 10 °/s (10 mm/s en J4), el máximo del firmware sin rampa (`JOG_SPEED_MAX`). Sin referencia lo pide a 5 °/s, lo que de todos modos deja el firmware (D58).
   - Con referencia, en cada `S` y en cada pedido de la página, la URC mira adelante en el sentido del jog: si en 0,15 s una articulación que mueve pasaría su límite de recorrido, o si en 0,15 o 0,3 s el robot entraría en la zona de margen de un obstáculo, envía `JOG STOP` y rechaza el pedido con el motivo. Dentro de esa zona el jog puede salir: solo frena si la separación disminuye. El jog por motor cuenta lo que mueve cada motor: M1 mueve J1 y J2 al revés.
@@ -701,7 +739,7 @@ Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con W
 - **Descartado:** los límites del jog en el firmware (no conoce el recorrido ni los choques, ADR 0005) y un jog que verifica choques con el camino continuo de `first_conflict` (más lento a 20 por segundo, sin ganar nada con lo que avanza en 0,3 s).
 - **Estado:** Aceptada.
 
-**D69 · Un PTP puede salir de la zona de margen de un obstáculo si se aleja.**
+**D71 · Un PTP puede salir de la zona de margen de un obstáculo si se aleja.**
 - **Decisión:**
   - `CollisionChecker.first_conflict_leaving`, que usan el PTP de la página y la validación de los tramos PTP, admite un camino rechazado por `first_conflict` si: el inicio está a menos del margen más dos veces la resolución de un obstáculo, la separación crece en muestras cada vez más lejos del inicio (s = 2⁻²⁰ … 1) hasta salir de esa zona, en ese tramo las envolventes no se tocan (sin margen, con la cota continua) y el resto del camino respeta el margen.
   - `clearance` mide la separación quieta: por par de cajas, la mayor distancia en un eje, la misma regla con la que `first_conflict` declara conflicto.
@@ -710,7 +748,7 @@ Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con W
 - **Descartado:** bajar la resolución en todo el chequeo (más lento en cada tramo) y prohibir los destinos dentro de esa zona (el robot igual llega con jog o con pasos perdidos).
 - **Estado:** Aceptada.
 
-**D70 · Homing más rápido, y repetible después de frenarlo.**
+**D72 · Homing más rápido, y repetible después de frenarlo.**
 - **Decisión:**
   - La búsqueda va a 15 °/s en J1–J3 y a 10 mm/s en J4 (`HOME_FAST`, por eje). Las fases lentas siguen a 1 °/s (1 mm/s). La vuelta al reposo, y «Estacionar», es un PTP al 100 %.
   - El firmware recuerda qué ejes tienen una cuenta de pasos que sale de una referencia (`found_`), aunque un `STOP` o un homing abortado se la hayan quitado: solo la olvida con `HALT` en movimiento, `DISABLE` o un reinicio. Con el Hall activo al empezar, un eje así que está en su flanco retrocede directamente.

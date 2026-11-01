@@ -1,5 +1,6 @@
 // Gestor de trayectorias (D29, D34). La trayectoria la guarda la URC; la
-// página la muestra y pide cada cambio por /api/trayectoria/*.
+// página la muestra y pide cada cambio por /api/trayectoria/*. La
+// reproducción va por /api/reproduccion/* y también la planifica la URC.
 // Usa post, format, lastStatus y stopJog de index.html.
 (() => {
   const panel = document.getElementById("trajectory");
@@ -27,6 +28,24 @@
       <button id="tr-go">Ir al punto…</button>
       <button id="tr-delete">Borrar <kbd>Retroceso</kbd></button>
     </div>
+    <h2 style="margin-top: 18px">Reproducción</h2>
+    <p class="muted">Antes de mover, la URC valida todos los tramos. El robot llega primero al punto de partida con el tramo 0,
+      un PTP al 25 % × la velocidad global, salvo que ya esté ahí. Con loop, la vuelta del último punto al primero usa los
+      parámetros del punto 1. La velocidad global no se guarda en el archivo. <kbd>Esc</kbd> frena todo.</p>
+    <div class="row">
+      <label>Velocidad global (%) <input id="pl-speed" type="number" min="10" max="100" step="10" value="100" style="width: 5em"></label>
+      <label>Loop <select id="pl-loop"><option value="1">Sin loop</option><option value="n">N vueltas</option><option value="inf">Sin fin</option></select></label>
+      <label id="pl-times-label" hidden>Vueltas <input id="pl-times" type="number" min="2" step="1" value="2" style="width: 5em"></label>
+    </div>
+    <div class="row" style="margin-top: 8px">
+      <button id="pl-play">▶ Desde el principio</button>
+      <button id="pl-play-selected">▶ Desde el seleccionado</button>
+      <button id="pl-pause">Pausa</button>
+      <button id="pl-resume">Reanudar</button>
+      <button id="pl-stop">Stop <kbd>Esc</kbd></button>
+    </div>
+    <p id="pl-status" class="muted"></p>
+    <div id="pl-feedback" class="feedback" role="status" aria-live="polite"></div>
     <h2 style="margin-top: 18px">Punto escrito</h2>
     <p class="muted">En XYZ, un punto nuevo usa el codo elegido; uno editado conserva el suyo (para cambiarlo, editá J1–J4).</p>
     <div class="row">
@@ -64,7 +83,7 @@
 
   const $ = (id) => document.getElementById(id);
   const ELBOWS = { "-1": "J2 −", "0": "estirado", "1": "J2 +" };
-  let trajectory = { points: [], dirty: false }, selected = null;
+  let trajectory = { points: [], dirty: false }, selected = null, playback = { state: "inactiva", current: null };
 
   const feedback = (error) => { $("tr-feedback").textContent = error ? error.message : ""; };
 
@@ -100,12 +119,23 @@
     $("tr-empty").hidden = data.points.length > 0;
     const body = $("tr-points");
     body.replaceChildren(...data.points.map(row));
+    paint();
+  }
+
+  // El punto al que va el tramo en ejecución, según el estado S de la UCI.
+  function paint() {
+    const current = playback.current;
+    for (const tr of $("tr-points").children) {
+      const index = Number(tr.dataset.index);
+      const running = current && current.point === index;
+      tr.style.background = running ? "#ffe2a8" : index === selected ? "#d9eef0" : "";
+      tr.style.fontWeight = running ? "700" : "";
+    }
   }
 
   function row(point, index) {
     const tr = document.createElement("tr");
     tr.dataset.index = index;
-    if (index === selected) tr.style.background = "#d9eef0";
     const t = point.tool;
     // Solo el número se arrastra: en una fila arrastrable los campos no se editan bien.
     tr.innerHTML = `<td draggable="true" title="Arrastrar para reordenar" style="cursor: grab">⠿ ${index + 1}</td><td>${t.x.toFixed(2)}</td><td>${t.y.toFixed(2)}</td><td>${t.z.toFixed(2)}</td>` +
@@ -280,6 +310,80 @@
     else askName();
   });
 
+  // --- Reproducción (D29, D32, D33) ---
+  const ACTIVE = ["reproduciendo", "pausando", "pausada"];
+  const plFeedback = (error) => { $("pl-feedback").textContent = error ? error.message : ""; };
+  const seconds = (value) => `${value.toFixed(2)} s`;
+
+  function describe(state) {
+    const parts = [state.message];
+    const approach = state.approach;
+    if (approach && state.state !== "inactiva") {
+      parts.push(approach.skipped ? `Tramo 0 omitido: el robot ya estaba en el punto ${approach.point + 1}`
+        : `Tramo 0, aproximación PTP al punto ${approach.point + 1}: ${seconds(approach.duration_s)}`);
+      parts.push(state.duration_s === null ? "loop sin fin" : `duración planificada ${seconds(state.duration_s)}`);
+    }
+    const current = state.current;
+    if (current) {
+      const loop = state.loops === 1 ? "" : ` · vuelta ${current.cycle}${state.loops ? ` de ${state.loops}` : ""}`;
+      const what = current.approach ? "tramo 0, aproximación PTP"
+        : current.label === "vuelta" ? `vuelta al punto 1 (${current.kind})` : `tramo ${current.label} (${current.kind})`;
+      parts.push(`${current.waiting ? `Esperando en el punto ${current.point + 1}` : `En ejecución: ${what}`}${loop}`);
+    }
+    return parts.join(" · ");
+  }
+
+  function showPlayback(state) {
+    playback = state;
+    const active = ACTIVE.includes(state.state);
+    $("pl-status").textContent = describe(state);
+    $("pl-play").disabled = $("pl-play-selected").disabled = active || state.state === "validando";
+    $("pl-pause").disabled = state.state !== "reproduciendo";
+    $("pl-resume").disabled = state.state !== "pausada";
+    $("pl-stop").disabled = !active;
+    paint();
+  }
+
+  function loops() {
+    const choice = $("pl-loop").value;
+    if (choice === "inf") return null;
+    if (choice === "1") return 1;
+    const times = Number($("pl-times").value);
+    if (!Number.isInteger(times) || times < 2) throw new Error("Las vueltas del loop son un entero de 2 o más");
+    return times;
+  }
+  $("pl-loop").addEventListener("change", () => { $("pl-times-label").hidden = $("pl-loop").value !== "n"; });
+
+  async function play(start) {
+    stopJog();
+    try {
+      const body = { start, speed: Number($("pl-speed").value), loops: loops() };
+      $("pl-status").textContent = "Validando la trayectoria completa…";
+      showPlayback(await post("/api/reproduccion/reproducir", body));
+      plFeedback(null);
+    } catch (error) {
+      plFeedback(error);
+      refreshPlayback();
+    }
+  }
+  const command = (path) => () => post(`/api/reproduccion/${path}`).then((state) => { showPlayback(state); plFeedback(null); }, plFeedback);
+
+  $("pl-play").addEventListener("click", () => play(0));
+  $("pl-play-selected").addEventListener("click", guarded(() => play(needSelected())));
+  $("pl-pause").addEventListener("click", command("pausa"));
+  $("pl-resume").addEventListener("click", command("reanudar"));
+  $("pl-stop").addEventListener("click", command("stop"));
+
+  async function refreshPlayback() {
+    try {
+      showPlayback(await (await fetch("/api/reproduccion")).json());
+    } catch (error) {
+      // La URC no responde: lo informa la cabecera de la página.
+    }
+  }
+
   fetch("/api/trayectoria").then((response) => response.json()).then(show, feedback);
   files();
+  refreshPlayback();
+  setInterval(refreshPlayback, 200);
 })();
