@@ -56,7 +56,7 @@ Una vez, en la máquina que se lleva a la defensa (Windows 11, Webots R2025a en 
 
 Arranque limpio: Webots cerrado, sin URC y con el árbol en `main`. Cada paso dice qué hacer, qué tiene que verse y qué decisión explica. Lo que dice la página está entre comillas latinas («»), tal como aparece en la URC.
 
-Cada paso se validó contra el código y contra los ensayos de Webots que lo ejecutan por script, en puertos distintos de 9000 y 9001: [campaña](../validation/campana/ensayo_webots.py) (homing, F3, teach, demos, F5), [jog](../validation/jog/ensayo_webots.py), [instrumentación](../validation/instrumentacion/ensayo_webots.py) (F2–F5) y [pérdida de pasos](../validation/perdida_pasos/ensayo_webots.py) (F1). Lo visual de la ventana de Webots no se pudo mirar desde un script: queda para el ensayo del punto 5 de la sección 1.
+Cada paso se validó contra el código y contra los ensayos de Webots que lo ejecutan por script, en puertos distintos de 9000 y 9001: [campaña](../validation/campana/ensayo_webots.py) (homing, F3, teach, demos, F5), [jog](../validation/jog/ensayo_webots.py), [instrumentación](../validation/instrumentacion/ensayo_webots.py) (F2–F5) y [pérdida de pasos](../validation/perdida_pasos/ensayo_webots.py) (F1). Se corrieron el 01/11/2026 sobre `main` (commit `79e2295`), en Windows 11 con Webots R2025a, y los cuatro terminaron con `ENSAYO OK`. El de la campaña se cortó una vez en el paso 3, con la UCI desconectada en pleno jog y Webots a ~0,66× del tiempo real, y pasó al repetirlo: si se repite en la campaña de la sección 1, hay que mirarlo. El rechazo del LIN de la sección 2.5 lo verifica la suite. Lo visual de la ventana de Webots no se pudo mirar desde un script: queda para el ensayo del punto 5 de la sección 1.
 
 ### 2.1 Arranque y conexión
 
@@ -103,7 +103,7 @@ Alternativa más corta si el homing falla o falta tiempo: **«Referencia manual�
 3. Capturar tres puntos con **Espacio**, moviendo entre uno y otro. **Retroceso** borra el último capturado (D63). Mostrar que capturar exige el robot quieto: la posición capturada es la estimada por pasos del último `S`.
 4. En la tabla, poner el punto 2 en LIN y el punto 3 en PTP con espera de 1 s (D22).
 5. **Enter** pide el nombre: por ejemplo, `Teach defensa`. Se guarda en `trayectorias/` (D62).
-6. Mostrar el jog verificado: con jog articular, mantener **W** o **S** hacia la torre con J4 abajo; el jog frena antes de la zona de margen del pedestal, y desde ahí solo deja alejarse (D28, D70, D75).
+6. Mostrar el jog verificado, como en su [ensayo](../validation/jog/INFORME.md): en «Ir a una pose (PTP)», J1 = 0°, J2 = 95°, J3 = 0° y J4 = 120 mm (abajo), y **«Ir a la pose…»**. Con jog articular (**Tab** si quedó en cartesiano), mantener **W** (J2 +, hacia la torre): el jog frena antes de la zona de margen del pedestal y avisa el motivo; **S** sale sin frenar (D28, D70, D75).
 7. **Qué se explica:** el punto guarda la pose, no el camino (D13); el camino lo calcula la URC al reproducir; el jog con referencia son segmentos de 20 ms verificados de a uno, con tres en cola (D75).
 
 Después de la defensa, borrar el archivo de la trayectoria grabada en `trayectorias/`: si queda, el árbol tiene cambios y `campana.py` no corre (D73).
