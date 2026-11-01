@@ -128,7 +128,7 @@ def calculate(extended=False):
     dependencies = ("config/scara.json", "scara/collisions.py", "scara/frames.py", "scara/kinematics.py",
         "tools/check_self_collisions.py", "tools/check_collisions.py", "tools/calcular_propiedades_cad.py",
         "tools/requirements-cad.txt", "cad/ensambles/integracion_articulada.json",
-        "cad/propiedades/propiedades_geometricas.json", "webots/protos/SCARA.proto", "webots/worlds/scara.wbt")
+        "cad/propiedades/propiedades_geometricas.json", "webots/protos/SCARA.proto", "webots/worlds/scara_uci.wbt")
     sources = {name: sha256(ROOT/name) for name in dependencies}
     config = load_config()
     cad = json.loads((ROOT/"cad/ensambles/integracion_articulada.json").read_text())

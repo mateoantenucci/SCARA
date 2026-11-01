@@ -1,6 +1,6 @@
 # UCI en Webots y URC: el camino nuevo
 
-El camino que reemplaza al banco `scara-dev/1` (D16). Hoy cubre la bala trazadora (issue #5), el protocolo completo (issue #6) y la transmisión N1 (issue #7): corriente de los drivers, jog articular de J1–J4 y jog por motor desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas. El banco viejo sigue igual en `client/`, `scara/` y `webots/worlds/scara.wbt`.
+El sistema que reemplazó al banco `scara-dev/1` (D16), ya retirado (issue #17). Hoy cubre la bala trazadora (issue #5), el protocolo completo (issue #6) y la transmisión N1 (issue #7): corriente de los drivers, jog articular de J1–J4 y jog por motor desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas.
 
 ## Cómo funciona
 

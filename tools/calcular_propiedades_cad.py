@@ -173,7 +173,7 @@ def calculate():
     if not agrees(derive(), integration):
         raise ValueError("Integración CAD desactualizada; revisar antes de calcular propiedades")
     protected_paths = [ROOT/"config/scara.json", ROOT/"webots/protos/SCARA.proto",
-                       ROOT/"webots/worlds/scara.wbt", batch_path, integration_path,
+                       ROOT/"webots/worlds/scara_uci.wbt", batch_path, integration_path,
                        Path(__file__), ROOT/"tools/requirements-cad.txt",
                        ROOT/"scara/frames.py", ROOT/"tools/convertir_cad.py"]
     protected_paths += [ROOT/p for p in integration["sources"]]

@@ -1,7 +1,6 @@
 """URC: python -m urc.app. Escucha a la UCI por scara/1 y sirve la página local.
 
-Solo usa la biblioteca estándar. Convive con el banco viejo (client.app,
-scara-dev/1): usan otro puerto HTTP y no se ejecutan a la vez sobre el 9000.
+Solo usa la biblioteca estándar.
 """
 
 import argparse

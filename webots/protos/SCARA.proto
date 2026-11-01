@@ -3,7 +3,7 @@
 PROTO SCARA [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 0 1 0
-  field SFString controller "scara_bridge"
+  field SFString controller "scara_uci"
   field MFString controllerArgs [ ]
   field SFFloat toolMass 0.15
   field MFVec3f toolCenterOfMass [ -4.28476698566271e-16 1.90819582357449e-16 0.0994999999999999 ]

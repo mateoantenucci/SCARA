@@ -166,7 +166,7 @@ def build():
 PROTO SCARA [
   field SFVec3f translation 0 0 0
   field SFRotation rotation 0 0 1 0
-  field SFString controller "scara_bridge"
+  field SFString controller "scara_uci"
   field MFString controllerArgs [ ]
   field SFFloat toolMass {tool_mass:.15g}
   field MFVec3f toolCenterOfMass [ {numbers(tool_center)} ]
@@ -186,26 +186,10 @@ PROTO SCARA [
   }}
 }}
 """
-    world = """#VRML_SIM R2025a utf8
-EXTERNPROTO "../protos/SCARA.proto"
-WorldInfo { basicTimeStep TIME_STEP_MS info [ "Visuales CAD articulados; propiedades materiales, transmisiones y TCP provisionales" ] }
-Viewpoint { orientation -0.247320324917239 0.12594159147589 0.960713990956388 2.23162100538708 position 0.95 -0.95 0.85 }
-Background { skyColor [ 0.9 0.93 0.97 ] }
-DirectionalLight { direction -0.4 0.5 -1 intensity 1 castShadows TRUE }
-DirectionalLight { direction 0.5 -0.5 -1 intensity 0.5 }
-"""
-    world = world.replace('TIME_STEP_MS',str(c['simulation']['basic_time_step_ms']))
-    for obstacle in c['environment']:
-        world += f"""DEF ENV_{obstacle['name']} Solid {{ name "{obstacle['name']}"
-          translation {numbers(obstacle['center'])}
-          children [ Shape {{ appearance PBRAppearance {{ baseColor {numbers(obstacle['color'])} roughness 0.9 metalness 0 }}
-            geometry Box {{ size {numbers(obstacle['size'])} }} }} ]
-          boundingObject Box {{ size {numbers(obstacle['size'])} }} }}
-"""
-    world += 'DEF SCARA SCARA { }\n'
-    for path, content in ((ROOT/'webots/protos/SCARA.proto', proto), (ROOT/'webots/worlds/scara.wbt', world)):
-        path.write_text(content, encoding='utf-8')
-        print(path.relative_to(ROOT))
+    # El mundo (webots/worlds/scara_uci.wbt) se mantiene a mano; acá solo el PROTO.
+    path = ROOT/'webots/protos/SCARA.proto'
+    path.write_text(proto, encoding='utf-8')
+    print(path.relative_to(ROOT))
     (ROOT/'cad/ensambles/integracion_articulada.json').write_text(json.dumps(cad,ensure_ascii=False,indent=2)+'\n')
 
 
