@@ -110,7 +110,7 @@ try:
     assert state["doubtful"] == [] and sim["lost_steps"] == [0, 0, 0, 0]
     assert all(abs(s) < 1 for s in steps), steps
 
-    # 1. 5 kg con la corriente nominal: J4 sube y baja a 30 mm/s sin perder pasos.
+    # 1. 5 kg con la corriente nominal: J4 sube y baja a 40 mm/s sin perder pasos.
     bench.order({"carga": 5000})
     wait(lambda: bench.snapshot()["load_g"] == 5000, "carga de 5 kg")
     time.sleep(1)
@@ -142,7 +142,9 @@ try:
     move(session, REST)
     state = wait(lambda: (s := session.snapshot())["doubtful"] and s, "EV LOST de J4", 5)
     log(f"  M4 al 100 % y de vuelta al reposo: el Hall de abajo da {state['doubtful']}; mensaje: {state['message']}")
-    assert state["doubtful"][0]["joint"] == 4 and abs(state["doubtful"][0]["steps"] - lost) <= 1
+    # El Hall se lee una vez por paso de Webots (2 ms): a 40 mm/s, 0,08 mm o
+    # 2 pasos completos de M4 (D76).
+    assert state["doubtful"][0]["joint"] == 4 and abs(state["doubtful"][0]["steps"] - lost) <= 2
     assert state["referenced"]
 
     # 3. F1 por aceleración: M1 al 20 % con 5 kg; el jog arranca sin rampa.

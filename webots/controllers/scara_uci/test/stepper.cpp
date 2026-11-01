@@ -140,14 +140,18 @@ void lostByLoad() {
 }
 
 // Por aceleración: con el driver de M1 al 20 % y 5 kg, el jog de J1 que
-// arranca sin rampa pierde pasos al arrancar; con rampa, a la misma
-// velocidad, no.
+// arranca sin rampa pierde pasos al arrancar; con una rampa suave (136 °/s²
+// en el eje, la de D45 hasta D76), a la misma velocidad, no. Con la rampa del
+// planificador también los pierde: un driver regulado de menos no da el par
+// que D76 supone.
 void lostByAcceleration() {
   Run jerk = drive(0, HEAVY_TOOL, 0.2, jogSpeed(0), 0, scara::STEPS_PER_REV);
   check(jerk.lost != 0, "arrancar sin rampa pierde pasos", jerk.lost, 0);
   check(jerk.lost % CYCLE == 0, "de a 4 pasos completos", jerk.lost, CYCLE);
-  Run ramp = drive(0, HEAVY_TOOL, 0.2, jogSpeed(0), maxAcceleration(0), scara::STEPS_PER_REV);
-  check(ramp.lost == 0, "con rampa no", ramp.lost, 0);
+  Run gentle = drive(0, HEAVY_TOOL, 0.2, jogSpeed(0), 136 * pulsesPerDegree(), scara::STEPS_PER_REV);
+  check(gentle.lost == 0, "con rampa suave no", gentle.lost, 0);
+  Run planned = drive(0, HEAVY_TOOL, 0.2, jogSpeed(0), maxAcceleration(0), scara::STEPS_PER_REV);
+  check(planned.lost != 0, "con la rampa del planificador, sí", planned.lost, 0);
 }
 
 // Contra un tope mecánico, el estator sigue y el rotor no: pierde pasos.

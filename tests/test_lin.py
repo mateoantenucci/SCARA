@@ -56,9 +56,9 @@ class LinTests(unittest.TestCase):
 
     def test_tolerance_is_rounding_plus_chord(self):
         # Media centésima en J1 y J2 (una entera en el antebrazo): 0,0654 mm
-        # en el plano, con J4, 0,0656. Cuerda con M1 y M2 a 20 °/s en 20 ms:
-        # 0,4° por segmento, (250 + 250)·(0,4°)²/8 = 0,0030 mm.
-        self.assertAlmostEqual(planner.lin_tolerance(CONFIG, LIMITS), 0.0656 + 0.0030, delta=0.0002)
+        # en el plano, con J4, 0,0656. Cuerda con M1 y M2 a 90 °/s en 20 ms:
+        # 1,8° por segmento, (250 + 250)·(1,8°)²/8 = 0,0617 mm.
+        self.assertAlmostEqual(planner.lin_tolerance(CONFIG, LIMITS), 0.0656 + 0.0617, delta=0.0002)
 
     def test_the_heading_goes_along_with_the_tool(self):
         plan = plan_lin(START, TARGET, 1.0, LIMITS, CONFIG)
@@ -70,25 +70,35 @@ class LinTests(unittest.TestCase):
             self.assertAlmostEqual(along, heading, delta=0.001)
 
     def test_the_tool_moves_at_the_speed_of_the_tramo(self):
-        # 50 % de 30 mm/s, con 30 mm/s² de rampa: trapecio en la recta.
+        # 50 % de 150 mm/s, con 150 mm/s² de rampa: trapecio en la recta.
         plan = plan_lin(START, TARGET, 0.5, LIMITS, CONFIG)
         length = math.dist(tool(START), tool(TARGET))
-        self.assertAlmostEqual(plan.duration, length / 15 + 15 / 30, places=6)
-        # Sin redondear: en 0,3 mm por segmento, el redondeo a la centésima
+        self.assertAlmostEqual(plan.duration, length / 75 + 75 / 150, places=6)
+        # Sin redondear: en 1,5 mm por segmento, el redondeo a la centésima
         # (hasta 0,066 mm) se notaría como velocidad.
         speeds, previous = [], tool(START)
         for units in plan.samples:
             point = tool(units)
             speeds.append(math.dist(previous, point) * 1000 / SEGMENT_MS)
             previous = point
-        self.assertLessEqual(max(speeds), 15 + 0.2)
-        self.assertAlmostEqual(speeds[len(speeds) // 2], 15, delta=0.2)
+        self.assertLessEqual(max(speeds), 75 + 0.2)
+        # Los segmentos se estiran hasta entrar justos (D53): algo más lento.
+        self.assertAlmostEqual(speeds[len(speeds) // 2], 75, delta=0.5)
+
+    def test_a_vertical_line_goes_at_the_speed_of_j4(self):
+        # La recta pediría 150 mm/s, pero solo mueve J4: 40 mm/s y 120 mm/s²
+        # de M4, también escalados por la fracción (D76).
+        start, target = pose(350, 0, 0, 0), pose(350, 0, 90, 0)
+        for fraction in (1.0, 0.5):
+            plan = plan_lin(start, target, fraction, LIMITS, CONFIG)
+            speed, acceleration = 40 * fraction, 120 * fraction
+            self.assertAlmostEqual(plan.duration, 90 / speed + speed / acceleration, places=6)
 
     def test_turning_in_place_keeps_the_tool_still(self):
         start, target = pose(350, 0, 30, -40), pose(350, 0, 30, 40)
         plan = plan_lin(start, target, 1.0, LIMITS, CONFIG)
-        # Solo gira el rumbo: 80° a 20 °/s con 34 °/s².
-        self.assertAlmostEqual(plan.duration, 80 / 20 + 20 / 34, places=6)
+        # Solo gira el rumbo: 80° a 90 °/s con 140 °/s².
+        self.assertAlmostEqual(plan.duration, 80 / 90 + 90 / 140, places=6)
         self.assertLessEqual(plan.deviation, planner.lin_tolerance(CONFIG, LIMITS))
         self.assertTrue(all(q[:2] == start[:2] for _, q in plan.segments))
 
@@ -167,13 +177,15 @@ class ValidationTests(unittest.TestCase):
         self.assertIn("J1", str(rejection))
 
     def test_excessive_speed_near_the_stretched_arm(self):
-        # Hacia el brazo estirado, J2 tiene que girar cada vez más rápido
-        # para el mismo avance: al 100 % pasa sus 20 °/s; al 25 %, no.
-        start, target = pose(420, 0, 30, 0), pose(485, 0, 30, 0)
-        rejection = self.reject(start, target, 1.0)
-        self.assertEqual(rejection.reason, "velocidad")
-        self.assertIn("J2", str(rejection))
-        self.assertIn("Bajá la velocidad", str(rejection))
+        # Hacia el brazo estirado, el brazo y el antebrazo tienen que girar
+        # cada vez más rápido para el mismo avance: al 100 % y al 50 % la
+        # aceleración pasa la de M1; al 25 %, no.
+        start, target = pose(470, 0, 30, 0), pose(498, 0, 30, 0)
+        for fraction in (1.0, 0.5):
+            rejection = self.reject(start, target, fraction)
+            self.assertEqual(rejection.reason, "velocidad")
+            self.assertIn("M1", str(rejection))
+            self.assertIn("Bajá la velocidad", str(rejection))
         check_lin(start, target, 0.25, None, LIMITS, CONFIG, CHECKER)
         # Saliendo del brazo estirado no alcanza con ir más lento: es la singularidad.
         rejection = self.reject((0, 0, 0, 6467), pose(400, 0, 30, 0), 0.1)

@@ -32,16 +32,16 @@
     0.06
   ],
   "max_velocity": [
-    0.35,
-    0.35,
-    0.5,
-    0.03
+    1.75,
+    3.5,
+    3.5,
+    0.045
   ],
   "max_acceleration": [
-    0.6,
-    0.6,
-    0.9,
-    0.06
+    2.7,
+    5.4,
+    7.0,
+    0.135
   ],
   "max_effort": [
     0.8,
@@ -111,8 +111,8 @@
     "geometry.tool_z_offset": "Derivado del ensamble guardado y convenciones explícitas de config/cad_integration.json; ver cad/ensambles/integracion_articulada.json",
     "limits": "amplitudes del maestro; ceros y reparto simetrico provisionales. J4 positivo hacia abajo",
     "body_properties": "Masas exploratorias conservadas; COM e inercia de cajas envolventes equivalentes de los grupos CAD. No son propiedades materiales validadas",
-    "max_velocity": "limites conservadores de demostracion, NO valores de fabricante",
-    "max_acceleration": "limites conservadores de demostracion, NO valores de fabricante",
+    "max_velocity": "D76: algo por encima de lo que permiten los motores (firmware/config.h), para que limiten ellos y Webots no se atrase; J2 hasta el doble porque M2 sigue a J1 + J2. NO valores de fabricante",
+    "max_acceleration": "D76: algo por encima de lo que permiten los motores, como max_velocity. NO valores de fabricante",
     "max_effort": "esfuerzos equivalentes exploratorios de salida, NO torques de placa ni datos medidos",
     "environment": "Geometría de banco de tools/generate_world.py, centralizada el 15/10/2026; no es parte del diseño CAD",
     "collision_check": "Margen 1 mm y cota 0.25 mm de ensayo. Comprobación continua del entorno y herramienta/carga contra base fija; ver docs/MONTAJE_Y_AUTOCOLISIONES.md",

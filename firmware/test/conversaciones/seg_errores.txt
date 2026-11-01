@@ -31,18 +31,18 @@
 > SEG 1 20 0 0 0 12000
 < ERR 7 referencia
 > ZERO
-# Más rápido que un motor (D45). J1 a 20 °/s son 40 centésimas en 20 ms; se
+# Más rápido que un motor (D45). J1 a 90 °/s son 180 centésimas en 20 ms; se
 # admiten 2 más por el redondeo de la URC.
-> SEG 1 20 43 0 0 12000
+> SEG 1 20 183 0 0 12000
 < ERR 8 velocidad
 # J1 y J2 en el mismo sentido: M2 sigue a J1 + J2 y no le alcanza.
-> SEG 1 20 30 30 0 12000
+> SEG 1 20 100 100 0 12000
 < ERR 8 velocidad
 # Opuestos, M2 queda quieto: vale.
-> SEG 1 20 42 -42 0 12000
+> SEG 1 20 182 -182 0 12000
 < OK 1
 + 20
-= M1 7 M2 0
+= M1 32 M2 0
 # Un movimiento por vez: con jog no hay SEG, y con segmentos no hay jog ni ZERO.
 > JOG 3 + 100
 > SEG 2 20 42 -42 0 12000

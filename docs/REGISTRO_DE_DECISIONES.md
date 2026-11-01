@@ -409,7 +409,7 @@ Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta
   - El jog arranca y frena sin rampa, así que su velocidad máxima tiene que quedar dentro de la de cada motor. El firmware lo verifica al compilar.
 - **Por qué:** la limitación física está en los motores, no en las articulaciones. Con el acople, J2 no tiene un límite propio: depende de cuánto se mueva J1. El planificador de la URC (#9, #10) necesita esa forma para validar los tramos PTP y LIN. Faltan los datos del fabricante («1000 rpm» sin carga, aceleraciones «??»): un valor provisional declarado es mejor que uno inventado como si fuera de placa.
 - **Descartado:** límites por articulación independientes (ignoran que M2 sostiene J1 + J2) y «1000 rpm» del maestro (26,7 kHz por motor a 1/8: el UNO no los genera).
-- **Estado:** Aceptada. Valores provisionales.
+- **Estado:** Aceptada. Los valores los reemplaza D76; la forma (por motor, con el acople) sigue.
 
 **D46 · Jog por motor como modo de prueba: `JOG Mm ± vel`.**
 - **Decisión:**
@@ -517,7 +517,7 @@ Decisiones tomadas al implementar el tramo LIN y la validación de tramos en la 
   - Bajar la velocidad del tramo hasta que todas las articulaciones queden dentro de sus límites, como reduce ABB cerca de una singularidad. El tramo entero iría lento por un solo punto y nunca habría un rechazo por velocidad, pero la spec lo pide.
   - Una velocidad cartesiana más alta, por ejemplo 50 mm/s. Una recta vertical al 100 % superaría J4 y se rechazaría.
   - Una banda muerta alrededor de J2 = 0. Si el inicio está levemente del otro lado, la primera muestra salta de configuración y se rechaza igual por aceleración.
-- **Estado:** Aceptada. La velocidad cartesiana es un parámetro provisional, como D45.
+- **Estado:** Aceptada. La velocidad cartesiana es un parámetro provisional, como D45. D76 la separa de J4 (150 mm/s, con la componente vertical limitada por M4) y la tolerancia pasa a 0,127 mm.
 
 **D55 · Validación previa: se verifica cada segmento que se va a enviar, y cada rechazo dice el tramo, el motivo y qué probar.**
 - **Decisión:**
@@ -678,7 +678,7 @@ Decisiones tomadas al modelar el par de los motores en la planta de Webots y la 
 - **Decisión:** se conservan los valores de D45. Con la corriente nominal, el par que piden en su velocidad y aceleración máximas, con 5 kg, queda entre 1,4 veces (M4) y 22 veces por debajo del disponible, y las pruebas lo verifican también con el jog que arranca sin rampa.
 - **Por qué:** dejan margen en todos los motores, y subir los de J1–J3 no se puede sin cambiar los límites articulares del modelo de Webots que también usa el planificador.
 - **Descartado:** subirlos ahora (cambia el modelo y el planificador en paralelo con #11 y #13).
-- **Estado:** Aceptada.
+- **Estado:** Reemplazada por D76: con #11 y #13 cerrados, el margen de N2 se usó para subir los límites.
 
 **D67 · F1 se provoca bajando la corriente de un driver: `F1 m porcentaje`.**
 - **Decisión:**
@@ -819,3 +819,28 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - `STOP` al soltar: frena con rampa y tarda más que lo encolado (73 ms a 10 °/s con la aceleración de M1), y con la cola corta pasaría del último segmento verificado.
   - Más velocidad en el cartesiano: necesita una rampa en el firmware.
 - **Estado:** Aceptada.
+
+## Límites más rápidos
+
+**D76 · Los motores van más rápido, con el doble del par que piden; el LIN se separa de J4.**
+- **Decisión:**
+  - **Motores** (`firmware/config.h`): M1 y M2 a 360 °/s y 560 °/s², M3 a 720 °/s y 1440 °/s², M4 a 1800 °/s y 5400 °/s². En las articulaciones: J1 y el antebrazo (J1 + J2) hasta 90 °/s y 140 °/s²; J3, 180 °/s y 360 °/s²; J4, 40 mm/s y 120 mm/s².
+  - **Criterio:** con la corriente nominal y 5 kg, el par que piden la velocidad y la aceleración máximas queda al menos 2 veces por debajo del disponible en M1–M3 ([tabla](TRANSMISION.md#los-límites-con-n2)). M4 conserva su 1,4: lo pone el peso que sube por el ACME, no la aceleración. Todas las velocidades quedan por debajo de la de esquina. M4 pide 8000 pulsos/s con 1/8, el 80 % de lo que da el Timer1 del UNO (D48).
+  - **Modelo** (`config/scara.json`, de donde salen los `maxVelocity` del proto): algo por encima de lo que permiten los motores, para que limiten ellos. J1 a 1,75 rad/s y 2,7 rad/s²; J2 a 3,5 rad/s y 5,4 rad/s², el doble, porque con J1 al revés llega a 180 °/s; J3 a 3,5 rad/s y 7 rad/s²; J4 a 0,045 m/s y 0,135 m/s².
+  - **LIN:** 150 mm/s sobre la recta con 300 mm/s² (la rampa sigue durando 0,5 s), y 90 °/s de rumbo con 140 °/s², las de M1. La componente vertical de la recta no pasa de la de M4, también escalada por la fracción: una recta vertical al 100 % va a 40 mm/s.
+  - La velocidad global (D22) y la de cada tramo siguen siendo porcentajes de estos máximos. El jog, el homing y el tramo de aproximación no cambian.
+- **Por qué:**
+  - D66 dejaba entre 6,8 y 22 veces de margen con 5 kg: el robot usaba un 6 % de la velocidad de esquina de M1. Un PTP de 90° de J1 tardaba 5,1 s; ahora, 1,6 s.
+  - 2 veces es un margen usual al dimensionar un paso a paso en lazo abierto: cubre lo que el modelo no tiene (resonancias, N3) y la dispersión de los supuestos de N2. Las pruebas de N2 lo verifican además simulando: ningún paso perdido y menos de un paso completo de atraso, también con 5 kg.
+  - Con el modelo por debajo de los motores, Webots saturaba la articulación y la física se atrasaba del firmware (validación de segmentos). Por encima, el plan lo limitan los motores, como en el robot real.
+  - Atado a J4, el LIN quedaba en 40 mm/s y casi no cambiaba. Limitar solo la componente vertical conserva lo que D54 quería (una recta vertical nunca supera J4) sin frenar las horizontales. No es bajar la velocidad por un punto: la componente vertical es la misma en toda la recta. Las rectas que piden más que un motor se siguen rechazando con su motivo (D55).
+- **Consecuencias:**
+  - Esc y `STOP` frenan con la misma rampa (D52): desde 90 °/s, J1 tarda 0,64 s y recorre 29°, unos 25 cm con la herramienta a 0,5 m del eje. Al 50 % de velocidad global, 0,32 s y 7°. Para probar algo nuevo, conviene empezar con la velocidad global baja.
+  - La tolerancia del LIN pasa de 0,069 a 0,127 mm: la cuerda de cada segmento crece con la velocidad de M1 y M2 (1,8° en 20 ms).
+  - F1 por aceleración: con el driver de M1 al 20 % y 5 kg, ahora también pierde pasos la rampa del planificador, no solo el jog sin rampa.
+  - En el robot real los números siguen saliendo de los supuestos de N2: hay que confirmarlos con las hojas de datos o midiendo antes de usarlos al 100 %.
+- **Descartado:**
+  - Llegar al par disponible (margen 1): cualquier error de los supuestos pierde pasos.
+  - J4 a 50 mm/s: son los 10 000 pulsos/s del Timer1, sin margen.
+  - Subir el jog: arranca sin rampa y necesita una en el firmware (D70).
+- **Estado:** Aceptada. Reemplaza los valores de D45 y la conclusión de D66.

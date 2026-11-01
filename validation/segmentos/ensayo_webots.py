@@ -256,8 +256,8 @@ try:
     assert most_free > 8 and stopped == 0 and abs(in_run - plan["duration_s"]) <= 0.1, "la demora se notó"
 
     # 3. 600 ms sin enviar segmentos: más que la cola. El robot se detiene y
-    # arranca de golpe.
-    target = (3000, -6000, 2000, 8000)
+    # arranca de golpe. J4 sube 90 mm para que el tramo dure más que la demora.
+    target = (3000, -6000, 2000, 1000)
     start, plan, samples = ptp(session, recorder, target, delay=(1.0, 0.6))
     duration, *_ = report_ptp("3 PTP con 600 ms sin enviar segmentos", start, target, plan, samples)
     running = queue_while_running(recorder, samples)
@@ -267,12 +267,13 @@ try:
         f"{plan['duration_s']:.2f} s). Al volver los segmentos arrancó de golpe a velocidad de crucero.")
     assert stopped > 0.15, "una demora más larga que la cola tendría que notarse"
 
-    # 4. STOP en plena marcha: rampa, cola vacía y referencia conservada.
-    target = (-9000, -3000, 2000, 8000)
+    # 4. STOP en plena marcha: rampa, cola vacía y referencia conservada. J1
+    # acelera 0,64 s y crucero hasta 1,33 s: el STOP llega en crucero.
+    target = (-9000, -3000, 2000, 1000)
     start = session.snapshot()["status"]["position"]
     plan = session.move_ptp(target, speed=1)
     begin = recorder.now()
-    time.sleep(2.5)
+    time.sleep(1.0)
     stopped_at = recorder.now()
     session.stop()
     settle(session, recorder)
@@ -291,9 +292,10 @@ try:
     state = session.snapshot()
     travel = abs(final[0] - braking[1])
     expected = speed * speed / (2 * LIMITS.motor_acceleration[0])
-    log(f"4 STOP a los 2,5 s de un PTP de J1 de {start[0]} a {target[0]}: J1 iba a {speed / 100:.1f} °/s; "
+    log(f"4 STOP a 1 s de un PTP de J1 de {start[0]} a {target[0]}: J1 iba a {speed / 100:.1f} °/s; "
         f"empezó a frenar {braking[0] - stopped_at:.2f} s después de enviar STOP y se detuvo en "
-        f"{halt_time - braking[0]:.2f} s y {travel / 100:.2f}° (v/a y v²/2a con 34 °/s²: "
+        f"{halt_time - braking[0]:.2f} s y {travel / 100:.2f}° (v/a y v²/2a con "
+        f"{LIMITS.motor_acceleration[0] / 100:.0f} °/s²: "
         f"{speed / LIMITS.motor_acceleration[0]:.2f} s y {expected / 100:.2f}°)")
     log(f"   estimada {state['status']['position']}, física {[round(v, 1) for v in final]}, "
         f"modo {state['status']['mode']}, cola libre {state['status']['free']}, referenciada {state['referenced']}, "

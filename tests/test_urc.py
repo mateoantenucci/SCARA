@@ -520,7 +520,7 @@ class SegmentTests(unittest.TestCase):
         self.assertEqual(state["segments"], {"pending": 0, "in_flight": None, "last_ok": plan["segments"]})
 
     def test_stop_discards_the_rest_of_the_tramo(self):
-        self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        plan = self.session.move_ptp((900, 0, 0, 12000), speed=1)
         self.assertEqual(self.segment()[0], 1)
         self.session.stop()
         self.assertEqual(self.uci.receive(), "STOP")
@@ -534,7 +534,7 @@ class SegmentTests(unittest.TestCase):
         self.uci.send("S IDLE 15 50 0 0 12000 0 16 0")
         wait_for(lambda: self.session.snapshot()["status"]["position"][0] == 50)
         self.session.move_ptp((0, 0, 0, 12000), speed=1)
-        self.assertGreater(self.segment()[0], 30)
+        self.assertGreater(self.segment()[0], plan["segments"])
 
     def test_stop_after_the_last_segment_was_sent_still_cancels(self):
         # La URC ya envió todo, pero el robot ejecuta los últimos de la cola.

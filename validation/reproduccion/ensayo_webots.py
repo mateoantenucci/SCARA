@@ -53,12 +53,12 @@ POINTS = [
     ((20, -80, 0, 50), {"kind": "LIN", "speed": 50, "wait": 1}),
 ]
 # Lo más que el punto de herramienta puede apartarse de la recta (D54): la
-# tolerancia del plan, 0,069 mm, más medio paso de M1 y de M2, 0,25 mm.
-LINE_TOLERANCE = 0.32        # mm
+# tolerancia del plan, 0,127 mm desde D76, más medio paso de M1 y de M2, 0,25 mm.
+LINE_TOLERANCE = 0.38        # mm
 # La física sigue a los pasos con el atraso del rotor de N2 (D64), fuera de la
 # grilla de pasos: en la campaña del 01/11/2026, tras pausar y reanudar, se
 # apartó 0,323 mm con la estimada a 0,295 mm. Se le dan 0,08 mm más.
-SIM_LINE_TOLERANCE = 0.40    # mm
+SIM_LINE_TOLERANCE = 0.46    # mm
 TIME_TOLERANCE = 0.12        # s: el estado S llega cada 50 ms y el observador escribe cada 10 ms
 
 
