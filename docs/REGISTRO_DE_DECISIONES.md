@@ -737,7 +737,7 @@ Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con W
   - El jog no verificaba nada con referencia: en reposo, J4 bajó medio milímetro de más sobre su imán de fin (D58 deja entrar el ancho del imán) y la pose copiada quedó fuera del recorrido. Sin referencia sigue protegiendo el Hall (D21).
   - La página enviaba `JOG STOP` y después `HALT`: el `HALT` llegaba con el robot quieto y conservaba la referencia (D41).
 - **Descartado:** los límites del jog en el firmware (no conoce el recorrido ni los choques, ADR 0005) y un jog que verifica choques con el camino continuo de `first_conflict` (más lento a 20 por segundo, sin ganar nada con lo que avanza en 0,3 s).
-- **Estado:** Aceptada.
+- **Estado:** Aceptada. Desde D75, con referencia, el freno de la URC rige solo para el jog por motor: el articular y el cartesiano son segmentos verificados.
 
 **D71 · Un PTP puede salir de la zona de margen de un obstáculo si se aleja.**
 - **Decisión:**
@@ -783,4 +783,32 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - Una prueba sin Webots ([`tests/test_demos.py`](../tests/test_demos.py)) carga cada una por HTTP y la reproduce en loop de 2 vueltas desde el reposo: así quedan validados sus tramos, la vuelta del último punto al primero y el tramo de aproximación. El ensayo de la campaña las reproduce en Webots.
 - **Por qué:** con `python -m urc.app`, sin opciones, aparecen en «Cargar» para la defensa. Si alguien cambia los límites, el modelo o el planificador y una demo deja de valer, la suite lo dice antes de la defensa.
 - **Descartado:** guardarlas en `validation/` (la URC no las vería sin `--trayectorias`) y capturarlas con jog (los puntos escritos se repiten exactos y se leen en el archivo).
+
+## Jog cartesiano y jog verificado
+
+**D75 · Con referencia, el jog es de segmentos de 20 ms que la URC planifica de a uno, con tres en cola contados en el reloj de la UCI.**
+- **Decisión:**
+  - Con los cuatro ejes referenciados, el jog articular y el cartesiano son `SEG` de 20 ms ([`urc/jog.py`](../urc/jog.py)). Cada uno sale de donde termina el anterior, sin redondear, y se verifica antes de enviarlo. La URC mantiene tres en la cola del firmware. Al soltar la tecla no envía nada: el robot frena al terminar lo encolado. Esc es el `STOP` con rampa (D52).
+  - La cola se cuenta de dos maneras, y no pasa de tres en ninguna: por lo enviado desde que arrancó el jog, y por lo que el último `S` dice que terminó más lo que pasó desde que llegó, hasta dos períodos: sin un `S` nuevo, la UCI pudo trabarse. Las dos van en el reloj de la UCI, que la URC mide por el período de los `S` (cada 50 ms del firmware): Webots puede correr más lento que la PC.
+  - **Velocidades.** Articular: 10 °/s (10 mm/s en J4); con Mayús, 2 °/s. Cartesiano: 20 mm/s en el plano y 4 mm/s con Mayús; el rumbo y la altura mueven J3 y J4 a la velocidad del articular. Ningún motor pasa de 10 °/s, en las unidades de su articulación: es la velocidad del jog sin rampa (D70). Cerca del brazo estirado o de la torre, el paso del cartesiano se acorta: el más largo que la respeta, por bisección.
+  - **Teclas.** Las mismas en los dos modos (D12). En el cartesiano, A/D mueven el punto de herramienta en Y, W/S en X, Q/E giran el rumbo y R/F suben y bajan. En la pose de reposo, cada tecla mueve hacia el mismo lado que en el articular. Tab cambia de modo y la página muestra siempre el modo, el punto de herramienta y la configuración del codo.
+  - **Verificación de cada segmento.**
+    - Recorrido: frena antes de pasarlo; si la posición estimada quedó afuera, solo deja volver.
+    - Codo (solo en el cartesiano): queda fijo, el signo de J2; desde el brazo estirado, el preferido (D31). El jog frena con |J2| por debajo de 2° o si lo que acorta el paso es el alcance: «borde del alcance».
+    - Choques: dentro de la zona de margen de un obstáculo, solo deja alejarse (D70).
+    - Como el robot frena en el último segmento enviado, que ya está verificado, no hace falta mirar adelante.
+  - Un jog nuevo (otra tecla, o Mayús) arranca cuando el robot frenó el anterior, desde donde frenó.
+  - Sin referencia, el cartesiano se rechaza y el articular es el `JOG` lento del firmware: 5 °/s, 2 °/s con Mayús (D58). El jog por motor sigue siendo el `JOG` del firmware, con el freno de D70.
+  - Soltar la tecla solo frena el jog: si el jog se había rechazado, un tramo o un homing en curso siguen.
+- **Por qué:**
+  - Es D28: el jog no debe poder llevar el robot contra la torre, y el cartesiano necesita la cinemática inversa, que corre en la URC (ADR 0007).
+  - El firmware frena en seco al vaciarse la cola. A 10 °/s no hace falta rampa (D66). Tres segmentos son 60 ms.
+  - En Webots, a 0,82× del reloj de la PC, frenó en 80 ms simulados de mediana y 90 como mucho, contando hasta que la posición física queda a menos de un paso. Contando la cola con el reloj de la PC, crecía y frenaba en 110–150 ms; con otro Webots trabando la simulación, sin el tope de dos períodos, llegó a 320 ms.
+  - Seguir del segmento anterior sin redondear evita que el punto de herramienta acumule el redondeo. En Webots, la posición estimada se apartó 0,06 mm de la recta como mucho.
+  - Junto al brazo estirado, J2 cambia como la raíz del avance: a velocidad fija del punto de herramienta, se dispara, y al cruzar J2 = 0 el codo se da vuelta. Con 2° el cartesiano queda a 0,08 mm del alcance máximo.
+  - Arrancar un jog al revés sin frenar sería el doble del salto de velocidad del jog sin rampa.
+- **Descartado:**
+  - El `JOG` del firmware con el freno de la URC (D70) también para el articular con referencia: no sirve para el cartesiano, y frena mirando adelante con la demora de los `S`.
+  - `STOP` al soltar: frena con rampa y tarda más que lo encolado (73 ms a 10 °/s con la aceleración de M1), y con la cola corta pasaría del último segmento verificado.
+  - Más velocidad en el cartesiano: necesita una rampa en el firmware.
 - **Estado:** Aceptada.

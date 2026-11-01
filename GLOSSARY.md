@@ -114,6 +114,9 @@ Jog en el que el operador mueve el punto de herramienta en X, Y, Z o rumbo y la 
 **Jog articular**:
 Jog en el que el operador mueve una articulación por vez, sin que cambien las demás.
 
+**Jog verificado**:
+Jog con el robot referenciado, en segmentos que la URC planifica y verifica antes de enviarlos: recorrido, alcance, configuración del codo y choques. Frena antes de un límite en vez de llegar a él.
+
 **Jog por motor**:
 Modo de prueba del jog en el que cada tecla mueve un solo motor, sin compensar el acople. Mover M1 solo cambia J1 y J2, y no el rumbo de la herramienta.
 _Evitar_: Jog articular (en el jog articular el firmware compensa el acople).

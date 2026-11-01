@@ -111,7 +111,8 @@ class SessionTests(unittest.TestCase):
         # El mismo eje y sentido, pero por motor: es otra orden.
         self.session.jog(1, "+", motor=True)
         self.assertEqual(self.uci.receive(), "JOG M1 + 500")
-        self.assertEqual(self.session.snapshot()["jog"], {"joint": 1, "direction": "+", "motor": True})
+        self.assertEqual(self.session.snapshot()["jog"],
+                         {"mode": "articular", "joint": 1, "direction": "+", "motor": True, "slow": False})
         self.session.jog(1, "+")
         self.assertEqual(self.uci.receive(), "JOG 1 + 500")
 
@@ -179,9 +180,9 @@ class SessionTests(unittest.TestCase):
         self.assertIn("arrancó", self.session.snapshot()["message"])
         self.uci.send("S IDLE 15 450 0 0 12000 0 16 0")
         self.assertTrue(wait_for(lambda: self.session.snapshot()["referenced"]))
-        # Con referencia, el jog va al doble que sin ella (D70).
+        # Con referencia, el jog es de segmentos que planifica la URC (D75).
         self.session.jog(1, "+")
-        self.assertEqual(self.uci.receive(), "JOG 1 + 1000")
+        self.assertEqual(self.uci.receive(), "SEG 1 20 470 0 0 12000")
         # A mitad de la conexión: la UCI se reinició sola (F5).
         self.uci.send("BOOT scara/1 1")
         state = wait_for(lambda: (s := self.session.snapshot())["boots"] == 2 and s)
@@ -218,9 +219,7 @@ class SessionTests(unittest.TestCase):
         self.assertEqual(state["status"]["position"], [1, 2, 3, 4])
 
 
-class JogGuardTests(unittest.TestCase):
-    """Con referencia, el jog no pasa del recorrido ni entra en la zona de choque (D70)."""
-
+class JogTestCase(unittest.TestCase):
     def setUp(self):
         self.session = Session(port=0)
         self.addCleanup(self.session.close)
@@ -233,56 +232,248 @@ class JogGuardTests(unittest.TestCase):
         fields = line.split()
         self.uci.send(line)
         wait_for(lambda: (s := self.session.snapshot()["status"]) and s["mode"] == fields[1]
-                 and s["position"] == [int(v) for v in fields[3:7]])
+                 and s["position"] == [int(v) for v in fields[3:7]] and s["last"] == int(fields[9]))
 
-    def test_jog_stops_at_the_end_of_travel(self):
-        # QA R3: J4 bajó medio milímetro de más con F desde el reposo.
-        self.status("S IDLE 15 0 0 0 12050 0 16 0")
-        with self.assertRaisesRegex(ValueError, r"J4 llegó al límite de su recorrido \(120 mm\)"):
-            self.session.jog(4, "+")
-        # Hacia adentro, sí.
-        self.session.jog(4, "-")
-        self.assertEqual(self.uci.receive(), "JOG 4 - 1000")
-        # Por motor, M1 mueve también J2, al revés.
-        self.session.jog_stop()
-        self.assertEqual(self.uci.receive(), "JOG STOP")
+
+class MotorJogGuardTests(JogTestCase):
+    """Con referencia, el jog por motor no pasa del recorrido ni entra en la zona de choque (D70)."""
+
+    def test_motor_jog_stops_at_the_end_of_travel(self):
+        # M1 mueve también J2, al revés.
         self.status("S IDLE 15 0 -13450 0 12000 0 16 0")
         with self.assertRaisesRegex(ValueError, "J2 llegó"):
             self.session.jog(1, "+", motor=True)
-        self.status("S IDLE 15 13450 0 0 12000 0 16 0")
-        with self.assertRaisesRegex(ValueError, r"J1 llegó al límite de su recorrido \(135°\)"):
-            self.session.jog(1, "+")
+        self.session.jog(1, "-", motor=True)
+        self.assertEqual(self.uci.receive(), "JOG M1 - 1000")
+        self.session.jog_stop()
+        self.assertEqual(self.uci.receive(), "JOG STOP")
+        self.session.jog(1, "-", motor=True, slow=True)
+        self.assertEqual(self.uci.receive(), "JOG M1 - 200")
 
-    def test_a_running_jog_stops_before_the_limit(self):
+    def test_a_running_motor_jog_stops_before_the_limit(self):
         self.status("S IDLE 15 0 0 0 11000 0 16 0")
-        self.session.jog(4, "+")
-        self.assertEqual(self.uci.receive(), "JOG 4 + 1000")
-        self.session.jog(4, "+")
+        self.session.jog(4, "+", motor=True)
+        self.assertEqual(self.uci.receive(), "JOG M4 + 1000")
+        self.session.jog(4, "+", motor=True)
         self.status("S JOG 15 0 0 0 11950 0 16 0")
         self.assertEqual(self.uci.receive(), "JOG STOP")
         self.assertIn("J4 llegó al límite", self.session.snapshot()["message"])
         with self.assertRaisesRegex(ValueError, "J4 llegó"):
-            self.session.jog(4, "+")
+            self.session.jog(4, "+", motor=True)
 
-    def test_jog_stops_before_the_margin_of_an_obstacle(self):
+    def test_motor_jog_stops_before_the_margin_of_an_obstacle(self):
         # Con J4 abajo, el soporte Z llega a la zona de margen del pedestal
         # desde J2 ≈ 107,4°: a 10 °/s, frena antes.
         self.status("S IDLE 15 0 10600 0 12000 0 16 0")
         with self.assertRaisesRegex(ValueError, "Z-SoporteEfector-1 tocaría pedestal_de_ensayo"):
-            self.session.jog(2, "+")
+            self.session.jog(2, "+", motor=True)
         # Para el otro lado, y aun dentro de la zona, puede salir.
-        self.session.jog(2, "-")
-        self.assertEqual(self.uci.receive(), "JOG 2 - 1000")
-        self.session.jog_stop()
-        self.assertEqual(self.uci.receive(), "JOG STOP")
-        self.status("S IDLE 15 0 10760 0 12000 0 16 0")
-        self.session.jog(2, "-")
-        self.assertEqual(self.uci.receive(), "JOG 2 - 1000")
+        self.session.jog(2, "-", motor=True)
+        self.assertEqual(self.uci.receive(), "JOG M2 - 1000")
 
-    def test_without_reference_only_the_hall_stops_the_jog(self):
+    def test_without_reference_the_firmware_jogs_slowly(self):
         self.status("S IDLE 0 0 0 0 12050 0 16 0")
+        # Solo lo frena el Hall (D58).
         self.session.jog(4, "+")
         self.assertEqual(self.uci.receive(), "JOG 4 + 500")
+        self.session.jog(4, "+", slow=True)
+        self.assertEqual(self.uci.receive(), "JOG 4 + 200")
+        with self.assertRaisesRegex(ValueError, "cartesiano está deshabilitado"):
+            self.session.jog(2, "+", mode="cartesiano")
+
+
+class SegmentJogTests(JogTestCase):
+    """Con referencia, la URC planifica el jog en segmentos verificados (D28, D75)."""
+
+    def segments(self, until=None, count=None):
+        """Recibe los SEG del jog hasta `count`, o hasta que la URC calla `until` segundos.
+
+        Confirma cada uno y, como el firmware, informa con S cuántos terminó:
+        uno cada 20 ms desde el primero.
+        """
+        received, quiet = [], time.monotonic() + (until or 3)
+        while count is None or len(received) < count:
+            left = quiet - time.monotonic()
+            if left <= 0:
+                if count is not None:
+                    self.fail(f"Llegaron {len(received)} de {count} segmentos")
+                break
+            self.uci.sock.settimeout(left)
+            try:
+                fields = self.uci.receive(ignore=()).split()
+            except socket.timeout:
+                continue
+            finally:
+                self.uci.sock.settimeout(3)
+            if fields == ["PING"]:
+                continue
+            self.assertEqual(fields[:3], ["SEG", fields[1], "20"], fields)
+            number, units = int(fields[1]), [int(v) for v in fields[3:]]
+            received.append((number, units, time.monotonic()))
+            self.uci.send(f"OK {number}")
+            first, began = received[0][0], received[0][2]
+            done = min(number - 1, first - 1 + int((time.monotonic() - began) / 0.02))
+            self.uci.send(f"S RUN 15 {' '.join(map(str, units))} 0 16 {max(0, done)}")
+            quiet = time.monotonic() + (until or 3)
+        return received
+
+    def resting_at(self, sent):
+        """S con el robot quieto en el último segmento recibido."""
+        number, units, _ = sent[-1]
+        self.status(f"S IDLE 15 {' '.join(map(str, units))} 0 16 {number}")
+
+    def test_the_queue_holds_about_three_segments(self):
+        self.status("S IDLE 15 0 -6000 0 6000 0 16 0")
+        self.session.jog(1, "+")
+        sent = self.segments(count=3)
+        self.assertEqual([units for _, units, _ in sent],
+                         [[20, -6000, 0, 6000], [40, -6000, 0, 6000], [60, -6000, 0, 6000]])
+        # Después, uno cada 20 ms: lo que el robot ejecuta.
+        start = time.monotonic()
+        while time.monotonic() - start < 0.4:
+            self.session.jog(1, "+")
+            sent += self.segments(count=1)
+        rate = (len(sent) - 3) / (sent[-1][2] - sent[2][2])
+        self.assertAlmostEqual(rate, 50, delta=12)
+        self.assertTrue(all(units[1:] == [-6000, 0, 6000] for _, units, _ in sent))
+
+    def test_releasing_the_key_sends_nothing_more(self):
+        self.status("S IDLE 15 0 -6000 0 6000 0 16 0")
+        self.session.jog(3, "-", slow=True)
+        sent = self.segments(count=3)
+        self.assertEqual(sent[-1][1], [0, -6000, -12, 6000])
+        self.session.jog_stop()
+        # Ni otro SEG ni JOG STOP: el robot termina lo encolado y frena.
+        self.assertTrue(self.uci.silent(0.15))
+        self.assertIsNone(self.session.snapshot()["jog"])
+        # Sin renovar, vence igual.
+        self.resting_at(sent)
+        self.session.jog(3, "+")
+        self.assertTrue(self.segments(until=0.6))
+        self.assertTrue(self.uci.silent(0.15))
+
+    def test_a_new_jog_waits_until_the_robot_stops(self):
+        self.status("S IDLE 15 0 -6000 0 6000 0 16 0")
+        self.session.jog(2, "+")
+        sent = self.segments(count=3)
+        self.session.jog_stop()
+        self.status(f"S RUN 15 0 -5980 0 6000 0 16 {sent[0][0]}")
+        # El cambio de sentido espera: arrancar al revés sería el doble del salto sin rampa.
+        self.session.jog(2, "-")
+        self.assertTrue(self.uci.silent(0.15))
+        with self.assertRaisesRegex(ValueError, "moviendo"):
+            self.session.move_ptp((0, 0, 0, 6000))
+        self.resting_at(sent)
+        number, units, _ = self.segments(count=1)[0]
+        self.assertEqual(number, sent[-1][0] + 1)
+        self.assertEqual(units, [0, -5960, 0, 6000])
+
+    def test_a_running_jog_stops_before_the_limit(self):
+        self.status("S IDLE 15 0 0 0 12000 0 16 0")
+        with self.assertRaisesRegex(ValueError, r"J4 llegó al límite de su recorrido \(120 mm\)"):
+            self.session.jog(4, "+", mode="cartesiano")
+        self.status("S IDLE 15 0 0 0 11900 0 16 0")
+        self.session.jog(4, "+")
+        sent = self.segments(until=0.3)
+        self.assertEqual([units[3] for _, units, _ in sent], [11920, 11940, 11960, 11980, 12000])
+        self.assertIn("J4 llegó al límite de su recorrido", self.session.snapshot()["message"])
+        with self.assertRaisesRegex(ValueError, "J4 llegó"):
+            self.session.jog(4, "+")
+        # Hacia adentro, sí.
+        self.resting_at(sent)
+        self.session.jog(4, "-")
+        self.assertEqual(self.segments(count=1)[0][1], [0, 0, 0, 11980])
+
+    def test_a_running_jog_stops_before_the_margin_of_an_obstacle(self):
+        # Con J4 abajo, el soporte Z llega a la zona de margen del pedestal
+        # desde J2 ≈ 107,4°.
+        self.status("S IDLE 15 0 10600 0 12000 0 16 0")
+        self.session.jog(2, "+")
+        sent = self.segments(until=0.3)
+        self.assertLess(sent[-1][1][1], 10760)
+        self.assertIn("Z-SoporteEfector-1 tocaría pedestal_de_ensayo", self.session.snapshot()["message"])
+        with self.assertRaisesRegex(ValueError, "tocaría"):
+            self.session.jog(2, "+")
+        # Para el otro lado puede salir.
+        self.resting_at(sent)
+        self.session.jog(2, "-")
+        self.assertLess(self.segments(count=1)[0][1][1], sent[-1][1][1])
+
+    def test_cartesian_jog_keeps_the_elbow_and_the_heading(self):
+        self.status("S IDLE 15 3000 -6000 1000 6000 0 16 0")
+        state = self.session.snapshot()
+        self.assertEqual(state["elbow"], "negativo")
+        self.assertEqual(state["tool"]["heading"], -2000)
+        x, y = state["tool"]["x"], state["tool"]["y"]
+        self.session.jog(2, "+", mode="cartesiano")
+        self.assertEqual(self.session.snapshot()["jog"],
+                         {"mode": "cartesiano", "joint": 2, "direction": "+", "motor": False, "slow": False})
+        sent = self.segments(count=10)
+        for _, units, _ in sent:
+            self.assertLess(units[1], 0)
+            self.assertAlmostEqual(sum(units[:3]), -2000, delta=2)
+            self.assertEqual(units[3], 6000)
+        self.session.jog_stop()
+        self.resting_at(sent)
+        tool = self.session.snapshot()["tool"]
+        self.assertGreater(tool["x"], x + 2)
+        self.assertAlmostEqual(tool["y"], y, delta=0.1)
+        with self.assertRaisesRegex(ValueError, "por motor es articular"):
+            self.session.jog(1, "+", motor=True, mode="cartesiano")
+        with self.assertRaises(ValueError):
+            self.session.jog(1, "+", mode="polar")
+
+    def test_from_the_rest_pose_the_cartesian_jog_takes_the_preferred_elbow(self):
+        self.status("S IDLE 15 0 0 0 12000 0 16 0")
+        self.assertEqual(self.session.snapshot()["elbow"], "estirado")
+        with self.assertRaisesRegex(ValueError, "borde del alcance"):
+            self.session.jog(2, "+", mode="cartesiano")
+        self.session.jog(2, "-", mode="cartesiano")
+        self.assertLess(self.segments(count=1)[0][1][1], 0)
+
+    def test_releasing_a_rejected_jog_leaves_a_tramo_alone(self):
+        self.status("S IDLE 15 0 0 0 12000 0 16 0")
+        self.session.move_ptp((900, 0, 0, 12000), speed=1)
+        self.assertTrue(self.uci.receive().startswith("SEG 1 "))
+        with self.assertRaisesRegex(ValueError, "tramo"):
+            self.session.jog(1, "+")
+        self.session.jog_stop()
+        self.uci.send("OK 1")
+        self.assertTrue(self.uci.receive().startswith("SEG 2 "))
+        self.assertIsNone(self.session.snapshot()["tramo"]["cancelled"])
+
+    def test_an_err_after_releasing_does_not_leave_the_robot_busy(self):
+        self.status("S IDLE 15 0 -6000 0 6000 0 16 0")
+        self.session.jog(1, "+")
+        sent = self.segments(count=3)
+        self.session.jog_stop()
+        self.uci.send("ERR 4 watchdog")
+        self.status(f"S IDLE 15 20 -6000 0 6000 0 16 {sent[0][0]}")
+        # El firmware descartó el resto: se puede mover de nuevo.
+        self.session.move_ptp((0, -6000, 0, 6000), dry_run=True)
+        self.session.jog(1, "-")
+        self.assertEqual(self.segments(count=1)[0][1], [0, -6000, 0, 6000])
+
+    def test_stop_and_errors_end_the_jog(self):
+        self.status("S IDLE 15 0 -6000 0 6000 0 16 0")
+        self.session.jog(1, "+")
+        self.segments(count=2)
+        self.session.stop()
+        # El tercero ya podía estar en camino.
+        while (line := self.uci.receive()) != "STOP":
+            self.assertTrue(line.startswith("SEG 3 "), line)
+        self.assertTrue(self.uci.silent(0.1))
+        time.sleep(STOP_GUARD)
+        self.status("S IDLE 15 30 -6000 0 6000 0 16 1")
+        # El firmware vació la cola: el próximo jog no espera los descartados.
+        self.session.jog(1, "+")
+        self.assertEqual(self.segments(count=1)[0][1], [50, -6000, 0, 6000])
+        self.uci.send("ERR 4 watchdog")
+        wait_for(lambda: "ERR 4" in self.session.snapshot()["message"])
+        self.assertIsNone(self.session.snapshot()["jog"])
+        # Solo los que salieron antes de que llegara el ERR.
+        last = self.session.next_segment - 1
+        self.assertTrue(all(number <= last for number, _, _ in self.segments(until=0.15)))
 
 
 class SegmentTests(unittest.TestCase):
@@ -370,7 +561,7 @@ class SegmentTests(unittest.TestCase):
         state = wait_for(lambda: (s := self.session.snapshot())["tramo"]["cancelled"] and s)
         self.assertEqual(state["tramo"]["cancelled"], "el robot se detuvo antes de terminar")
         self.session.jog(1, "+")
-        self.assertEqual(self.uci.receive(), "JOG 1 + 1000")
+        self.assertEqual(self.uci.receive(), f"SEG {plan['segments'] + 1} 20 420 0 0 12000")
 
     def test_an_err_cancels_the_tramo(self):
         self.session.move_ptp((900, 0, 0, 12000), speed=1)
@@ -627,6 +818,38 @@ class HttpTests(unittest.TestCase):
                 status, body = self.request("POST", path, {})
                 self.assertEqual(status, 202, body)
                 self.assertEqual(uci.receive(), line)
+
+    def test_jog_modes_through_the_page(self):
+        uci = FakeUci(self.session.port)
+        self.addCleanup(uci.close)
+        self.assertEqual(uci.receive(), "HELLO")
+        uci.send("S IDLE 0 0 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["status"])
+        # Sin referencia: cartesiano deshabilitado, articular lento.
+        status, body = self.request("POST", "/api/jog", {"joint": 2, "direction": "-", "mode": "cartesiano"})
+        self.assertEqual(status, 400, body)
+        self.assertIn("deshabilitado", json.loads(body)["error"])
+        status, body = self.request("POST", "/api/jog", {"joint": 2, "direction": "-", "slow": True})
+        self.assertEqual(status, 202, body)
+        self.assertEqual(uci.receive(), "JOG 2 - 200")
+        for request in ({"joint": 2, "direction": "-", "mode": "polar"}, {"joint": 2, "direction": "-", "slow": 1}):
+            with self.subTest(request=request):
+                self.assertEqual(self.request("POST", "/api/jog", request)[0], 400)
+        self.assertEqual(self.request("POST", "/api/jog/stop", {})[0], 202)
+        self.assertEqual(uci.receive(), "JOG STOP")
+        # Con referencia, el cartesiano es de segmentos; el estado muestra el modo y el codo.
+        uci.send("S IDLE 15 0 0 0 12000 0 16 0")
+        wait_for(lambda: self.session.snapshot()["referenced"])
+        status, body = self.request("POST", "/api/jog", {"joint": 2, "direction": "-", "mode": "cartesiano"})
+        self.assertEqual(status, 202, body)
+        self.assertTrue(uci.receive().startswith("SEG 1 20 "))
+        state = json.loads(self.request("GET", "/api/estado")[1])
+        self.assertEqual(state["jog"]["mode"], "cartesiano")
+        self.assertEqual(state["elbow"], "estirado")
+        self.assertEqual(state["tool"], {"x": 500.0, "y": 0.0, "z": -25.33, "heading": 0})
+        status, body = self.request("POST", "/api/jog", {"joint": 2, "direction": "+", "mode": "cartesiano"})
+        self.assertEqual(status, 400, body)
+        self.assertIn("borde del alcance", json.loads(body)["error"])
 
     def test_ptp_to_a_pose_written_by_hand(self):
         uci = FakeUci(self.session.port)
