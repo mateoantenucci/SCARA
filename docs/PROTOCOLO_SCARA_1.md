@@ -25,7 +25,7 @@ Ninguna orden tiene respuesta si sale bien: el efecto se ve en el próximo `S` (
 | `ENABLE` | Da corriente a los cuatro drivers (D40). Si ya tenían, no cambia nada. | — |
 | `DISABLE` | Frena, corta la corriente y pierde la referencia (D40). | — |
 | `JOG j ± vel` | Jog articular de `j` (1–4) a `vel` centésimas por segundo (1–1000). Reemplaza al jog anterior. Sin referencia, el firmware lo baja a 500 (D58). Frena solo si activa el Hall del eje: `ERR 10 fin`. | `ERR 6` sin corriente; `ERR 5` con otro movimiento |
-| `JOG Mm ± vel` | Jog por motor, un modo de prueba (D46): mueve solo el motor `m` (1–4), sin compensar el acople M1/M2. `vel` va en las unidades de la articulación de ese motor (θM/4 en M1–M3, mm de J4 en M4), 1–1000. Reemplaza al jog anterior. Igual que el articular, lento sin referencia y frenado por los Hall de los ejes que mueve (M1: J1 y J2). | `ERR 6` sin corriente; `ERR 5` con otro movimiento |
+| `JOG Mm ± vel` | Jog por motor (D46): mueve solo el motor `m` (1–4), sin compensar el acople M1/M2. `vel` va en las unidades de la articulación de ese motor (θM/4 en M1–M3, mm de J4 en M4), 1–1000. Reemplaza al jog anterior. Igual que el articular, lento sin referencia y frenado por los Hall de los ejes que mueve (M1: J1 y J2). | `ERR 6` sin corriente; `ERR 5` con otro movimiento |
 | `JOG STOP` | Frena el jog, articular o por motor. | — |
 | `STOP` | Frena todo y conserva la referencia (D41). Los segmentos frenan con rampa y la cola se vacía (D52); el jog, en seco. | — |
 | `HALT` | Parada inmediata. Si había movimiento, la referencia se pierde (D41). | — |
@@ -100,8 +100,9 @@ La URC planifica y el firmware ejecuta (D6, [ADR 0005](adr/0005-la-urc-planifica
 Un sensor Hall por articulación y dos imanes, centrados en los extremos del recorrido (D10). La referencia es el flanco del lado negativo, donde el Hall se activa: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba (D56).
 
 - `HOME` busca J4, J1 (M1 y M2 juntos: J2 no cambia), J2 (M2 solo) y J3, en ese orden (D11). `HOME j`, solo el eje `j`.
-- En cada eje: si el Hall está activo al empezar, sale del imán; busca a 8 °/s (8 mm/s) hasta que se activa; retrocede hasta que se apaga y 3° (3 mm) más; vuelve a 1 °/s al mismo flanco. Ahí fija la referencia y envía `EV HOMED j`.
-- La búsqueda está acotada en recorrido y en 60 s por eje. Si el Hall no aparece, `ERR 11 ausente`; si no se apaga, `ERR 12 trabado`. Al abortar, y también con `STOP`, `HALT`, `DISABLE` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
+- En cada eje: si el Hall está activo al empezar, sale del imán; busca a 15 °/s (J4: 10 mm/s) hasta que se activa; retrocede hasta que se apaga y 3° (3 mm) más; vuelve a 1 °/s al mismo flanco. Ahí fija la referencia y envía `EV HOMED j` (D70).
+- Con el Hall activo al empezar, el firmware decide de qué imán sale con su cuenta de pasos, si sale de una referencia aunque un `STOP` o un homing abortado la hayan quitado. Si no lo sabe, sale hacia la referencia; si el Hall no se apaga, era el imán de la referencia y retrocede.
+- La búsqueda está acotada en recorrido y en 60 s por eje. Si el Hall no aparece, `ERR 11 ausente`; si no se apaga en ningún sentido, `ERR 12 trabado`. Al abortar, y también con `STOP`, `HALT`, `DISABLE` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
 - `S` informa `HOMING` mientras dura. El firmware termina en los flancos; la URC vuelve sola a la pose de reposo con un tramo PTP («Estacionar»).
 - Sin referencia, el jog va a 5 °/s como máximo, y el Hall lo frena como fin de carrera (D58). Con ese Hall todavía activo, un jog hacia el mismo lado se rechaza con `ERR 10 fin`: solo sale para el otro.
 

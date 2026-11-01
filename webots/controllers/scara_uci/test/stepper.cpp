@@ -8,6 +8,7 @@
 
 #include "../stepper.h"
 #include "config.h"
+#include "firmware.h"
 #include "transmission.h"
 
 namespace {
@@ -25,7 +26,7 @@ const double NOMINAL_TOOL = 0.15;  // kg: toolMass del proto sin carga
 const double HEAVY_TOOL = 5.0;     // kg: lo máximo que acepta el banco de ensayo
 const long CYCLE = plant::STEPS_PER_CYCLE * scara::MICROSTEPS;  // pulsos de 4 pasos completos
 
-// Pulsos por grado del eje del motor, y por segundo a JOG_SPEED_MAX.
+// Pulsos por grado del eje del motor.
 double pulsesPerDegree() { return scara::STEPS_PER_REV / 360.0; }
 
 struct Run {
@@ -66,8 +67,12 @@ Run drive(int motor, double tool, double current, double speed, double accelerat
 
 double maxSpeed(int motor) { return scara::MOTOR_MAX_SPEED[motor] * pulsesPerDegree(); }
 double maxAcceleration(int motor) { return scara::MOTOR_MAX_ACCELERATION[motor] * pulsesPerDegree(); }
-// El jog más rápido del firmware (JOG_SPEED_MAX, 1000 centésimas/s), en pulsos/s del motor.
-double jogSpeed(int motor) { return 1000.0 * scara::STEPS_NUM[motor] / scara::STEPS_DEN[motor]; }
+// Una velocidad del firmware sin rampa (centésimas/s de la articulación), en pulsos/s del motor.
+double pulsesPerSecond(int motor, int32_t speed) {
+  return static_cast<double>(speed) * scara::STEPS_NUM[motor] / scara::STEPS_DEN[motor];
+}
+// El jog más rápido del firmware.
+double jogSpeed(int motor) { return pulsesPerSecond(motor, scara::JOG_SPEED_MAX); }
 
 // Curva par–velocidad: plana hasta la esquina, después cae como 1/ω. Con
 // menos corriente, baja el par de baja velocidad pero no el limitado por la
@@ -92,7 +97,7 @@ void torqueCurve() {
 
 // Los límites de D45 dejan margen: con la corriente nominal, ningún motor
 // pierde pasos a su velocidad y aceleración máximas, ni arrancando sin rampa
-// a la del jog, con la herramienta sola o con 5 kg. El atraso no llega a un
+// a la del jog o a la de búsqueda del homing, con la herramienta sola o con 5 kg. El atraso no llega a un
 // paso completo, donde la curva par–ángulo da su máximo.
 void d45HasMargin() {
   for (int motor = 0; motor < 4; ++motor) {
@@ -104,6 +109,9 @@ void d45HasMargin() {
         Run jog = drive(motor, tool, 1, jogSpeed(motor), 0, sign * scara::STEPS_PER_REV);
         check(jog.lost == 0, "jog sin rampa sin pasos perdidos", motor + 1, tool);
         check(jog.maxLag < 1, "jog con menos de un paso completo de atraso", motor + 1, jog.maxLag);
+        Run search = drive(motor, tool, 1, pulsesPerSecond(motor, scara::HOME_FAST[motor]), 0, sign * scara::STEPS_PER_REV);
+        check(search.lost == 0, "búsqueda del homing sin pasos perdidos", motor + 1, tool);
+        check(search.maxLag < 1, "búsqueda con menos de un paso completo de atraso", motor + 1, search.maxLag);
       }
     }
   }

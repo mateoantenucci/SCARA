@@ -555,7 +555,7 @@ Decisiones tomadas al implementar los Hall en la planta de Webots y el homing de
   - Un solo sensor no distingue los dos imanes. Desde el reposo, el único Hall activo es el de J4, sobre su imán de fin; la referencia previa resuelve el caso de un segundo homing.
   - La vuelta al reposo mueve los cuatro ejes desde una pose plegada (J1 y J2 en −130°): planificarla en la URC, como cualquier PTP, verifica choques en todo el camino (ADR 0005) y no agrega un generador de trayectorias al UNO. Al 25 % tardaría 52 s, porque M2 recorre J1 + J2 = 260°.
 - **Descartado:** referenciar con el centro del imán (exige recorrerlo entero, hasta el tope), que el firmware vuelva solo al reposo eje por eje (sin chequeo de choques y con más código en el UNO), y conservar las referencias de los ejes ya encontrados cuando el homing aborta (el operador no sabría qué quedó valiendo).
-- **Estado:** Aceptada. Las posiciones de los imanes siguen siendo propuesta al profesor (D10).
+- **Estado:** Aceptada. Las posiciones de los imanes siguen siendo propuesta al profesor (D10). D70 cambia las velocidades de búsqueda, la vuelta al reposo y el arranque sobre un imán.
 
 **D57 · En Webots, el Hall se activa por la distancia entre el imán y el sensor.**
 - **Decisión:**
@@ -681,4 +681,44 @@ Decisiones tomadas al modelar el par de los motores en la planta de Webots y la 
   - El banco de ensayo lo ofrece junto a la carga, y muestra la referencia dudosa que informó el firmware.
 - **Por qué:** con la corriente nominal el robot no pierde pasos dentro de D45 (D66), ni con los 5 kg que admite el banco. Un TB6600 regulado de menos es una falla real y común, y la pérdida aparece por las dos causas del enunciado: por carga (M4 al 50 % no sube 5 kg) y por aceleración (M1 al 20 % pierde pasos al arrancar el jog sin rampa).
 - **Descartado:** forzar pasos perdidos desde el banco sin causa física (no muestra el modelo) y permitir más carga o más aceleración que lo que planifica la URC (cambia el planificador).
+- **Estado:** Aceptada.
+
+## QA de la ronda 3
+
+Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con Webots el 31/10/2026: jog lento y sin límites, un PTP que no podía salir de cerca del pedestal, la «Parada inmediata» que no perdía la referencia durante el jog y un homing que no se podía repetir después de frenarlo.
+
+**D68 · Con referencia, el jog va a 10 °/s y la URC lo frena antes del límite de recorrido y de un choque.**
+- **Decisión:**
+  - Con los cuatro ejes referenciados, la URC pide el jog a 10 °/s (10 mm/s en J4), el máximo del firmware sin rampa (`JOG_SPEED_MAX`). Sin referencia lo pide a 5 °/s, lo que de todos modos deja el firmware (D58).
+  - Con referencia, en cada `S` y en cada pedido de la página, la URC mira adelante en el sentido del jog: si en 0,15 s una articulación que mueve pasaría su límite de recorrido, o si en 0,15 o 0,3 s el robot entraría en la zona de margen de un obstáculo, envía `JOG STOP` y rechaza el pedido con el motivo. Dentro de esa zona el jog puede salir: solo frena si la separación disminuye. El jog por motor cuenta lo que mueve cada motor: M1 mueve J1 y J2 al revés.
+  - Stop, Parada inmediata y Deshabilitar no envían antes `JOG STOP` desde la página: la orden misma frena el jog. Un pedido de jog igual al frenado que llega dentro de los 0,3 s siguientes no lo reanuda.
+  - La casilla del jog por motor se llama «Jog por motor (M1–M4)», sin «modo de prueba», y aclara que no afecta al PTP, que siempre mueve las articulaciones (D46).
+  - «Copiar la pose actual» recorta cada articulación a su recorrido y avisa: la posición estimada puede quedar un poco afuera.
+- **Por qué:**
+  - A 5 °/s el jog no servía para mostrar. 10 °/s ya lo acepta el firmware y N2 verifica que arranca sin rampa sin perder pasos (D66). Ir más rápido exige una rampa en el firmware.
+  - El jog no verificaba nada con referencia: en reposo, J4 bajó medio milímetro de más sobre su imán de fin (D58 deja entrar el ancho del imán) y la pose copiada quedó fuera del recorrido. Sin referencia sigue protegiendo el Hall (D21).
+  - La página enviaba `JOG STOP` y después `HALT`: el `HALT` llegaba con el robot quieto y conservaba la referencia (D41).
+- **Descartado:** los límites del jog en el firmware (no conoce el recorrido ni los choques, ADR 0005) y un jog que verifica choques con el camino continuo de `first_conflict` (más lento a 20 por segundo, sin ganar nada con lo que avanza en 0,3 s).
+- **Estado:** Aceptada.
+
+**D69 · Un PTP puede salir de la zona de margen de un obstáculo si se aleja.**
+- **Decisión:**
+  - `CollisionChecker.first_conflict_leaving`, que usan el PTP de la página y la validación de los tramos PTP, admite un camino rechazado por `first_conflict` si: el inicio está a menos del margen más dos veces la resolución de un obstáculo, la separación crece en muestras cada vez más lejos del inicio (s = 2⁻²⁰ … 1) hasta salir de esa zona, en ese tramo las envolventes no se tocan (sin margen, con la cota continua) y el resto del camino respeta el margen.
+  - `clearance` mide la separación quieta: por par de cajas, la mayor distancia en un eje, la misma regla con la que `first_conflict` declara conflicto.
+  - El mensaje de un destino fuera del recorrido empieza con «El destino tiene…».
+- **Por qué:** cerca del inicio, la cota continua no puede demostrar la separación si es menor que la resolución, así que todo camino desde ahí se rechazaba. Con pasos chicos el PTP llegó a J2 = 107,33° junto al pedestal y el robot quedó encerrado: solo salía con jog.
+- **Descartado:** bajar la resolución en todo el chequeo (más lento en cada tramo) y prohibir los destinos dentro de esa zona (el robot igual llega con jog o con pasos perdidos).
+- **Estado:** Aceptada.
+
+**D70 · Homing más rápido, y repetible después de frenarlo.**
+- **Decisión:**
+  - La búsqueda va a 15 °/s en J1–J3 y a 10 mm/s en J4 (`HOME_FAST`, por eje). Las fases lentas siguen a 1 °/s (1 mm/s). La vuelta al reposo, y «Estacionar», es un PTP al 100 %.
+  - El firmware recuerda qué ejes tienen una cuenta de pasos que sale de una referencia (`found_`), aunque un `STOP` o un homing abortado se la hayan quitado: solo la olvida con `HALT` en movimiento, `DISABLE` o un reinicio. Con el Hall activo al empezar, un eje así que está en su flanco retrocede directamente.
+  - Si un eje sale hacia la referencia desde un imán (`LEAVE`) y recorre más que su ancho y el margen sin que el Hall se apague, era el imán de la referencia: retrocede lo que avanzó y busca el flanco. `ERR 12 trabado` queda para el Hall que no se apaga en ningún sentido.
+- **Por qué:**
+  - El homing tardaba ~80 s y la vuelta al reposo ~26 s; así, unos 55 s y 14 s. La aproximación lenta, que fija la referencia, no cambia.
+  - N2 verifica que la búsqueda arranca y frena sin rampa sin perder pasos, con 5 kg. M4 a 15 mm/s pierde pasos subiendo 5 kg: por eso J4 va como el jog.
+  - Frenar el homing después de J4 y repetirlo daba `ERR 12 trabado`: J4, sin referencia y sobre su imán de arriba, salía hacia el tope como si fuera el de abajo. Con `STOP` no se pierden pasos, así que la cuenta sigue diciendo dónde está.
+  - El modo rápido de Webots no sirve para esto: los `PING` llegan en tiempo real y el watchdog cuenta tiempo simulado (D26).
+- **Descartado:** conservar la referencia de los ejes encontrados al abortar (D56) y buscar a 15 mm/s también en J4.
 - **Estado:** Aceptada.

@@ -1,0 +1,41 @@
+# Repetir el homing después de frenarlo a mitad de camino. Con STOP no se
+# pierden pasos: el firmware recuerda qué ejes había encontrado, aunque se
+# queden sin referencia, y sabe sobre qué imán está cada uno.
+< BOOT scara/1 1
+! iman 0 0 0 12000
+> ENABLE
+> HOME
+~ 20000
+< EV HOMED 4
+# STOP mientras busca J1: J4 queda en su flanco, sobre el imán de arriba, sin
+# referencia.
+~ 3000
+> STOP
+> STATUS
+< S IDLE 0 * 0 0 300 8 16 0
+# Otro homing: J4 retrocede directo desde su flanco, sin empujar hacia el tope.
+> HOME
+~ 5000
+< EV HOMED 4
+~ 15000
+< EV HOMED 1
+~ 15000
+< EV HOMED 2
+~ 15000
+< EV HOMED 3
+> STATUS
+< S IDLE 15 -12999 -12999 -14501 300 15 16 0
+# Sin corriente, la cuenta de pasos ya no vale: el firmware no sabe sobre qué
+# imán está J4, que quedó en su flanco. Sale hacia la referencia como si fuera
+# el imán de abajo; no sale, así que era el de la referencia: retrocede lo que
+# avanzó y lo encuentra.
+> DISABLE
+> ENABLE
+> HOME 4
+~ 1000
+> STATUS
+< S HOMING 0 * * * 200 15 16 0
+~ 20000
+< EV HOMED 4
+> STATUS
+< S IDLE 8 * * * 300 15 16 0

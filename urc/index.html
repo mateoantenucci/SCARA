@@ -105,7 +105,7 @@
 
   <section class="card" aria-label="Jog">
     <h2 id="jog-title">Jog articular</h2>
-    <p class="muted" id="jog-help">Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos.</p>
+    <p class="muted" id="jog-help">Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos. Con referencia va a 10 °/s (10 mm/s en J4) y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s, y solo lo frena el Hall.</p>
     <div class="row">
       <button data-axis="1" data-direction="-"><span>J1</span> − <kbd>A</kbd></button>
       <button data-axis="1" data-direction="+"><span>J1</span> + <kbd>D</kbd></button>
@@ -119,7 +119,7 @@
       <button data-axis="4" data-direction="+"><span>J4</span> baja <kbd>F</kbd></button>
     </div>
     <div class="row" style="margin-top: 12px">
-      <label><input type="checkbox" id="by-motor"> Modo de prueba: jog por motor (M1–M4, sin compensar el acople)</label>
+      <label><input type="checkbox" id="by-motor"> Jog por motor (M1–M4, sin compensar el acople; no afecta al PTP)</label>
     </div>
     <div id="feedback" role="status" aria-live="polite"></div>
   </section>
@@ -179,7 +179,7 @@ const KEYS = {
 };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
 const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos", HOMING: "Homing" };
-let held = null, timer = null, lastStatus = null;
+let held = null, timer = null, lastStatus = null, lastTravel = null;
 
 function format(joint, value) {
   return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
@@ -220,30 +220,34 @@ function startJog(joint, direction) {
   timer = setInterval(send, REFRESH_MS);
 }
 
-function stopJog() {
+// notify: false cuando la orden que sigue ya frena el jog.
+function stopJog(notify = true) {
   if (held === null) return;
   held = null;
   clearInterval(timer);
   for (const button of document.querySelectorAll("[data-axis]")) button.classList.remove("active");
-  post("/api/jog/stop").catch(show);
+  if (notify) post("/api/jog/stop").catch(show);
 }
 
-// El modo de prueba renombra los botones: cada uno mueve un solo motor.
+// El jog por motor renombra los botones: cada uno mueve un solo motor.
 byMotor.addEventListener("change", () => {
   stopJog();
   const motor = byMotor.checked;
   for (const button of document.querySelectorAll("[data-axis]")) {
     button.querySelector("span").textContent = (motor ? "M" : "J") + button.dataset.axis;
   }
-  document.getElementById("jog-title").textContent = motor ? "Jog por motor (modo de prueba)" : "Jog articular";
+  document.getElementById("jog-title").textContent = motor ? "Jog por motor" : "Jog articular";
   document.getElementById("jog-help").textContent = motor
-    ? "Cada tecla mueve un solo motor. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo."
-    : "Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos.";
+    ? "Cada tecla mueve un solo motor. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo. No cambia «Ir a una pose», que siempre mueve las articulaciones."
+    : "Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos. Con referencia va a 10 °/s (10 mm/s en J4) y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s, y solo lo frena el Hall.";
 });
 
-// Frenar corta primero el jog de la página: si no, el próximo pedido lo reanuda.
+// Stop, Parada inmediata y Deshabilitar cortan el jog de la página (si no, el
+// próximo pedido lo reanuda) sin enviar antes JOG STOP: la orden misma frena
+// el jog, y un HALT que llegara con el robot ya quieto no perdería la
+// referencia (D41).
 function order(path) {
-  stopJog();
+  stopJog(false);
   post(path).then(() => show(null), show);
 }
 
@@ -307,7 +311,7 @@ document.getElementById("zero").addEventListener("click", () => askRest(
   "/api/zero"));
 document.getElementById("park").addEventListener("click", () => {
   stopJog();
-  if (confirm("¿Estacionar? El robot va a la pose de reposo con un tramo PTP al 50 %.")) {
+  if (confirm("¿Estacionar? El robot va a la pose de reposo con un tramo PTP al 100 %.")) {
     post("/api/park").then(() => referenceFeedback(null), referenceFeedback);
   }
 });
@@ -338,10 +342,19 @@ for (const radio of document.querySelectorAll("input[name=ptp-kind]")) {
     document.getElementById("ptp-pose").hidden = ptpKind() !== "pose";
   });
 }
+// La posición estimada puede quedar un poco fuera del recorrido (un jog sin
+// referencia, el redondeo a pasos): se copia recortada, así es un destino válido.
 document.getElementById("ptp-here").addEventListener("click", () => {
   if (!lastStatus) return;
   const inputs = document.querySelectorAll("#ptp-joints input");
-  lastStatus.position.forEach((value, joint) => { inputs[joint].value = (value / 100).toFixed(2); });
+  const clipped = [];
+  lastStatus.position.forEach((value, joint) => {
+    const [low, high] = lastTravel[joint];
+    const inside = Math.min(Math.max(value, low), high);
+    if (inside !== value) clipped.push(`${NAMES[joint]} ${format(joint, value)} → ${format(joint, inside)}`);
+    inputs[joint].value = (inside / 100).toFixed(2);
+  });
+  ptpFeedback(clipped.length ? `Fuera del recorrido, se copió recortado: ${clipped.join(", ")}.` : null);
   document.querySelector("input[name=ptp-kind][value=joints]").checked = true;
   document.querySelector("input[name=ptp-kind][value=joints]").dispatchEvent(new Event("change"));
 });
@@ -391,6 +404,7 @@ async function refresh() {
       : "";
     const status = state.connected ? state.status : null;
     lastStatus = status;
+    lastTravel = state.travel;
     showTramo(state.tramo);
     showHoming(state.homing);
     const reference = document.getElementById("reference");

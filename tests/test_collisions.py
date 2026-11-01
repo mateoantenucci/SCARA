@@ -86,6 +86,25 @@ class CollisionTests(unittest.TestCase):
         no_margin['collision_check']['margin_m'] = 0
         self.assertIsNone(CollisionChecker(no_margin).first_conflict(near, near))
 
+    def test_clearance_is_the_static_measure_of_the_margin(self):
+        clear, near = pose(-15, 120, -105, .093), pose(-15, 120, -105, .094)
+        self.assertGreater(self.checker.clearance(clear), self.checker.margin)
+        self.assertLess(self.checker.clearance(near), self.checker.margin)
+        self.assertGreater(self.checker.clearance(near), 0)
+
+    def test_a_path_can_leave_the_margin_zone_but_not_go_deeper(self):
+        # QA R3: con pasos chicos el PTP llegó a J2 = 107,33°, a menos de
+        # 0,5 mm de la zona de margen del pedestal. Desde ahí no se demuestra
+        # la separación al arrancar, y todo camino se rechazaba.
+        inside = pose(0, 107.33, 0)
+        self.assertIsNotNone(self.checker.first_conflict(inside, pose(0, 100, 0)))
+        for away in (pose(0, 100, 0), pose(0, 30, 0), pose(0, 100, 0, .05)):
+            self.assertIsNone(self.checker.first_conflict_leaving(inside, away), away)
+        for deeper in (pose(0, 108, 0), pose(0, 107.4, 0)):
+            self.assertIsNotNone(self.checker.first_conflict_leaving(inside, deeper), deeper)
+        # Si después de salir el camino choca igual, se rechaza.
+        self.assertIsNotNone(self.checker.first_conflict_leaving(inside, pose(0, 135, -135)))
+
     def test_folded_tool_cannot_enter_the_fixed_tower(self):
         # Cuatro invasiones verificadas con los sólidos CAD, sin tocar pedestal.
         for shoulder, elbow in ((0, 135), (0, -135), (45, 135), (-45, -135)):
