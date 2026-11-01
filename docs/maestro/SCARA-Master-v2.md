@@ -448,7 +448,7 @@ al 39 % del tramo. Bajá la velocidad del tramo o usá un tramo PTP.
 
 Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 tendría que arrancar de golpe. Por eso el primer movimiento de un programa es el tramo de aproximación PTP (D32).
 
-> **Evidencia:** en el [ensayo de la reproducción](../../validation/reproduccion/INFORME.md) (#13), los tramos LIN de una trayectoria en Webots se apartan de la recta a lo sumo 0,21 mm, con la posición estimada y con la física simulada, dentro de la cota de 0,32 mm (0,069 mm del plan más medio paso de M1 y M2). La cota vale para la posición estimada, que está siempre en pasos enteros; la física simulada sigue a los pasos con el atraso del rotor de N2 (D64), y su tolerancia es de 0,40 mm. El PTP y los segmentos tienen su propio ensayo ([validación de segmentos](../../validation/segmentos/INFORME.md)). Las trayectorias de demostración, una de ellas un cuadrado LIN de 80 mm, se reproducen en la campaña (D74, sección 10).
+> **Evidencia:** en el [ensayo de la reproducción](../../validation/reproduccion/INFORME.md) (#13), los tramos LIN de una trayectoria en Webots se apartan de la recta a lo sumo 0,21 mm, con la posición estimada y con la física simulada, dentro de la cota de 0,38 mm (0,127 mm del plan más medio paso de M1 y M2). La cota vale para la posición estimada, que está siempre en pasos enteros; la física simulada sigue a los pasos con el atraso del rotor de N2 (D64), y su tolerancia es de 0,46 mm. El PTP y los segmentos tienen su propio ensayo ([validación de segmentos](../../validation/segmentos/INFORME.md)). Las trayectorias de demostración, una de ellas un cuadrado LIN de 80 mm, se reproducen en la campaña (D74, sección 10).
 
 ### Captura de puntos y gestor de trayectorias
 
@@ -522,15 +522,15 @@ LIN P1 → P2:  ───────────●  pausa: STOP, rampa        
                          (frena sobre la recta)                 (desde la pose de la pausa)
 ```
 
-**Evidencia ([ensayo en Webots](../../validation/reproduccion/INFORME.md)).** Una trayectoria mixta de 4 puntos (LIN, PTP, un LIN vertical con espera de 1 s), en loop de 2 vueltas desde el reposo:
+**Evidencia ([ensayo en Webots](../../validation/reproduccion/INFORME.md), corrido en la campaña con los límites de D76: [registro](../../validation/campana/registros/reproduccion.log)).** Una trayectoria mixta de 4 puntos (LIN, PTP, un LIN vertical con espera de 1 s), en loop de 2 vueltas desde el reposo:
 
 | Qué | Planificado | Medido |
 | --- | --- | --- |
-| Loop completo, con tramo 0 y vuelta | 61,46 s | 61,45 s (cada tramo dentro de 0,04 s) |
-| Distancia a la recta en los LIN | ≤ 0,32 mm la estimada, ≤ 0,40 mm la simulada | 0,18 mm (estimada), 0,17 mm (simulada) |
-| Pausa a mitad de un LIN | — | Frena a 0,053 mm de la recta; con la reanudación, el tramo entero queda a 0,21 mm |
+| Loop completo, con tramo 0 y vuelta | 26,86 s | 26,86 s (cada tramo dentro de 0,05 s) |
+| Distancia a la recta en los LIN | ≤ 0,38 mm la estimada, ≤ 0,46 mm la simulada | 0,19 mm (estimada), 0,21 mm (simulada) |
+| Pausa a mitad de un LIN | — | Frena a 0,050 mm de la recta; con la reanudación, el tramo entero queda a 0,21 mm |
 
-Los tiempos se miden con el reloj de la simulación, que es el del firmware: ese día Webots corrió a 0,82× del reloj de la PC.
+Los tiempos se miden con el reloj de la simulación, que es el del firmware: ese día Webots corrió a 0,80× del reloj de la PC. Con los límites anteriores (D45), el mismo loop duraba 61,46 s.
 
 ## 9. Qué se simula y qué no
 
@@ -572,9 +572,9 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | Ensayo en Webots | Qué pasa |
 | --- | --- |
 | Homing y reposo, sin falla | Ningún `EV LOST`; «Simulado» coincide con lo estimado en menos de un paso |
-| 5 kg con la corriente nominal | J4 sube y baja a 30 mm/s sin perder pasos |
+| 5 kg con la corriente nominal | J4 sube y baja a 40 mm/s sin perder pasos |
 | F1 por carga: M4 al 50 % con 5 kg | J4 no sube; al volver al reposo, el Hall de abajo da `EV LOST 4` con los pasos que perdió la planta |
-| F1 por aceleración: M1 al 20 % con 5 kg | El jog de J1, que arranca sin rampa, pierde pasos; al llegar a su imán, `EV LOST 1` |
+| F1 por aceleración: M1 al 20 % con 5 kg | El jog de J1, que arranca sin rampa, pierde pasos; al llegar a su imán, `EV LOST 1`. Con ese driver, también la rampa del planificador pierde pasos (D76) |
 | Homing de nuevo | La referencia deja de ser dudosa |
 
 Las hojas de datos exactas de los motores no aparecieron: se usan la familia más cercana y supuestos típicos, cada uno declarado ([Transmisión](../TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2)).
@@ -591,16 +591,16 @@ La evidencia vigente es la [campaña de validación en Webots](../../validation/
 | URC por sus dos bordes | La sesión con la UCI y la interfaz: jog, gestor, reproducción, banco | Las mismas conversaciones contra la URC con una UCI falsa por TCP; endpoints HTTP; el planificador como módulo puro |
 | Escenarios en Webots | El sistema entero con la planta simulada | Ocho ensayos, corridos por un solo ejecutor que registra la versión ensayada |
 
-**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8 y planta N2: commit `ba2b8ee`.
+**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8, planta N2 y los límites de D76: commit `6ddc4ca`.
 
 | Escenario | Condición inicial | Resultado | Tolerancia |
 | --- | --- | --- | --- |
 | H1 · Homing desde el reposo | Reposo exacto, sin referencia | J4, J1, J2 y J3 en el flanco de su Hall; vuelta sola al reposo; ningún choque en el camino físico | ≤ 3 pasos de 1/8 |
 | H2 · Homing con desvío | Desvío al azar de ±10° | Termina igual en el reposo, también después de un homing abortado | ≤ 3 pasos; física a menos de un paso completo |
 | T1 · Teach & play | Referenciado | Tres puntos capturados con jog se guardan, se cargan y se reproducen (PTP, LIN, PTP con espera) | Último punto a < 1 paso |
-| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (61,44 s medidos contra 61,46 s en 8 tramos); los LIN, a ≤ 0,18 mm de la recta, y tras pausar y reanudar, a 0,28 mm la estimada y 0,22 mm la física | ± 0,12 s; ≤ 0,32 mm la estimada y ≤ 0,40 mm la física |
-| T3 · Demostraciones | Las tres de `trayectorias/` | Se reproducen sin errores ni `EV LOST` | Último punto a < 1 paso |
-| F1 · Pérdida de pasos | 5 kg; un driver con poca corriente | Sin falla, ningún paso perdido; con falla, `EV LOST` con los pasos que perdió la planta y referencia dudosa | ± 1 paso completo |
+| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (26,86 s medidos contra 26,86 s en 8 tramos); los LIN, a ≤ 0,21 mm de la recta, y tras pausar y reanudar, a 0,21 mm la estimada y 0,16 mm la física | ± 0,12 s; ≤ 0,38 mm la estimada y ≤ 0,46 mm la física |
+| T3 · Demostraciones | Las tres de `trayectorias/` | Se reproducen sin errores ni `EV LOST`: barrido PTP en 14,5 s, cuadrado LIN en 10,5 s, *pick and place* en 19,0 s | Último punto a < 1 paso |
+| F1 · Pérdida de pasos | 5 kg; un driver con poca corriente | Sin falla, ningún paso perdido; con falla, `EV LOST` con los pasos que perdió la planta y referencia dudosa | ± 1 paso completo en J1; ± 2 en J4, que cruza el Hall a 40 mm/s |
 | F2 · Driver sin corriente | J4 en 60 mm | J4 cae a 120 mm; la estimada no cambia | > 118 mm |
 | F3 · Hall trabado | Activo en J4 o inactivo en J1 | El homing aborta con `ERR 12` o `ERR 11`, sin referencia | Sin referencia |
 | F4 · Enlace cortado | Jog en marcha | El watchdog frena en 1 s; al volver, el robot está quieto | J1 quieto 2,5 s después |
@@ -608,15 +608,16 @@ La evidencia vigente es la [campaña de validación en Webots](../../validation/
 
 Los tres escenarios de soporte, protocolo `scara/1` (P1), transmisión N1 (P2) y segmentos con PTP (P3), también pasan. El detalle, con los registros, está en el [informe de la campaña](../../validation/campana/INFORME.md).
 
-**El jog verificado tiene su propio ensayo.** La campaña se registró en `ba2b8ee`, antes del jog cartesiano y verificado (issue #11, D75). Su teach (T1) mueve el robot con órdenes `JOG` de `scara/1`, no con el jog de la URC. El jog de la URC tiene su [ensayo en Webots](../../validation/jog/INFORME.md), con los resultados de la sección 8, y sus pruebas por los endpoints HTTP en la suite.
+**El jog verificado tiene su propio ensayo.** El teach de la campaña (T1) mueve el robot con órdenes `JOG` de `scara/1`, no con el jog cartesiano y verificado de la URC (issue #11, D75). El jog de la URC tiene su [ensayo en Webots](../../validation/jog/INFORME.md), con los resultados de la sección 8, y sus pruebas por los endpoints HTTP en la suite.
 
 **Hallazgos de la campaña.**
 
-- La física simulada se aparta de la recta un poco más que la estimada: sigue a los pasos con el atraso del rotor de N2. Por eso la tolerancia de la física es de 0,40 mm y la de la estimada sigue en 0,32 mm.
+- La física simulada se aparta de la recta un poco más que la estimada: sigue a los pasos con el atraso del rotor de N2. Por eso la tolerancia de la física es de 0,46 mm y la de la estimada, de 0,38 mm.
+- A 40 mm/s, el Hall de J4 se lee con 2 pasos completos de error: entre dos pasos de Webots (2 ms), J4 avanza 0,08 mm. El `EV LOST` dio 1254 pasos contra 1252 que perdió la planta.
 - La pausa no siempre frena a 0,05 mm de la recta, como en el ensayo de la reproducción (D69): en la campaña quedó a 0,164 mm, por el escalón de los pasos al frenar. Queda dentro de la misma tolerancia.
 - Dos ensayos tenían esperas frágiles, y se corrigieron sin aflojar lo que miden.
 
-**Pruebas automáticas (seams 1 y 2).** `python -m unittest discover` corre, sin Webots, las conversaciones de conformidad contra el firmware y contra la URC, la compilación para el UNO, los endpoints HTTP del jog, el gestor, la reproducción y el banco, el planificador, el modelo N2, los flancos de los Hall contra la geometría del proto, las tres demos y la forma del registro de la campaña. En la versión de este documento: 184 pruebas en verde; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
+**Pruebas automáticas (seams 1 y 2).** `python -m unittest discover` corre, sin Webots, las conversaciones de conformidad contra el firmware y contra la URC, la compilación para el UNO, los endpoints HTTP del jog, el gestor, la reproducción y el banco, el planificador, el modelo N2, los flancos de los Hall contra la geometría del proto, las tres demos y la forma del registro de la campaña. En la versión de este documento: 196 pruebas en verde; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
 
 **Trayectorias de demostración (D74).** Tres, versionadas en `trayectorias/`, la carpeta por defecto de la URC: *pick and place* (LIN para bajar y subir, PTP para cruzar, esperas), un cuadrado LIN de 80 mm y un barrido PTP con cambio de codo. Una prueba las carga y las reproduce en loop de 2 vueltas en cada corrida de la suite.
 

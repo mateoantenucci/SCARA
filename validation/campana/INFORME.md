@@ -10,13 +10,13 @@ Campaña del 01/11/2026, registrada en [`campana.json`](campana.json):
 
 | Qué | Valor |
 | --- | --- |
-| Commit | `ba2b8ee824e99ec6b1a454b0df8565350ad2cc23`, del 01/11/2026 a las 04:30; campaña de 04:30 a 04:48 |
-| Controlador compilado (`scara_uci.exe`, `g++` 14.2 de Webots) | SHA-256 `4168602033d72e7f4b0f36b404fa2a146bf8db1dea15074832b619ce61362734` |
+| Commit | `6ddc4caca4193301d6d8009fcc5874b2e51e450f`, del 01/11/2026 a las 15:49; campaña de 15:49 a 16:02 |
+| Controlador compilado (`scara_uci.exe`, `g++` 14.2 de Webots) | SHA-256 `13a399d716941bb90bb36a5707bddc443048f324b88a856ba3a328f9b852946d` |
 | Mundo `scara_uci.wbt` | SHA-256 `8df2160e597d3b67722ab0cea0661bab102327acfa59e88abb98903013b0b464` |
-| `SCARA.proto` | SHA-256 `874e5f26660d721249b36e59bf955a601bdb03df4c0c89bfc2110d241a070a2f` |
+| `SCARA.proto` | SHA-256 `a6415ba38b27546c34cad6b7133b8d61f9a34b79b161ac73cc73d81d3cca7203` |
 | Trayectorias de demostración | SHA-256 de cada archivo en `campana.json` |
 | Entorno | Windows 11 Pro, Webots R2025a, Python 3.12.7; Webots minimizado, sin vista, a tiempo real |
-| Configuración | Microstepping 1/8 (D9), planta N2 (D64), los límites de D45 |
+| Configuración | Microstepping 1/8 (D9), planta N2 (D64), los límites de D76 (J1 a 90 °/s, J3 a 180 °/s, J4 a 40 mm/s) |
 
 El ejecutor compila el controlador antes de correr, así que el binario ensayado sale del commit registrado, y solo registra una campaña completa con el árbol sin cambios (D73). El commit es el de la rama del PR, que se mergea sin rebase.
 
@@ -28,7 +28,7 @@ Desde la raíz del repo, con el árbol sin cambios sin commitear:
 python validation/campana/campana.py
 ```
 
-Dura unos 18 minutos. Corre, uno detrás de otro, los ocho ensayos en Webots, y deja `campana.json` y los registros en [`registros/`](registros/). Con nombres de ensayos (`python validation/campana/campana.py homing`) corre solo esos y deja sus registros en un temporal. Los puertos van del 9100 al 9121: puede correr con una URC y un Webots abiertos en 9000 y 9001.
+Dura unos 15 minutos. Corre, uno detrás de otro, los ocho ensayos en Webots, y deja `campana.json` y los registros en [`registros/`](registros/). Con nombres de ensayos (`python validation/campana/campana.py homing`) corre solo esos y deja sus registros en un temporal. Los puertos van del 9100 al 9121: puede correr con una URC y un Webots abiertos en 9000 y 9001.
 
 ## Escenarios
 
@@ -39,9 +39,9 @@ Cada ensayo verifica las tolerancias con `assert` y se corta en la primera que n
 | H1 | Homing desde el reposo | Mundo en la pose de reposo, sin referencia | Sin referencia, el jog de J4 va a 5 mm/s y lo frena su Hall. El homing referencia J4, J1, J2 y J3 en el flanco de cada Hall y vuelve solo al reposo, sin choques | Flanco y reposo a ≤ 3 pasos; jog a 5 ± 0,25 mm/s | **OK** | [homing](registros/homing.log), corrida A |
 | H2 | Homing con desvío | Desvío al azar de hasta ±10° en J1–J3 (el del mundo) | El homing termina igual en el reposo, también repetido después de uno abortado | Reposo a ≤ 3 pasos; física contra estimada a menos de un paso completo | **OK** | [homing](registros/homing.log), corrida B; [campaña](registros/campana.log), paso 2 |
 | T1 | Teach & play | Referenciado en el reposo | Tres puntos capturados después de un jog se guardan, se cargan sin cambios y se reproducen: tramo 0 PTP, LIN, PTP con espera | Estimada en el último punto a < 1 paso; física a menos de un paso completo | **OK** | [campaña](registros/campana.log), paso 3 |
-| T2 | Reproducción LIN y PTP con loop, pausa y stop | Referenciado; trayectoria mixta de 4 puntos | Cada tramo dura lo planificado y los LIN siguen la recta; la pausa conserva la recta; stop descarta lo pendiente | ± 0,12 s por tramo; recta ≤ 0,32 mm la estimada y ≤ 0,40 mm la física | **OK** | [reproducción](registros/reproduccion.log), pasos 1–3 |
+| T2 | Reproducción LIN y PTP con loop, pausa y stop | Referenciado; trayectoria mixta de 4 puntos | Cada tramo dura lo planificado y los LIN siguen la recta; la pausa conserva la recta; stop descarta lo pendiente | ± 0,12 s por tramo; recta ≤ 0,38 mm la estimada y ≤ 0,46 mm la física | **OK** | [reproducción](registros/reproduccion.log), pasos 1–3 |
 | T3 | Trayectorias de demostración | Referenciado; cada `trayectorias/demo-*.json` | Se cargan y se reproducen sin errores ni `EV LOST`, y terminan en su último punto | Como T1 | **OK** | [campaña](registros/campana.log), paso 4; [`tests/test_demos.py`](../../tests/test_demos.py) |
-| F1 | Pérdida de pasos | Referenciado, 5 kg; M4 al 50 % (carga) o M1 al 20 % (aceleración) | Sin falla no se pierden pasos; con falla, `EV LOST` al entrar en un imán, referencia dudosa y un homing la limpia | `EV LOST` = pasos perdidos ± 1 paso completo | **OK** | [pérdida de pasos](registros/perdida_pasos.log) |
+| F1 | Pérdida de pasos | Referenciado, 5 kg; M4 al 50 % (carga) o M1 al 20 % (aceleración) | Sin falla no se pierden pasos; con falla, `EV LOST` al entrar en un imán, referencia dudosa y un homing la limpia | `EV LOST` = pasos perdidos ± 1 paso completo en J1 y ± 2 en J4 | **OK** | [pérdida de pasos](registros/perdida_pasos.log) |
 | F2 | Driver de M4 sin corriente | Referenciado, J4 en 60 mm | J4 simulado cae y la estimada no cambia; al volver la corriente, retiene J4 donde quedó | J4 simulado > 118 mm; estimada ± 0,01 mm | **OK** | [instrumentación](registros/instrumentacion.log), paso 2 |
 | F3a | Hall trabado activo | Sin referencia; Hall de J4 activo | El homing aborta con `ERR 12 trabado` | Sin referencia | **OK** | [instrumentación](registros/instrumentacion.log), paso 3 |
 | F3b | Hall trabado inactivo | Desvío, sin referencia; Hall de J1 inactivo | El homing referencia J4 y aborta con `ERR 11 ausente`; con el Hall libre, se repite y termina | Solo J4 encontrado; sin referencia | **OK** | [campaña](registros/campana.log), pasos 1–2 |
@@ -61,15 +61,17 @@ El detalle de cada ensayo reusado, lo que mide y por qué, está en el informe d
 | --- | --- | --- |
 | 1 | F3: Hall de J1 trabado inactivo, homing | J4 encontró su Hall (`EV HOMED 4`); J1 recorrió toda su búsqueda sin ver el imán y el homing abortó con `ERR 11 ausente`, sin declarar referencia |
 | 2 | Hall libre, homing de nuevo | J4, J1, J2 y J3, y vuelta al reposo: estimada (0, 0, 0, 120 mm); física a 0,02° en J2 y 0,01 mm en J4 |
-| 3 | Jog, captura de tres puntos, guardar, cargar y reproducir | Puntos (21,49°, −33,58°, 0°, 86,5 mm) PTP, (…, 111,72 mm) LIN y (−20,98°, −33,58°, 25,43°, 111,72 mm) PTP con 1 s de espera. El archivo cargado trae las mismas articulaciones. La reproducción (16,42 s planificados) terminó en el punto 3 exacto; física a 0,02° |
-| 4 | Las tres demos al 100 % | Barrido PTP (43,02 s planificados), cuadrado LIN (53,56 s) y *pick and place* (30,04 s): las tres terminadas en su último punto exacto, sin `ERR` ni `EV LOST`, con la física a 0,02° |
-| 5 | F5 en plena reproducción sin fin de `demo-pick-and-place.json` | La reproducción se detuvo («la UCI se reinició») y la URC avisó «BOOT inesperado… (F5)», sin referencia. J4 cayó de 40 a 120 mm. J1, que estaba en movimiento, siguió 3,8° por inercia: sin corriente, nada lo frena. Play otra vez: «Para reproducir, el robot tiene que estar referenciado» |
+| 3 | Jog, captura de tres puntos, guardar, cargar y reproducir | Puntos (20,53°, −33,98°, 0°, 86 mm) PTP, (…, 111 mm) LIN y (−21,43°, −33,98°, 25,48°, 111 mm) PTP con 1 s de espera. El archivo cargado trae las mismas articulaciones. La reproducción (6,48 s planificados) terminó en el punto 3 exacto; física a 0,01° |
+| 4 | Las tres demos al 100 % | Barrido PTP (14,50 s planificados), cuadrado LIN (10,52 s) y *pick and place* (18,96 s): las tres terminadas en su último punto exacto, sin `ERR` ni `EV LOST`, con la física a 0,02° |
+| 5 | F5 en plena reproducción sin fin de `demo-pick-and-place.json` | La reproducción se detuvo («la UCI se reinició») y la URC avisó «BOOT inesperado… (F5)», sin referencia. J4 cayó de 73,6 a 120 mm; J1–J3 quedaron donde estaban. Play otra vez: «Para reproducir, el robot tiene que estar referenciado» |
 
 Los tiempos de los pasos 3 y 4 son del reloj de la PC, con la validación previa incluida, y Webots fue a ~0,8× del tiempo real. La precisión de los tiempos la mide, con el reloj simulado, el ensayo de la reproducción (T2).
 
 ## Hallazgos
 
-- **La física se aparta de la recta un poco más que la estimada.** En una corrida anterior de la campaña, después de pausar y reanudar el tramo 2 del ensayo de reproducción, la física quedó a 0,323 mm de la recta, con la estimada a 0,295 mm. La tolerancia de 0,32 mm suma la del plan (0,069 mm, D54) y medio paso de M1 y M2 (0,25 mm), y vale para la estimada, que está siempre en pasos enteros. La física, además, sigue a los pasos con el atraso del rotor de N2 (D64). Ahora la estimada sigue con 0,32 mm y la física tiene 0,40 mm. En la campaña registrada: 0,278 mm la estimada y 0,222 mm la física.
+- **La física se aparta de la recta un poco más que la estimada.** En una corrida anterior de la campaña, después de pausar y reanudar el tramo 2 del ensayo de reproducción, la física quedó a 0,323 mm de la recta, con la estimada a 0,295 mm. La tolerancia de 0,32 mm suma la del plan (0,069 mm, D54) y medio paso de M1 y M2 (0,25 mm), y vale para la estimada, que está siempre en pasos enteros. La física, además, sigue a los pasos con el atraso del rotor de N2 (D64). Ahora la estimada sigue con 0,32 mm y la física tiene 0,40 mm. Desde D76 la cota del plan es de 0,127 mm, porque la cuerda de cada segmento crece con la velocidad: 0,38 mm la estimada y 0,46 mm la física. En la campaña registrada: 0,206 mm la estimada y 0,207 mm la física.
+- **Con los límites de D76, el `EV LOST` de J4 se lee con 2 pasos completos de error.** El Hall se lee una vez por paso de Webots (2 ms); J4 lo cruza a 40 mm/s, así que avanza 0,08 mm, 2 pasos completos de M4, entre lecturas. La planta perdió 1252 y el firmware informó 1254. El ensayo de pérdida de pasos admite ± 2 en J4; J1, que cruza su imán a 10 °/s, sigue con ± 1.
+- **Un homing que no terminó.** En una corrida parcial previa a esta campaña, el homing del paso 2 (después del aborto de F3) siguió «en curso» más de 240 s. No se repitió en otras tres corridas. El homing no usa los límites de D76 (va a 15 °/s, D72), así que queda como intermitente, sin causa encontrada.
 - **La pausa no siempre frena a 0,05 mm de la recta.** D69 cita 0,053 mm, de una corrida. En esta, la pose de la pausa quedó a 0,164 mm. Es el escalón de los pasos al frenar en un punto cualquiera, y queda dentro de la misma tolerancia.
 - **Dos ensayos tenían esperas frágiles.** La reproducción esperaba el fin del loop con un margen fijo de 30 s del reloj de la PC, y falló una vez con Webots más lento. El de transmisión exigía que J3 frenara en el último escalón visto, y puede dar un paso más antes del `JOG STOP`. Los dos se corrigieron en esta campaña, sin aflojar lo que miden.
 
@@ -94,7 +96,7 @@ Sin Webots, `python -m unittest discover` corre:
 - **La planta:** el modelo N2 de los motores y los flancos de los Hall contra la geometría del proto.
 - **Esta campaña:** [`tests/test_campana.py`](../../tests/test_campana.py) verifica que cada escenario tiene condición inicial, resultado, tolerancia y un ensayo que existe, y que el último registro los trae a todos aprobados, con la versión identificada.
 
-Resultado en el commit ensayado: **166 pruebas en verde**, en 175 s; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
+Resultado en el commit ensayado: **196 pruebas en verde**, en 122 s; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
 
 ## Límites
 

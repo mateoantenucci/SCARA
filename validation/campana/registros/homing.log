@@ -1,13 +1,13 @@
-A: arranque con desvío de hasta 0°: física [0.0, -0.0, -0.0, 11999.3], Hall 1000 (bit 0 = J1), sin referencia
+A: arranque con desvío de hasta 0°: física [0.0, -0.0, 0.0, 11999.3], Hall 1000 (bit 0 = J1), sin referencia
    jog de J4 hacia arriba pedido a 10 mm/s: fue a 5.00 mm/s, salió del imán de abajo y frenó solo con ERR 10 fin en J4 = 3.00 mm (flanco del Hall: 3.0 mm)
    de vuelta hacia abajo: frenó en J4 = 116.99 mm (flanco del imán de fin: 117 mm)
    homing: ejes en orden [4, 1, 2, 3]; en los flancos, física [-12999.4, -12999.4, -14501.3, 300.2] y estimada [-12999, -12999, -14496, 300]
-   vuelta al reposo (PTP de 13.6 s al 100%): física [0.0, -0.0, 0.0, 11999.3], estimada [0, 0, 0, 12000], referenciado True, Hall 1000
-   camino físico completo (8780 muestras, cada 50 ms al chequear): sin choques
+   vuelta al reposo (PTP de 3.6 s al 100%): física [0.0, -0.0, 0.0, 11999.3], estimada [0, 0, 0, 12000], referenciado True, Hall 1000
+   camino físico completo (8244 muestras, cada 50 ms al chequear): sin choques
    Webots: UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
-B: arranque con desvío de hasta 10°: física [-559.4, 27.9, -178.5, 11999.3], Hall 1000 (bit 0 = J1), sin referencia
-   homing: ejes en orden [4, 1, 2, 3]; en los flancos, física [-13001.9, -12999.6, -14499.8, 300.2] y estimada [-12999, -12999, -14316, 300]
-   vuelta al reposo (PTP de 13.6 s al 100%): física [-2.6, -0.2, 1.5, 11999.3], estimada [0, 0, 0, 12000], referenciado True, Hall 1000
-   camino físico completo (5295 muestras, cada 50 ms al chequear): sin choques
-   Webots: UCI: arranca a -5.59°, 0.28°, -1.78° de la pose de reposo
+B: arranque con desvío de hasta 10°: física [176.4, -305.4, 309.9, 11999.1], Hall 1000 (bit 0 = J1), sin referencia
+   homing: ejes en orden [4, 1, 2, 3]; en los flancos, física [-13003.0, -13001.0, -14500.8, 300.2] y estimada [-12999, -12999, -14805, 300]
+   vuelta al reposo (PTP de 3.6 s al 100%): física [-3.6, -1.6, 0.5, 11999.3], estimada [0, 0, 0, 12000], referenciado True, Hall 1000
+   camino físico completo (4555 muestras, cada 50 ms al chequear): sin choques
+   Webots: UCI: arranca a 1.76°, -3.05°, 3.10° de la pose de reposo
 ENSAYO OK

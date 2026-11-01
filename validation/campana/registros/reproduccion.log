@@ -1,19 +1,19 @@
 0 homing y reposo: estimada [0, 0, 0, 12000]
   trayectoria: punto 1 [3000, -6000, 1000, 6000] LIN 50 % espera 0 s; punto 2 [-2000, -4000, 500, 3000] LIN 100 % espera 0 s; punto 3 [2000, -8000, 0, 9000] PTP 50 % espera 0 s; punto 4 [2000, -8000, 0, 5000] LIN 50 % espera 1 s
-1 play en loop de 2 vueltas: validación y arranque en 3.27 s; tramo 0 {'skipped': False, 'duration_s': 12.12, 'point': 0}; duración planificada 61.46 s
+1 play en loop de 2 vueltas: validación y arranque en 1.00 s; tramo 0 {'skipped': False, 'duration_s': 6.1, 'point': 0}; duración planificada 26.86 s
   terminada: Reproducción terminada: 2 vueltas
-  vuelta 1 tramo 0 (PTP, espera 0 s): planificado 12.12 s, medido 12.11 s
-  vuelta 1 tramo 2 (LIN, espera 0 s): planificado 10.92 s, medido 10.87 s; recta: estimada a 0.176 mm, simulada a 0.156 mm (659 estados)
-  vuelta 1 tramo 3 (PTP, espera 0 s): planificado 4.30 s, medido 4.30 s
-  vuelta 1 tramo 4 (LIN, espera 1 s): planificado 4.18 s, medido 4.22 s; recta: estimada a 0.131 mm, simulada a 0.172 mm (199 estados)
-  vuelta 2 tramo vuelta (LIN, espera 0 s): planificado 10.54 s, medido 10.55 s; recta: estimada a 0.164 mm, simulada a 0.122 mm (660 estados)
-  vuelta 2 tramo 2 (LIN, espera 0 s): planificado 10.92 s, medido 10.89 s; recta: estimada a 0.162 mm, simulada a 0.140 mm (673 estados)
-  vuelta 2 tramo 3 (PTP, espera 0 s): planificado 4.30 s, medido 4.30 s
-  vuelta 2 tramo 4 (LIN, espera 1 s): planificado 4.18 s, medido 4.20 s; recta: estimada a 0.131 mm, simulada a 0.144 mm (188 estados)
-  total: planificado 61.46 s, medido 61.44 s de simulación; Webots corrió a 0.83× del reloj de la PC
-2 play desde el principio: tramo 0 {'skipped': False, 'duration_s': 6.16, 'point': 0}
-  pausa en el segmento 275 de 546 del tramo 2: estimada [1046, -6362, 1530, 4467] a 0.164 mm de la recta, simulada a 0.164 mm; En pausa: Reanudar sigue desde acá, sobre el mismo tramo
-  reanudado: 279 segmentos más hasta el punto 2; en todo el tramo 2, con la rampa, estimada a 0.278 mm y simulada a 0.222 mm de la recta original
-3 stop en el tramo 2: Reproducción detenida por el operador; tramo de la sesión cancelado (frenado por el operador) en el segmento 5656 de 6017; de [1901, -6536, 1479, 5011] frenó en [1851, -6536, 1485, 4982]; por enviar 0
+  vuelta 1 tramo 0 (PTP, espera 0 s): planificado 6.10 s, medido 6.13 s
+  vuelta 1 tramo 2 (LIN, espera 0 s): planificado 2.60 s, medido 2.59 s; recta: estimada a 0.192 mm, simulada a 0.127 mm (171 estados)
+  vuelta 1 tramo 3 (PTP, espera 0 s): planificado 3.18 s, medido 3.20 s
+  vuelta 1 tramo 4 (LIN, espera 1 s): planificado 3.34 s, medido 3.29 s; recta: estimada a 0.131 mm, simulada a 0.181 mm (149 estados)
+  vuelta 2 tramo vuelta (LIN, espera 0 s): planificado 2.52 s, medido 2.55 s; recta: estimada a 0.168 mm, simulada a 0.151 mm (157 estados)
+  vuelta 2 tramo 2 (LIN, espera 0 s): planificado 2.60 s, medido 2.60 s; recta: estimada a 0.157 mm, simulada a 0.207 mm (166 estados)
+  vuelta 2 tramo 3 (PTP, espera 0 s): planificado 3.18 s, medido 3.14 s
+  vuelta 2 tramo 4 (LIN, espera 1 s): planificado 3.34 s, medido 3.36 s; recta: estimada a 0.131 mm, simulada a 0.144 mm (125 estados)
+  total: planificado 26.86 s, medido 26.86 s de simulación; Webots corrió a 0.80× del reloj de la PC
+2 play desde el principio: tramo 0 {'skipped': False, 'duration_s': 1.5, 'point': 0}
+  pausa en el segmento 68 de 130 del tramo 2: estimada [731, -6238, 1496, 4285] a 0.050 mm de la recta, simulada a 0.040 mm; En pausa: Reanudar sigue desde acá, sobre el mismo tramo
+  reanudado: 70 segmentos más hasta el punto 2; en todo el tramo 2, con la rampa, estimada a 0.206 mm y simulada a 0.160 mm de la recta original
+3 stop en el tramo 2: Reproducción detenida por el operador; tramo de la sesión cancelado (frenado por el operador) en el segmento 2255 de 2339; de [1969, -6536, 1468, 5061] frenó en [1800, -6536, 1496, 4939]; por enviar 0
 4 F5, sin referencia: «Para reproducir, el robot tiene que estar referenciado (homing o referencia manual)»
 ENSAYO OK

@@ -26,7 +26,7 @@ Una vez, en la máquina que se lleva a la defensa (Windows 11, Webots R2025a en 
    git pull --ff-only
    ```
 
-2. **Volver a correr la campaña de validación (pendiente).** La campaña registrada en [`campana.json`](../validation/campana/campana.json) es del commit `ba2b8ee`, anterior al jog cartesiano y verificado (issue #11, D75). Hay que repetirla sobre `main` y commitear `campana.json` y los registros, para que la evidencia que se muestra sea la de lo que se demuestra. Dura unos 18 minutos y exige el árbol sin cambios:
+2. **Campaña de validación.** La registrada en [`campana.json`](../validation/campana/campana.json) es del commit `6ddc4ca`, con el jog verificado (D75) y los límites de D76. Si después cambia el firmware, el planificador, el modelo o una demo, hay que repetirla sobre `main` y commitear `campana.json` y los registros, para que la evidencia que se muestra sea la de lo que se demuestra. Dura unos 15 minutos y exige el árbol sin cambios:
 
    ```powershell
    python validation/campana/campana.py
@@ -113,9 +113,9 @@ Después de la defensa, borrar el archivo de la trayectoria grabada en `trayecto
 1. **«▶ Desde el principio»** con la trayectoria recién grabada. Primero se ve «Validando la trayectoria completa…»: la URC valida todo antes de mover (D68). El tramo 0 es un PTP lento desde donde esté el robot hasta el punto 1 (D32, D33). Después, el LIN, y el PTP con su espera. La página resalta el punto al que va.
 2. **Pausa** a mitad de un tramo y **Reanudar**: frena con rampa y sigue sobre la misma recta (D69). **Stop** o **Esc** frenan y descartan lo pendiente.
 3. **Cargar las demos** con el selector y **«Cargar»** (si hay cambios sin guardar, la URC pregunta):
-   - `demo-cuadrado-lin.json`: cuadrado de 80 mm en LIN, a altura y rumbo fijos; ~54 s al 100 %.
-   - `demo-barrido-ptp.json`: de −90° a +90° en J1 y cambio de configuración del codo, todo PTP; ~43 s.
-   - `demo-pick-and-place.json` si sobra tiempo: bajar y subir en LIN con 1 s de espera, cruzar en PTP; ~30 s.
+   - `demo-cuadrado-lin.json`: cuadrado de 80 mm en LIN, a altura y rumbo fijos; ~11 s al 100 %.
+   - `demo-barrido-ptp.json`: de −90° a +90° en J1 y cambio de configuración del codo, todo PTP; ~15 s.
+   - `demo-pick-and-place.json` si sobra tiempo: bajar y subir en LIN con 1 s de espera, cruzar en PTP; ~19 s.
 
    Las duraciones son las planificadas que registró la campaña (T3). Con **Loop** en «N vueltas» o «Sin fin» se muestra la vuelta del último punto al primero.
 4. **Un LIN imposible se rechaza antes de mover.** En el barrido PTP, cambiar el tramo del punto 3 a LIN y dar play: la URC responde «Tramo 3 (LIN), cambio de codo: J2 pasa de -60° a 60°; para cambiar de lado el brazo tendría que estirarse, que es una singularidad. Usá un tramo PTP.» y el robot no se mueve (D14, D55). Volver a PTP **sin guardar**, para no tocar la demo versionada.
@@ -286,7 +286,7 @@ Cada punto dice cómo se llega a él: tipo, velocidad y espera; nacen LIN, 50 % 
 En LIN el punto de herramienta sigue una recta, a velocidad constante del extremo. En PTP todas las articulaciones siguen el mismo perfil trapezoidal y llegan a la vez: el camino es una recta en articulaciones (D14, D53, D54).
 
 **¿Qué tan recta es la recta?**
-El plan se aparta a lo sumo 0,069 mm: el redondeo a la centésima y la cuerda de cada segmento. La ejecución suma medio paso de M1 y M2, hasta 0,25 mm con 1/8. En Webots, los LIN quedaron dentro de 0,32 mm la estimada y 0,40 mm la física (D54; T2 de la campaña).
+El plan se aparta a lo sumo 0,127 mm: el redondeo a la centésima y la cuerda de cada segmento, que crece con la velocidad. La ejecución suma medio paso de M1 y M2, hasta 0,25 mm con 1/8. En Webots, los LIN quedaron a 0,21 mm como mucho, dentro de 0,38 mm la estimada y 0,46 mm la física (D54, D76; T2 de la campaña).
 
 **¿Qué pasa si una recta es imposible?**
 Se rechaza antes de arrancar, con el tramo, el motivo (alcance, codo, límite, velocidad o colisión), dónde ocurre y qué probar; casi siempre, PTP. El robot nunca arranca un tramo que no puede terminar (D14, D55). Se muestra en la demo.
@@ -298,7 +298,7 @@ Sí. Un PTP que arranca dentro de la zona de margen de un obstáculo se acepta s
 Desde donde esté el robot. La URC agrega el tramo 0, un PTP al 25 % hasta el punto 1, que no se guarda. Un PTP entre dos poses alcanzables siempre se puede hacer; una recta no (D32, D33).
 
 **¿Cómo no hay huecos ni tirones entre tramos?**
-La reproducción es un solo movimiento: el tramo siguiente se encola cuando queda menos de un segundo por enviar, y el firmware los encadena con su reloj. Las esperas son segmentos sin movimiento. En Webots, el loop duró 61,45 s contra 61,46 s planificados (D50, D68).
+La reproducción es un solo movimiento: el tramo siguiente se encola cuando queda menos de un segundo por enviar, y el firmware los encadena con su reloj. Las esperas son segmentos sin movimiento. En Webots, el loop duró 26,86 s, lo mismo que lo planificado (D50, D68).
 
 **¿Cómo funciona la pausa?**
 Es el `STOP` con rampa del firmware. Al reanudar, la URC recalcula el resto del tramo desde donde frenó, con el mismo tipo: en un LIN, la misma recta (D52, D69).
