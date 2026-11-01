@@ -1,63 +1,62 @@
-# SCARA · simulación en Webots
+# SCARA · teach & play simulado en Webots
 
-Simulación del diseño SCARA entregado por la cátedra, para estudiar movimiento, comunicación y fallas. **Todavía no existe un robot físico con el que comparar el modelo.** Usamos sus archivos CAD y planos como referencia.
+Simulación del diseño SCARA entregado por la cátedra: se mueve el robot con jog, se graban puntos, se arman trayectorias con nombre y se reproducen con tramos PTP y LIN, con homing por sensores Hall y fallas F1–F5. **No existe un robot físico con el que comparar el modelo** ([ADR 0001](docs/adr/0001-simulacion-del-diseno-sin-hardware.md)): los parámetros son provisionales y declaran su procedencia.
 
-El robot tiene cuatro articulaciones y se controla desde el navegador. Reutiliza geometrías CAD y colocaciones recuperadas de los archivos de la cátedra. El montaje es parcial, las propiedades físicas siguen siendo provisionales y los originales permanecen intactos. La [validación](docs/VALIDACION_WEBOTS.md) identifica la última revisión ensayada y sus resultados.
+El sistema tiene dos partes que hablan el protocolo de texto [`scara/1`](docs/PROTOCOLO_SCARA_1.md) por TCP:
 
-El sistema es la URC (`urc/`, Python, en la PC) que habla el protocolo `scara/1` con un único firmware C++ (`firmware/`), compartido entre el Arduino UNO y el controlador `scara_uci` de Webots. Cómo compilarlo y usarlo: [UCI en Webots](docs/UCI_WEBOTS.md). Para el robot real, el mismo firmware compila para el Arduino UNO y se conecta a la URC con socat: [UCI en el Arduino UNO](docs/ARDUINO_UNO.md).
+- **URC** (`urc/`, Python, en la PC): la página web, la cinemática, el planificador de tramos y jog, el gestor de trayectorias y la reproducción.
+- **UCI**: un único firmware C++ (`firmware/`) que corre en el controlador `scara_uci` de Webots y compila para el Arduino UNO, conectado a la URC por USB y socat ([ADR 0002](docs/adr/0002-firmware-compartido-robot-real-y-simulacion.md)).
 
-Para entender el proyecto desde cero, leé la [guía desde cero](docs/PROCESO_Y_ARCHIVOS.md). Este README es el manual de ejecución.
+Lo que solo existe en la simulación (posición física, fallas, carga) va por un canal de instrumentación aparte ([ADR 0004](docs/adr/0004-canal-de-instrumentacion-separado.md)).
+
+Para entender el proyecto desde cero, leé el [documento maestro v2](docs/maestro/SCARA-Master-v2.md) y la [guía de archivos](docs/PROCESO_Y_ARCHIVOS.md). Este README es el manual de ejecución.
 
 ## Qué podés abrir
 
 | Mundo | Uso |
 | --- | --- |
-| [scara_uci.wbt](webots/worlds/scara_uci.wbt) | Robot móvil con el controlador `scara_uci`, manejado desde la página de la URC. |
+| [scara_uci.wbt](webots/worlds/scara_uci.wbt) | Robot con el controlador `scara_uci`, manejado desde la página de la URC. |
 | [scara_cad_inspeccion.wbt](webots/worlds/scara_cad_inspeccion.wbt) | Vista fija de colocaciones CAD recuperadas. No tiene motores ni física. |
 
 J1 mueve el brazo, J2 el antebrazo, J3 gira la muñeca y J4 desplaza el conjunto vertical. La interfaz usa **milímetros y grados**. Aumentar J4 baja el extremo; aumentar la coordenada Z lo sube.
 
 ## Requisitos
 
-- **Python 3.9 o posterior**, Webots y un navegador. Para usar esta versión no hace falta instalar paquetes de Python, OCP, SolidWorks ni herramientas CAD.
-- Webots está disponible para [Windows, macOS y Linux](https://github.com/cyberbotics/webots/blob/R2025a/docs/guide/installation-procedure.md). Consultá los [requisitos de la versión elegida](https://github.com/cyberbotics/webots/blob/R2025a/docs/guide/system-requirements.md).
-- Los ensayos guardados usan **Webots R2025b nightly en macOS 27**, por un problema de arranque con R2025a. La [validación](docs/VALIDACION_WEBOTS.md) identifica el ejecutable ensayado. Al compartir el proyecto, registrar la compilación que se usa y comprobarla en cada equipo.
-- La ejecución completa en Windows y Linux sigue pendiente de validación. Conviene que el grupo use la misma compilación de Webots y anote cuál es.
+- Python 3, Webots y un navegador. Para usarlo no hace falta OCP, SolidWorks ni herramientas CAD.
+- Para compilar el controlador alcanza con el `g++` que trae Webots: [compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
+- La campaña de validación se corrió en **Windows 11 con Webots R2025a** (D73). macOS queda pendiente (D19).
 
 ## Copia del proyecto
 
-### Repositorio y colaboración
-
-El [repositorio privado](https://github.com/mateoantenucci/SCARA) conserva código, originales CAD, derivados, documentación y evidencia. Para acceder, cada integrante debe aceptar la invitación con su cuenta de GitHub. Con Git instalado y acceso a la cuenta, descargar el proyecto completo con:
+El [repositorio privado](https://github.com/mateoantenucci/SCARA) conserva código, originales CAD, derivados, documentación y evidencia. Para acceder, cada integrante acepta la invitación con su cuenta de GitHub:
 
 ```sh
 git clone https://github.com/mateoantenucci/SCARA.git
 cd SCARA
 ```
 
-Trabajar en una rama propia y proponer los cambios mediante un pull request. Antes de editar, actualizar `main` con `git pull --ff-only` y crear la rama con `git switch -c nombre-del-cambio`. No subir credenciales, entornos de Python ni archivos de sesión; los originales y los informes históricos se conservan. No convertir los saltos de línea de archivos existentes: sus bytes identifican la evidencia mediante SHA-256.
+Trabajar en una rama propia y proponer los cambios con un pull request. No subir credenciales, entornos de Python ni archivos de sesión. No convertir los saltos de línea de archivos existentes: sus bytes identifican la evidencia mediante SHA-256.
 
 ## Primera ejecución, paso a paso
 
-1. Compilá el controlador `scara_uci` una vez (y de nuevo cada vez que cambie el firmware): [Compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
+1. Compilá el controlador `scara_uci` una vez, y de nuevo cada vez que cambie el firmware: [compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
 2. Desde la raíz del proyecto, levantá la URC: `python3 -m urc.app` (Windows: `python -m urc.app`). Dejá esa terminal abierta.
 3. Abrí [la página de la URC](http://127.0.0.1:8766) en el navegador.
 4. En Webots, elegí **File → Open World**, abrí [webots/worlds/scara_uci.wbt](webots/worlds/scara_uci.wbt) y pulsá reproducción. El controlador se conecta a la URC por TCP 9000.
-5. Seguí [Usarlo](docs/UCI_WEBOTS.md#usarlo): habilitar motores, homing, jog, trayectorias, fallas y carga por el canal de instrumentación.
+5. Seguí [Usarlo](docs/UCI_WEBOTS.md#usarlo): habilitar motores, homing, jog, trayectorias, fallas y carga por el banco de ensayo.
 
-## Qué se revisa y qué falta
+Las tres trayectorias de demostración están en `trayectorias/`, la carpeta por defecto de la URC. Para el robot real, el mismo firmware compila para el UNO: [UCI en el Arduino UNO](docs/ARDUINO_UNO.md).
 
-Se han probado geometría, colocaciones, movimiento, comunicación y fallas. Consultá la [validación](docs/VALIDACION_WEBOTS.md) para conocer la revisión, evidencia y límites de cada ejecución; una prueba anterior no valida automáticamente una versión nueva.
+## Qué se validó y qué falta
 
-Antes de mover se comprueba el recorrido nominal contra pedestal y piso, y la herramienta y carga frente a la base fija. Son controles con formas simplificadas; **la comprobación continua general de autocolisiones sigue pendiente**. No se buscan caminos alternativos ni se cubren piezas omitidas u obstáculos nuevos.
+La [campaña de validación](validation/campana/INFORME.md) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la [sección 10 del maestro](docs/maestro/SCARA-Master-v2.md#10-validación). Una prueba anterior no valida automáticamente una versión nueva.
 
-También faltan:
+Faltan, entre otras cosas (maestro, secciones 9 y 10):
 
-- Confirmar revisión mecánica, ceros, sentidos, topes, herramienta y sensores.
-- Sustituir masas, inercias y esfuerzos provisionales por datos de materiales, impresión, componentes comerciales y transmisiones.
-- Completar la ejecución y validación en Windows y Linux.
-
-Las [consultas para el profesor](docs/DATOS_PARA_EL_PROFESOR.md) reúnen esas preguntas. Los ensayos del simulador no certifican prestaciones del diseño físico.
+- Probar el firmware con la placa real; solo se probó el camino serie con un puerto virtual y socat (D49).
+- Validar en macOS (D19).
+- Sustituir parámetros provisionales por datos de materiales, componentes y motores con hoja de datos.
+- Las propuestas P1 (microstepping) y P2 (sensores Hall) esperan la revisión del profesor.
 
 ## Pruebas y lectura adicional
 
@@ -67,17 +66,16 @@ Para comprobar el software, desde la raíz del proyecto:
 python3 -m unittest discover -v
 ```
 
-En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. Las pruebas de geometría que necesitan el entorno CAD se omiten cuando ese entorno no está instalado.
+En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. La compilación para el UNO necesita `arduino-cli` (variable `ARDUINO_CLI`); las pruebas de propiedades CAD, el entorno con OCP. Si falta alguno, esas pruebas se omiten. `python tools/verificar_enlaces.py` comprueba que no haya enlaces internos rotos.
 
 | Tema | Guía |
 | --- | --- |
-| Entender el proyecto y sus carpetas | [Proceso y archivos](docs/PROCESO_Y_ARCHIVOS.md) |
-| Montaje e interferencias internas | [Montaje y autocolisiones](docs/MONTAJE_Y_AUTOCOLISIONES.md) |
-| Colisiones con el entorno | [Colisiones y recorridos](docs/COLISIONES_Y_RECORRIDOS.md) |
-| Geometrías recuperadas | [Recuperación de geometrías](docs/RECUPERACION_GEOMETRIAS.md) |
-| Colocaciones y agrupación de piezas | [Ensamble CAD](docs/ENSAMBLE_CAD.md) y [criterios de integración](docs/INTEGRACION_CAD_CRITERIOS.md) |
-| Propiedades calculadas y datos físicos faltantes | [Propiedades geométricas CAD](docs/PROPIEDADES_GEOMETRICAS_CAD.md) |
-| Ensayos en Webots y eje vertical | [Validación](docs/VALIDACION_WEBOTS.md) y [diagnóstico de J4](docs/DIAGNOSTICO_TOPE_J4.md) |
-| Acuerdos y próximos pasos | [Plan](docs/PLAN_GEMELO_DIGITAL.md) y [glosario](GLOSSARY.md) |
+| Diseño, decisiones y validación | [Maestro v2](docs/maestro/SCARA-Master-v2.md), [registro de decisiones](docs/REGISTRO_DE_DECISIONES.md) y [ADR](docs/adr/) |
+| Archivos del proyecto | [Proceso y archivos](docs/PROCESO_Y_ARCHIVOS.md) |
+| Protocolo | [`scara/1`](docs/PROTOCOLO_SCARA_1.md) |
+| Webots y Arduino | [UCI en Webots](docs/UCI_WEBOTS.md) y [UCI en el Arduino UNO](docs/ARDUINO_UNO.md) |
+| Transmisión y motores | [Transmisión](docs/TRANSMISION.md) |
+| Colisiones | [Colisiones y recorridos](docs/COLISIONES_Y_RECORRIDOS.md) y [montaje](docs/MONTAJE_Y_AUTOCOLISIONES.md) |
+| Alcance y pendientes | [Plan](docs/PLAN_GEMELO_DIGITAL.md) y [glosario](GLOSSARY.md) |
 
-Para cambiar el modelo se editan sus fuentes, se regeneran las salidas y se repiten las comprobaciones correspondientes. Las etapas anteriores se conservan en `validation/historico/` como evidencia, fuera de la ruta de lectura. El [mapa de documentos](docs/PROCESO_Y_ARCHIVOS.md#9-mapa-de-archivos-para-explorar) orienta la exploración.
+La documentación y la evidencia del banco provisional `scara-dev/1`, que este sistema reemplazó, están en [`docs/historico/`](docs/historico/README.md) y [`validation/historico/`](validation/historico/README.md).

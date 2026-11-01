@@ -2,7 +2,7 @@
 
 Evidencia vigente del sistema `scara/1`: la URC, el firmware compartido dentro del controlador de Webots y la planta simulada. Es la seam 3 de la [spec #2](https://github.com/mateoantenucci/SCARA/issues/2): escenarios en Webots registrados como evidencia, cada uno con su condición inicial, el resultado esperado, la tolerancia y la ejecución registrada.
 
-**Reemplaza** al índice de validación del banco provisional `scara-dev/1` ([`docs/VALIDACION_WEBOTS.md`](../../docs/VALIDACION_WEBOTS.md)) y a su especificación de fallas ([`docs/FALLAS_Y_VALIDACION.md`](../../docs/FALLAS_Y_VALIDACION.md)). Esos documentos, la evidencia de `validation/historico/`, la de `validation/sesion*/` y los JSON sueltos de `validation/` son del banco viejo: quedan como registro del proceso y no se citan como prueba del sistema nuevo (D25). Los mueve a histórico el issue #1. Siguen vigentes los documentos que no dependen del control: CAD, montaje, colisiones, propiedades y transmisión.
+**Reemplaza** al índice de validación del banco provisional `scara-dev/1` ([`docs/VALIDACION_WEBOTS.md`](../../docs/historico/VALIDACION_WEBOTS.md)) y a su especificación de fallas ([`docs/FALLAS_Y_VALIDACION.md`](../../docs/historico/FALLAS_Y_VALIDACION.md)). Esos documentos, la evidencia de `validation/historico/`, la de `validation/sesion*/` y los JSON sueltos de `validation/` son del banco viejo: quedan como registro del proceso y no se citan como prueba del sistema nuevo (D25). Los mueve a histórico el issue #1. Siguen vigentes los documentos que no dependen del control: CAD, montaje, colisiones, propiedades y transmisión.
 
 ## Versión ensayada
 

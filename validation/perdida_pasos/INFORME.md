@@ -24,7 +24,7 @@ Issue #15, decisiones D64–D67. Fecha: 31/10/2026. Windows 11, Webots R2025a, c
 
 ## Además
 
-Con la planta nueva se volvieron a correr los ensayos de [protocolo](../protocolo/INFORME.md), [transmisión](../transmision/INFORME.md), [segmentos](../segmentos/INFORME.md), [homing](../homing/INFORME.md) y del [canal de instrumentación](../instrumentacion/INFORME.md): los cinco pasan (`ENSAYO OK`). Para eso hizo falta que la fuerza de cada articulación suba en rampa al volver la corriente (D64): sin la rampa, J4, apoyado en su tope, saltaba unos 2 mm al habilitar los motores.
+Con la planta nueva se volvieron a correr los ensayos de [protocolo](../protocolo/ensayo_webots.log), [transmisión](../transmision/INFORME.md), [segmentos](../segmentos/INFORME.md), [homing](../homing/INFORME.md) y del [canal de instrumentación](../instrumentacion/INFORME.md): los cinco pasan (`ENSAYO OK`). Para eso hizo falta que la fuerza de cada articulación suba en rampa al volver la corriente (D64): sin la rampa, J4, apoyado en su tope, saltaba unos 2 mm al habilitar los motores.
 
 ## Cómo repetirlo
 

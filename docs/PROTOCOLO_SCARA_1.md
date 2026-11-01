@@ -1,6 +1,6 @@
 # Protocolo `scara/1`
 
-Especificación del contrato de mensajes entre la URC y el firmware de la UCI. Reemplaza al borrador de la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md#5-protocolo-propuesto-scara1-borrador) y, cuando se retire (issue #17), al banco provisional [`scara-dev/1`](PROTOCOLO_SCARA_DEV_1.md).
+Especificación del contrato de mensajes entre la URC y el firmware de la UCI. Reemplaza al borrador de la [investigación del 29/10/2026](historico/INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md#5-protocolo-propuesto-scara1-borrador) y, cuando se retire (issue #17), al banco provisional [`scara-dev/1`](historico/PROTOCOLO_SCARA_DEV_1.md).
 
 **Estado:** completo para conexión, corriente, jog, paradas, watchdog y reinicio (issue #6), para los segmentos temporizados `SEG` y `OK` (issue #9) para el homing, `HOME` y `EV HOMED` (issue #8) y para la detección de pasos perdidos, `EV LOST` (issue #15). Las decisiones están en el [registro](REGISTRO_DE_DECISIONES.md): D4, D5, D24, D27, D35–D37, D40–D43, D46, D50–D53, D56–D58 y D65.
 

@@ -124,9 +124,9 @@ En cada eje: avance rápido hasta el Hall, retroceso hasta que se apague y aprox
 | Modelo de motores | No existía | Pasos, transmisión y acople (N1); par limitado y pérdida de pasos (N2) | D8, D44, D64 |
 | Validación | No existía | Campaña en Webots de los escenarios de homing, teach & play y fallas F1–F5 | D25, D73 |
 
-**Discrepancias mecánicas todavía abiertas.** Las diferencias entre el maestro, los planos sueltos y el CAD (cuerpo Z, pistón, varilla ACME, buje exterior, carreteles A, polea de muñeca, transmisión de M3, ejes de la torre) están en la [revisión para el profesor del 27/10/2026](../REVISION_PARA_EL_PROFESOR_2026-10-27.md) y en [Datos para el profesor](../DATOS_PARA_EL_PROFESOR.md). Ninguna cambia las propuestas de este documento.
+**Discrepancias mecánicas todavía abiertas.** Las diferencias entre el maestro, los planos sueltos y el CAD (cuerpo Z, pistón, varilla ACME, buje exterior, carreteles A, polea de muñeca, transmisión de M3, ejes de la torre) están en la [revisión para el profesor del 27/10/2026](../historico/REVISION_PARA_EL_PROFESOR_2026-10-27.md) y en [Datos para el profesor](../historico/DATOS_PARA_EL_PROFESOR.md). Ninguna cambia las propuestas de este documento.
 
-**Fuentes.** Consigna del TP final (rev. 13/10/2026); maestro v1; planos y ensambles de `Modelos3D/`; clase del 27/10/2026; [investigación del 29/10/2026](../INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md); [registro de decisiones](../REGISTRO_DE_DECISIONES.md) D0–D75; [ADR 0001–0007](../adr/); [glosario](../../GLOSSARY.md).
+**Fuentes.** Consigna del TP final (rev. 13/10/2026); maestro v1; planos y ensambles de `Modelos3D/`; clase del 27/10/2026; [investigación del 29/10/2026](../historico/INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md); [registro de decisiones](../REGISTRO_DE_DECISIONES.md) D0–D75; [ADR 0001–0007](../adr/); [glosario](../../GLOSSARY.md).
 
 ## 3. Mecánica vigente
 

@@ -2,7 +2,7 @@
 
 16 de octubre de 2026. Se recuperaron `B-CarretelInf`, `B-CarretelSup` y `Z-SoporteEfector` corrigiendo una tolerancia numérica del conversor de curvas de intersección. Las tres piezas superan ahora el control de sólidos BREP y de mallas cerradas. No se reconstruyeron piezas desde planos, no se añadieron superficies y no se aplicaron `ShapeFix`, cosido ni relleno de huecos.
 
-El resultado completó la geometría de las **30 instancias seleccionadas en aquella etapa**. El montaje posterior y sus ensayos están en [Validación](VALIDACION_WEBOTS.md). No completa por sí solo el montaje mecánico: siguen pendientes componentes, revisión oficial, fijaciones y fases de los carreteles, además de la revisión de interferencias internas. El alcance continúa siendo el de [simulación del diseño con evidencia declarada](adr/0001-simulacion-del-diseno-sin-hardware.md).
+El resultado completó la geometría de las **30 instancias seleccionadas en aquella etapa**. El montaje posterior y sus ensayos están en [Validación](historico/VALIDACION_WEBOTS.md). No completa por sí solo el montaje mecánico: siguen pendientes componentes, revisión oficial, fijaciones y fases de los carreteles, además de la revisión de interferencias internas. El alcance continúa siendo el de [simulación del diseño con evidencia declarada](adr/0001-simulacion-del-diseno-sin-hardware.md).
 
 ## Diagnóstico y corrección
 
@@ -114,4 +114,4 @@ La exportación alternativa deja de ser un requisito para mostrar estas tres pie
 3. Si se exporta también STL, entregar un archivo por pieza, declarar sus unidades y tolerancias y conservar el mismo marco. STL no incorpora por sí solo una unidad inequívoca y no sustituye el sólido BREP para propiedades o interferencias volumétricas.
 4. Conservar los archivos alternativos en una ruta separada, con hashes. Comparar cantidad y validez de sólidos, dimensiones, agujeros, volumen, centroide y colocación antes de sustituir derivados activos. Una caja exterior coincidente no basta.
 
-No se requiere redibujar desde los PDF ni medir manualmente colocaciones ya recuperadas. Las consultas sobre revisión, fijaciones, materiales y herramienta siguen reunidas en [Datos para el profesor](DATOS_PARA_EL_PROFESOR.md).
+No se requiere redibujar desde los PDF ni medir manualmente colocaciones ya recuperadas. Las consultas sobre revisión, fijaciones, materiales y herramienta siguen reunidas en [Datos para el profesor](historico/DATOS_PARA_EL_PROFESOR.md).

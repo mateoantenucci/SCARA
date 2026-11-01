@@ -11,7 +11,7 @@
 - [Programación del controlador](https://github.com/cyberbotics/webots/blob/R2025a/docs/guide/controller-programming.md) e [interfaz TCP/IP](https://github.com/cyberbotics/webots/blob/R2025a/docs/guide/interfacing-webots-to-third-party-software-with-tcp-ip.md).
 - [Python Socket HOWTO](https://docs.python.org/3/howto/sockets.html): flujo TCP, buffers y sockets no bloqueantes.
 
-Aplicación en el proyecto: [criterios de integración](INTEGRACION_CAD_CRITERIOS.md), [fallas](FALLAS_Y_VALIDACION.md) y [validación](VALIDACION_WEBOTS.md). El [diagnóstico de J4](DIAGNOSTICO_TOPE_J4.md) enlaza además el código de la build efectivamente analizada.
+Aplicación en el proyecto: [criterios de integración](INTEGRACION_CAD_CRITERIOS.md), [fallas](historico/FALLAS_Y_VALIDACION.md) y [validación](historico/VALIDACION_WEBOTS.md). El [diagnóstico de J4](historico/DIAGNOSTICO_TOPE_J4.md) enlaza además el código de la build efectivamente analizada.
 
 ## Conversión y cálculo CAD
 

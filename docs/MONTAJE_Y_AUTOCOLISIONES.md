@@ -1,6 +1,6 @@
 # Montaje y choques entre piezas
 
-Este documento explica las decisiones mecánicas del prototipo. El [manifiesto](../cad/ensambles/integracion_articulada.json) identifica las instancias efectivas y la [validación](VALIDACION_WEBOTS.md) centraliza cantidades, versiones y resultados ensayados. El montaje todavía no certifica cómo fabricar o ensamblar el robot real.
+Este documento explica las decisiones mecánicas del prototipo. El [manifiesto](../cad/ensambles/integracion_articulada.json) identifica las instancias efectivas y la [validación](historico/VALIDACION_WEBOTS.md) centraliza cantidades, versiones y resultados ensayados. El montaje todavía no certifica cómo fabricar o ensamblar el robot real.
 
 ## Rodamientos y tapa de muñeca
 
@@ -38,4 +38,4 @@ La comprobación de poses seleccionadas no cubre todo el movimiento. `selfCollis
 
 ## Pendientes mecánicos
 
-Confirmar revisión oficial, fijaciones, fases, anillos de rodamientos, recorrido de correas, ejes y referencias. Mejorar formas de contacto donde una caja ocupa un hueco funcional. Completar materiales y propiedades comerciales antes de reemplazar la física provisional. Las [consultas para el profesor](DATOS_PARA_EL_PROFESOR.md) reúnen las decisiones externas.
+Confirmar revisión oficial, fijaciones, fases, anillos de rodamientos, recorrido de correas, ejes y referencias. Mejorar formas de contacto donde una caja ocupa un hueco funcional. Completar materiales y propiedades comerciales antes de reemplazar la física provisional. Las [consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md) reúnen las decisiones externas.

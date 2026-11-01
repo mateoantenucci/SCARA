@@ -1,6 +1,6 @@
 # Recuperación del ensamble CAD
 
-Este documento explica la extracción de colocaciones y la vista estática. La [integración móvil](INTEGRACION_CAD_CRITERIOS.md) utiliza esas fuentes y añade componentes revisados de otros conjuntos. El manifiesto efectivo y los ensayos se consultan desde [Validación](VALIDACION_WEBOTS.md).
+Este documento explica la extracción de colocaciones y la vista estática. La [integración móvil](INTEGRACION_CAD_CRITERIOS.md) utiliza esas fuentes y añade componentes revisados de otros conjuntos. El manifiesto efectivo y los ensayos se consultan desde [Validación](historico/VALIDACION_WEBOTS.md).
 
 Se recuperaron **106 instancias guardadas de los diez `.SLDASM`**, con archivo de origen, configuración, identificador, visibilidad y matriz de colocación. No fue necesario SolidWorks, Onshape ni otra conversión de piezas. La fuente es el XML comprimido que SolidWorks dejó dentro de cada archivo: **no se resolvieron restricciones ni se reconstruyó el ensamble con las revisiones actuales de todas las piezas**.
 
@@ -99,4 +99,4 @@ python -B tools/extraer_ejes_cad.py
 
 Los generadores comprueban hashes y la vista fija no sobrescribe `webots/worlds/scara.wbt`. Para otro conjunto, `generate_cad_preview.py` admite `--assembly A-EnsambleBrazo.SLDASM --output /ruta/otra_vista.wbt` dentro del proyecto. No es necesario reconvertir para usar los mundos ya preparados.
 
-Las colocaciones guardadas no resuelven revisión oficial, ceros, homing ni TCP. Una reconstrucción fresca en el CAD de origen serviría como contraste independiente. No se requiere medir a mano posiciones que ya recuperamos; las discrepancias concretas están en [Consultas para el profesor](DATOS_PARA_EL_PROFESOR.md).
+Las colocaciones guardadas no resuelven revisión oficial, ceros, homing ni TCP. Una reconstrucción fresca en el CAD de origen serviría como contraste independiente. No se requiere medir a mano posiciones que ya recuperamos; las discrepancias concretas están en [Consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md).
