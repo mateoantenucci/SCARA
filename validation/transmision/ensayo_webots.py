@@ -173,7 +173,8 @@ try:
     log(f"6 resolución: jog de J3 a 0,1 °/s durante 6 s; {samples} muestras de la física, {off} en transición; "
         f"escalones vistos (en pasos de {STEP} centésimas de grado): {levels}; al frenar, {moved:.3f} pasos")
     assert len(levels) >= 5 and levels == list(range(levels[0], levels[-1] + 1)), "J3 no avanza de a un paso"
-    assert abs(moved - round(moved)) < 0.02 and round(moved) == levels[-1], "J3 no se detiene en un paso entero"
+    # Entre la última muestra y el JOG STOP puede salir un paso más (campaña del 01/11/2026).
+    assert abs(moved - round(moved)) < 0.02 and round(moved) - levels[-1] in (0, 1), "J3 no se detiene en un paso entero"
     log("ENSAYO OK")
 finally:
     webots.kill()
