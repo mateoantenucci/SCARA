@@ -540,15 +540,34 @@ El canal y las fallas F2–F5 están ensayados en Webots ([validación del canal
 
 ## 10. Validación
 
-> **Pendiente de evidencia.** Esta sección se completa con la campaña de validación nueva (D25). La evidencia del banco provisional `scara-dev/1` queda como registro del proceso y no se cita como prueba del sistema nuevo.
+La evidencia vigente es la [campaña de validación en Webots](../../validation/campana/INFORME.md) (issue #18, D73), que reemplaza a la del banco provisional `scara-dev/1`: esa queda como registro del proceso y no se cita como prueba del sistema nuevo (D25). La validación tiene tres niveles, los tres seams de la spec:
 
-Qué va a traer:
+| Nivel | Qué se prueba | Cómo |
+| --- | --- | --- |
+| Firmware por su protocolo | Modos, homing (también abortado), jog sin referencia, cola y control de flujo, watchdog, acople M1/M2, `EV LOST` | Conversaciones de conformidad contra el núcleo C++ compilado en la PC con una capa de hardware falsa; compilación para el UNO |
+| URC por sus dos bordes | La sesión con la UCI y la interfaz: jog, gestor, reproducción, banco | Las mismas conversaciones contra la URC con una UCI falsa por TCP; endpoints HTTP; el planificador como módulo puro |
+| Escenarios en Webots | El sistema entero con la planta simulada | Ocho ensayos, corridos por un solo ejecutor que registra la versión ensayada |
 
-- Pruebas automáticas: firmware por su protocolo en la PC; URC por sus dos bordes (UCI falsa por TCP e interfaz HTTP); planificador como módulo puro.
-- Escenarios en Webots: homing desde el reposo; teach & play LIN y PTP; fallas F1–F5; comparación de lo simulado contra lo estimado.
-- Compilación en Windows y en Mac (D19).
+**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8 y planta N2: commit `COMMIT_CORTO`.
 
-Ya hay ensayos de la ronda: [segmentos y tramo PTP](../../validation/segmentos/INFORME.md) (issue #9), [transmisión N1](../../validation/transmision/INFORME.md) (issue #7) y [reproducción de trayectorias](../../validation/reproduccion/INFORME.md) (issue #13).
+| Escenario | Condición inicial | Resultado | Tolerancia |
+| --- | --- | --- | --- |
+| H1 · Homing desde el reposo | Reposo exacto, sin referencia | J4, J1, J2 y J3 en el flanco de su Hall; vuelta sola al reposo; ningún choque en el camino físico | ≤ 3 pasos de 1/8 |
+| H2 · Homing con desvío | Desvío al azar de ±10° | Termina igual en el reposo, también después de un homing abortado | ≤ 3 pasos; física a menos de un paso completo |
+| T1 · Teach & play | Referenciado | Tres puntos capturados con jog se guardan, se cargan y se reproducen (PTP, LIN, PTP con espera) | Último punto a < 1 paso |
+| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (61,44 s medidos contra 61,46 s en 8 tramos); los LIN, a ≤ 0,25 mm de la recta; la pausa la conserva | ± 0,12 s; ≤ 0,32 mm |
+| T3 · Demostraciones | Las tres de `trayectorias/` | Se reproducen sin errores ni `EV LOST` | Último punto a < 1 paso |
+| F1 · Pérdida de pasos | 5 kg; un driver con poca corriente | Sin falla, ningún paso perdido; con falla, `EV LOST` con los pasos que perdió la planta y referencia dudosa | ± 1 paso completo |
+| F2 · Driver sin corriente | J4 en 60 mm | J4 cae a 120 mm; la estimada no cambia | > 118 mm |
+| F3 · Hall trabado | Activo en J4 o inactivo en J1 | El homing aborta con `ERR 12` o `ERR 11`, sin referencia | Sin referencia |
+| F4 · Enlace cortado | Jog en marcha | El watchdog frena en 1 s; al volver, el robot está quieto | J1 quieto 2,5 s después |
+| F5 · Reinicio de la UCI | Quieto o en plena reproducción | `BOOT` inesperado, sin referencia; la reproducción se detiene y no se puede volver a dar play | Un `BOOT` |
+
+Los cuatro escenarios de soporte, protocolo, transmisión N1 y segmentos, también pasan. El detalle, con los registros, está en el [informe de la campaña](../../validation/campana/INFORME.md).
+
+**Trayectorias de demostración (D74).** Tres, versionadas en `trayectorias/`, la carpeta por defecto de la URC: *pick and place* (LIN para bajar y subir, PTP para cruzar, esperas), un cuadrado LIN de 80 mm y un barrido PTP con cambio de codo. Una prueba las carga y las reproduce en loop de 2 vueltas en cada corrida de la suite.
+
+**Límites.** Solo se validó en Windows; macOS queda pendiente (D19). Los ensayos corren con Webots minimizado: lo visual queda para la QA humana. Los parámetros siguen siendo provisionales: la campaña prueba el diseño simulado, no un robot construido ([ADR 0001](../adr/0001-simulacion-del-diseno-sin-hardware.md)).
 
 <!-- SALTO DE PAGINA -->
 
@@ -594,6 +613,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver. Las de la reproducción: D68, validar todo antes de mover y encolar un tramo detrás de otro con sus esperas; D69, la pausa es el `STOP` con rampa y al reanudar se recalcula el resto del tramo.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver. Las de la reproducción: D68, validar todo antes de mover y encolar un tramo detrás de otro con sus esperas; D69, la pausa es el `STOP` con rampa y al reanudar se recalcula el resto del tramo. Las de la QA de la ronda 3: D70, jog a 10 °/s frenado antes del límite y de un choque; D71, un PTP puede salir de la zona de margen de un obstáculo; D72, homing más rápido y repetible. Las de la campaña de validación: D73, un ejecutor que corre los ensayos de cada issue y registra la versión ensayada; D74, las trayectorias de demostración en `trayectorias/`.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.
