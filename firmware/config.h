@@ -24,11 +24,12 @@ const int32_t FULL_STEPS_PER_REV = 200;  // NEMA 23 y NEMA 17 de 1,8°
 const int32_t STEPS_PER_REV = FULL_STEPS_PER_REV * MICROSTEPS;
 
 // Límites de cada motor en su eje, en grados por segundo y por segundo²
-// (D45). Parámetro provisional hasta tener las curvas de par (N2, #15):
-// dejan a cada articulación dentro de los límites conservadores del modelo.
-// Los de las articulaciones se derivan por la transmisión, con el acople.
-constexpr int32_t MOTOR_MAX_SPEED[MOTOR_COUNT] = {80, 80, 112, 1350};
-constexpr int32_t MOTOR_MAX_ACCELERATION[MOTOR_COUNT] = {136, 136, 204, 2700};
+// (D45, valores de D76). Con la corriente nominal y 5 kg, el par pedido queda
+// al menos 2 veces por debajo del disponible en M1–M3 (M4: 1,4, por el peso);
+// M4 pide 8000 pulsos/s con 1/8, dentro de los 10 000 del UNO. Los de las
+// articulaciones se derivan por la transmisión, con el acople.
+constexpr int32_t MOTOR_MAX_SPEED[MOTOR_COUNT] = {360, 360, 720, 1800};
+constexpr int32_t MOTOR_MAX_ACCELERATION[MOTOR_COUNT] = {560, 560, 1440, 5400};
 
 // Sensores Hall (D10, D56): un KY-003 por articulación y dos imanes, centrados
 // en los extremos de su recorrido. El homing busca el imán del lado negativo

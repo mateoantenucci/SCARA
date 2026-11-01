@@ -11,32 +11,32 @@
 < OK 2
 + 500
 = M1 160 M2 160
-# M1 frena con 136 °/s² (J1 a 34 °/s²): 530 ms y 85 pasos, unos 4,8° de J1.
+# M1 frena con 560 °/s² (J1 a 140 °/s²): 129 ms y 21 pasos, unos 1,2° de J1.
 # La cola ya está vacía; S sigue en RUN hasta que el robot se detiene.
 > STOP
-+ 265
-= M1 224 M2 224
++ 64
+= M1 176 M2 176
 > STATUS
-< S RUN 15 1260 0 0 12000 0 16 0
-+ 265
-= M1 245 M2 245
+< S RUN 15 990 0 0 12000 0 16 0
++ 65
+= M1 181 M2 181
 > STATUS
-< S IDLE 15 1378 0 0 12000 0 16 0
+< S IDLE 15 1018 0 0 12000 0 16 0
 + 500
-= M1 245 M2 245
+= M1 181 M2 181
 # Quieto, STOP no hace nada.
 > STOP
 > STATUS
-< S IDLE 15 1378 0 0 12000 0 16 0
+< S IDLE 15 1018 0 0 12000 0 16 0
 # HALT para en seco, descarta la cola y pierde la referencia.
 > SEG 3 1000 3178 0 0 12000
 < OK 3
 + 500
 > HALT
 + 500
-= M1 405 M2 405
+= M1 373 M2 373
 > STATUS
-< S IDLE 0 2278 0 0 12000 0 16 0
+< S IDLE 0 2098 0 0 12000 0 16 0
 # Sin referencia, no se aceptan segmentos.
 > SEG 4 1000 3178 0 0 12000
 < ERR 7 referencia

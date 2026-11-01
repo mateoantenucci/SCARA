@@ -27,13 +27,14 @@ NAMES = ("J1", "J2", "J3", "J4")
 # Límites de cada motor (D45, firmware/config.h) en las unidades de su
 # articulación: M1 mueve J1, M2 mueve J1 + J2, M3 mueve J3 (θM/4) y M4 mueve
 # J4 (8 mm por vuelta). Centésimas por segundo y por segundo².
-MOTOR_SPEED = (2000, 2000, 2800, 3000)
-MOTOR_ACCELERATION = (3400, 3400, 5100, 6000)
-# Tramo LIN al 100 % (D54): velocidad y aceleración del punto de herramienta
-# sobre la recta (centésimas de mm) y del rumbo (centésimas de grado). Son
-# las de J4 y M1: una recta vertical o un giro en el lugar nunca las superan.
-TOOL_SPEED = (3000, 2000)
-TOOL_ACCELERATION = (6000, 3400)
+MOTOR_SPEED = (9000, 9000, 18000, 4000)
+MOTOR_ACCELERATION = (14000, 14000, 36000, 12000)
+# Tramo LIN al 100 % (D54, D76): velocidad y aceleración del punto de
+# herramienta sobre la recta (centésimas de mm) y del rumbo (centésimas de
+# grado). El rumbo usa las de M1: un giro en el lugar nunca las supera. La
+# componente vertical de la recta, además, no pasa de la de M4.
+TOOL_SPEED = (15000, 9000)
+TOOL_ACCELERATION = (30000, 14000)
 # Grados o metros del modelo → unidades de scara/1.
 SCALE = (100 * 180 / math.pi,) * 3 + (100 * 1000,)
 
@@ -152,13 +153,16 @@ def plan_lin(start, target, speed=1.0, limits=None, config=None):
     origin, end = tool_point(start, config), tool_point(target, config)
     path = [b - a for a, b in zip(origin, end)]
     # Centésimas de mm sobre la recta y de grado de rumbo; el rumbo es la
-    # suma sin envolver, así va al destino por el lado que indica J3.
-    distances = (math.hypot(*path) * SCALE[3], abs(sum(target[:3]) - sum(start[:3])))
+    # suma sin envolver, así va al destino por el lado que indica J3. La
+    # tercera es la componente vertical, que mueve solo J4 (M4).
+    distances = (math.hypot(*path) * SCALE[3], abs(sum(target[:3]) - sum(start[:3])), abs(target[3] - start[3]))
+    speeds = (*limits.tool_speed, limits.motor_speed[3])
+    accelerations = (*limits.tool_acceleration, limits.motor_acceleration[3])
     moving = [i for i, d in enumerate(distances) if d > 1e-6]
     if not moving:
         return Lin(0.0, [], [], elbow, 0.0)
-    peak = min(limits.tool_speed[i] * speed / distances[i] for i in moving)
-    acceleration = min(limits.tool_acceleration[i] * speed / distances[i] for i in moving)
+    peak = min(speeds[i] * speed / distances[i] for i in moving)
+    acceleration = min(accelerations[i] * speed / distances[i] for i in moving)
     profile = _trapezoid(peak, acceleration)
     heading, turn = sum(start[:3]), sum(target[:3]) - sum(start[:3])
     samples, previous = [], start[0] / SCALE[0]

@@ -67,8 +67,8 @@ PROTO SCARA [
             position 0 minStop -2.356194490192345 maxStop 2.356194490192345
             dampingConstant 0.01 }
           device [ RotationalMotor { name "j1_motor" minPosition -2.356194490192345
-            maxPosition 2.356194490192345 maxVelocity 0.35
-            acceleration 0.6 maxTorque IS j1MaxTorque }
+            maxPosition 2.356194490192345 maxVelocity 1.75
+            acceleration 2.7 maxTorque IS j1MaxTorque }
             PositionSensor { name "j1_sensor" } ] endPoint DEF ARM Solid {
               translation 0 0 0.2913625 rotation 0 0 1 0 name "arm"
               children [ # A-Brazo-1 | accepted_mesh | structural_group_from_assembly
@@ -121,8 +121,8 @@ PROTO SCARA [
             position 1.5707963267949 minStop -2.356194490192345 maxStop 2.356194490192345
             dampingConstant 0.01 }
           device [ RotationalMotor { name "j2_motor" minPosition -2.356194490192345
-            maxPosition 2.356194490192345 maxVelocity 0.35
-            acceleration 0.6 maxTorque IS j2MaxTorque }
+            maxPosition 2.356194490192345 maxVelocity 3.5
+            acceleration 5.4 maxTorque IS j2MaxTorque }
             PositionSensor { name "j2_sensor" } ] endPoint DEF FOREARM Solid {
               translation 0.250000000000002 0 -0.078 rotation 0 0 1 1.5707963267949 name "forearm"
               children [ # B-Antebrazo-1 | accepted_mesh | structural_group_from_assembly
@@ -183,8 +183,8 @@ PROTO SCARA [
             position -1.5707963267949 minStop -2.6179938779914944 maxStop 2.6179938779914944
             dampingConstant 0.01 }
           device [ RotationalMotor { name "j3_motor" minPosition -2.6179938779914944
-            maxPosition 2.6179938779914944 maxVelocity 0.5
-            acceleration 0.9 maxTorque IS j3MaxTorque }
+            maxPosition 2.6179938779914944 maxVelocity 3.5
+            acceleration 7.0 maxTorque IS j3MaxTorque }
             PositionSensor { name "j3_sensor" } ] endPoint DEF WRIST Solid {
       translation 0.249999999999997 0 0 rotation 0 0 1 -1.5707963267949 name "conjunto_z"
       children [ # Z-BujeExterior-1 | accepted_mesh | structural_group_from_assembly
@@ -228,7 +228,7 @@ PROTO SCARA [
       jointParameters JointParameters { axis 0 0 -1 position 0.06
         minStop 0.0 maxStop 0.12 dampingConstant 0.2 }
       device [ LinearMotor { name "j4_motor" minPosition 0.0 maxPosition 0.12
-        maxVelocity 0.03 acceleration 0.06 maxForce IS j4MaxForce }
+        maxVelocity 0.045 acceleration 0.135 maxForce IS j4MaxForce }
         PositionSensor { name "j4_sensor" } ] endPoint DEF TOOL Solid {
       translation 0 0 -0.178695641135201 name "piston_y_soporte"
       children [ # Z-Piston-1 | accepted_mesh | structural_group_from_assembly

@@ -48,17 +48,17 @@ Resolución por pulso, con motores de 200 pasos por vuelta (1,8°), reducción 4
 | **1/8 (propuesta)** | **1600** | **0,05625°** | **0,49 mm** | **0,25 mm** | **0,005 mm** |
 | 1/16 | 3200 | 0,028° | 0,25 mm | 0,12 mm | 0,0025 mm |
 
-**Costo: más pulsos por segundo.** El UNO genera los pulsos de los cuatro motores. Frecuencias con las velocidades articulares máximas del modelo actual (parámetro provisional: J1 y J2 a 20°/s, J3 a 28,6°/s, J4 a 30 mm/s). M2 suma J1 + J2 por el acople (sección 4), así que puede necesitar el doble que M1.
+**Costo: más pulsos por segundo.** El UNO genera los pulsos de los cuatro motores. Frecuencias con las velocidades máximas de los motores (D76): J1 y el antebrazo (J1 + J2) a 90 °/s, J3 a 180 °/s, J4 a 40 mm/s. M2 sigue al antebrazo por el acople (sección 4), así que su límite es el de J1 + J2.
 
 | Configuración | M1 | M2 (J1 + J2) | M3 | M4 | Total |
 | --- | --- | --- | --- | --- | --- |
-| 1/2 | 89 Hz | 178 Hz | 127 Hz | 1500 Hz | ≈ 1,9 kHz |
-| **1/8** | **356 Hz** | **713 Hz** | **509 Hz** | **6000 Hz** | **≈ 7,6 kHz** |
-| 1/16 | 713 Hz | 1426 Hz | 1019 Hz | 12000 Hz | ≈ 15 kHz |
+| 1/2 | 400 Hz | 400 Hz | 800 Hz | 2000 Hz | ≈ 3,6 kHz |
+| **1/8** | **1600 Hz** | **1600 Hz** | **3200 Hz** | **8000 Hz** | **≈ 14,4 kHz** |
+| 1/16 | 3200 Hz | 3200 Hz | 6400 Hz | 16000 Hz | ≈ 29 kHz |
 
-Como referencia, GRBL genera hasta unos 30 kHz de pulsos en un UNO con interrupción de timer. Con 1/8 queda margen holgado. Con 1/16 el margen se reduce a la mitad sin una mejora visible: el extremo ya se mueve medio milímetro por pulso. La velocidad «1000 rpm» del maestro no es alcanzable con ninguna de las tres: a 1/8 serían 26,7 kHz por motor. Por eso las velocidades se acotan en el firmware.
+Como referencia, GRBL genera hasta unos 30 kHz de pulsos en un UNO con interrupción de timer. Con 1/8 queda margen. Con 1/16 se llega a ese techo sin una mejora visible: el extremo ya se mueve medio milímetro por pulso. La velocidad «1000 rpm» del maestro no es alcanzable con ninguna de las tres: a 1/8 serían 26,7 kHz por motor. Por eso las velocidades se acotan en el firmware.
 
-**Cómo quedó (D44, D45, D48).** `SCARA_MICROSTEPS` vale 8 en `firmware/config.h`, y las pruebas compilan la conversión con los seis valores del TB6600. Los límites se fijaron por motor: M2 no pasa de 80 °/s en su eje, así que J1 + J2 queda en 20 °/s y la fila de M2 de la tabla no se alcanza. Con 1/8 y esos límites, los cuatro motores piden a lo sumo 356 + 356 + 498 + 6000 Hz ≈ 7,2 kHz, y el Timer1 del UNO da hasta 10 000 pasos/s por motor (sección 5). La campaña de validación corrió con 1/8.
+**Cómo quedó (D44, D45, D48, D76).** `SCARA_MICROSTEPS` vale 8 en `firmware/config.h`, y las pruebas compilan la conversión con los seis valores del TB6600. Los límites se fijaron por motor, con el doble del par que piden (sección 9). Con 1/8, el que más pide es M4, 8000 pulsos/s, y el Timer1 del UNO da hasta 10 000 por motor (sección 5); con 1/16, M4 pediría 16 000 y el sketch no compila hasta subir el tick. La campaña de validación corrió con 1/8.
 
 **Lo que no prometemos.** El microstepping mejora la suavidad y la resolución ordenada. La exactitud real depende del par por micropaso, de la carga y de las correas. No se presenta 0,5 mm como precisión del robot.
 
@@ -177,7 +177,7 @@ J4 = 8 mm · vueltas de M4
 
 **Conversión a pulsos con 1/8** (6400 pulsos por vuelta de articulación): 17,78 pulsos por grado en J1–J3 y 200 pulsos por mm en J4. Los pulsos de M2 salen de J1 + J2. El firmware lo hace con enteros: 8 pasos cada 45 centésimas de grado y 2 pasos por centésima de mm.
 
-**Límites de los motores (D45, D66).** La limitación física está en los motores, no en las articulaciones. Se fijan por motor y se derivan con el acople: M1 limita a J1, y M2 limita a **J1 + J2**, el ángulo absoluto del antebrazo. Con M1 y M2 a 80 °/s, J1 llega a 20 °/s; si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s. Con las curvas de par de N2 (sección 9), estos límites dejan margen: con la corriente nominal y 5 kg en la herramienta, el par que piden queda entre 1,4 (M4) y 22 veces por debajo del disponible.
+**Límites de los motores (D45, D76).** La limitación física está en los motores, no en las articulaciones. Se fijan por motor y se derivan con el acople: M1 limita a J1, y M2 limita a **J1 + J2**, el ángulo absoluto del antebrazo. Con M1 y M2 a 360 °/s, J1 llega a 90 °/s; si J1 gira a 90 °/s, J2 puede ir de 0 a −180 °/s. M3 deja a J3 en 180 °/s y M4 a J4 en 40 mm/s. Se eligieron con las curvas de par de N2 (sección 9): con la corriente nominal y 5 kg en la herramienta, el par que piden queda al menos 2 veces por debajo del disponible en M1–M3, y 1,4 en M4, que lo pone el peso.
 
 **Par de los motores (N2, D64).** Cada motor tiene el par que le da su curva par–velocidad, reflejado por la transmisión:
 
@@ -236,7 +236,7 @@ Detalle, tabla por microstepping y contraste con los planos: [Transmisión](../T
 | D7 | ENABLE común (ENA+ de los TB6600, cátodo común; en alto, sin corriente) |
 | D8, D9, A4, A5 | Hall de J1–J4 (KY-003 con pull-up interno; activo en bajo) |
 
-**Pasos por timer (D48).** El núcleo cuenta los pasos; la interrupción del Timer1, a 20 kHz, los convierte en pulsos con los tiempos del TB6600 (DIR estable antes del flanco, 50 µs en alto): hasta 10 000 pasos/s por motor, contra los 6000 que pide J4 a 30 mm/s. Si se juntan pasos pendientes, el firmware espera en lugar de descartarlos.
+**Pasos por timer (D48).** El núcleo cuenta los pasos; la interrupción del Timer1, a 20 kHz, los convierte en pulsos con los tiempos del TB6600 (DIR estable antes del flanco, 50 µs en alto): hasta 10 000 pasos/s por motor, contra los 8000 que pide J4 a 40 mm/s. Si se juntan pasos pendientes, el firmware espera en lugar de descartarlos.
 
 **Compila sin placa.** Con `arduino-cli` y el mismo núcleo que corre en Webots, con el protocolo completo, el homing, la cola de segmentos y `EV LOST`: 16 148 bytes de flash (50 % de 32 256) y 1297 bytes de RAM global (63 % de 2048), sin avisos en el código del proyecto. La prueba automática exige que la RAM global no pase del 75 %, para dejar lugar a la pila.
 
@@ -408,24 +408,24 @@ UCI: cola de 16 ──→ reloj del firmware ──→ interpolación ──→ 
 
 **Defensas en el firmware (D51).** `SEG` exige corriente y robot referenciado, y no se mezcla con el jog. El firmware verifica que ningún motor supere su velocidad en el segmento (`ERR 8`): protege a los motores de un error de la URC. Aceleraciones, límites y choques los verifica la URC antes de enviar.
 
-**Paradas (D52).** `STOP` y el watchdog frenan con rampa: cada motor sigue en su sentido y baja la velocidad en línea recta hasta cero, todos en el mismo tiempo, con la aceleración del motor más exigido. Desde 20 °/s, J1 frena en 0,59 s y 5,9°. La cola se vacía y la referencia se conserva. `HALT` para en seco.
+**Paradas (D52).** `STOP` y el watchdog frenan con rampa: cada motor sigue en su sentido y baja la velocidad en línea recta hasta cero, todos en el mismo tiempo, con la aceleración del motor más exigido. Desde 90 °/s, J1 frena en 0,64 s y 29°; al 50 % de velocidad global, en 0,32 s y 7°. La cola se vacía y la referencia se conserva. `HALT` para en seco.
 
 ### Tramo LIN y validación previa
 
 Implementado en el issue #10, como API de Python del planificador (`plan_lin`) y de la validación (`check_lin`, `check_tramo`). El gestor de trayectorias (#12) y la reproducción (#13) la conectan con la página.
 
-**Cómo se traza la recta (D54).** El punto de herramienta recorre la recta entre los dos puntos, y el rumbo va del de un punto al del otro, con el mismo perfil trapezoidal del PTP. La velocidad del tramo es un porcentaje de 30 mm/s sobre la recta y de 20 °/s de rumbo, que son las velocidades de J4 y de M1. En cada muestra de 20 ms la URC resuelve la cinemática inversa con la configuración del codo del tramo y envía el resultado como un `SEG`.
+**Cómo se traza la recta (D54).** El punto de herramienta recorre la recta entre los dos puntos, y el rumbo va del de un punto al del otro, con el mismo perfil trapezoidal del PTP. La velocidad del tramo es un porcentaje de 150 mm/s sobre la recta y de 90 °/s de rumbo, la de M1. La componente vertical no pasa de la de J4: una recta vertical al 100 % va a 40 mm/s (D76). En cada muestra de 20 ms la URC resuelve la cinemática inversa con la configuración del codo del tramo y envía el resultado como un `SEG`.
 
 ```text
 recta y rumbo → perfil s(t) → muestra cada 20 ms → cinemática inversa (codo fijo) → SEG
 ```
 
-**Cuánto se aparta de la recta.** El firmware interpola lineal en articulaciones entre dos muestras, y la URC redondea cada destino a la centésima. El extremo se aparta de la recta a lo sumo **0,069 mm**:
+**Cuánto se aparta de la recta.** El firmware interpola lineal en articulaciones entre dos muestras, y la URC redondea cada destino a la centésima. El extremo se aparta de la recta a lo sumo **0,127 mm**:
 
 | Efecto | Cálculo | Cota |
 | --- | --- | --- |
 | Redondeo a la centésima | J1 y J2 media centésima de grado cada uno, el antebrazo una entera: l1·e + l2·2e | 0,066 mm |
-| Cuerda de cada segmento | Brazo y antebrazo giran a lo sumo 0,4° en 20 ms: (l1·Δ1² + l2·Δφ²)/8 | 0,003 mm |
+| Cuerda de cada segmento | Brazo y antebrazo giran a lo sumo 1,8° en 20 ms: (l1·Δ1² + l2·Δφ²)/8 | 0,062 mm |
 
 El plan mide su propio apartamiento: en una recta típica al 50 % es de 0,02 mm. La ejecución suma medio paso de M1 y de M2 (hasta 0,25 mm con 1/8) y el atraso de seguimiento de Webots. Eso lo mide el ensayo.
 
@@ -442,14 +442,13 @@ El plan mide su propio apartamiento: en una recta típica al 50 % es de 0,02 mm.
 El rechazo dice el tramo, el motivo y dónde ocurre, y sugiere PTP. Si el motivo es la velocidad, sugiere primero bajarla. Por ejemplo:
 
 ```text
-Tramo 3 (LIN), velocidad excesiva: J2 necesitaría velocidad de 20.24 °/s (máximo 20.05)
-al 94 % del tramo, con el brazo casi estirado (J2 = -22.7°). Bajá la velocidad del tramo
-o usá un tramo PTP.
+Tramo 3 (LIN), velocidad excesiva: M1 (J1) necesitaría aceleración de 145.14 °/s² (máximo 140.00)
+al 39 % del tramo. Bajá la velocidad del tramo o usá un tramo PTP.
 ```
 
 Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 tendría que arrancar de golpe. Por eso el primer movimiento de un programa es el tramo de aproximación PTP (D32).
 
-> **Evidencia:** en el [ensayo de la reproducción](../../validation/reproduccion/INFORME.md) (#13), los tramos LIN de una trayectoria en Webots se apartan de la recta a lo sumo 0,21 mm, con la posición estimada y con la física simulada, dentro de la cota de 0,32 mm (0,069 mm del plan más medio paso de M1 y M2). La cota vale para la posición estimada, que está siempre en pasos enteros; la física simulada sigue a los pasos con el atraso del rotor de N2 (D64), y su tolerancia es de 0,40 mm. El PTP y los segmentos tienen su propio ensayo ([validación de segmentos](../../validation/segmentos/INFORME.md)). Las trayectorias de demostración, una de ellas un cuadrado LIN de 80 mm, se reproducen en la campaña (D74, sección 10).
+> **Evidencia:** en el [ensayo de la reproducción](../../validation/reproduccion/INFORME.md) (#13), los tramos LIN de una trayectoria en Webots se apartan de la recta a lo sumo 0,21 mm, con la posición estimada y con la física simulada, dentro de la cota de 0,38 mm (0,127 mm del plan más medio paso de M1 y M2). La cota vale para la posición estimada, que está siempre en pasos enteros; la física simulada sigue a los pasos con el atraso del rotor de N2 (D64), y su tolerancia es de 0,46 mm. El PTP y los segmentos tienen su propio ensayo ([validación de segmentos](../../validation/segmentos/INFORME.md)). Las trayectorias de demostración, una de ellas un cuadrado LIN de 80 mm, se reproducen en la campaña (D74, sección 10).
 
 ### Captura de puntos y gestor de trayectorias
 
@@ -523,15 +522,15 @@ LIN P1 → P2:  ───────────●  pausa: STOP, rampa        
                          (frena sobre la recta)                 (desde la pose de la pausa)
 ```
 
-**Evidencia ([ensayo en Webots](../../validation/reproduccion/INFORME.md)).** Una trayectoria mixta de 4 puntos (LIN, PTP, un LIN vertical con espera de 1 s), en loop de 2 vueltas desde el reposo:
+**Evidencia ([ensayo en Webots](../../validation/reproduccion/INFORME.md), corrido en la campaña con los límites de D76: [registro](../../validation/campana/registros/reproduccion.log)).** Una trayectoria mixta de 4 puntos (LIN, PTP, un LIN vertical con espera de 1 s), en loop de 2 vueltas desde el reposo:
 
 | Qué | Planificado | Medido |
 | --- | --- | --- |
-| Loop completo, con tramo 0 y vuelta | 61,46 s | 61,45 s (cada tramo dentro de 0,04 s) |
-| Distancia a la recta en los LIN | ≤ 0,32 mm la estimada, ≤ 0,40 mm la simulada | 0,18 mm (estimada), 0,17 mm (simulada) |
-| Pausa a mitad de un LIN | — | Frena a 0,053 mm de la recta; con la reanudación, el tramo entero queda a 0,21 mm |
+| Loop completo, con tramo 0 y vuelta | 26,86 s | 26,86 s (cada tramo dentro de 0,05 s) |
+| Distancia a la recta en los LIN | ≤ 0,38 mm la estimada, ≤ 0,46 mm la simulada | 0,19 mm (estimada), 0,21 mm (simulada) |
+| Pausa a mitad de un LIN | — | Frena a 0,050 mm de la recta; con la reanudación, el tramo entero queda a 0,21 mm |
 
-Los tiempos se miden con el reloj de la simulación, que es el del firmware: ese día Webots corrió a 0,82× del reloj de la PC.
+Los tiempos se miden con el reloj de la simulación, que es el del firmware: ese día Webots corrió a 0,80× del reloj de la PC. Con los límites anteriores (D45), el mismo loop duraba 61,46 s.
 
 ## 9. Qué se simula y qué no
 
@@ -573,9 +572,9 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | Ensayo en Webots | Qué pasa |
 | --- | --- |
 | Homing y reposo, sin falla | Ningún `EV LOST`; «Simulado» coincide con lo estimado en menos de un paso |
-| 5 kg con la corriente nominal | J4 sube y baja a 30 mm/s sin perder pasos |
+| 5 kg con la corriente nominal | J4 sube y baja a 40 mm/s sin perder pasos |
 | F1 por carga: M4 al 50 % con 5 kg | J4 no sube; al volver al reposo, el Hall de abajo da `EV LOST 4` con los pasos que perdió la planta |
-| F1 por aceleración: M1 al 20 % con 5 kg | El jog de J1, que arranca sin rampa, pierde pasos; al llegar a su imán, `EV LOST 1` |
+| F1 por aceleración: M1 al 20 % con 5 kg | El jog de J1, que arranca sin rampa, pierde pasos; al llegar a su imán, `EV LOST 1`. Con ese driver, también la rampa del planificador pierde pasos (D76) |
 | Homing de nuevo | La referencia deja de ser dudosa |
 
 Las hojas de datos exactas de los motores no aparecieron: se usan la familia más cercana y supuestos típicos, cada uno declarado ([Transmisión](../TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2)).
@@ -592,16 +591,16 @@ La evidencia vigente es la [campaña de validación en Webots](../../validation/
 | URC por sus dos bordes | La sesión con la UCI y la interfaz: jog, gestor, reproducción, banco | Las mismas conversaciones contra la URC con una UCI falsa por TCP; endpoints HTTP; el planificador como módulo puro |
 | Escenarios en Webots | El sistema entero con la planta simulada | Ocho ensayos, corridos por un solo ejecutor que registra la versión ensayada |
 
-**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8 y planta N2: commit `ba2b8ee`.
+**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8, planta N2 y los límites de D76: commit `6ddc4ca`.
 
 | Escenario | Condición inicial | Resultado | Tolerancia |
 | --- | --- | --- | --- |
 | H1 · Homing desde el reposo | Reposo exacto, sin referencia | J4, J1, J2 y J3 en el flanco de su Hall; vuelta sola al reposo; ningún choque en el camino físico | ≤ 3 pasos de 1/8 |
 | H2 · Homing con desvío | Desvío al azar de ±10° | Termina igual en el reposo, también después de un homing abortado | ≤ 3 pasos; física a menos de un paso completo |
 | T1 · Teach & play | Referenciado | Tres puntos capturados con jog se guardan, se cargan y se reproducen (PTP, LIN, PTP con espera) | Último punto a < 1 paso |
-| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (61,44 s medidos contra 61,46 s en 8 tramos); los LIN, a ≤ 0,18 mm de la recta, y tras pausar y reanudar, a 0,28 mm la estimada y 0,22 mm la física | ± 0,12 s; ≤ 0,32 mm la estimada y ≤ 0,40 mm la física |
-| T3 · Demostraciones | Las tres de `trayectorias/` | Se reproducen sin errores ni `EV LOST` | Último punto a < 1 paso |
-| F1 · Pérdida de pasos | 5 kg; un driver con poca corriente | Sin falla, ningún paso perdido; con falla, `EV LOST` con los pasos que perdió la planta y referencia dudosa | ± 1 paso completo |
+| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (26,86 s medidos contra 26,86 s en 8 tramos); los LIN, a ≤ 0,21 mm de la recta, y tras pausar y reanudar, a 0,21 mm la estimada y 0,16 mm la física | ± 0,12 s; ≤ 0,38 mm la estimada y ≤ 0,46 mm la física |
+| T3 · Demostraciones | Las tres de `trayectorias/` | Se reproducen sin errores ni `EV LOST`: barrido PTP en 14,5 s, cuadrado LIN en 10,5 s, *pick and place* en 19,0 s | Último punto a < 1 paso |
+| F1 · Pérdida de pasos | 5 kg; un driver con poca corriente | Sin falla, ningún paso perdido; con falla, `EV LOST` con los pasos que perdió la planta y referencia dudosa | ± 1 paso completo en J1; ± 2 en J4, que cruza el Hall a 40 mm/s |
 | F2 · Driver sin corriente | J4 en 60 mm | J4 cae a 120 mm; la estimada no cambia | > 118 mm |
 | F3 · Hall trabado | Activo en J4 o inactivo en J1 | El homing aborta con `ERR 12` o `ERR 11`, sin referencia | Sin referencia |
 | F4 · Enlace cortado | Jog en marcha | El watchdog frena en 1 s; al volver, el robot está quieto | J1 quieto 2,5 s después |
@@ -609,15 +608,16 @@ La evidencia vigente es la [campaña de validación en Webots](../../validation/
 
 Los tres escenarios de soporte, protocolo `scara/1` (P1), transmisión N1 (P2) y segmentos con PTP (P3), también pasan. El detalle, con los registros, está en el [informe de la campaña](../../validation/campana/INFORME.md).
 
-**El jog verificado tiene su propio ensayo.** La campaña se registró en `ba2b8ee`, antes del jog cartesiano y verificado (issue #11, D75). Su teach (T1) mueve el robot con órdenes `JOG` de `scara/1`, no con el jog de la URC. El jog de la URC tiene su [ensayo en Webots](../../validation/jog/INFORME.md), con los resultados de la sección 8, y sus pruebas por los endpoints HTTP en la suite.
+**El jog verificado tiene su propio ensayo.** El teach de la campaña (T1) mueve el robot con órdenes `JOG` de `scara/1`, no con el jog cartesiano y verificado de la URC (issue #11, D75). El jog de la URC tiene su [ensayo en Webots](../../validation/jog/INFORME.md), con los resultados de la sección 8, y sus pruebas por los endpoints HTTP en la suite.
 
 **Hallazgos de la campaña.**
 
-- La física simulada se aparta de la recta un poco más que la estimada: sigue a los pasos con el atraso del rotor de N2. Por eso la tolerancia de la física es de 0,40 mm y la de la estimada sigue en 0,32 mm.
+- La física simulada se aparta de la recta un poco más que la estimada: sigue a los pasos con el atraso del rotor de N2. Por eso la tolerancia de la física es de 0,46 mm y la de la estimada, de 0,38 mm.
+- A 40 mm/s, el Hall de J4 se lee con 2 pasos completos de error: entre dos pasos de Webots (2 ms), J4 avanza 0,08 mm. El `EV LOST` dio 1254 pasos contra 1252 que perdió la planta.
 - La pausa no siempre frena a 0,05 mm de la recta, como en el ensayo de la reproducción (D69): en la campaña quedó a 0,164 mm, por el escalón de los pasos al frenar. Queda dentro de la misma tolerancia.
 - Dos ensayos tenían esperas frágiles, y se corrigieron sin aflojar lo que miden.
 
-**Pruebas automáticas (seams 1 y 2).** `python -m unittest discover` corre, sin Webots, las conversaciones de conformidad contra el firmware y contra la URC, la compilación para el UNO, los endpoints HTTP del jog, el gestor, la reproducción y el banco, el planificador, el modelo N2, los flancos de los Hall contra la geometría del proto, las tres demos y la forma del registro de la campaña. En la versión de este documento: 184 pruebas en verde; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
+**Pruebas automáticas (seams 1 y 2).** `python -m unittest discover` corre, sin Webots, las conversaciones de conformidad contra el firmware y contra la URC, la compilación para el UNO, los endpoints HTTP del jog, el gestor, la reproducción y el banco, el planificador, el modelo N2, los flancos de los Hall contra la geometría del proto, las tres demos y la forma del registro de la campaña. En la versión de este documento: 196 pruebas en verde; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
 
 **Trayectorias de demostración (D74).** Tres, versionadas en `trayectorias/`, la carpeta por defecto de la URC: *pick and place* (LIN para bajar y subir, PTP para cruzar, esperas), un cuadrado LIN de 80 mm y un barrido PTP con cambio de codo. Una prueba las carga y las reproduce en loop de 2 vueltas en cada corrida de la suite.
 
@@ -654,7 +654,7 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D18 | Arduino UNO por USB + socat; un Hall por articulación | Es la placa del maestro, y con un Hall por eje entran 15 de 20 pines | |
 | D20 | 2 NEMA 23 (M1, M2) + 2 NEMA 17 (M3, M4) | Coinciden profesor, maestro y planos; el `NEMA23-2` del ensamble no tiene ubicación | |
 | D44 | El microstepping es un solo parámetro, en `firmware/config.h` | Si la planta tuviera su propio valor, el robot simulado se movería distinto de lo que cree el firmware sin que falle una prueba | |
-| D45 | Límites de velocidad y aceleración por motor, derivados a las articulaciones con el acople | La limitación física está en los motores; con el acople, J2 no tiene un límite propio | |
+| D45 | Límites de velocidad y aceleración por motor, derivados a las articulaciones con el acople | La limitación física está en los motores; con el acople, J2 no tiene un límite propio. Los valores son de D76 | |
 | D46 | Jog por motor: `JOG Mm ± vel` | Muestra en la defensa que mover M1 cambia J1 y J2 y no el rumbo, como señaló el profesor | |
 | D47 | Pines del UNO compatibles con el shield Ethernet | STEP en un mismo puerto: los pulsos de M1 y M2 salen juntos; pasar a Ethernet no obliga a recablear | |
 | D48 | El núcleo cuenta los pasos y el Timer1 los convierte en pulsos | Los tiempos del TB6600 no dependen del lazo, y nunca se descarta un paso contado | |
@@ -689,9 +689,9 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D34 | Puntos escritos en XYZ y rumbo o en J1–J4, validados | Con jog es difícil clavar un valor exacto; un punto escrito nunca fue visitado | |
 | D50 | Un `SEG` sin confirmar por vez; con la cola llena, `OK` demorado | Control de flujo de GRBL: la URC nunca desborda la cola y el enlace se sigue leyendo | |
 | D51 | El firmware valida la velocidad de cada motor en cada `SEG` | Protege a los motores de un error de la URC al costo de una cuenta por segmento | |
-| D52 | `STOP` y el watchdog frenan con rampa en la dirección del segmento | Frenar en seco desde 20 °/s pide aceleración infinita y pierde pasos | |
+| D52 | `STOP` y el watchdog frenan con rampa en la dirección del segmento | Frenar en seco desde plena velocidad pide aceleración infinita y pierde pasos | |
 | D53 | Tramo PTP: un perfil trapezoidal común, limitado por articulaciones y motores | Todas las articulaciones empiezan y llegan a la vez, como en el PTP industrial | |
-| D54 | Tramo LIN: velocidad del punto de herramienta y tolerancia calculada de 0,069 mm | Como en el LIN industrial, el operador elige la velocidad del extremo; la cota vale para todo tramo validado | |
+| D54 | Tramo LIN: velocidad del punto de herramienta y tolerancia calculada (0,127 mm desde D76) | Como en el LIN industrial, el operador elige la velocidad del extremo; la cota vale para todo tramo validado | |
 | D55 | Validación previa de cada segmento que se va a enviar | Cubre el redondeo y las muestras, no solo la recta ideal; el rechazo dice qué corregir | |
 | D62 | La trayectoria vive en la URC; en el archivo `scara-trayectoria` mandan las articulaciones | Recargar la página no la pierde; las articulaciones guardan el codo y las vueltas sin redondear | |
 | D63 | Capturar con el robot referenciado y quieto; el punto escrito conserva su codo y se valida | En movimiento, el punto capturado no sería donde el robot se detiene | |
@@ -711,8 +711,9 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D61 | F4 corta el enlace sin cerrar la conexión; F5 reinicia solo el firmware; la carga es `toolMass` | Como un cable desenchufado; la URC tiene que detectar el `BOOT` con el robot en la misma pose | |
 | D64 | N2: el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad | Pierde pasos de a cuatro, como un paso a paso real; el control de posición de Webots daba falsas pérdidas | [0006](../adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md) |
 | D65 | `EV LOST` al entrar en un imán, con 2 pasos completos de tolerancia, sin corregir la cuenta | El Hall es la única medida absoluta; corregir en movimiento escondería la falla | |
-| D66 | N2 confirma los límites de D45 | Con la corriente nominal y 5 kg, el par pedido queda entre 1,4 y 22 veces por debajo del disponible | |
+| D66 | N2 confirma los límites de D45. Reemplazada por D76 | Con la corriente nominal y 5 kg, el par pedido quedaba entre 1,4 y 22 veces por debajo del disponible | |
 | D67 | F1 baja la corriente de un driver: `F1 m porcentaje` | Un TB6600 regulado de menos es una falla real, y muestra la pérdida por carga y por aceleración | |
+| D76 | Motores más rápidos, con el doble del par que piden; el LIN se separa de J4 | El margen de D66 sobraba y la demostración era lenta: un PTP de 90° de J1 pasa de 5,1 a 1,6 s; 2 veces cubre lo que N2 no modela | |
 
 ### Bala trazadora y protocolo completo
 

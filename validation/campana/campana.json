@@ -1,14 +1,14 @@
 {
   "campana": "scara/1 en Webots (issue #18)",
-  "inicio": "2026-11-01T04:30:33-03:00",
-  "fin": "2026-11-01T04:48:10-03:00",
+  "inicio": "2026-11-01T15:49:44-03:00",
+  "fin": "2026-11-01T16:02:49-03:00",
   "version": {
-    "commit": "ba2b8ee824e99ec6b1a454b0df8565350ad2cc23",
-    "fecha_commit": "2026-11-01T04:30:32-03:00",
+    "commit": "6ddc4caca4193301d6d8009fcc5874b2e51e450f",
+    "fecha_commit": "2026-11-01T15:49:32-03:00",
     "sha256": {
-      "webots/controllers/scara_uci/scara_uci.exe": "4168602033d72e7f4b0f36b404fa2a146bf8db1dea15074832b619ce61362734",
+      "webots/controllers/scara_uci/scara_uci.exe": "13a399d716941bb90bb36a5707bddc443048f324b88a856ba3a328f9b852946d",
       "webots/worlds/scara_uci.wbt": "8df2160e597d3b67722ab0cea0661bab102327acfa59e88abb98903013b0b464",
-      "webots/protos/SCARA.proto": "874e5f26660d721249b36e59bf955a601bdb03df4c0c89bfc2110d241a070a2f",
+      "webots/protos/SCARA.proto": "a6415ba38b27546c34cad6b7133b8d61f9a34b79b161ac73cc73d81d3cca7203",
       "trayectorias/demo-barrido-ptp.json": "82e8815d6ee2ba5bf2ceaff952dbd41bfbebef3c445afa506f5f47fc0d322ddf",
       "trayectorias/demo-cuadrado-lin.json": "8fd1076608a0cfa9d1bdf4645d7199ecfeed84392f28ba9e20bf30786e700484",
       "trayectorias/demo-pick-and-place.json": "e37905e68c1e268c4dc415f9215c6a3b74c2f2719843fc36890eb3ad5f7f1cd8"
@@ -23,56 +23,56 @@
       "registro": "validation/campana/registros/protocolo.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 14
+      "duracion_s": 15
     },
     "transmision": {
       "script": "validation/transmision/ensayo_webots.py",
       "registro": "validation/campana/registros/transmision.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 19
+      "duracion_s": 18
     },
     "segmentos": {
       "script": "validation/segmentos/ensayo_webots.py",
       "registro": "validation/campana/registros/segmentos.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 21
+      "duracion_s": 13
     },
     "homing": {
       "script": "validation/homing/ensayo_webots.py",
       "registro": "validation/campana/registros/homing.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 232
+      "duracion_s": 204
     },
     "instrumentacion": {
       "script": "validation/instrumentacion/ensayo_webots.py",
       "registro": "validation/campana/registros/instrumentacion.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 30
+      "duracion_s": 29
     },
     "perdida_pasos": {
       "script": "validation/perdida_pasos/ensayo_webots.py",
       "registro": "validation/campana/registros/perdida_pasos.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 200
+      "duracion_s": 171
     },
     "reproduccion": {
       "script": "validation/reproduccion/ensayo_webots.py",
       "registro": "validation/campana/registros/reproduccion.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 213
+      "duracion_s": 128
     },
     "campana": {
       "script": "validation/campana/ensayo_webots.py",
       "registro": "validation/campana/registros/campana.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 329
+      "duracion_s": 205
     }
   },
   "escenarios": [
@@ -128,7 +128,7 @@
       "nombre": "Reproducción LIN y PTP con loop, pausa y stop",
       "inicial": "Robot referenciado en el reposo; trayectoria mixta de 4 puntos con espera",
       "esperado": "Loop de 2 vueltas: cada tramo dura lo planificado y los LIN siguen la recta; la pausa frena sobre la recta y reanudar la conserva; stop frena y descarta lo pendiente",
-      "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,32 mm la estimada (0,069 mm del plan más medio paso de M1 y M2) y ≤ 0,40 mm la física (más el atraso del rotor de N2)",
+      "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,38 mm la estimada (0,127 mm del plan más medio paso de M1 y M2) y ≤ 0,46 mm la física (más el atraso del rotor de N2)",
       "ensayos": [
         "reproduccion"
       ],
@@ -158,7 +158,7 @@
       "nombre": "Pérdida de pasos por carga y por aceleración",
       "inicial": "Robot referenciado; 5 kg en la herramienta; driver de M4 al 50 % (carga) o de M1 al 20 % (aceleración)",
       "esperado": "Con la corriente nominal, ningún paso perdido; con la falla, la planta pierde pasos de a 4 y el firmware lo informa con EV LOST al entrar en un imán; la URC marca la referencia dudosa; un homing la limpia",
-      "tolerancia": "EV LOST con los pasos que perdió la planta ± 1 paso completo (lectura del Hall en movimiento); sin falla, simulado − estimado < 1 paso completo",
+      "tolerancia": "EV LOST con los pasos que perdió la planta ± 1 paso completo en J1 y ± 2 en J4, que cruza el Hall a 40 mm/s (lectura del Hall cada 2 ms); sin falla, simulado − estimado < 1 paso completo",
       "ensayos": [
         "perdida_pasos"
       ],

@@ -26,7 +26,7 @@ Una vez, en la máquina que se lleva a la defensa (Windows 11, Webots R2025a en 
    git pull --ff-only
    ```
 
-2. **Volver a correr la campaña de validación (pendiente).** La campaña registrada en [`campana.json`](../validation/campana/campana.json) es del commit `ba2b8ee`, anterior al jog cartesiano y verificado (issue #11, D75). Hay que repetirla sobre `main` y commitear `campana.json` y los registros, para que la evidencia que se muestra sea la de lo que se demuestra. Dura unos 18 minutos y exige el árbol sin cambios:
+2. **Campaña de validación.** La registrada en [`campana.json`](../validation/campana/campana.json) es del commit `6ddc4ca`, con el jog verificado (D75) y los límites de D76. Si después cambia el firmware, el planificador, el modelo o una demo, hay que repetirla sobre `main` y commitear `campana.json` y los registros, para que la evidencia que se muestra sea la de lo que se demuestra. Dura unos 15 minutos y exige el árbol sin cambios:
 
    ```powershell
    python validation/campana/campana.py
@@ -113,13 +113,13 @@ Después de la defensa, borrar el archivo de la trayectoria grabada en `trayecto
 1. **«▶ Desde el principio»** con la trayectoria recién grabada. Primero se ve «Validando la trayectoria completa…»: la URC valida todo antes de mover (D68). El tramo 0 es un PTP lento desde donde esté el robot hasta el punto 1 (D32, D33). Después, el LIN, y el PTP con su espera. La página resalta el punto al que va.
 2. **Pausa** a mitad de un tramo y **Reanudar**: frena con rampa y sigue sobre la misma recta (D69). **Stop** o **Esc** frenan y descartan lo pendiente.
 3. **Cargar las demos** con el selector y **«Cargar»** (si hay cambios sin guardar, la URC pregunta):
-   - `demo-cuadrado-lin.json`: cuadrado de 80 mm en LIN, a altura y rumbo fijos; ~54 s al 100 %.
-   - `demo-barrido-ptp.json`: de −90° a +90° en J1 y cambio de configuración del codo, todo PTP; ~43 s.
-   - `demo-pick-and-place.json` si sobra tiempo: bajar y subir en LIN con 1 s de espera, cruzar en PTP; ~30 s.
+   - `demo-cuadrado-lin.json`: cuadrado de 80 mm en LIN, a altura y rumbo fijos; ~11 s al 100 %.
+   - `demo-barrido-ptp.json`: de −90° a +90° en J1 y cambio de configuración del codo, todo PTP; ~15 s.
+   - `demo-pick-and-place.json` si sobra tiempo: bajar y subir en LIN con 1 s de espera, cruzar en PTP; ~19 s.
 
    Las duraciones son las planificadas que registró la campaña (T3). Con **Loop** en «N vueltas» o «Sin fin» se muestra la vuelta del último punto al primero.
 4. **Un LIN imposible se rechaza antes de mover.** En el barrido PTP, cambiar el tramo del punto 3 a LIN y dar play: la URC responde «Tramo 3 (LIN), cambio de codo: J2 pasa de -60° a 60°; para cambiar de lado el brazo tendría que estirarse, que es una singularidad. Usá un tramo PTP.» y el robot no se mueve (D14, D55). Volver a PTP **sin guardar**, para no tocar la demo versionada.
-5. **Qué se explica:** LIN contra PTP (D53, D54), la tolerancia de 0,069 mm del plan y la de la ejecución (D54; T2 de la campaña), los segmentos con el reloj del firmware (D6, D50, ADR 0005).
+5. **Qué se explica:** LIN contra PTP (D53, D54), la tolerancia de 0,127 mm del plan y la de la ejecución (D54; T2 de la campaña), los segmentos con el reloj del firmware (D6, D50, ADR 0005).
 
 ### 2.6 Fallas F1–F5
 
@@ -213,10 +213,10 @@ Durante teach y play, Webots corre a 1× y el firmware usa el reloj simulado. Si
 M2 fija el ángulo absoluto del antebrazo, J1 + J2; por eso J2 = (θM2 − θM1)/4. Para mover solo J1, M1 y M2 dan los mismos pasos. Lo resuelve el firmware (`firmware/transmission.h`); la URC habla en articulaciones (D5, D44). Se demuestra con el jog por motor (D46). Sección 5.2.
 
 **¿Por qué 1/8 de paso, si el maestro dice 400 pulsos?**
-Con 400, un pulso de J1 mueve el extremo casi 2 mm con el brazo estirado y una recta se ve escalonada; con 1/8, medio milímetro. Los pulsos siguen al alcance del UNO: 7,2 kHz en total contra 10 000 pasos/s por motor del Timer1. Es un solo parámetro, `SCARA_MICROSTEPS`, que comparten el firmware y la planta. Es propuesta al profesor (D9, D44, D48).
+Con 400, un pulso de J1 mueve el extremo casi 2 mm con el brazo estirado y una recta se ve escalonada; con 1/8, medio milímetro. Los pulsos siguen al alcance del UNO: el que más pide es M4, 8000 pasos/s, contra 10 000 por motor del Timer1. Es un solo parámetro, `SCARA_MICROSTEPS`, que comparten el firmware y la planta. Es propuesta al profesor (D9, D44, D48).
 
 **¿De dónde salen las velocidades máximas?**
-Se fijan por motor, no por articulación, y se derivan con el acople: M1 limita a J1 y M2 limita a J1 + J2. Son provisionales: el maestro dice «1000 rpm», que a 1/8 serían 26,7 kHz por motor, imposibles en el UNO. N2 confirma que dejan margen: con 5 kg, entre 1,4 y 22 veces por debajo del par disponible (D45, D66).
+Se fijan por motor, no por articulación, y se derivan con el acople: M1 limita a J1 y M2 limita a J1 + J2. El maestro dice «1000 rpm», que a 1/8 serían 26,7 kHz por motor, imposibles en el UNO. Se eligieron con las curvas de par de N2: con 5 kg, el par que piden queda al menos 2 veces por debajo del disponible en M1–M3, el margen usual de un paso a paso en lazo abierto. M4 queda en 1,4 por el peso que sube. J1 llega a 90 °/s, J3 a 180 °/s y J4 a 40 mm/s (D45, D76). Antes eran 4,5 veces más lentos en J1, elegidos sin N2 (D66).
 
 **¿Por qué un Arduino UNO y no algo más grande? ¿Alcanzan los pines?**
 Es la placa del maestro. Con un Hall por eje usa 15 de 20 pines por USB. Los pines elegidos dejan libres los del shield Ethernet, así que pasar a Ethernet no obliga a recablear (D18, D47).
@@ -286,7 +286,7 @@ Cada punto dice cómo se llega a él: tipo, velocidad y espera; nacen LIN, 50 % 
 En LIN el punto de herramienta sigue una recta, a velocidad constante del extremo. En PTP todas las articulaciones siguen el mismo perfil trapezoidal y llegan a la vez: el camino es una recta en articulaciones (D14, D53, D54).
 
 **¿Qué tan recta es la recta?**
-El plan se aparta a lo sumo 0,069 mm: el redondeo a la centésima y la cuerda de cada segmento. La ejecución suma medio paso de M1 y M2, hasta 0,25 mm con 1/8. En Webots, los LIN quedaron dentro de 0,32 mm la estimada y 0,40 mm la física (D54; T2 de la campaña).
+El plan se aparta a lo sumo 0,127 mm: el redondeo a la centésima y la cuerda de cada segmento, que crece con la velocidad. La ejecución suma medio paso de M1 y M2, hasta 0,25 mm con 1/8. En Webots, los LIN quedaron a 0,21 mm como mucho, dentro de 0,38 mm la estimada y 0,46 mm la física (D54, D76; T2 de la campaña).
 
 **¿Qué pasa si una recta es imposible?**
 Se rechaza antes de arrancar, con el tramo, el motivo (alcance, codo, límite, velocidad o colisión), dónde ocurre y qué probar; casi siempre, PTP. El robot nunca arranca un tramo que no puede terminar (D14, D55). Se muestra en la demo.
@@ -298,7 +298,7 @@ Sí. Un PTP que arranca dentro de la zona de margen de un obstáculo se acepta s
 Desde donde esté el robot. La URC agrega el tramo 0, un PTP al 25 % hasta el punto 1, que no se guarda. Un PTP entre dos poses alcanzables siempre se puede hacer; una recta no (D32, D33).
 
 **¿Cómo no hay huecos ni tirones entre tramos?**
-La reproducción es un solo movimiento: el tramo siguiente se encola cuando queda menos de un segundo por enviar, y el firmware los encadena con su reloj. Las esperas son segmentos sin movimiento. En Webots, el loop duró 61,45 s contra 61,46 s planificados (D50, D68).
+La reproducción es un solo movimiento: el tramo siguiente se encola cuando queda menos de un segundo por enviar, y el firmware los encadena con su reloj. Las esperas son segmentos sin movimiento. En Webots, el loop duró 26,86 s, lo mismo que lo planificado (D50, D68).
 
 **¿Cómo funciona la pausa?**
 Es el `STOP` con rampa del firmware. Al reanudar, la URC recalcula el resto del tramo desde donde frenó, con el mismo tipo: en un LIN, la misma recta (D52, D69).
@@ -315,7 +315,7 @@ F1 pérdida de pasos, F2 driver sin corriente, F3 Hall trabado, F4 desconexión 
 Con el Hall, que es la única medida absoluta: con el eje referenciado, al entrar en un imán el firmware compara los pasos contados con los del flanco. Si difieren en 2 pasos completos o más, envía `EV LOST j pasos`. No corrige la cuenta: la URC marca la referencia como dudosa y bloquea la reproducción hasta un homing (D65, D68).
 
 **¿Por qué con la corriente nominal no se pierden pasos? ¿Cómo provocan F1?**
-Porque los límites dejan margen (D66). F1 baja la corriente de un driver desde el banco, una falla real de un TB6600 mal regulado: con M4 al 50 %, 5 kg no suben; con M1 al 20 %, el jog que arranca sin rampa pierde pasos (D67).
+Porque los límites dejan margen: el par que piden es al menos la mitad del disponible en M1–M3 (D76). F1 baja la corriente de un driver desde el banco, una falla real de un TB6600 mal regulado: con M4 al 50 %, 5 kg no suben; con M1 al 20 %, el jog que arranca sin rampa pierde pasos, y también la rampa del planificador (D67, D76).
 
 **¿Qué pasa si se corta la comunicación?**
 Tres frenos: la página renueva el jog cada 150 ms, la URC lo frena si no se renueva en 500 ms, y el firmware frena si pasa 1 s sin mensajes (D37). F4 corta el enlace sin cerrar la conexión, como un cable desenchufado (D61).
@@ -380,7 +380,7 @@ Consecuencias que se demuestran:
 
 1. **Mover solo J1:** M1 y M2 dan la misma cantidad de pasos. El jog articular lo hace el firmware (D5).
 2. **Mover solo M1:** el brazo gira, el antebrazo conserva su orientación en el mundo, J2 cambia al revés que J1 y el rumbo no cambia (D46). En Webots: J1 +6,24° y J2 −6,24° (P2).
-3. **M2 es el motor más exigido:** recorre J1 + J2. Con M1 y M2 a 80 °/s en su eje, J1 llega a 20 °/s, y si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s. El planificador lo valida en cada segmento (D45, D53).
+3. **M2 es el motor más exigido:** recorre J1 + J2. Con M1 y M2 a 360 °/s en su eje, J1 llega a 90 °/s, y si J1 gira a 90 °/s, J2 puede ir de 0 a −180 °/s. El planificador lo valida en cada segmento (D45, D53, D76).
 4. **Con 1/8:** 17,78 pulsos por grado en J1–J3, 200 por mm en J4. En enteros: 8 pasos cada 45 centésimas de grado (D44).
 
 ### 5.3 Homing

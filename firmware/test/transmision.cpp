@@ -98,17 +98,17 @@ bool within(int32_t j1, int32_t j2, int32_t j3, int32_t j4, int32_t ms) {
 }
 
 // Límites de los motores de D45 en un segmento de 20 ms, con 2 centésimas de
-// tolerancia por el redondeo: J1 y J1 + J2 a 20 °/s (40 centésimas), J3 a
-// 28 °/s (56) y J4 a 30 mm/s (60). No dependen del microstepping.
+// tolerancia por el redondeo: J1 y J1 + J2 a 90 °/s (180 centésimas), J3 a
+// 180 °/s (360) y J4 a 40 mm/s (80). No dependen del microstepping.
 void segmentSpeed() {
-  check(within(42, 0, 0, 0, 20) && !within(43, 0, 0, 0, 20), "M1 hasta 20 °/s", 42, 43);
-  check(within(-42, 0, 0, 0, 20) && !within(-43, 0, 0, 0, 20), "en los dos sentidos", -42, -43);
-  check(within(0, 42, 0, 0, 20) && !within(0, 43, 0, 0, 20), "M2 sigue a J1 + J2", 42, 43);
-  check(!within(30, 30, 0, 0, 20), "J1 y J2 en el mismo sentido gastan el margen de M2", 30, 30);
-  check(within(42, -42, 0, 0, 20), "J1 y J2 opuestos dejan quieto a M2", 42, -42);
-  check(within(0, 0, 58, 0, 20) && !within(0, 0, 59, 0, 20), "M3 hasta 28 °/s", 58, 59);
-  check(within(0, 0, 0, -62, 20) && !within(0, 0, 0, -63, 20), "M4 hasta 30 mm/s", -62, -63);
-  check(within(2002, 0, 0, 0, 1000) && !within(2003, 0, 0, 0, 1000), "en un segundo, 20 °/s", 2002, 2003);
+  check(within(182, 0, 0, 0, 20) && !within(183, 0, 0, 0, 20), "M1 hasta 90 °/s", 182, 183);
+  check(within(-182, 0, 0, 0, 20) && !within(-183, 0, 0, 0, 20), "en los dos sentidos", -182, -183);
+  check(within(0, 182, 0, 0, 20) && !within(0, 183, 0, 0, 20), "M2 sigue a J1 + J2", 182, 183);
+  check(!within(100, 100, 0, 0, 20), "J1 y J2 en el mismo sentido gastan el margen de M2", 100, 100);
+  check(within(182, -182, 0, 0, 20), "J1 y J2 opuestos dejan quieto a M2", 182, -182);
+  check(within(0, 0, 362, 0, 20) && !within(0, 0, 363, 0, 20), "M3 hasta 180 °/s", 362, 363);
+  check(within(0, 0, 0, -82, 20) && !within(0, 0, 0, -83, 20), "M4 hasta 40 mm/s", -82, -83);
+  check(within(9002, 0, 0, 0, 1000) && !within(9003, 0, 0, 0, 1000), "en un segundo, 90 °/s", 9002, 9003);
   check(within(0, 0, 0, 0, 1), "un segmento quieto siempre vale", 0, 0);
 }
 

@@ -10,7 +10,7 @@
 # El segmento 1 termina a los 1000 ms y el 2 sigue a 18 °/s.
 + 1001
 < ERR 4 watchdog
-+ 530
-= M1 405 M2 405
++ 130
+= M1 341 M2 341
 > STATUS
-< S IDLE 15 2278 0 0 12000 0 16 1
+< S IDLE 15 1918 0 0 12000 0 16 1

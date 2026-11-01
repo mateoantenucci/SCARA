@@ -62,16 +62,16 @@ J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8
 - **Jog por motor (D46).** `JOG M1 + vel` mueve solo M1: el brazo gira, el antebrazo conserva su orientación, J2 cambia al revés que J1 y el rumbo J1 + J2 + J3 no cambia.
 - **J4 es más fino que el protocolo.** Desde 1/8, un paso de M4 (0,005 mm) es menor que la centésima de mm: dos pasos seguidos pueden informarse con el mismo valor en `S`.
 
-**Límites (D45).** Se fijan por motor, en grados de su eje. Eran un parámetro provisional hasta tener las curvas de par; N2 los confirma con margen ([abajo](#los-límites-de-d45-con-n2), D66). Se derivan a las articulaciones por la transmisión:
+**Límites (D45, valores de D76).** Se fijan por motor, en grados de su eje, con el margen de par de N2 ([abajo](#los-límites-con-n2)). Se derivan a las articulaciones por la transmisión:
 
 | Motor | Velocidad | Aceleración | Qué limita |
 | --- | --- | --- | --- |
-| M1 | 80 °/s | 136 °/s² | \|ω_J1\| ≤ 20 °/s, \|α_J1\| ≤ 34 °/s² |
-| M2 | 80 °/s | 136 °/s² | \|ω_J1 + ω_J2\| ≤ 20 °/s: el ángulo absoluto del antebrazo |
-| M3 | 112 °/s | 204 °/s² | \|ω_J3\| ≤ 28 °/s, \|α_J3\| ≤ 51 °/s² |
-| M4 | 1350 °/s | 2700 °/s² | \|v_J4\| ≤ 30 mm/s, \|a_J4\| ≤ 60 mm/s² |
+| M1 | 360 °/s | 560 °/s² | \|ω_J1\| ≤ 90 °/s, \|α_J1\| ≤ 140 °/s² |
+| M2 | 360 °/s | 560 °/s² | \|ω_J1 + ω_J2\| ≤ 90 °/s: el ángulo absoluto del antebrazo |
+| M3 | 720 °/s | 1440 °/s² | \|ω_J3\| ≤ 180 °/s, \|α_J3\| ≤ 360 °/s² |
+| M4 | 1800 °/s | 5400 °/s² | \|v_J4\| ≤ 40 mm/s, \|a_J4\| ≤ 120 mm/s² |
 
-Con 1/8, la velocidad de M4 son 6000 pulsos/s y la de M1 y M2, 356 pulsos/s. Por el acople, J2 no tiene un límite propio: si J1 gira a 20 °/s, J2 puede ir de 0 a −40 °/s. El jog (hasta 10 °/s o 10 mm/s, sin rampa) queda dentro de todos; el firmware lo verifica al compilar. El planificador PTP de la URC (#9) planifica dentro de estos límites por motor y de los de cada articulación (D53), y el firmware rechaza un segmento que los supere (`ERR 8`, D51); el LIN (#10) no planifica dentro de ellos: los verifica en cada segmento y rechaza el tramo antes de enviarlo (D54, D55). **Ojo:** las articulaciones de Webots tienen sus propios límites (`maxVelocity` en `SCARA.proto`, de `config/scara.json`: 0,35 rad/s en J2). Si un tramo pide J2 por encima de 20 °/s, aunque M2 lo permita, Webots lo satura y la física se atrasa como si se perdieran pasos. Hasta ajustar el modelo, los tramos respetan también esos límites por articulación.
+Con 1/8, la velocidad de M4 son 8000 pulsos/s (el Timer1 del UNO da hasta 10 000), la de M3, 3200, y la de M1 y M2, 1600. Por el acople, J2 no tiene un límite propio: si J1 gira a 90 °/s, J2 puede ir de 0 a −180 °/s. El jog (hasta 10 °/s o 10 mm/s, sin rampa) queda dentro de todos; el firmware lo verifica al compilar. El planificador PTP de la URC (#9) planifica dentro de estos límites por motor y de los de cada articulación (D53), y el firmware rechaza un segmento que los supere (`ERR 8`, D51); el LIN (#10) no planifica dentro de ellos: los verifica en cada segmento y rechaza el tramo antes de enviarlo (D54, D55). Las articulaciones de Webots tienen sus propios límites (`maxVelocity` en `SCARA.proto`, de `config/scara.json`), algo por encima de los que permiten los motores (J2, hasta el doble): así limitan los motores y Webots no satura una articulación, que atrasaría la física como si se perdieran pasos (D76).
 
 **La planta simulada** ([`scara_uci.cpp`](../webots/controllers/scara_uci/scara_uci.cpp)) cuenta los pasos de cada motor, los convierte en ángulos con su propia copia de la mecánica y el microstepping de `config.h`, y lleva las articulaciones de Webots adonde están los rotores. Desde N2, cada rotor sigue a sus pasos con el par que tiene ([abajo](#par-de-los-motores-y-pérdida-de-pasos-n2)).
 
@@ -116,25 +116,27 @@ con `e` el atraso del rotor. El par máximo, con un paso completo de atraso, es 
 | Masas e inercias | Brazo 0,3 kg, antebrazo 0,5 kg, muñeca 0,35 kg, herramienta `toolMass` | ← | ← | `config/scara.json` y `SCARA.proto` (provisionales) |
 | Amortiguamiento | ζ = 0,6 | ← | ← | Supuesto del modelo, en lugar de N3 |
 
-### Los límites de D45 con N2
+### Los límites con N2
 
-Con la corriente nominal, el par que piden los límites de D45 (aceleración máxima a velocidad máxima, más el peso al subir y la fricción) queda muy por debajo del disponible. La tabla sale de `test/stepper.cpp --tabla`:
+Con la corriente nominal, el par que piden los límites (aceleración máxima a velocidad máxima, más el peso al subir y la fricción) queda por debajo del disponible. La tabla sale de `test/stepper.cpp --tabla`:
 
 | Motor | Disponible a velocidad máxima | Pedido, herramienta sola (0,15 kg) | Margen | Pedido con 5 kg | Margen |
 | --- | --- | --- | --- | --- | --- |
-| M1 | 0,560 N·m | 0,035 N·m | 16× | 0,082 N·m | 6,8× |
-| M2 | 0,560 N·m | 0,031 N·m | 18× | 0,078 N·m | 7,2× |
-| M3 | 0,217 N·m | 0,009 N·m | 23× | 0,010 N·m | 22× |
-| M4 | 0,140 N·m | 0,009 N·m | 16× | 0,100 N·m | 1,4× |
+| M1 | 0,560 N·m | 0,069 N·m | 8,1× | 0,264 N·m | 2,1× |
+| M2 | 0,560 N·m | 0,052 N·m | 10,7× | 0,247 N·m | 2,3× |
+| M3 | 0,217 N·m | 0,010 N·m | 21× | 0,014 N·m | 16× |
+| M4 | 0,140 N·m | 0,009 N·m | 15× | 0,100 N·m | 1,4× |
 
-Las pruebas simulan además cada motor en sus límites de D45 y en el jog más rápido arrancando sin rampa, con 0,15 y 5 kg: ninguno pierde pasos y el atraso no llega a un paso completo. **D45 se conserva** (D66): el más justo es M4 con 5 kg, y subir los de J1–J3 no se puede todavía, porque también los limitan las articulaciones del modelo de Webots (`maxVelocity` del proto, el mismo que usa el planificador). Con la corriente nominal, entonces, el robot no pierde pasos dentro de lo que planifica la URC: para provocarlos hace falta la falla F1.
+**Criterio (D76).** Al menos 2 veces de margen con 5 kg, lo usual al dimensionar un paso a paso en lazo abierto: cubre lo que el modelo no tiene (resonancias, N3) y la dispersión de los supuestos de la tabla de parámetros. M1 y M2 lo fijan; M3 tiene de sobra y lo limita la vista, no el par. M4 conserva su 1,4: lo pone el peso que sube por el ACME, no la aceleración, y su velocidad la limitan los pulsos del UNO. Todas las velocidades quedan por debajo de la de esquina, donde el par todavía no cae.
+
+Las pruebas simulan además cada motor en sus límites y en el jog más rápido arrancando sin rampa, con 0,15 y 5 kg: ninguno pierde pasos y el atraso no llega a un paso completo. Con la corriente nominal, entonces, el robot no pierde pasos dentro de lo que planifica la URC: para provocarlos hace falta la falla F1. Hasta D76 los límites eran 4,5 veces más bajos en J1–J2 (D45, D66), elegidos antes de tener N2.
 
 ### F1: pérdida de pasos y `EV LOST`
 
 **Provocarla (D67).** El banco de ensayo baja la corriente de un driver (`F1 m porcentaje`, de 10 a 100 %): es lo que pasa con un TB6600 regulado de menos. Con menos corriente, el motor tiene menos par a baja velocidad:
 
 - **Por carga:** con el driver de M4 al 50 %, 5 kg se sostienen pero no suben: el motor pierde pasos de a cuatro mientras el firmware cree que J4 sube.
-- **Por aceleración:** con el driver de M1 al 20 % y 5 kg, el jog de J1, que arranca sin rampa, pierde pasos al arrancar; con la rampa de D45, a la misma velocidad, no.
+- **Por aceleración:** con el driver de M1 al 20 % y 5 kg, el jog de J1, que arranca sin rampa, pierde pasos al arrancar; con una rampa suave (136 °/s² en el eje), a la misma velocidad, no. Con la rampa del planificador (560 °/s², D76) también los pierde: un driver regulado de menos no da el par que suponen los límites.
 
 **Detectarla (D65).** Al entrar en un imán con el eje referenciado, el firmware compara los pasos contados con los del flanco y envía `EV LOST j pasos` ([protocolo](PROTOCOLO_SCARA_1.md#pérdida-de-pasos)). La URC marca la referencia como dudosa hasta un homing. El banco muestra, además, los pasos que perdió cada motor según la planta: la verdad del simulador contra lo que el firmware descubrió.
 

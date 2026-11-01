@@ -49,12 +49,12 @@
 < OK 17
 # Lo mismo con el 18. Un SEG más antes de su OK es un error de la URC: el
 # firmware lo rechaza y, como ante todo ERR con segmentos, frena con rampa y
-# vacía la cola. M4 iba a 1 paso por ms y frena con 60 mm/s² (D45): 84 ms y
-# 42 pasos.
+# vacía la cola. M4 iba a 1 paso por ms y frena con 120 mm/s² (D45): 42 ms y
+# 21 pasos.
 > SEG 18 20 0 0 0 11820
 > SEG 19 20 0 0 0 11810
 < ERR 9 cola
-+ 84
-= M4 -62
++ 42
+= M4 -41
 > STATUS
-< S IDLE 15 0 0 0 11969 0 16 1
+< S IDLE 15 0 0 0 11980 0 16 1

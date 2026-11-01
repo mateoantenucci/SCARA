@@ -197,8 +197,8 @@ UCI → OK 17                        (a los 20 ms terminó el 1)
 URC → SEG 1 1000 1800 0 0 12000    (J1 a 18 °/s)
 UCI → OK 1
 URC → STOP                         (a los 500 ms, con J1 en 9°)
-UCI → S RUN 15 1260 0 0 12000 0 16 0  (frenando, cola vacía)
-UCI → S IDLE 15 1378 0 0 12000 0 16 0 (530 ms después: 4,8° más, v²/2a)
+UCI → S RUN 15 990 0 0 12000 0 16 0   (frenando, cola vacía)
+UCI → S IDLE 15 1018 0 0 12000 0 16 0 (129 ms después: 1,2° más, v²/2a)
 ```
 
 Homing ([`homing.txt`](../firmware/test/conversaciones/homing.txt)), desde la pose de reposo:

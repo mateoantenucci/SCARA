@@ -68,52 +68,57 @@ class PtpTests(unittest.TestCase):
         self.check_within_limits(START, plan)
 
     def test_the_most_demanding_axis_sets_the_time(self):
-        # J3 recorre 60° con 28 °/s y 51 °/s²: trapecio de 0,55 s de rampa y
-        # 2,69 s en total. J1 recorre la mitad y no limita.
-        plan = plan_ptp(START, (3000, -3000, 6000, 12000))
-        self.assertAlmostEqual(plan.duration, 6000 / 2800 + 2800 / 5100, places=3)
+        # J4 recorre 120 mm con 40 mm/s y 120 mm/s²: trapecio de 0,33 s de
+        # rampa y 3,33 s en total. J1 y J3 llegarían antes y no limitan.
+        plan = plan_ptp(START, (3000, -3000, 6000, 0))
+        self.assertAlmostEqual(plan.duration, 12000 / 4000 + 4000 / 12000, places=3)
         self.assertEqual(len(plan.segments), math.ceil(plan.duration * 1000 / SEGMENT_MS))
-        peak = max(abs(v[2]) for v in speeds(START, plan.segments))
-        self.assertAlmostEqual(peak, 2800, delta=60)
+        peak = max(abs(v[3]) for v in speeds(START, plan.segments))
+        self.assertAlmostEqual(peak, 4000, delta=60)
 
     def test_m2_follows_j1_plus_j2(self):
         # Con J1 y J2 en el mismo sentido, M2 recorre la suma: el tramo tarda
         # más que con cada articulación sola (D45).
-        alone = plan_ptp(START, (4000, 0, 0, 12000))
-        together = plan_ptp(START, (4000, 4000, 0, 12000))
-        opposed = plan_ptp(START, (4000, -4000, 0, 12000))
+        alone = plan_ptp(START, (9000, 0, 0, 12000))
+        together = plan_ptp(START, (9000, 9000, 0, 12000))
+        opposed = plan_ptp(START, (9000, -9000, 0, 12000))
         self.assertGreater(together.duration, alone.duration * 1.5)
         self.assertAlmostEqual(opposed.duration, alone.duration, places=6)
         self.check_within_limits(START, together)
 
-    def test_j2_alone_respects_the_joint_limit_of_the_model(self):
-        # M2 permitiría 20 °/s de J1 + J2, pero con J1 en sentido contrario J2
-        # iría a 40 °/s: la articulación del modelo no pasa de 0,35 rad/s.
-        plan = plan_ptp(START, (-4000, 8000, 0, 12000))
-        self.check_within_limits(START, plan)
-        peak = max(abs(v[1]) for v in speeds(START, plan.segments))
-        self.assertLessEqual(peak, math.degrees(0.35) * 100 + 50)
+    def test_j2_can_go_twice_as_fast_as_j1(self):
+        # M1 deja a J1 en 90 °/s y M2, a J1 + J2. Con J1 en sentido contrario,
+        # J2 llega a 180 °/s, dentro de los 3,5 rad/s del modelo (D76).
+        start = (4500, -9000, 0, 12000)
+        plan = plan_ptp(start, (-4500, 9000, 0, 12000))
+        self.check_within_limits(start, plan)
+        peak = max(abs(v[1]) for v in speeds(start, plan.segments))
+        self.assertAlmostEqual(peak, 18000, delta=300)
+        self.assertLess(peak, self.limits.joint_speed[1])
 
     def test_short_move_has_a_triangular_profile(self):
         plan = plan_ptp(START, (100, 0, 0, 12000))
-        # 1° de J1 con 34 °/s²: sin llegar a velocidad máxima, 2·√(d/a).
-        self.assertAlmostEqual(plan.duration, 2 * math.sqrt(100 / 3400), places=4)
+        # 1° de J1 con 140 °/s²: sin llegar a velocidad máxima, 2·√(d/a).
+        self.assertAlmostEqual(plan.duration, 2 * math.sqrt(100 / 14000), places=4)
         self.check_within_limits(START, plan)
 
     def test_starts_and_ends_at_rest(self):
         plan = plan_ptp(START, (4500, -3000, 6000, 8000))
         velocity = speeds(START, plan.segments)
         for joint in range(4):
-            self.assertLess(abs(velocity[0][joint]), 150)
-            self.assertLess(abs(velocity[-1][joint]), 150)
+            peak = max(abs(v[joint]) for v in velocity)
+            self.assertLess(abs(velocity[0][joint]), 0.1 * peak)
+            self.assertLess(abs(velocity[-1][joint]), 0.1 * peak)
 
     def test_speed_scales_the_maximum_speed(self):
+        # La fracción baja la velocidad máxima; la aceleración queda (D53).
         full = plan_ptp(START, (9000, 0, 0, 12000))
         quarter = plan_ptp(START, (9000, 0, 0, 12000), speed=0.25)
-        self.assertGreater(quarter.duration, 3.5 * full.duration)
+        self.assertAlmostEqual(full.duration, 9000 / 9000 + 9000 / 14000, places=3)
+        self.assertAlmostEqual(quarter.duration, 9000 / 2250 + 2250 / 14000, places=3)
         self.check_within_limits(START, quarter, speed=0.25)
         peak = max(abs(v[0]) for v in speeds(START, quarter.segments))
-        self.assertAlmostEqual(peak, 500, delta=30)
+        self.assertAlmostEqual(peak, 2250, delta=30)
 
     def test_no_motion_needs_no_segments(self):
         plan = plan_ptp(START, START)

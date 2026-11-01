@@ -84,8 +84,8 @@ ESCENARIOS = [
      "inicial": "Robot referenciado en el reposo; trayectoria mixta de 4 puntos con espera",
      "esperado": "Loop de 2 vueltas: cada tramo dura lo planificado y los LIN siguen la recta; la pausa frena "
                  "sobre la recta y reanudar la conserva; stop frena y descarta lo pendiente",
-     "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,32 mm la estimada (0,069 mm del plan más medio paso "
-                   "de M1 y M2) y ≤ 0,40 mm la física (más el atraso del rotor de N2)",
+     "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,38 mm la estimada (0,127 mm del plan más medio paso "
+                   "de M1 y M2) y ≤ 0,46 mm la física (más el atraso del rotor de N2)",
      "ensayos": ["reproduccion"], "pasos": "pasos 1 a 3"},
     {"id": "T3", "nombre": "Trayectorias de demostración",
      "inicial": "Robot referenciado; cada archivo demo-*.json de trayectorias/",
@@ -99,7 +99,8 @@ ESCENARIOS = [
      "esperado": "Con la corriente nominal, ningún paso perdido; con la falla, la planta pierde pasos de a 4 y "
                  "el firmware lo informa con EV LOST al entrar en un imán; la URC marca la referencia dudosa; "
                  "un homing la limpia",
-     "tolerancia": "EV LOST con los pasos que perdió la planta ± 1 paso completo (lectura del Hall en movimiento); "
+     "tolerancia": "EV LOST con los pasos que perdió la planta ± 1 paso completo en J1 y ± 2 en J4, que cruza "
+                   "el Hall a 40 mm/s (lectura del Hall cada 2 ms); "
                    "sin falla, simulado − estimado < 1 paso completo",
      "ensayos": ["perdida_pasos"], "pasos": "pasos 0 a 4"},
     {"id": "F2", "nombre": "Driver de M4 sin corriente",
