@@ -1,14 +1,14 @@
 # Entender el proyecto SCARA desde cero
 
-Esta guía explica el trabajo realizado y conecta cada idea con los archivos que la implementan. Leela en orden la primera vez. Para ejecutar el robot, usá el [README](../README.md); para consultar resultados concretos, la [validación](VALIDACION_WEBOTS.md).
+Esta guía explica el trabajo realizado y conecta cada idea con los archivos que la implementan. Leela en orden la primera vez. Para ejecutar el robot, usá el [README](../README.md). El diseño completo, con cada decisión, está en el [documento maestro v2](maestro/SCARA-Master-v2.md); los resultados, en la [campaña de validación](../validation/campana/INFORME.md).
 
 ## 1. Qué estamos construyendo y qué pide la materia
 
-El proyecto representa en Webots el diseño de un brazo robótico SCARA entregado por la cátedra. Webots es el programa que calcula y muestra su movimiento. El objetivo es poder enviarle órdenes desde una aplicación externa, observar su respuesta y ensayar fallas.
+El proyecto representa en Webots el diseño de un brazo robótico SCARA entregado por la cátedra. Webots es el programa que calcula y muestra su movimiento. El objetivo es moverlo desde una aplicación externa, grabar y reproducir trayectorias (teach & play) y ensayar fallas.
 
 La [consigna](../CONSIGNA-TP-FINAL.pdf), páginas 1–2, pide un modelo físico en un mundo `.wbt`, un controlador y una aplicación visual externa conectada mediante mensajes de texto por TCP/IP. En la página 6 identifica al SCARA como no construido, con protocolo y programa externo sin desarrollar. El [plan](PLAN_GEMELO_DIGITAL.md) distingue esos requisitos escritos de las ampliaciones acordadas por el grupo.
 
-El [documento maestro](../00-SCARA-Master.pdf) describe la mecánica prevista. Es una fuente de diseño: contiene datos incompletos y diferencias respecto de algunos planos. No acredita que se haya construido y medido ese robot.
+El [documento maestro v1](../00-SCARA-Master.pdf) describe la mecánica prevista; el [maestro v2](maestro/SCARA-Master-v2.md) lo actualiza con el CAD como fuente de verdad. Es una fuente de diseño: contiene datos incompletos y diferencias respecto de algunos planos. No acredita que se haya construido y medido ese robot.
 
 Por eso, aunque la materia habla de «gemelos digitales», nuestro resultado actual es una **simulación del diseño con aproximaciones declaradas**. Podemos comprobar su coherencia con los archivos y con cálculos. La precisión o capacidad de un robot futuro requiere evidencia adicional.
 
@@ -37,7 +37,7 @@ Las distancias entre J1–J2 y J2–J3 son de 250 mm en el CAD analizado. Eso da
 
 Usamos X,Y en horizontal y Z hacia arriba. La interfaz muestra milímetros y grados; internamente se usan metros y radianes. J4 positivo baja el soporte, por lo que aumentar J4 disminuye Z.
 
-La referencia inicial aproximada del extremo es `(250, 250, 34,67) mm`. Es una condición elegida para el ensayo. No es una posición inicial encontrada físicamente mediante sensores.
+El robot arranca cerca de la **pose de reposo** (J1 = J2 = J3 = 0°, brazo estirado, J4 abajo) y sin referencia. La referencia se obtiene con el **homing**, que busca un sensor Hall por eje (D11, D30).
 
 **Comprobación de comprensión:** si gira J1, se mueven todos sus descendientes. Si solo se mueve J4, bajan el pistón y el soporte; el brazo y el antebrazo conservan su configuración.
 
@@ -51,7 +51,7 @@ La referencia inicial aproximada del extremo es `(250, 250, 34,67) mm`. Es una c
 
 Una pieza `.SLDPRT` describe una forma. Un ensamble `.SLDASM` relaciona ocurrencias colocadas de piezas. Un dibujo `.SLDDRW` es un documento técnico nativo; sus PDF permiten consultar vistas y cotas. Un G-code describe instrucciones de fabricación y no sustituye al modelo del robot.
 
-Lo desarrollado en este proyecto comprende la conversión y recuperación del CAD, el modelo articulado en Webots, los cálculos, el controlador, la aplicación web, los ensayos y su documentación. El diseño mecánico de partida proviene de la cátedra.
+Lo desarrollado en este proyecto comprende la conversión y recuperación del CAD, el modelo articulado en Webots, la URC, el firmware, el protocolo `scara/1`, los ensayos y su documentación. El diseño mecánico de partida proviene de la cátedra.
 
 Una **instancia** es una aparición colocada de una pieza. El mismo modelo de motor puede aparecer dos veces. Por eso no hay que confundir cantidad de archivos de piezas, cantidad de instancias montadas y cantidad de cuerpos móviles.
 
@@ -81,13 +81,9 @@ En Webots hay tres representaciones distintas:
 | Contacto: `boundingObject` | Volúmenes usados para resolver choques | Cajas que envuelven piezas y pueden ocupar también sus huecos. |
 | Física: `Physics` | Respuesta a fuerzas y gravedad | Masa, centro de masa y tensor de inercia de un cuerpo móvil. |
 
-Una forma detallada puede tener física aproximada. Agregar una malla no incorpora automáticamente su masa.
+Una forma detallada puede tener física aproximada. Agregar una malla no incorpora automáticamente su masa. Las masas y esfuerzos siguen siendo provisionales; el precálculo CAD obtiene volumen, centroide y distribución geométrica, pero falta respaldar materiales, impresiones y componentes comerciales.
 
-La masa interviene en la respuesta a aceleraciones y gravedad. El centro de masa indica dónde se concentra, de forma equivalente, la distribución de masa. La inercia describe la resistencia a cambiar la rotación. Un kilogramo cerca de un eje y otro lejos del eje producen distinta inercia.
-
-El banco utiliza masas y esfuerzos provisionales y propiedades de cajas equivalentes. El precálculo CAD ya obtiene volumen, centroide y distribución geométrica, pero esos datos todavía no sustituyen la física activa. Hace falta respaldar materiales, impresiones y componentes comerciales, y completar el montaje. En una pieza homogénea `masa = densidad × volumen`; en un motor o una impresión con relleno, esa simplificación necesita un modelo apropiado.
-
-Los motores del simulador reciben posiciones con límites finitos de velocidad, aceleración y esfuerzo. Los esfuerzos se expresan en N·m para J1–J3 y N para J4. Todavía no se reproduce la electrónica de los motores paso a paso ni la transmisión completa. El [resumen de transmisión](TRANSMISION.md) explica la diferencia.
+Los motores no se mueven por consignas ideales: la **planta** del controlador de Webots reemplaza a drivers, motores, correas y sensores. Las articulaciones avanzan en pasos discretos con la transmisión y el acople M1/M2 (modelo N1), y cada rotor sigue a los pulsos con el par de su curva par–velocidad: si la carga o la aceleración piden más, pierde pasos y el firmware no se entera (modelo N2, D64, [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)). El [resumen de transmisión](TRANSMISION.md) da las relaciones y los pares supuestos.
 
 **Pregunta para defenderlo:** ¿un resultado visualmente convincente demuestra que puede levantar una carga real? No: la carga admisible depende de propiedades y esfuerzos que todavía requieren respaldo.
 
@@ -95,16 +91,16 @@ Los motores del simulador reciben posiciones con límites finitos de velocidad, 
 
 ```text
 Navegador
-  ↓ HTTP local: destino en mm y grados
-client/app.py: convierte unidades y calcula la cinemática inversa
-  ↓ TCP: posiciones articulares en metros y radianes
-scara_bridge.py → Runtime: interpreta, valida y genera consignas
-  ↓ posiciones para los motores
+  ↓ HTTP 8766: jog, puntos, trayectorias
+URC (urc/): cinemática inversa, planificador PTP/LIN, verificación de colisiones
+  ↓ TCP 9000, scara/1: segmentos SEG con duración, en unidades articulares
+UCI (firmware/): encola, convierte a pasos y resuelve el acople M1/M2
+  ↓ pulsos STEP/DIR (en Webots, a la planta simulada)
 Webots: calcula el movimiento físico simulado
-  ↑ estados y resultados por TCP y HTTP hacia la interfaz
+  ↑ estado S a 20 Hz con la posición estimada por pasos
 ```
 
-La **cinemática directa** calcula dónde queda el extremo cuando conocemos J1–J4. La **inversa** calcula articulaciones posibles para un destino. Ambas están en `scara/kinematics.py`.
+La **cinemática directa** calcula dónde queda el extremo cuando conocemos J1–J4. La **inversa** calcula articulaciones posibles para un destino. Ambas están en `scara/kinematics.py`, que usa la URC.
 
 Para las dos barras horizontales:
 
@@ -115,38 +111,35 @@ rumbo = q1 + q2 + q3
 z = altura de referencia + desplazamiento fijo de herramienta − q4
 ```
 
-`q2` se mide respecto del brazo; por eso el segundo tramo usa `q1+q2`. La inversa considera las dos configuraciones de codo, descarta candidatos fuera de límites y elige uno cercano al estado estimado. El origen horizontal se rechaza por su singularidad. Después se comprueba el recorrido; una solución de la inversa puede igualmente ser rechazada por colisión.
+`q2` se mide respecto del brazo; por eso el segundo tramo usa `q1+q2`. La inversa considera las dos configuraciones de codo y descarta candidatos fuera de límites. Después se comprueba el recorrido; una solución de la inversa puede igualmente ser rechazada por colisión.
 
-Si se omite orientación, J3 compensa los cambios de J1 y J2 para conservar el rumbo cuando los límites lo permiten. Dejar J3 fijo no lograría eso.
+La URC planifica y el firmware ejecuta, como GRBL y Klipper (D6, [ADR 0005](adr/0005-la-urc-planifica-el-firmware-ejecuta.md)): un tramo **PTP** interpola las articulaciones y un tramo **LIN** sigue una recta del extremo; los dos se parten en segmentos de 20 ms que la URC verifica antes de mandar. El firmware responde `OK n` cuando el segmento entró en su cola (control de flujo). El protocolo completo está en [`scara/1`](PROTOCOLO_SCARA_1.md).
 
-`Runtime` interpola las articulaciones con un perfil quíntico: arranque y final suaves, con velocidad y aceleración de referencia nulas en los extremos. El extremo puede seguir una curva; no se implementó movimiento cartesiano rectilíneo.
+La URC escucha y la UCI se conecta (D1): el controlador de Webots, o socat con el Arduino por USB. Así el día del robot real se cambia Webots por el UNO sin tocar la URC ([UCI en el Arduino UNO](ARDUINO_UNO.md)).
 
-TCP transporta un flujo de bytes. Un mensaje puede llegar partido y varios pueden llegar juntos. `scara/transport.py` reconstruye mensajes completos. El banco usa JSON por línea y se identifica como **`scara-dev/1`**. Su [especificación actual](historico/PROTOCOLO_SCARA_DEV_1.md) reúne mensajes, unidades, respuestas y reglas para revisión docente. Es un contrato de desarrollo; todavía falta el del profesor.
+## 7. Estados, referencia y fallas
 
-En esta versión, Python sirve la página en el puerto local 8765 y se conecta al controlador de Webots en el 9000. Son dos conexiones distintas. Pausar Webots pausa también la atención de órdenes de su controlador.
+La UCI arranca sin corriente y sin referencia, y anuncia `BOOT`. Sin referencia solo se puede mover con jog lento (5 °/s o 5 mm/s), y el Hall hace de fin de carrera; capturar y reproducir quedan bloqueados (D21, D58). El **homing** busca J4, J1, J2 y J3 en su Hall y fija la referencia en el flanco; después la URC vuelve sola a la pose de reposo (D11, D56, D72).
 
-## 7. Estados, mediciones y fallas
+La interfaz separa la posición **estimada por pasos**, la única que conoce el robot real, de la **simulada**, que solo muestra el banco de ensayo por el canal de instrumentación. El diseño no tiene encoders: la posición física de Webots no puede presentarse como un sensor disponible para controlarlo, y una prueba verifica que la URC no la usa para capturar ni planificar ([ADR 0004](adr/0004-canal-de-instrumentacion-separado.md)).
 
-| Estado | Significado |
-| --- | --- |
-| `STOPPED` | Movimiento deshabilitado; requiere habilitación explícita. |
-| `IDLE` | Habilitado y disponible para una orden. |
-| `MOVING` | Ejecutando una secuencia de consignas. |
-| `FAULT` | Hay una falla registrada que impide mover. |
+`STOP` frena y conserva la referencia; `HALT` para en seco y la pierde si había movimiento; deshabilitar los motores corta la corriente y la pierde (D40, D41). Si la UCI pasa 1 s sin mensajes de la URC, frena sola (watchdog).
 
-La interfaz separa **ordenado**, **estimado** y **simulador**. El estimado actual sigue la referencia ideal; no cuenta pasos perdidos. La posición física de Webots se observa para comprobar ensayos. El diseño documentado no tiene encoders, de modo que esa observación interna no puede presentarse como un sensor real disponible para controlarlo.
+| Falla | Qué es | Cómo se detecta sin encoders |
+| --- | --- | --- |
+| F1 | Pérdida de pasos por sobrecarga o aceleración | `EV LOST` al cruzar un Hall |
+| F2 | Driver sin corriente | J4 cae; la posición estimada ya no vale |
+| F3 | Hall trabado | El homing aborta (`ERR 11` o `ERR 12`) |
+| F4 | Enlace cortado | Watchdog |
+| F5 | Reinicio inesperado de la UCI | `BOOT`: referencia perdida |
 
-`completed` significa que terminó la secuencia de consignas. Para afirmar llegada y sostén, las pruebas observan después la posición simulada dentro de tolerancias. Precisamente se encontró una oscilación de J4 después de terminar las consignas: se redujo al refinar el paso físico de 16 a 2 ms. El [diagnóstico de J4](historico/DIAGNOSTICO_TOPE_J4.md) conserva la comparación y sus límites.
-
-El banco permite fijar una señal Hall, reducir esfuerzo, cortar la conexión y cambiar una carga de ensayo. La carga conocida puede generar un aviso de sobrecarga. La [especificación de fallas](FALLAS_Y_VALIDACION.md) distingue lo implementado de las propuestas.
-
-Una falla notificada cancela la trayectoria. Reconectar o limpiar un aviso no repite movimientos. La pérdida de esfuerzo invalida la referencia y requiere reiniciar el ensayo. **Reiniciar recarga el mundo; no hace homing.** Homing sería buscar una referencia mediante un procedimiento de movimiento y sensores, todavía pendiente.
+Las fallas se inyectan desde el panel «Banco de ensayo (solo simulación)». El detalle está en las secciones 7 y 9 del [maestro v2](maestro/SCARA-Master-v2.md).
 
 ## 8. Qué protección contra choques existe
 
-El programa comprueba antes de mover todo el recorrido nominal frente al pedestal y al piso, y el de herramienta/carga frente a la base fija. Usa cajas, un margen y cotas de movimiento. No basta con comprobar el destino: se encontró un recorrido con extremos libres y una zona intermedia invasiva.
+El planificador de la URC comprueba cada segmento, también los del jog verificado, frente al pedestal, el piso y la torre, y el de herramienta/carga frente a la base fija: el jog frena antes de un choque (D28, D75). Usa cajas, un margen y cotas de movimiento. No basta con comprobar el destino: se encontró un recorrido con extremos libres y una zona intermedia invasiva.
 
-Hay además auditorías CAD de poses seleccionadas y ensayos de contacto en Webots. Cumplen funciones diferentes. Todavía no existe comprobación continua general de todos los pares internos ni búsqueda automática de caminos alternativos. Las cajas pueden causar rechazos conservadores y los contactos internos generales están desactivados (`selfCollision FALSE`). Una falla puede separar el movimiento físico de la referencia previamente comprobada.
+Hay además auditorías CAD de poses seleccionadas y ensayos de contacto en Webots. Cumplen funciones diferentes. Todavía no existe comprobación continua general de todos los pares internos ni búsqueda automática de caminos alternativos. Las cajas pueden causar rechazos conservadores y los contactos internos generales están desactivados (`selfCollision FALSE`). Una falla (por ejemplo, pasos perdidos) puede separar el movimiento físico de la referencia previamente comprobada.
 
 Detalles y evidencia: [colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md) y [montaje](MONTAJE_Y_AUTOCOLISIONES.md).
 
@@ -154,29 +147,27 @@ Detalles y evidencia: [colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md) y [m
 
 | Archivo o carpeta | Qué mirar y qué explica |
 | --- | --- |
-| `README.md` | Cómo abrir, operar y cerrar el banco. |
-| `config/scara.json` | Dimensiones, límites, estado inicial, masas, esfuerzos y paso de simulación, con procedencia y unidades. |
+| `README.md` | Cómo abrir y operar el sistema. |
+| `config/scara.json` | Dimensiones, límites, masas, esfuerzos y paso de simulación, con procedencia y unidades. |
 | `config/cad_integration.json` | Pertenencia de piezas a cuerpos y convenciones de montaje. |
-| `scara/kinematics.py` | Directa, inversa y perfil de movimiento. Empezá por `forward()`. |
-| `scara/frames.py` | Posición y orientación de los cuerpos; relaciona coordenadas locales y del mundo. |
-| `scara/runtime.py` | Estados, aceptación y rechazo, movimiento, fallas y rearme. No depende de Webots. |
-| `scara/dynamics.py` | Cajas equivalentes y combinación de herramienta con carga. |
-| `scara/collisions.py` | Comprobación conservadora del recorrido. |
-| `scara/transport.py` | Recepción y envío TCP sin bloquear los pasos de Webots. |
-| `client/index.html` | Pantalla, botones y presentación de estados. |
-| `client/app.py` | Servidor HTTP, inversa y enlace TCP. |
-| `webots/controllers/scara_bridge/scara_bridge.py` | Adaptación entre esas reglas y los motores, sensores e instrumentación de Webots. |
-| `webots/protos/SCARA.proto` | Definición generada del robot: cuerpos, articulaciones, visuales y física. |
-| `webots/worlds/scara.wbt` | Mundo dinámico generado: robot, banco y entorno. |
-| `webots/worlds/scara_cad_inspeccion.wbt` | Vista fija del ensamble recuperado, sin motores ni física. |
-| `cad/derivados/` | STEP, STL, informes de conversión y tratamiento separado de la torre. |
-| `cad/ensambles/` | XML, vistas guardadas, ejes y colocaciones. `integracion_articulada.json` es el manifiesto efectivo del montaje. |
-| `cad/propiedades/` | Propiedades geométricas en JSON y CSV, aún sin aplicar como física material. |
-| `tools/` | Programas para convertir, extraer, integrar, generar y ensayar; véase la tabla siguiente. |
-| `tests/` y `client/test_app.py` | Pruebas automáticas de matemática, estados, comunicación y coherencia del modelo. |
-| `validation/` | Resultados de ejecuciones y capturas. Cada informe tiene alcance y versión propios. |
-| `validation/historico/` | Etapas anteriores y respaldos. Se consultan para reproducir o contrastar una revisión. |
-| `.agent-state/` | Coordinación temporal de trabajos de IA. No forma parte de la explicación técnica ni de la entrega. |
+| `scara/kinematics.py`, `scara/frames.py` | Directa, inversa y posición de los cuerpos. |
+| `scara/collisions.py`, `scara/dynamics.py` | Comprobación conservadora del recorrido; cajas equivalentes y carga. |
+| `urc/app.py`, `urc/index.html` | Servidor HTTP de la página y la página. |
+| `urc/session.py`, `urc/protocol.py` | Sesión `scara/1` con la UCI: conexión, estado, `BOOT`, referencia. |
+| `urc/planner.py`, `urc/jog.py`, `urc/validation.py` | Tramos PTP y LIN, jog verificado y validación previa. |
+| `urc/trajectories.py`, `urc/playback.py` | Gestor de trayectorias y reproducción. |
+| `urc/instrumentation.py`, `urc/banco.js` | Canal de instrumentación y banco de ensayo (solo simulación). |
+| `firmware/firmware.cpp`, `firmware/hal.h`, `firmware/transmission.h`, `firmware/config.h` | Núcleo C++ único: protocolo, cola, homing, pasos y acople M1/M2; la capa de hardware cambia entre UNO y Webots. |
+| `firmware/arduino/` | Sketch para el Arduino UNO. |
+| `firmware/pc/`, `firmware/test/` | Firmware compilado en la PC y conversaciones de conformidad. |
+| `webots/controllers/scara_uci/` | Controlador de Webots: firmware más la planta simulada (`stepper.h`). |
+| `webots/protos/SCARA.proto`, `webots/worlds/` | Robot generado y mundos. |
+| `trayectorias/` | Trayectorias de demostración (D74). |
+| `cad/` | Derivados, ensambles y propiedades geométricas del CAD. |
+| `tools/` | Conversión, extracción, integración y generación del modelo; diagnósticos CAD; `exportar_maestro.py` y `verificar_enlaces.py`. |
+| `tests/` | Pruebas automáticas: conformidad, planificador, URC, planta, Hall, UNO, demos y documentación. |
+| `validation/` | Evidencia de cada ensayo; la vigente del sistema es la [campaña](../validation/campana/INFORME.md). |
+| `validation/historico/`, `docs/historico/` | Etapas anteriores y el banco `scara-dev/1`. Se consultan para contrastar, no como prueba. |
 
 | Herramientas | Función |
 | --- | --- |
@@ -185,11 +176,8 @@ Detalles y evidencia: [colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md) y [m
 | `extraer_ensamble.py`, `extraer_ejes_cad.py`, `registrar_subensambles.py` | Colocaciones, líneas de eje y relación entre conjuntos. |
 | `integrate_cad.py`, `generate_world.py`, `generate_cad_preview.py` | Manifiesto móvil, mundo/PROTO y vista fija. |
 | `calcular_propiedades_cad.py` | Volúmenes, centroides y tensores geométricos. |
-| `check_cad_motion.py`, `check_simulation.py`, `check_joint_stops.py` | Ensayos nativos de montaje, comportamiento y sostén de J4. |
-| `check_collisions.py`, `check_self_collisions.py`, `check_collisions_native.py` | Auditorías CAD y ensayos de contacto/rechazo en Webots. |
+| `check_collisions.py`, `check_self_collisions.py` | Auditorías CAD de colisiones. |
 | `check_wrist_bearings.py`, `check_pulley_mounts.py`, `check_pulley_geometry.py`, `check_remaining_mounts.py` | Diagnósticos específicos de montaje y geometría. |
-
-Los archivos `__init__.py` permiten reconocer paquetes Python. Las carpetas `__pycache__` son cachés automáticas. No contienen una parte adicional del algoritmo que tengas que estudiar.
 
 ## 10. Cómo distinguir fuentes, generados e informes
 
@@ -208,48 +196,43 @@ Un JSON es texto estructurado con nombres y valores. Para leer un informe, busc�
 | `null` | Valor no asignado o no disponible; no significa cero. |
 | Versión, build y fecha | Identidad y momento de la ejecución. |
 
-La [validación](VALIDACION_WEBOTS.md) es el índice para saber qué revisión está respaldada. Un informe antiguo no aprueba automáticamente los archivos que hoy hay en la carpeta.
+La [campaña de validación](../validation/campana/INFORME.md) identifica la versión respaldada por commit y SHA-256. Un informe antiguo no aprueba automáticamente los archivos que hoy hay en la carpeta.
 
 ## 11. Cómo prepararlo para explicarlo y defenderlo
 
-Podés organizar una presentación en este orden:
+El [maestro v2](maestro/SCARA-Master-v2.md) ordena la presentación. Un recorrido posible:
 
-1. Problema y requisitos: simular el diseño y conectarlo con una aplicación externa.
+1. Problema y requisitos: simular el diseño, moverlo desde una aplicación externa y grabar y reproducir trayectorias.
 2. Material recibido y recuperación: formas, colocaciones y ejes.
-3. Modelo: cuatro articulaciones; separar apariencia, contacto y física.
-4. Orden completa: destino → inversa → TCP → controlador → motores → estado.
-5. Evidencia: mostrar un movimiento, un rechazo y una falla, indicando la versión ensayada.
-6. Límites: física provisional, protocolo pendiente, montaje incompleto y validación sin hardware.
+3. Arquitectura: URC, firmware único y `scara/1`; por qué la URC planifica y el firmware ejecuta.
+4. Referencia: pose de reposo, homing con Hall y qué se puede hacer sin referencia.
+5. Evidencia: teach & play y una falla, indicando la versión ensayada.
+6. Límites: física provisional, propuestas P1 y P2 sin revisar, sin placa real ni hardware.
 
-Usá estas preguntas para verificar tu comprensión; cada una tiene respuesta en los bloques anteriores:
+Preguntas para verificar tu comprensión:
 
 - ¿Qué desarrollamos nosotros y qué recibimos de la cátedra?
-- ¿Qué cambia al mover una articulación? ¿Por qué J3 debe compensar para conservar rumbo?
-- ¿Qué diferencia hay entre convertir una pieza y recuperar el ensamble?
-- ¿Por qué una malla detallada no demuestra fidelidad dinámica?
-- ¿Qué calcula la inversa y por qué puede rechazarse un destino alcanzable?
-- ¿Qué significa `completed`? ¿Qué prueba adicional acredita llegada?
-- ¿Por qué la posición interna de Webots no es un encoder del robot real?
-- ¿Qué fallas están implementadas y cuáles son propuestas?
+- ¿Por qué el protocolo usa unidades articulares y no pasos ni coordenadas cartesianas?
+- ¿Qué cambia entre el firmware en Webots y en el UNO?
+- ¿Por qué la posición simulada de Webots no es un encoder del robot real?
+- ¿Cómo se detecta una pérdida de pasos sin encoders?
 - ¿Qué confirma un ensayo aprobado y qué no permite concluir?
-
-Las preguntas que necesitan una decisión externa están en [Consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md). Las dudas de comprensión las podemos resolver recorriendo estos bloques y sus archivos, sin estudiar todos los informes a la vez.
 
 ## Documentación para profundizar por tema
 
 | Cuando necesites… | Leer |
 | --- | --- |
-| Operar el robot | [README](../README.md). |
-| Entender alcance, acuerdos y pendientes | [Plan](PLAN_GEMELO_DIGITAL.md) y [decisión de simular sin hardware](adr/0001-simulacion-del-diseno-sin-hardware.md). |
+| Operar el robot | [README](../README.md) y [UCI en Webots](UCI_WEBOTS.md). |
+| El diseño completo y cada decisión | [Maestro v2](maestro/SCARA-Master-v2.md), [registro de decisiones](REGISTRO_DE_DECISIONES.md) y [ADR](adr/). |
+| Alcance y pendientes | [Plan](PLAN_GEMELO_DIGITAL.md) y [decisión de simular sin hardware](adr/0001-simulacion-del-diseno-sin-hardware.md). |
 | Resolver un término | [Glosario](../GLOSSARY.md). |
-| Revisar el protocolo implementado | [Especificación de scara-dev/1](historico/PROTOCOLO_SCARA_DEV_1.md), con ejemplos y puntos para revisión del profesor. |
+| El protocolo | [`scara/1`](PROTOCOLO_SCARA_1.md). |
+| El robot real | [UCI en el Arduino UNO](ARDUINO_UNO.md). |
 | Justificar conversiones y recuperaciones | [Conversión CAD](EVALUACION_CONVERSION_CAD.md), [tres geometrías recuperadas](RECUPERACION_GEOMETRIAS.md) y [torre por cuerpos](../cad/derivados/torre_por_cuerpos/README.md). |
 | Explicar posiciones, ejes y cuerpos | [Ensamble](ENSAMBLE_CAD.md) y [criterios de integración](INTEGRACION_CAD_CRITERIOS.md). |
-| Revisar montaje y transmisión | [Montaje](MONTAJE_Y_AUTOCOLISIONES.md) y [transmisión](TRANSMISION.md). |
-| Justificar física y materiales | [Propiedades geométricas](PROPIEDADES_GEOMETRICAS_CAD.md). |
-| Explicar rechazos y choques | [Colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md). |
-| Revisar pruebas, fallas y referencia | [Validación](VALIDACION_WEBOTS.md), [fallas](FALLAS_Y_VALIDACION.md) y [diagnóstico de J4](historico/DIAGNOSTICO_TOPE_J4.md). |
-| Preparar consultas externas | [Datos para el profesor](historico/DATOS_PARA_EL_PROFESOR.md). |
-| Consultar fuentes técnicas | [Referencias](FUENTES_CAD_WEBOTS.md). |
-
-Los documentos especializados se abren cuando aparece esa duda. No hace falta leerlos todos antes de explorar el robot.
+| Montaje, transmisión y motores | [Montaje](MONTAJE_Y_AUTOCOLISIONES.md) y [transmisión](TRANSMISION.md). |
+| Física y materiales | [Propiedades geométricas](PROPIEDADES_GEOMETRICAS_CAD.md). |
+| Rechazos y choques | [Colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md). |
+| Pruebas, homing y fallas | [Campaña de validación](../validation/campana/INFORME.md) y sección 10 del maestro. |
+| Fuentes técnicas | [Referencias](FUENTES_CAD_WEBOTS.md). |
+| El banco anterior `scara-dev/1` | [Documentación histórica](historico/README.md). |

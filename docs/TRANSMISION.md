@@ -144,4 +144,4 @@ Evidencia: [ensayo de la pérdida de pasos en Webots](../validation/perdida_paso
 
 Confirmar revisión, fijaciones, recorrido de correas, sentidos, ceros, códigos de motores, conexión y corriente de drivers, curvas torque–velocidad, fricción/eficiencia y sostén vertical. Con las hojas de datos exactas de los motores se reemplazan los supuestos de N2 (D64).
 
-Respaldo: [fuentes de transmisión](../validation/transmission_sources.json), [montaje de salidas](../validation/pulley_mounts.json), [conteo geométrico](../validation/pulley_geometry.json), [montaje restante](../validation/remaining_mounts.json) y [nominales y fuentes físicas](../validation/physics_sources.json). Los ensayos del montaje están centralizados en [Validación](VALIDACION_WEBOTS.md).
+Respaldo: [fuentes de transmisión](../validation/transmission_sources.json), [montaje de salidas](../validation/pulley_mounts.json), [conteo geométrico](../validation/pulley_geometry.json), [montaje restante](../validation/remaining_mounts.json) y [nominales y fuentes físicas](../validation/physics_sources.json). Los ensayos del montaje están centralizados en [Validación](historico/VALIDACION_WEBOTS.md).

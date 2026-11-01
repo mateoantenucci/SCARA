@@ -2,7 +2,7 @@
 
 16 de octubre de 2026. Se recuperaron `B-CarretelInf`, `B-CarretelSup` y `Z-SoporteEfector` corrigiendo una tolerancia numérica del conversor de curvas de intersección. Las tres piezas superan ahora el control de sólidos BREP y de mallas cerradas. No se reconstruyeron piezas desde planos, no se añadieron superficies y no se aplicaron `ShapeFix`, cosido ni relleno de huecos.
 
-El resultado completó la geometría de las **30 instancias seleccionadas en aquella etapa**. El montaje posterior y sus ensayos están en [Validación](VALIDACION_WEBOTS.md). No completa por sí solo el montaje mecánico: siguen pendientes componentes, revisión oficial, fijaciones y fases de los carreteles, además de la revisión de interferencias internas. El alcance continúa siendo el de [simulación del diseño con evidencia declarada](adr/0001-simulacion-del-diseno-sin-hardware.md).
+El resultado completó la geometría de las **30 instancias seleccionadas en aquella etapa**. El montaje posterior y sus ensayos están en [Validación](historico/VALIDACION_WEBOTS.md). No completa por sí solo el montaje mecánico: siguen pendientes componentes, revisión oficial, fijaciones y fases de los carreteles, además de la revisión de interferencias internas. El alcance continúa siendo el de [simulación del diseño con evidencia declarada](adr/0001-simulacion-del-diseno-sin-hardware.md).
 
 ## Diagnóstico y corrección
 

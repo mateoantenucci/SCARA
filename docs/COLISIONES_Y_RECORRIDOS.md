@@ -1,6 +1,6 @@
 # Colisiones y comprobación de recorridos
 
-El control rechaza antes de mover los recorridos nominales que no demuestran separación frente al pedestal y al suelo, y los de herramienta/carga frente a la base fija. El [montaje](MONTAJE_Y_AUTOCOLISIONES.md) describe los choques internos estudiados; la [validación](VALIDACION_WEBOTS.md) identifica la revisión y los casos ensayados.
+El control rechaza antes de mover los recorridos nominales que no demuestran separación frente al pedestal y al suelo, y los de herramienta/carga frente a la base fija. El [montaje](MONTAJE_Y_AUTOCOLISIONES.md) describe los choques internos estudiados; la [campaña de validación](../validation/campana/INFORME.md) identifica la revisión y los casos ensayados.
 
 ## Representaciones y alcance
 
@@ -84,7 +84,7 @@ Además del entorno, se comprueban las cajas de herramienta/carga frente a las c
 
 Las pruebas `tests/test_collisions.py` cubren demostraciones admisibles, plegados invasivos, cruce intermedio en ambos sentidos, margen, carga, rechazo sin mutación en Runtime/Bridge y terminación numérica. Un contraste de poses muestreadas complementa la cota continua, sin sustituirla.
 
-Los informes de `tools/check_collisions.py` calculan intersecciones BREP. Los de `tools/check_self_collisions.py` comparan pares internos en poses seleccionadas. `tools/check_collisions_native.py` verifica cajas efectivas, rechazo y contacto bajo gravedad en Webots. El índice de la [validación](VALIDACION_WEBOTS.md) enlaza los resultados consolidados.
+Los informes de `tools/check_collisions.py` calculan intersecciones BREP. Los de `tools/check_self_collisions.py` comparan pares internos en poses seleccionadas. `tools/check_collisions_native.py` verifica cajas efectivas, rechazo y contacto bajo gravedad en Webots. El índice de la [validación](historico/VALIDACION_WEBOTS.md) enlaza los resultados consolidados.
 
 Para repetir desde la raíz, usando el Python con OCP en las auditorías CAD:
 

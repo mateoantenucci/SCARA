@@ -5,17 +5,6 @@ from pathlib import Path
 from tools.verificar_enlaces import ROOT, enlaces_rotos
 
 
-# El maestro lo edita #19 en paralelo; apunta a documentos que #1 pasó a docs/historico/.
-PENDIENTES_19 = {
-    ("docs/maestro/SCARA-Master-v2.md", f"../{nombre}.md")
-    for nombre in (
-        "REVISION_PARA_EL_PROFESOR_2026-10-27",
-        "DATOS_PARA_EL_PROFESOR",
-        "INVESTIGACION_TEACH_AND_PLAY_2026-10-29",
-    )
-}
-
-
 class VerificarEnlacesTests(unittest.TestCase):
     def _repo(self, archivos):
         carpeta = tempfile.TemporaryDirectory()
@@ -45,8 +34,7 @@ class VerificarEnlacesTests(unittest.TestCase):
         self.assertEqual(enlaces_rotos(raiz), [])
 
     def test_el_repo_no_tiene_enlaces_rotos(self):
-        rotos = [r for r in enlaces_rotos(ROOT) if r not in PENDIENTES_19]
-        self.assertEqual(rotos, [])
+        self.assertEqual(enlaces_rotos(ROOT), [])
 
 
 if __name__ == "__main__":

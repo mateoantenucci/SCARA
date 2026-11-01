@@ -1,6 +1,6 @@
 # Montaje y choques entre piezas
 
-Este documento explica las decisiones mecánicas del prototipo. El [manifiesto](../cad/ensambles/integracion_articulada.json) identifica las instancias efectivas y la [validación](VALIDACION_WEBOTS.md) centraliza cantidades, versiones y resultados ensayados. El montaje todavía no certifica cómo fabricar o ensamblar el robot real.
+Este documento explica las decisiones mecánicas del prototipo. El [manifiesto](../cad/ensambles/integracion_articulada.json) identifica las instancias efectivas y la [validación](historico/VALIDACION_WEBOTS.md) centraliza cantidades, versiones y resultados ensayados. El montaje todavía no certifica cómo fabricar o ensamblar el robot real.
 
 ## Rodamientos y tapa de muñeca
 

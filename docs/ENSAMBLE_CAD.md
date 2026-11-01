@@ -1,6 +1,6 @@
 # Recuperación del ensamble CAD
 
-Este documento explica la extracción de colocaciones y la vista estática. La [integración móvil](INTEGRACION_CAD_CRITERIOS.md) utiliza esas fuentes y añade componentes revisados de otros conjuntos. El manifiesto efectivo y los ensayos se consultan desde [Validación](VALIDACION_WEBOTS.md).
+Este documento explica la extracción de colocaciones y la vista estática. La [integración móvil](INTEGRACION_CAD_CRITERIOS.md) utiliza esas fuentes y añade componentes revisados de otros conjuntos. El manifiesto efectivo y los ensayos se consultan desde [Validación](historico/VALIDACION_WEBOTS.md).
 
 Se recuperaron **106 instancias guardadas de los diez `.SLDASM`**, con archivo de origen, configuración, identificador, visibilidad y matriz de colocación. No fue necesario SolidWorks, Onshape ni otra conversión de piezas. La fuente es el XML comprimido que SolidWorks dejó dentro de cada archivo: **no se resolvieron restricciones ni se reconstruyó el ensamble con las revisiones actuales de todas las piezas**.
 

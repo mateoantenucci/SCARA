@@ -1,54 +1,41 @@
 # Alcance, decisiones y pendientes del SCARA
 
-Este documento conserva los acuerdos del proyecto. La [guía de comprensión](PROCESO_Y_ARCHIVOS.md) explica cómo funciona; el [README](../README.md) explica cómo ejecutarlo; la [validación](VALIDACION_WEBOTS.md) identifica qué versiones se ensayaron.
+Este documento conserva los acuerdos del proyecto. La [guía de comprensión](PROCESO_Y_ARCHIVOS.md) explica cómo funciona; el [README](../README.md) explica cómo ejecutarlo; la [campaña de validación](../validation/campana/INFORME.md) identifica qué versión se ensayó.
 
 ## Requisitos y procedencia
 
 La [consigna, revisión 13/10/2026](../CONSIGNA-TP-FINAL.pdf), páginas 1–2, exige un modelo físico Webots `.wbt`, controlador en C++, Java o Python, aplicación visual externa y mensajes de texto por TCP/IP. El rol cliente/servidor depende de la aplicación. La página 6 identifica al SCARA como no construido, sin protocolo ni programa externo desarrollados, y no completa objetivos específicos ni fecha de entrega.
 
-El [documento maestro, versión 02/05/2026](../00-SCARA-Master.pdf), aporta mecánica, cadena R-R-R-P, transmisiones nominales y sensores previstos. Tiene datos incompletos y discrepancias con planos y piezas. El grupo informó que el profesor preparará el protocolo y solicitó dinámica y fallas; esos detalles no constituyen todavía un contrato técnico entregado.
+El [documento maestro, versión 02/05/2026](../00-SCARA-Master.pdf), aporta mecánica, cadena R-R-R-P, transmisiones nominales y sensores previstos. Tiene datos incompletos y discrepancias con planos y piezas. En la clase del 27/10/2026 el profesor pidió teach & play y fijó que los SolidWorks son la fuente de verdad; el protocolo lo define el grupo (`scara/1`). El [maestro v2](maestro/SCARA-Master-v2.md) reemplaza al v1 donde difieren.
 
 El objetivo acordado es simular el diseño para docencia y una posible construcción futura, con geometría, cinemática, propiedades físicas con procedencia, comunicación y fallas reproducibles. No existe hardware disponible para calibrarlo experimentalmente. Esta decisión y sus consecuencias están en [ADR 0001](adr/0001-simulacion-del-diseno-sin-hardware.md).
 
-## Decisiones de comportamiento
+## Arquitectura vigente
 
-| Tema | Decisión |
-| --- | --- |
-| Aplicación externa | Incluir una interfaz web mínima de referencia, sustituible por otra compatible. |
-| Movimiento | Punto a punto con objetivo XYZ, velocidad relativa y orientación opcional. Primera demostración sin pinza. |
-| Orientación omitida | Conservar el rumbo estimado del soporte respecto del mundo cuando lo permitan los límites. |
-| Trayectoria | Interpolación articular suave. No se exige una línea recta cartesiana. |
-| Entradas y recorridos inválidos | Rechazar antes de iniciar la nueva trayectoria. No buscar automáticamente un desvío. |
-| Falla o desconexión reconocida | Cancelar la trayectoria y solicitar detención con la física activa. Exigir habilitación explícita; no repetir órdenes al reconectar. |
-| Referencia perdida | No recuperarla usando en secreto la posición perfecta del simulador. El banco requiere recargar el ensayo; homing físico queda pendiente. |
-| Fallas iniciales | Reducción/pérdida de esfuerzo, Hall fijo y cierre de conexión; carga ajustable para estudiar sobrecarga. |
-| Protocolo | Usar `scara-dev/1` como banco provisional y adaptar al contrato oficial cuando se reciba. |
-| Documentación | Conservar propósito, decisiones, método, evidencia, reproducción y límites; separar la coordinación de sesiones de la documentación técnica. |
+| Tema | Decisión | Fuente |
+| --- | --- | --- |
+| Partes | URC en la PC (Python) y UCI con un único firmware C++, el mismo en el Arduino UNO y en el controlador de Webots | D3, D6, [ADR 0002](adr/0002-firmware-compartido-robot-real-y-simulacion.md) |
+| Protocolo | `scara/1`: texto por línea, enteros en unidades articulares, la URC escucha y la UCI se conecta | D1, D4, D5, [ADR 0003](adr/0003-protocolo-en-unidades-articulares.md) |
+| Reparto | La URC planifica (inversa, rectas, perfil, colisiones) y manda segmentos con duración; el firmware los ejecuta | D6, [ADR 0005](adr/0005-la-urc-planifica-el-firmware-ejecuta.md) |
+| Simulación | Canal de instrumentación aparte (`scara-sim/1`) para posición física, fallas y carga | D2, [ADR 0004](adr/0004-canal-de-instrumentacion-separado.md) |
+| Motores | Pasos y transmisión con acople M1/M2 (N1); par limitado y pérdida de pasos (N2) | D8, D44, D64, [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md) |
+| Referencia | Homing con un Hall por eje (J4, J1, J2, J3) desde la pose de reposo; sin referencia, solo jog lento | D11, D21, D30, D56, D58, D72 |
+| Operación | Jog desde la URC, gestor de trayectorias, tramos PTP y LIN, reproducción con loop, pausa y stop | D12–D14, D28–D34, D62–D63, D68–D69, D75, [ADR 0007](adr/0007-jog-desde-la-urc.md) |
+| Fallas | F1 pérdida de pasos, F2 driver sin corriente, F3 Hall trabado, F4 enlace cortado, F5 reinicio de la UCI | D23 |
+| Validación | Campaña en Webots con versión ensayada identificada; lo del banco `scara-dev/1` no se cita como prueba | D25, D73 |
 
-Una detención ordenada no garantiza inmovilidad si el actuador carece de esfuerzo para sostener el mecanismo. Limpiar una falla no equivale a recuperar fuerza ni referencia. La sobrecarga actual se avisa a partir de la masa conocida del banco y del esfuerzo provisional, sin atribuirle al robot un sensor de peso.
-
-## Fronteras de la implementación
-
-- **Cálculo e intérprete:** matemática y reglas de estado independientes de Webots. En el banco actual el programa externo resuelve la inversa y envía consignas articulares. El reparto definitivo depende de si el protocolo oficial pide articulaciones o destinos cartesianos.
-- **Geometría y física:** separar mallas visuales, formas de contacto y propiedades materiales. El precálculo CAD no asigna por sí solo masas a motores o piezas impresas.
-- **Motores y articulaciones:** Webots acciona directamente los cuatro grados de libertad. Relación motor→articulación, acoplamiento M1/M2, pérdidas, electrónica y pasos requieren modelos explícitos si se incluyen en la entrega.
-- **Observación y control:** distinguir ordenado, estimado ideal y físico simulado. La instrumentación interna verifica ensayos; no representa encoders del diseño.
-- **Comunicación y tiempo:** el transporte no bloquea los pasos de Webots. Trayectorias y física usan tiempo simulado; conexiones y sus plazos usan tiempo de pared. Pausar Webots pausa la atención TCP.
+El detalle de cada parte está en el [maestro v2](maestro/SCARA-Master-v2.md) y cada porqué, en el [registro de decisiones](REGISTRO_DE_DECISIONES.md).
 
 ## Qué está resuelto y qué falta
 
-| Área | Disponible | Pendiente para cerrar fidelidad o entrega |
+| Área | Disponible | Pendiente |
 | --- | --- | --- |
-| Referencia | Originales conservados, conversiones, colocaciones y ejes con procedencia | Revisión mecánica oficial que resuelva discrepancias. |
-| Modelo articulado | Base fija, cuatro ejes y montaje CAD parcial | Componentes omitidos, fijaciones y transmisión completa. |
-| Movimiento | Directa/inversa, límites, orientación y perfil suave | Referencias oficiales y criterios docentes de precisión y trayectorias. |
-| Comunicación | Cliente web, transporte e intérprete provisionales | Protocolo oficial y ensayos de compatibilidad. |
-| Dinámica | Esfuerzos finitos, gravedad y carga; precálculo geométrico | Materiales, impresión, componentes comerciales, masas/inercias y esfuerzos fundamentados. |
-| Colisiones | Rechazo nominal frente al entorno y de herramienta/carga frente a base; auditorías seleccionadas | Otros pares internos, contactos más precisos y componentes omitidos. |
-| Fallas | Inyecciones básicas y recuperación por recarga | Homing, pasos perdidos, atasco y desprendimiento según alcance que se acuerde. |
-| Entrega | Instrucciones, fuentes, pruebas e informes | Copia limpia reproducida por otro integrante, ejecución nativa Windows/Linux y aceptación docente. |
-
-La evidencia de cada resultado está en [Validación Webots](VALIDACION_WEBOTS.md); las cantidades de piezas y pruebas pertenecen a esas ejecuciones y no son criterios de fidelidad por sí mismas.
+| Mecánica | Originales conservados, conversiones, colocaciones y ejes con procedencia | Discrepancias entre maestro, planos y CAD ([revisión del 27/10/2026](historico/REVISION_PARA_EL_PROFESOR_2026-10-27.md)) |
+| Electrónica | Firmware que compila para el UNO; camino serie probado con puerto virtual y socat | Prueba con la placa real (D49) |
+| Propuestas | P1 microstepping 1/8 (D9) y P2 ubicación de los Hall (D10, D11) | Revisión del profesor |
+| Motores | Modelo N2 con la familia de motor más cercana y supuestos declarados | Hojas de datos exactas; N3 no se simula |
+| Validación | Campaña en Windows 11 con Webots R2025a | macOS (D19) |
+| Fallas | F1–F5 ensayadas | F6 (correa) no se implementó |
 
 ## Criterios de cierre
 
@@ -61,6 +48,4 @@ Una entrega defendible necesita que:
 5. Los informes identifiquen las fuentes y el ejecutable ensayados, sin atribuir aprobaciones anteriores a cambios posteriores.
 6. Otro integrante pueda abrir una copia completa y reproducir la demostración.
 
-El orden de trabajo es revisar montaje y contactos, fundamentar la física, completar comportamiento/contrato y verificar la entrega. Las dependencias externas están en [Consultas para el profesor](historico/DATOS_PARA_EL_PROFESOR.md). Una duda externa limita la parte que depende de ella; no impide avanzar en las otras.
-
-La reunión puede resolver solo parte de esas consultas. Registrar cada respuesta con su fuente y fecha, qué decisión confirma y qué sigue pendiente; la tabla de consultas identifica el trabajo que destraba cada una. Con esas respuestas, elegir una ronda acotada, comprobar sus dependencias y repetir solo los ensayos afectados. No hace falta esperar todas las respuestas para avanzar en un área ya definida, ni convertir una respuesta incompleta en un supuesto aprobado.
+Las consultas que dependen del profesor están en la sección 1 del [maestro v2](maestro/SCARA-Master-v2.md#1-propuestas-para-revisar-en-clase). Registrar cada respuesta con su fuente y fecha, y qué decisión confirma.

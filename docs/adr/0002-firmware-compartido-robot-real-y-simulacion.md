@@ -16,3 +16,5 @@ El profesor pidió que Webots opere al nivel del Arduino, para que el día de co
 - El firmware respeta las restricciones del Arduino UNO: sin memoria dinámica, buffers de tamaño fijo y sin flotantes en la interrupción de pasos.
 - Cada integrante necesita un compilador de C++. Compilar en Windows (MSYS2) está pendiente de verificar.
 - El firmware se puede probar con pruebas automáticas en la PC, sin Webots ni Arduino.
+
+> **Estado (30/10/2026):** compilar en Windows quedó resuelto por D19: compila y corre en Windows 11 con el `g++` 14.2 que trae Webots R2025a, sin instalar nada más ([UCI en Webots](../UCI_WEBOTS.md#resultado-en-windows-d19)). macOS sigue pendiente.
