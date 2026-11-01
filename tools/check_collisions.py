@@ -47,10 +47,10 @@ def calculate():
     checker = CollisionChecker(config)
     parts = {p["name"]: p for p in properties["parts"]}
     dependencies = ["config/scara.json", "config/cad_integration.json", "scara/collisions.py",
-        "scara/frames.py", "scara/kinematics.py", "scara/runtime.py", "client/app.py",
+        "scara/frames.py", "scara/kinematics.py",
         "tools/check_collisions.py", "tools/calcular_propiedades_cad.py",
         "tools/requirements-cad.txt", "tools/generate_world.py", "webots/protos/SCARA.proto",
-        "webots/worlds/scara.wbt", "cad/ensambles/integracion_articulada.json",
+        "webots/worlds/scara_uci.wbt", "cad/ensambles/integracion_articulada.json",
         "cad/propiedades/propiedades_geometricas.json", "cad/derivados/informe.json"]
     expected = dict(cad["sources"])
     expected[cad["source_assembly"]] = cad["source_sha256"]

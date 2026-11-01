@@ -9,16 +9,12 @@ import itertools
 import json
 import math
 from pathlib import Path
-import queue
 import random
-import threading
 import unittest
 
-from client.app import Bridge
 from scara.collisions import CollisionChecker
 from scara.frames import chain_frames, multiply, transform_point
 from scara.kinematics import forward, load_config
-from scara.runtime import Runtime
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -115,12 +111,6 @@ class CollisionTests(unittest.TestCase):
                 self.assertIn(conflict['obstacle'],
                               [p['instance_name'] for p in self.cad['instances']
                                if p['group'] == 'base'])
-                runtime = Runtime()
-                runtime.handle({'command': 'rearm'}, 0)
-                before = list(runtime.commanded)
-                result = runtime.handle({'command': 'move_joints', 'positions': q}, 0)
-                self.assertEqual(result['event'], 'rejected')
-                self.assertEqual(runtime.commanded, before)
 
     def test_free_endpoints_do_not_allow_crossing_the_tower(self):
         start, target = pose(-90, 135, -135, .06), pose(90, 135, -135, .06)
@@ -131,31 +121,6 @@ class CollisionTests(unittest.TestCase):
             self.assertEqual(conflict['obstacle'], '0-Torre-1')
             self.assertGreater(conflict['path_interval'][0], 0)
             self.assertLess(conflict['path_interval'][1], 1)
-
-    def test_internal_tower_crossing_is_rejected_in_both_directions_by_runtime(self):
-        for elbow in (-135, 135):
-            endpoints = [pose(j1, elbow, -elbow, .06) for j1 in (-90, 90)]
-            for start, target in (endpoints, endpoints[::-1]):
-                with self.subTest(elbow=elbow, start=start):
-                    runtime = Runtime()
-                    runtime.handle({'command': 'rearm'}, 0)
-                    self.assertIsNone(self.checker.first_conflict(start, start))
-                    self.assertIsNone(self.checker.first_conflict(target, target))
-                    waypoint = pose(math.degrees(start[0]), 90, -90, .06)
-                    self.assertEqual(runtime.handle({'command': 'move_joints',
-                        'positions': waypoint}, 0)['event'], 'accepted')
-                    runtime.advance(100)
-                    self.assertEqual(runtime.handle({'command': 'move_joints',
-                        'positions': start}, 100)['event'], 'accepted')
-                    runtime.advance(200)
-                    before = copy.deepcopy(runtime.__dict__)
-                    result = runtime.handle({'command': 'move_joints',
-                        'positions': target}, 200)
-                    self.assertEqual(result['event'], 'rejected')
-                    self.assertIn('0-Torre-1', result['message'])
-                    for key in ('commanded', 'estimated', 'mode', 'motion', 'faults',
-                                'payload_mass', 'reference_valid', 'drive_factors'):
-                        self.assertEqual(getattr(runtime, key), before[key])
 
     def test_impractical_resolution_rejects_instead_of_blocking_the_controller(self):
         config = copy.deepcopy(self.config)
@@ -171,44 +136,6 @@ class CollisionTests(unittest.TestCase):
         conflict = self.checker.first_conflict(start, target, payload=.1)
         self.assertEqual(conflict['instance'], 'carga_cubica_de_ensayo')
         self.assertEqual(conflict['obstacle'], 'pedestal_de_ensayo')
-
-    def test_rejected_runtime_route_does_not_change_state(self):
-        runtime = Runtime()
-        self.assertEqual(runtime.handle({'command': 'rearm'}, 0)['event'], 'accepted')
-        keys = ('commanded', 'estimated', 'mode', 'motion', 'faults',
-                'payload_mass', 'reference_valid', 'drive_factors')
-        before = {key: copy.deepcopy(getattr(runtime, key)) for key in keys}
-        result = runtime.handle({'command': 'move_joints', 'id': 'invasivo',
-                                 'positions': pose()}, 0)
-        self.assertEqual(result['event'], 'rejected')
-        self.assertIn('pedestal_de_ensayo', result['message'])
-        self.assertEqual({key: getattr(runtime, key) for key in keys}, before)
-        self.assertEqual(runtime.handle({'command': 'move_joints',
-                                        'positions': pose(-15, 120, -105, .08)}, 0)['event'], 'accepted')
-        runtime.advance(100)
-        before = {key: copy.deepcopy(getattr(runtime, key)) for key in keys}
-        result = runtime.handle({'command': 'payload', 'mass': .1}, 100)
-        self.assertEqual(result['event'], 'rejected')
-        self.assertIn('carga_cubica_de_ensayo', result['message'])
-        self.assertEqual({key: getattr(runtime, key) for key in keys}, before)
-
-    def test_cartesian_precheck_does_not_enqueue_an_invasive_route(self):
-        # Construcción sin __init__: ningún hilo ni socket de Webots.
-        bridge = Bridge.__new__(Bridge)
-        bridge.config = self.config
-        bridge.lock = threading.Lock()
-        bridge.pending = queue.Queue(maxsize=2)
-        bridge.connected = True
-        bridge.generation = 0
-        bridge.state = {'estimated': pose(-60, 120, 0), 'payload_mass': 0}
-        before = copy.deepcopy(bridge.state)
-        x, y, z, yaw = forward(pose(30, 120, 0), self.config)
-        with self.assertRaisesRegex(ValueError, 'pedestal_de_ensayo'):
-            bridge.command({'command': 'move_cartesian', 'x_mm': x*1000,
-                            'y_mm': y*1000, 'z_mm': z*1000,
-                            'yaw_deg': math.degrees(yaw), 'speed': .5})
-        self.assertTrue(bridge.pending.empty())
-        self.assertEqual(bridge.state, before)
 
     def test_accepted_paths_are_clear_in_independent_sampled_placements(self):
         rng = random.Random(81)

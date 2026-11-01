@@ -4,7 +4,7 @@
 Blue: current BREP bounding box agrees with assembly cache within 0.05 mm.
 Amber: a saved/current bounding box mismatch. Magenta wire boxes: unavailable
 accepted STL, drawn only as cached bounds. No motors, Physics, collision objects
-or inferred masses. The dynamic scara.wbt is never touched.
+or inferred masses. The dynamic scara_uci.wbt is never touched.
 """
 from __future__ import annotations
 
@@ -148,8 +148,8 @@ def main():
     span = max(bbox[i+3]-bbox[i] for i in range(3))
     eye = [center[i] + v*span*1.35 for i, v in enumerate([1.25, -1.4, .95])]
     output = args.output.resolve()
-    if output == ROOT / "webots/worlds/scara.wbt":
-        cli.error("Refusing to overwrite the dynamic scara.wbt")
+    if output == ROOT / "webots/worlds/scara_uci.wbt":
+        cli.error("Refusing to overwrite the dynamic scara_uci.wbt")
     entries, shapes, body_report = [], [], None
     for instance in config["instances"]:
         attrs = instance["xml_attributes"]

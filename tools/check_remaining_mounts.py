@@ -35,7 +35,7 @@ def calculate():
         'config/cad_integration.json', 'tools/integrate_cad.py', 'tools/registrar_subensambles.py',
         'cad/derivados/informe.json', 'cad/ensambles/informe.json',
         'cad/ensambles/registro_subensambles.json', 'cad/ensambles/integracion_articulada.json',
-        'webots/protos/SCARA.proto', 'webots/worlds/scara.wbt', 'tools/requirements-cad.txt',
+        'webots/protos/SCARA.proto', 'webots/worlds/scara_uci.wbt', 'tools/requirements-cad.txt',
         'Modelos3D/B-ExtensorM3.PDF', 'Modelos3D/A-Eje.PDF', 'Modelos3D/A-EjeInterior.PDF')
     sources = {n: sha256(ROOT/n) for n in dependencies}
 
