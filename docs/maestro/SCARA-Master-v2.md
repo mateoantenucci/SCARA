@@ -548,14 +548,14 @@ La evidencia vigente es la [campaña de validación en Webots](../../validation/
 | URC por sus dos bordes | La sesión con la UCI y la interfaz: jog, gestor, reproducción, banco | Las mismas conversaciones contra la URC con una UCI falsa por TCP; endpoints HTTP; el planificador como módulo puro |
 | Escenarios en Webots | El sistema entero con la planta simulada | Ocho ensayos, corridos por un solo ejecutor que registra la versión ensayada |
 
-**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8 y planta N2: commit `COMMIT_CORTO`.
+**Versión ensayada.** El ejecutor compila el controlador y anota el commit y el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; solo registra una campaña completa con el árbol sin cambios (D73). Campaña del 01/11/2026 en Windows 11 con Webots R2025a, microstepping 1/8 y planta N2: commit `ba2b8ee`.
 
 | Escenario | Condición inicial | Resultado | Tolerancia |
 | --- | --- | --- | --- |
 | H1 · Homing desde el reposo | Reposo exacto, sin referencia | J4, J1, J2 y J3 en el flanco de su Hall; vuelta sola al reposo; ningún choque en el camino físico | ≤ 3 pasos de 1/8 |
 | H2 · Homing con desvío | Desvío al azar de ±10° | Termina igual en el reposo, también después de un homing abortado | ≤ 3 pasos; física a menos de un paso completo |
 | T1 · Teach & play | Referenciado | Tres puntos capturados con jog se guardan, se cargan y se reproducen (PTP, LIN, PTP con espera) | Último punto a < 1 paso |
-| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (61,44 s medidos contra 61,46 s en 8 tramos); los LIN, a ≤ 0,25 mm de la recta; la pausa la conserva | ± 0,12 s; ≤ 0,32 mm |
+| T2 · LIN y PTP con loop, pausa y stop | Trayectoria mixta | Cada tramo dura lo planificado (61,44 s medidos contra 61,46 s en 8 tramos); los LIN, a ≤ 0,18 mm de la recta, y a 0,28 mm tras pausar y reanudar | ± 0,12 s; ≤ 0,32 mm |
 | T3 · Demostraciones | Las tres de `trayectorias/` | Se reproducen sin errores ni `EV LOST` | Último punto a < 1 paso |
 | F1 · Pérdida de pasos | 5 kg; un driver con poca corriente | Sin falla, ningún paso perdido; con falla, `EV LOST` con los pasos que perdió la planta y referencia dudosa | ± 1 paso completo |
 | F2 · Driver sin corriente | J4 en 60 mm | J4 cae a 120 mm; la estimada no cambia | > 118 mm |

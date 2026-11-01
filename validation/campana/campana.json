@@ -1,0 +1,298 @@
+{
+  "campana": "scara/1 en Webots (issue #18)",
+  "inicio": "2026-11-01T04:30:33-03:00",
+  "fin": "2026-11-01T04:48:10-03:00",
+  "version": {
+    "commit": "ba2b8ee824e99ec6b1a454b0df8565350ad2cc23",
+    "fecha_commit": "2026-11-01T04:30:32-03:00",
+    "sha256": {
+      "webots/controllers/scara_uci/scara_uci.exe": "4168602033d72e7f4b0f36b404fa2a146bf8db1dea15074832b619ce61362734",
+      "webots/worlds/scara_uci.wbt": "8df2160e597d3b67722ab0cea0661bab102327acfa59e88abb98903013b0b464",
+      "webots/protos/SCARA.proto": "874e5f26660d721249b36e59bf955a601bdb03df4c0c89bfc2110d241a070a2f",
+      "trayectorias/demo-barrido-ptp.json": "82e8815d6ee2ba5bf2ceaff952dbd41bfbebef3c445afa506f5f47fc0d322ddf",
+      "trayectorias/demo-cuadrado-lin.json": "8fd1076608a0cfa9d1bdf4645d7199ecfeed84392f28ba9e20bf30786e700484",
+      "trayectorias/demo-pick-and-place.json": "e37905e68c1e268c4dc415f9215c6a3b74c2f2719843fc36890eb3ad5f7f1cd8"
+    },
+    "webots": "R2025a",
+    "python": "3.12.7",
+    "sistema": "Windows-11-10.0.26300-SP0"
+  },
+  "ensayos": {
+    "protocolo": {
+      "script": "validation/protocolo/ensayo_webots.py",
+      "registro": "validation/campana/registros/protocolo.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 14
+    },
+    "transmision": {
+      "script": "validation/transmision/ensayo_webots.py",
+      "registro": "validation/campana/registros/transmision.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 19
+    },
+    "segmentos": {
+      "script": "validation/segmentos/ensayo_webots.py",
+      "registro": "validation/campana/registros/segmentos.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 21
+    },
+    "homing": {
+      "script": "validation/homing/ensayo_webots.py",
+      "registro": "validation/campana/registros/homing.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 232
+    },
+    "instrumentacion": {
+      "script": "validation/instrumentacion/ensayo_webots.py",
+      "registro": "validation/campana/registros/instrumentacion.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 30
+    },
+    "perdida_pasos": {
+      "script": "validation/perdida_pasos/ensayo_webots.py",
+      "registro": "validation/campana/registros/perdida_pasos.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 200
+    },
+    "reproduccion": {
+      "script": "validation/reproduccion/ensayo_webots.py",
+      "registro": "validation/campana/registros/reproduccion.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 213
+    },
+    "campana": {
+      "script": "validation/campana/ensayo_webots.py",
+      "registro": "validation/campana/registros/campana.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 329
+    }
+  },
+  "escenarios": [
+    {
+      "id": "H1",
+      "nombre": "Homing desde el reposo",
+      "inicial": "Mundo en la pose de reposo (--desvio 0), drivers con corriente, sin referencia",
+      "esperado": "Sin referencia, el jog de J4 va a 5 mm/s y lo frena su Hall; el homing referencia J4, J1, J2 y J3 en ese orden, en el flanco de cada Hall, y la URC vuelve sola al reposo; todo el camino físico, sin choques",
+      "tolerancia": "Física en el flanco a ≤ 3 pasos (0,17°; 0,15 mm en J4); reposo final a ≤ 3 pasos; jog a 5 ± 0,25 mm/s",
+      "ensayos": [
+        "homing"
+      ],
+      "pasos": "corrida A",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/homing.log"
+      ]
+    },
+    {
+      "id": "H2",
+      "nombre": "Homing con desvío",
+      "inicial": "Mundo con el desvío al azar por defecto (hasta ±10° en J1–J3), sin referencia",
+      "esperado": "El homing termina igual: los cuatro ejes en el mismo orden y el robot en el reposo; repetido después de un homing abortado (F3)",
+      "tolerancia": "Reposo final a ≤ 3 pasos (homing); física contra estimada, quieto, a menos de un paso completo por motor (campana)",
+      "ensayos": [
+        "homing",
+        "campana"
+      ],
+      "pasos": "corrida B; también campana, paso 2",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/homing.log",
+        "validation/campana/registros/campana.log"
+      ]
+    },
+    {
+      "id": "T1",
+      "nombre": "Teach & play: capturar con jog y reproducir LIN y PTP",
+      "inicial": "Robot referenciado en el reposo",
+      "esperado": "Tres puntos capturados con jog se guardan, se cargan del archivo sin cambios y se reproducen (tramo 0 PTP, LIN, PTP con espera); termina en el último punto",
+      "tolerancia": "Estimada en el último punto a < 1 paso (6 centésimas de grado; 1 de mm en J4); física contra estimada a menos de un paso completo por motor (0,45° en J1 y J3; 0,04 mm en J4)",
+      "ensayos": [
+        "campana"
+      ],
+      "pasos": "paso 3 (el jog, con órdenes JOG de scara/1)",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/campana.log"
+      ]
+    },
+    {
+      "id": "T2",
+      "nombre": "Reproducción LIN y PTP con loop, pausa y stop",
+      "inicial": "Robot referenciado en el reposo; trayectoria mixta de 4 puntos con espera",
+      "esperado": "Loop de 2 vueltas: cada tramo dura lo planificado y los LIN siguen la recta; la pausa frena sobre la recta y reanudar la conserva; stop frena y descarta lo pendiente",
+      "tolerancia": "Tiempo por tramo ± 0,12 s; recta ≤ 0,32 mm la estimada (0,069 mm del plan más medio paso de M1 y M2) y ≤ 0,40 mm la física (más el atraso del rotor de N2)",
+      "ensayos": [
+        "reproduccion"
+      ],
+      "pasos": "pasos 1 a 3",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/reproduccion.log"
+      ]
+    },
+    {
+      "id": "T3",
+      "nombre": "Trayectorias de demostración",
+      "inicial": "Robot referenciado; cada archivo demo-*.json de trayectorias/",
+      "esperado": "Cada una se carga y se reproduce sin errores, sin EV LOST, y termina en su último punto",
+      "tolerancia": "Estimada en el último punto a < 1 paso; física contra estimada a menos de un paso completo por motor; ningún ERR ni EV LOST",
+      "ensayos": [
+        "campana"
+      ],
+      "pasos": "paso 4; sin Webots, tests/test_demos.py (loop de 2 vueltas)",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/campana.log"
+      ]
+    },
+    {
+      "id": "F1",
+      "nombre": "Pérdida de pasos por carga y por aceleración",
+      "inicial": "Robot referenciado; 5 kg en la herramienta; driver de M4 al 50 % (carga) o de M1 al 20 % (aceleración)",
+      "esperado": "Con la corriente nominal, ningún paso perdido; con la falla, la planta pierde pasos de a 4 y el firmware lo informa con EV LOST al entrar en un imán; la URC marca la referencia dudosa; un homing la limpia",
+      "tolerancia": "EV LOST con los pasos que perdió la planta ± 1 paso completo (lectura del Hall en movimiento); sin falla, simulado − estimado < 1 paso completo",
+      "ensayos": [
+        "perdida_pasos"
+      ],
+      "pasos": "pasos 0 a 4",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/perdida_pasos.log"
+      ]
+    },
+    {
+      "id": "F2",
+      "nombre": "Driver de M4 sin corriente",
+      "inicial": "Robot referenciado con J4 en 60 mm y 500 g",
+      "esperado": "J4 simulado cae hasta abajo y la estimada no cambia; al volver la corriente, el motor retiene J4 donde quedó",
+      "tolerancia": "J4 simulado > 118 mm; estimada en 60 mm ± 0,01 mm",
+      "ensayos": [
+        "instrumentacion"
+      ],
+      "pasos": "paso 2",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/instrumentacion.log"
+      ]
+    },
+    {
+      "id": "F3a",
+      "nombre": "Hall de J4 trabado activo",
+      "inicial": "Robot sin referencia, Hall de J4 trabado activo a mitad de carrera",
+      "esperado": "El homing aborta con ERR 12 trabado, sin declarar referencia",
+      "tolerancia": "Máscara de referencia 0000",
+      "ensayos": [
+        "instrumentacion"
+      ],
+      "pasos": "paso 3",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/instrumentacion.log"
+      ]
+    },
+    {
+      "id": "F3b",
+      "nombre": "Hall de J1 trabado inactivo",
+      "inicial": "Mundo con desvío, sin referencia, Hall de J1 trabado inactivo",
+      "esperado": "El homing referencia J4, no encuentra el Hall de J1 y aborta con ERR 11 ausente, sin declarar referencia; con el Hall libre, el homing se repite y termina",
+      "tolerancia": "Solo J4 en los ejes encontrados; robot sin referencia",
+      "ensayos": [
+        "campana"
+      ],
+      "pasos": "pasos 1 y 2",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/campana.log"
+      ]
+    },
+    {
+      "id": "F4",
+      "nombre": "Enlace scara/1 cortado (watchdog)",
+      "inicial": "Jog de J1 en marcha",
+      "esperado": "El estado S deja de llegar y el firmware frena solo; al volver el enlace, el robot está quieto; con la URC cortada, la UCI se reconecta sin BOOT y conserva la referencia",
+      "tolerancia": "Watchdog de 1 s: J1 simulado quieto (≤ 1 paso) 2,5 s después del corte",
+      "ensayos": [
+        "instrumentacion",
+        "protocolo"
+      ],
+      "pasos": "paso 4; también protocolo, paso 5",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/instrumentacion.log",
+        "validation/campana/registros/protocolo.log"
+      ]
+    },
+    {
+      "id": "F5",
+      "nombre": "Reinicio de la UCI",
+      "inicial": "Robot referenciado, quieto o en plena reproducción sin fin",
+      "esperado": "La URC avisa BOOT inesperado y marca el robot sin referencia; la UCI arranca sin corriente y J4 cae; una reproducción en curso se detiene y no se puede volver a dar play",
+      "tolerancia": "Exactamente un BOOT más; reproducción «detenida»",
+      "ensayos": [
+        "instrumentacion",
+        "campana",
+        "reproduccion"
+      ],
+      "pasos": "paso 5; también campana, paso 5, y reproduccion, paso 4",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/instrumentacion.log",
+        "validation/campana/registros/campana.log",
+        "validation/campana/registros/reproduccion.log"
+      ]
+    },
+    {
+      "id": "P1",
+      "nombre": "Protocolo scara/1 con la UCI de Webots",
+      "inicial": "Mundo en el reposo, sin corriente",
+      "esperado": "Corriente, referencia manual, STOP y HALT en pleno jog, watchdog, DISABLE y reinicio de Webots, como dice el protocolo",
+      "tolerancia": "Estados y mensajes exactos",
+      "ensayos": [
+        "protocolo"
+      ],
+      "pasos": "pasos 1 a 7",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/protocolo.log"
+      ]
+    },
+    {
+      "id": "P2",
+      "nombre": "Transmisión N1: acople M1/M2 y resolución",
+      "inicial": "Robot referenciado en el reposo",
+      "esperado": "El jog articular mueve una sola articulación; el jog de M1 cambia J1 y J2 y no el rumbo; J3 avanza en escalones de un paso",
+      "tolerancia": "Física contra estimada a ≤ 1 paso; escalón de 0,05625°",
+      "ensayos": [
+        "transmision"
+      ],
+      "pasos": "pasos 1 a 6",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/transmision.log"
+      ]
+    },
+    {
+      "id": "P3",
+      "nombre": "Segmentos temporizados y tramo PTP",
+      "inicial": "Robot referenciado en el reposo",
+      "esperado": "Las cuatro articulaciones llegan juntas en el tiempo planificado; la cola absorbe 200 ms sin segmentos; STOP frena con rampa y conserva la referencia",
+      "tolerancia": "Las del ensayo de segmentos (su INFORME)",
+      "ensayos": [
+        "segmentos"
+      ],
+      "pasos": "pasos 1 a 4",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/segmentos.log"
+      ]
+    }
+  ]
+}

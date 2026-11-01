@@ -1,0 +1,8 @@
+0 homing y reposo en 82 s: estimada [0, 0, 0, 12000], simulado [0, 0, 0, 11999], diferencia [0.0, 0.0, 0.0, -0.25] pasos completos; pasos perdidos [0, 0, 0, 0]; EV LOST []
+1 con 5 kg y la corriente nominal, J4 sube a 10 mm: diferencia [0.0, 0.0, 0.0, 0.5] pasos completos, pasos perdidos [0, 0, 0, 0]
+  y vuelve al reposo, cruzando el Hall de abajo: pasos perdidos [0, 0, 0, 0], EV LOST []
+2 F1, M4 al 50 % con 5 kg, de 60 a 10 mm: J4 estimado 10.00 mm, simulado 60.43 mm; diferencia 1260.75 pasos completos, la planta perdió 1260
+  M4 al 100 % y de vuelta al reposo: el Hall de abajo da [{'joint': 4, 'steps': 1261}]; mensaje: Pérdida de pasos en J4: +1261 pasos completos al cruzar su Hall. La referencia es dudosa: conviene hacer homing.
+3 F1, M1 al 20 % con 5 kg: al arrancar el jog de J1 la planta perdió 4 pasos completos (diferencia 3.69); al llegar al imán: [{'joint': 4, 'steps': 1261}, {'joint': 1, 'steps': 4}]
+4 homing de nuevo: EV LOST []; diferencia [0.0, 0.0, 0.0, -0.25] pasos completos
+ENSAYO OK
