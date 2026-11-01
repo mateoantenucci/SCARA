@@ -760,3 +760,27 @@ Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con W
   - El modo rápido de Webots no sirve para esto: los `PING` llegan en tiempo real y el watchdog cuenta tiempo simulado (D26).
 - **Descartado:** conservar la referencia de los ejes encontrados al abortar (D56) y buscar a 15 mm/s también en J4.
 - **Estado:** Aceptada.
+
+## Campaña de validación (issue #18)
+
+Decisiones tomadas al armar la campaña de validación en Webots del camino nuevo (seam 3 de la spec #2). Los escenarios, la versión ensayada y los resultados: [informe de la campaña](../validation/campana/INFORME.md).
+
+**D73 · La campaña corre los ensayos de cada issue con un solo ejecutor, que registra la versión ensayada.**
+- **Decisión:**
+  - [`validation/campana/campana.py`](../validation/campana/campana.py) compila el controlador y corre, uno detrás de otro, los ocho ensayos en Webots: los siete de los issues #6 a #15 y uno nuevo, [`validation/campana/ensayo_webots.py`](../validation/campana/ensayo_webots.py), con lo que ninguno cubría: F3 con un Hall trabado inactivo, F5 en plena reproducción, teach & play con puntos capturados con jog y las trayectorias de demostración.
+  - Escribe `validation/campana/campana.json`: el commit; el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; Webots, Python y el sistema; y, por escenario, condición inicial, resultado esperado, tolerancia, ensayo, paso de su registro y resultado. Los registros van a `validation/campana/registros/`: los de cada issue quedan como estaban.
+  - Solo registra una campaña completa, con el árbol sin cambios sin commitear y si la versión no cambió mientras corría. Un escenario pasa si su ensayo termina con `ENSAYO OK`: cada ensayo verifica sus tolerancias con `assert` y se corta en la primera que no se cumple.
+- **Por qué:**
+  - Reusar los ensayos evita dos versiones de la misma prueba que después divergen. Cada uno ya mide lo que dice su informe, con su tolerancia.
+  - El controlador se compila en cada máquina y no se versiona: el commit solo no dice qué binario se ensayó. Compilar antes de correr hace que salga de ese commit, y el SHA-256 lo identifica.
+  - Los ensayos se corren de a uno porque Webots tiene que ir a tiempo real (D26): dos a la vez lo atrasan, y los que miden con el reloj de la PC (el watchdog de F4, por ejemplo) dejarían de valer.
+- **Descartado:** copiar los ensayos en uno solo (duplica y diverge), correrlos en paralelo y volver a escribir los registros de cada issue (D25: la evidencia de cada issue no se altera).
+- **Estado:** Aceptada.
+
+**D74 · Las trayectorias de demostración se versionan en `trayectorias/`, la carpeta por defecto de la URC.**
+- **Decisión:**
+  - Tres archivos `scara-trayectoria` (D62), armados con el gestor de la URC: `demo-pick-and-place.json` (bajar y subir en LIN con esperas, cruzar en PTP), `demo-cuadrado-lin.json` (un cuadrado de 80 mm en LIN, a altura y rumbo fijos) y `demo-barrido-ptp.json` (de un lado al otro en PTP, con cambio de codo, que en LIN sería imposible).
+  - Una prueba sin Webots ([`tests/test_demos.py`](../tests/test_demos.py)) carga cada una por HTTP y la reproduce en loop de 2 vueltas desde el reposo: así quedan validados sus tramos, la vuelta del último punto al primero y el tramo de aproximación. El ensayo de la campaña las reproduce en Webots.
+- **Por qué:** con `python -m urc.app`, sin opciones, aparecen en «Cargar» para la defensa. Si alguien cambia los límites, el modelo o el planificador y una demo deja de valer, la suite lo dice antes de la defensa.
+- **Descartado:** guardarlas en `validation/` (la URC no las vería sin `--trayectorias`) y capturarlas con jog (los puntos escritos se repiten exactos y se leen en el archivo).
+- **Estado:** Aceptada.

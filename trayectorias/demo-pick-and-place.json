@@ -1,0 +1,116 @@
+{
+  "format": "scara-trayectoria",
+  "version": 1,
+  "name": "Demo pick and place",
+  "saved": "2026-11-01T03:17:41-03:00",
+  "units": {
+    "joints": "centésimas de grado (J1–J3) y de mm (J4)",
+    "tool": "mm (x, y, z) y grados (rumbo)",
+    "speed": "% de la velocidad máxima",
+    "wait": "s"
+  },
+  "points": [
+    {
+      "joints": [
+        3500,
+        -7000,
+        3500,
+        4000
+      ],
+      "tool": {
+        "x": 409.58,
+        "y": 0.0,
+        "z": 54.67,
+        "heading": 0.0
+      },
+      "kind": "PTP",
+      "speed": 80,
+      "wait": 0
+    },
+    {
+      "joints": [
+        3500,
+        -7000,
+        3500,
+        10000
+      ],
+      "tool": {
+        "x": 409.58,
+        "y": 0.0,
+        "z": -5.33,
+        "heading": 0.0
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 1
+    },
+    {
+      "joints": [
+        3500,
+        -7000,
+        3500,
+        4000
+      ],
+      "tool": {
+        "x": 409.58,
+        "y": 0.0,
+        "z": 54.67,
+        "heading": 0.0
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    },
+    {
+      "joints": [
+        -3500,
+        -5000,
+        -1500,
+        4000
+      ],
+      "tool": {
+        "x": 226.58,
+        "y": -392.44,
+        "z": 54.67,
+        "heading": -100.0
+      },
+      "kind": "PTP",
+      "speed": 80,
+      "wait": 0
+    },
+    {
+      "joints": [
+        -3500,
+        -5000,
+        -1500,
+        10000
+      ],
+      "tool": {
+        "x": 226.58,
+        "y": -392.44,
+        "z": -5.33,
+        "heading": -100.0
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 1
+    },
+    {
+      "joints": [
+        -3500,
+        -5000,
+        -1500,
+        4000
+      ],
+      "tool": {
+        "x": 226.58,
+        "y": -392.44,
+        "z": 54.67,
+        "heading": -100.0
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    }
+  ]
+}

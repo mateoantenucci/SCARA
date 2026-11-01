@@ -1,0 +1,99 @@
+{
+  "format": "scara-trayectoria",
+  "version": 1,
+  "name": "Demo cuadrado LIN",
+  "saved": "2026-11-01T03:17:41-03:00",
+  "units": {
+    "joints": "centésimas de grado (J1–J3) y de mm (J4)",
+    "tool": "mm (x, y, z) y grados (rumbo)",
+    "speed": "% de la velocidad máxima",
+    "wait": "s"
+  },
+  "points": [
+    {
+      "joints": [
+        3047,
+        -9060,
+        6012,
+        6000
+      ],
+      "tool": {
+        "x": 339.98,
+        "y": -90.02,
+        "z": 34.67,
+        "heading": -0.01
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    },
+    {
+      "joints": [
+        1869,
+        -6158,
+        4288,
+        6000
+      ],
+      "tool": {
+        "x": 419.98,
+        "y": -90.04,
+        "z": 34.67,
+        "heading": -0.01
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    },
+    {
+      "joints": [
+        3147,
+        -6567,
+        3420,
+        6000
+      ],
+      "tool": {
+        "x": 420.0,
+        "y": -10.01,
+        "z": 34.67,
+        "heading": 0.0
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    },
+    {
+      "joints": [
+        4545,
+        -9427,
+        4882,
+        6000
+      ],
+      "tool": {
+        "x": 339.99,
+        "y": -10.0,
+        "z": 34.67,
+        "heading": 0.0
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    },
+    {
+      "joints": [
+        3047,
+        -9060,
+        6012,
+        6000
+      ],
+      "tool": {
+        "x": 339.98,
+        "y": -90.02,
+        "z": 34.67,
+        "heading": -0.01
+      },
+      "kind": "LIN",
+      "speed": 50,
+      "wait": 0
+    }
+  ]
+}
