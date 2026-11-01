@@ -18,18 +18,27 @@ import time
 
 from scara.collisions import CollisionChecker
 from scara.kinematics import load_config
-from urc import planner
+from urc import jog as jogging, planner
 from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message, segment_line
 
 
 PING_PERIOD = 0.25           # s (D27)
 JOG_SPEED = 1000             # centésimas por segundo, con referencia: el máximo sin rampa del firmware
 JOG_SPEED_UNREFERENCED = 500  # sin referencia, el firmware no pasa de acá (D58)
-JOG_HOLD = 0.5               # s sin renovar el jog desde la página => JOG STOP
-# Con referencia, el jog frena antes del límite de recorrido y de un choque
-# (D70). El estado S llega cada 50 ms y el JOG STOP tarda otro tanto: frena
-# si en JOG_STOP_AHEAD pasaría el límite, o si en JOG_LOOKAHEAD entraría en
-# la zona de margen de un obstáculo.
+JOG_SPEED_SLOW = 200         # con Mayús, el jog que ejecuta el firmware
+JOG_HOLD = 0.5               # s sin renovar el jog desde la página => frena
+# Con referencia, el jog articular y el cartesiano son segmentos que planifica
+# y verifica la URC (D28, D75): mantiene encolados JOG_QUEUE, así el robot
+# frena apenas se suelta la tecla. Los cuenta en el reloj de la UCI, que
+# puede ir más lento que el de la PC (Webots por debajo del tiempo real): lo
+# mide por el período de S, que la UCI envía cada STATUS_PERIOD.
+JOG_QUEUE = 3                # segmentos
+STATUS_PERIOD = 0.05         # s del reloj de la UCI (D27)
+JOG_POLL = 0.01              # s entre vueltas del hilo del enlace durante ese jog
+# El jog por motor lo ejecuta el firmware (D46): con referencia, frena antes
+# del límite de recorrido y de un choque (D70). El estado S llega cada 50 ms
+# y el JOG STOP tarda otro tanto: frena si en JOG_STOP_AHEAD pasaría el
+# límite, o si en JOG_LOOKAHEAD entraría en la zona de margen de un obstáculo.
 JOG_STOP_AHEAD = 0.15        # s
 JOG_LOOKAHEAD = (0.15, 0.3)  # s
 # Un pedido de jog que estaba en camino al frenar con Stop, Parada inmediata
@@ -63,7 +72,11 @@ class Session:
         self.greeted = False                 # la UCI ya habló en esta conexión
         self.status = None
         self.status_time = None
-        self.jogging = None          # (eje, sentido, por motor) enviado a la UCI
+        self.status_times = deque(maxlen=11)  # llegada de los últimos S, para el ritmo de la UCI
+        self.jogging = None          # (modo, eje, sentido, por motor, lento) del jog en curso
+        self.jog_plan = None         # el jog por segmentos en curso: orden, codo y adónde llega
+        self.jog_end = None          # dónde termina el último segmento del jog, sin redondear
+        self.jog_last = None         # número del último SEG del jog que el robot no descartó
         self.jog_deadline = 0.0
         self.stopped_jog = None      # (jog, cuándo) frenado por STOP, HALT o DISABLE
         self.segments = deque()      # SEG por enviar, en orden
@@ -114,7 +127,8 @@ class Session:
             status = self.status
             if status is None or status["homed"] != ALL_HOMED:
                 raise ValueError("El robot tiene que estar referenciado para un tramo PTP")
-            if status["mode"] != "IDLE" or self.jogging is not None or self._segments_pending():
+            if (status["mode"] != "IDLE" or self.jogging is not None or self._segments_pending()
+                    or self._jog_draining()):
                 raise ValueError("El robot se está moviendo: esperá a que frene")
             start = tuple(status["position"])
         planner.check_target(start, target, self.config, self.checker)
@@ -181,13 +195,17 @@ class Session:
         """Estacionar: PTP a la pose de reposo (D30), con el robot referenciado."""
         return self.move_ptp(REST, PARK_SPEED)
 
-    def jog(self, joint, direction, motor=False):
+    def jog(self, joint, direction, motor=False, mode="articular", slow=False):
         """Mantiene el jog mientras la página lo renueve antes de jog_hold.
 
-        Con motor=True mueve solo el motor M<joint>, sin compensar el acople
-        M1/M2 (D46). Con referencia va a jog_speed y no pasa del límite de
-        recorrido ni entra en la zona de choque (D70); sin referencia, el
-        firmware lo lleva lento y solo lo frena el Hall (D58).
+        joint es la tecla, 1–4, igual en los dos modos (urc/jog.py). Con
+        referencia, el articular y el cartesiano son segmentos verificados que
+        planifica la URC (D28, D75). Sin referencia solo hay jog articular,
+        que el firmware lleva lento y solo lo frena el Hall (D58). Con
+        motor=True mueve solo el motor M<joint>, sin compensar el acople
+        M1/M2 (D46): lo ejecuta el firmware y, con referencia, la URC lo frena
+        antes del límite de recorrido o de la zona de choque (D70). slow es
+        el jog lento (Mayús).
         """
         if type(joint) is not int or joint not in range(1, 5):
             raise ValueError("La articulación debe ser 1, 2, 3 o 4")
@@ -195,7 +213,13 @@ class Session:
             raise ValueError("El sentido debe ser + o -")
         if type(motor) is not bool:
             raise ValueError("motor debe ser true o false")
-        jog = (joint, direction, motor)
+        if mode not in jogging.MODES:
+            raise ValueError("El modo de jog debe ser articular o cartesiano")
+        if type(slow) is not bool:
+            raise ValueError("slow debe ser true o false")
+        if motor and mode != "articular":
+            raise ValueError("El jog por motor es articular")
+        jog = (mode, joint, direction, motor, slow)
         with self.lock:
             self._require_robot()
             if self._tramo_running():
@@ -205,17 +229,36 @@ class Session:
             if (self.jogging is None and self.stopped_jog is not None and self.stopped_jog[0] == jog
                     and time.monotonic() - self.stopped_jog[1] < STOP_GUARD):
                 return
-            blocked = self._jog_blocked(jog)
+            if mode == "cartesiano" and not self._referenced():
+                raise ValueError("Sin referencia, el jog cartesiano está deshabilitado: hacé homing o referencia manual")
+            if self._referenced() and not motor:
+                self._jog_segments(jog)
+                return
+            speed = self._firmware_jog_speed(jog)
+            if self.jogging != jog and (self.jog_plan is not None or self._jog_draining()):
+                raise ValueError("El robot todavía está frenando el jog anterior")
+            blocked = self._jog_blocked(joint, direction, motor, speed)
             if blocked:
                 raise ValueError(f"Jog frenado: {blocked}")
             self.jog_deadline = time.monotonic() + self.jog_hold
             if self.jogging != jog:
+                self._end_jog()
                 self.jogging = jog
-                speed = self.jog_speed if self._referenced() else min(self.jog_speed, JOG_SPEED_UNREFERENCED)
                 self._queue(f"JOG {'M' if motor else ''}{joint} {direction} {speed}")
 
     def jog_stop(self):
-        self._stop("JOG STOP")
+        """Soltar la tecla: frena el jog y nada más.
+
+        El jog por segmentos no envía nada: el robot termina lo encolado y
+        frena. Sin jog en curso no hay nada que frenar; un tramo o un homing
+        siguen (la página avisa al soltar aunque el jog se haya rechazado).
+        """
+        with self.lock:
+            self._require_robot()
+            firmware = self.jogging is not None and self.jog_plan is None
+            self._end_jog()
+            if firmware:
+                self._queue("JOG STOP")
 
     def stop(self):
         """Frena todo y conserva la referencia."""
@@ -257,7 +300,10 @@ class Session:
                 "referenced": status is not None and status["homed"] == ALL_HOMED,
                 "travel": [list(bounds) for bounds in self.travel],
                 "doubtful": [dict(item) for item in self.doubtful],
-                "jog": None if self.jogging is None else dict(zip(("joint", "direction", "motor"), self.jogging)),
+                "jog": None if self.jogging is None else dict(zip(("mode", "joint", "direction", "motor", "slow"),
+                                                                  self.jogging)),
+                "elbow": None if status is None else jogging.elbow_name(status["position"]),
+                "tool": None if status is None else self._tool(status["position"]),
                 "segments": {"pending": len(self.segments), "in_flight": self.in_flight, "last_ok": self.last_ok},
                 "tramo": tramo,
                 "homing": None if self.homing is None else dict(self.homing, axes=list(self.homing["axes"])),
@@ -265,6 +311,12 @@ class Session:
                 "errors": list(self.errors),
                 "rejected": list(self.rejected),
             }
+
+    def _tool(self, units):
+        """Punto de herramienta en mm y rumbo en centésimas de grado, para la página."""
+        x, y, z = planner.tool_point(units, self.config)
+        return {"x": round(x * 1000, 2), "y": round(y * 1000, 2), "z": round(z * 1000, 2),
+                "heading": sum(units[:3])}
 
     def close(self):
         self.closed.set()
@@ -274,11 +326,14 @@ class Session:
     # --- Hilo del enlace (con self.lock tomado en los helpers) -------------
 
     def _stop(self, line):
+        """STOP, HALT o DISABLE: frenan todo, también el jog."""
         with self.lock:
             self._require_robot()
-            if self.jogging is not None and line != "JOG STOP":
+            if self.jogging is not None:
                 self.stopped_jog = (self.jogging, time.monotonic())
-            self.jogging = None
+            self._end_jog()
+            # El firmware vacía la cola: lo que quedaba del jog no se ejecuta.
+            self.jog_last = None
             self._cancel_segments("frenado por el operador")
             self._end_homing("frenado por el operador")
             self._queue(line)
@@ -286,8 +341,98 @@ class Session:
     def _referenced(self):
         return self.status is not None and self.status["homed"] == ALL_HOMED
 
-    def _jog_blocked(self, jog):
-        """Por qué un jog no puede seguir con referencia, o None (D70).
+    def _jog_segments(self, jog):
+        """Jog articular o cartesiano con referencia: la URC lo planifica en segmentos (D28, D75).
+
+        Verifica ya el primer paso, así la página muestra enseguida por qué
+        no puede seguir. Si el robot todavía termina otro jog, el nuevo
+        arranca cuando frene, desde donde frenó: los segmentos arrancan y
+        frenan sin rampa, y un cambio de sentido sin frenar sería el doble.
+        """
+        self.jog_deadline = time.monotonic() + self.jog_hold
+        if self.jogging == jog and self.jog_plan is not None:
+            return
+        mode, joint, direction, _, slow = jog
+        command = jogging.Command(mode, joint, 1 if direction == "+" else -1, slow)
+        start = self.jog_end if self._jog_draining() and self.jog_end is not None else self.status["position"]
+        try:
+            jogging.step(start, command, jogging.elbow_of(start), self.config, self.checker, self.travel)
+        except jogging.Blocked as exc:
+            raise ValueError(f"Jog frenado: {exc}") from None
+        if self.jogging is not None and self.jog_plan is None:
+            self._queue("JOG STOP")  # un jog por motor en curso
+        self.jogging = jog
+        self.jog_plan = {"command": command, "q": None, "elbow": None, "clock": 0.0}
+
+    def _feed_jog(self, now):
+        """El próximo SEG del jog por segmentos, o None si la cola ya tiene lo suyo.
+
+        Un SEG sin confirmar por vez (D50). El primero espera al robot quieto
+        y arranca de la posición estimada; los demás siguen del último
+        segmento sin redondear, así el punto de herramienta no acumula el
+        redondeo.
+        """
+        plan = self.jog_plan
+        if plan is None or self.in_flight is not None or self.segments or self.status is None:
+            return None
+        if plan["q"] is None:
+            if self.status["mode"] != "IDLE" or self._jog_draining():
+                return None
+            plan["q"] = tuple(float(v) for v in self.status["position"])
+            plan["elbow"] = jogging.elbow_of(plan["q"])
+            plan["clock"] = now
+        # Lo que tarda un segmento en el reloj de la PC. La cola se mide de
+        # dos maneras: por lo enviado desde que arrancó, y por lo que el
+        # último S dice que terminó más lo que pasó desde entonces.
+        seconds = jogging.SEGMENT_MS / 1000 / self._uci_rate()
+        if max(plan["clock"], now) + seconds - now > JOG_QUEUE * seconds + 1e-6:
+            return None
+        # Sin un S nuevo en dos períodos, la UCI pudo trabarse (Webots
+        # cargado): no se supone que siguió avanzando, o la cola se llenaría.
+        elapsed = min(now - self.status_time, 2 * STATUS_PERIOD * seconds / (jogging.SEGMENT_MS / 1000))
+        executed = self.status["last"] + elapsed / seconds
+        if self.jog_last is not None and self.jog_last - executed >= JOG_QUEUE:
+            return None
+        try:
+            q = jogging.step(plan["q"], plan["command"], plan["elbow"], self.config, self.checker, self.travel)
+        except jogging.Blocked as exc:
+            self.message = f"Jog frenado: {exc}"
+            self._end_jog()
+            return None
+        number = self.next_segment
+        self.next_segment += 1
+        plan["q"] = self.jog_end = q
+        plan["clock"] = max(plan["clock"], now) + seconds
+        self.jog_last = self.in_flight = number
+        return segment_line(number, jogging.SEGMENT_MS, jogging.rounded(q))
+
+    def _uci_rate(self):
+        """Segundos del reloj de la UCI por segundo de la PC, por el período de los últimos S; hasta 1.
+
+        Un hueco de más de cuatro períodos es el enlace, no el reloj: no cuenta.
+        """
+        times = list(self.status_times)
+        gaps = [b - a for a, b in zip(times, times[1:]) if b - a <= 4 * STATUS_PERIOD]
+        if not gaps or sum(gaps) <= 0:
+            return 1.0
+        return min(1.0, max(0.2, STATUS_PERIOD * len(gaps) / sum(gaps)))
+
+    def _jog_draining(self):
+        """El robot todavía no terminó los segmentos de un jog que ya no se alimenta."""
+        return (self.jog_last is not None and self.status is not None
+                and self.status["last"] < self.jog_last)
+
+    def _end_jog(self):
+        self.jogging = None
+        self.jog_plan = None
+
+    def _firmware_jog_speed(self, jog):
+        """Centésimas por segundo del jog que ejecuta el firmware: sin referencia o por motor."""
+        speed = JOG_SPEED_SLOW if jog[4] else self.jog_speed
+        return speed if self._referenced() else min(speed, JOG_SPEED_UNREFERENCED)
+
+    def _jog_blocked(self, joint, direction, motor, speed):
+        """Por qué un jog del firmware no puede seguir con referencia, o None (D70).
 
         Mira adelante en el sentido del jog, desde la posición estimada del
         último S: el límite de recorrido de cada articulación que mueve y la
@@ -297,14 +442,13 @@ class Session:
         """
         if not self._referenced():
             return None
-        joint, direction, motor = jog
         # El jog articular mueve una articulación; el de M1 gira el brazo y J2
         # cambia al revés (D46); M2, M3 y M4 mueven J2, J3 y J4.
         axes = [0, 0, 0, 0]
         axes[joint - 1] = 1
         if motor and joint == 1:
             axes[1] = -1
-        velocity = [(1 if direction == "+" else -1) * axis * self.jog_speed for axis in axes]
+        velocity = [(1 if direction == "+" else -1) * axis * speed for axis in axes]
         position = self.status["position"]
         for name, value, speed, (low, high) in zip(planner.NAMES, position, velocity, self.travel):
             ahead = value + speed * JOG_STOP_AHEAD
@@ -321,10 +465,18 @@ class Session:
         return None
 
     def _guard_jog(self):
-        """Con cada S, el jog en curso frena antes del límite o del choque."""
-        if self.jogging is None or self.status["mode"] != "JOG":
+        """Con cada S, el jog del firmware en curso frena antes del límite o del choque.
+
+        El jog por segmentos se verifica antes de enviar cada uno; sin la
+        referencia, ya no se alimenta.
+        """
+        if self.jog_plan is not None and not self._referenced():
+            self.message = "Jog frenado: el robot perdió la referencia"
+            self._end_jog()
+        if self.jogging is None or self.jog_plan is not None or self.status["mode"] != "JOG":
             return
-        blocked = self._jog_blocked(self.jogging)
+        _, joint, direction, motor, _ = self.jogging
+        blocked = self._jog_blocked(joint, direction, motor, self._firmware_jog_speed(self.jogging))
         if blocked:
             # _send_pending envía el JOG STOP; las renovaciones de la página lo rechazan.
             self.jog_deadline = 0.0
@@ -335,7 +487,8 @@ class Session:
             raise ValueError("Todavía no llegó el estado de la UCI")
         if self.status["mode"] == "OFF":
             raise ValueError("Los motores están sin corriente: habilitalos primero")
-        if self.status["mode"] != "IDLE" or self.jogging is not None or self._tramo_running():
+        if (self.status["mode"] != "IDLE" or self.jogging is not None or self._tramo_running()
+                or self._jog_draining()):
             raise ValueError(f"El robot se está moviendo: esperá a que frene antes de {what}")
 
     def _follow_homing(self):
@@ -391,7 +544,8 @@ class Session:
         self.tramo["segments"] = self.tramo["last"] - self.tramo["first"] + 1
 
     def _segments_pending(self):
-        return bool(self.segments) or self.in_flight is not None
+        """Segmentos de un tramo por enviar o sin confirmar; los del jog van aparte."""
+        return bool(self.segments) or (self.in_flight is not None and self.in_flight != self.jog_last)
 
     def _tramo_running(self):
         """Quedan segmentos por enviar, o el robot todavía no terminó los enviados."""
@@ -431,8 +585,10 @@ class Session:
             self._cancel_segments("la UCI se volvió a conectar")
             self.firmware = None
             self.status = None
+            self.status_times.clear()
             self.greeted = False
-            self.jogging = None
+            self._end_jog()
+            self.jog_last = None
             self._discard_outgoing()
             self.message = "UCI conectada"
             self._queue("HELLO")
@@ -441,7 +597,7 @@ class Session:
         with self.lock:
             self.connected = False
             self.peer = None
-            self.jogging = None
+            self._end_jog()
             self._discard_outgoing()
             self._cancel_segments("la UCI se desconectó")
             self.message = f"UCI desconectada: {reason}. Esperando que se vuelva a conectar."
@@ -475,8 +631,14 @@ class Session:
             elif kind == "S":
                 self.status = {key: value for key, value in message.items() if key != "kind"}
                 self.status_time = time.monotonic()
+                self.status_times.append(self.status_time)
                 self._follow_homing()
                 self._guard_jog()
+                # Quieto, sin nada en camino y antes del último segmento del
+                # jog: el firmware descartó la cola por algo que la URC no vio.
+                if (self.jog_plan is None and self.in_flight is None and self.status["mode"] == "IDLE"
+                        and self._jog_draining()):
+                    self.jog_last = None
                 # Un eje sin referencia ya no tiene una referencia dudosa.
                 self.doubtful = [item for item in self.doubtful
                                  if self.status["homed"] >> (item["joint"] - 1) & 1]
@@ -505,6 +667,15 @@ class Session:
                 if self._tramo_running():
                     self._cancel_segments(f"la UCI respondió ERR {message['code']} {message['word']}")
                     self.message = f"Tramo cancelado: ERR {message['code']} {message['word']}"
+                if self._jog_draining() or self.jog_plan is not None:
+                    # Igual con los del jog, aunque ya se haya soltado la tecla:
+                    # frena y descarta la cola.
+                    if self.jog_plan is not None:
+                        self.message = f"Jog frenado: ERR {message['code']} {message['word']}"
+                    self._end_jog()
+                    self.jog_last = None
+                    if self.in_flight is not None and not self._segments_pending():
+                        self.in_flight = None
                 if message["code"] in (4, 11, 12):  # los que abortan el homing
                     self._end_homing(f"ERR {message['code']} {message['word']}: {message['cause']}")
             self.greeted = True
@@ -530,7 +701,8 @@ class Session:
         self._cancel_segments("la UCI se reinició")
         self._end_homing("la UCI se reinició")
         self.status = None
-        self.jogging = None
+        self._end_jog()
+        self.jog_last = None
         self._discard_outgoing()
         if self.greeted:
             # A mitad de una conexión: la UCI se reinició sola (falla F5).
@@ -542,8 +714,9 @@ class Session:
         lines = []
         with self.lock:
             if self.jogging is not None and now > self.jog_deadline:
-                self.jogging = None
-                lines.append("JOG STOP")
+                if self.jog_plan is None:
+                    lines.append("JOG STOP")
+                self._end_jog()
             while True:
                 try:
                     lines.append(self.outgoing.get_nowait())
@@ -556,6 +729,8 @@ class Session:
                 line = self.segments.popleft()
                 self.in_flight = int(line.split()[1])
                 lines.append(line)
+            elif (line := self._feed_jog(now)) is not None:
+                lines.append(line)
         if now - self.last_ping >= PING_PERIOD:
             self.last_ping = now
             lines.append("PING")
@@ -566,7 +741,9 @@ class Session:
         client, buffer = None, b""
         self.last_ping = 0.0
         while not self.closed.is_set():
-            readable, _, _ = select.select([self.listener] + ([client] if client else []), [], [], 0.05)
+            # Durante el jog por segmentos, la cola se repone cada 10 ms.
+            timeout = JOG_POLL if self.jog_plan is not None else 0.05
+            readable, _, _ = select.select([self.listener] + ([client] if client else []), [], [], timeout)
             try:
                 if self.listener in readable:
                     # Una conexión nueva reemplaza a la anterior: Webots reinició.

@@ -1,0 +1,25 @@
+0 referencia manual en [0, 0, 0, 12000]
+  al soltar: 3 segmentos sin terminar según el último S; ritmo de la UCI 0.82
+1 jog articular J1 normal: 10.04 °/s simulados (nominal 10); frenó 80 ms después de soltar (la estimada, con S cada 50 ms: 80 ms); J2 físico -0.0 centésimas
+  al soltar: 4 segmentos sin terminar según el último S; ritmo de la UCI 0.84
+1 jog articular J1 lento: 1.99 °/s simulados (nominal 2); frenó 0 ms después de soltar (la estimada, con S cada 50 ms: 10 ms); J2 físico -0.0 centésimas
+2 cartesiano desde [816, 0, 0, 12000]: codo estirado, punto {'x': 494.94, 'y': 70.97, 'z': -25.33, 'heading': 816}
+  al soltar: 5 segmentos sin terminar según el último S; ritmo de la UCI 0.82
+  S (X −) 1,5 s: codo negativo, J2 -1283, punto {'x': 491.77, 'y': 71.0, 'z': -25.33, 'heading': 816}; frenó 90 ms después de soltar
+  al soltar: 2 segmentos sin terminar según el último S; ritmo de la UCI 0.87
+  A (Y −) 1,5 s: de {'x': 491.77, 'y': 71.0, 'z': -25.33, 'heading': 816} a {'x': 491.74, 'y': 45.53, 'z': -25.33, 'heading': 816}; de la recta: estimada a 0.055 mm, simulada a 0.171 mm; rumbo físico a 6.4 centésimas del inicial; frenó 20 ms después de soltar
+  al soltar: 3 segmentos sin terminar según el último S; ritmo de la UCI 0.84
+  W (X +) hasta frenar: «Jog frenado: llegó al borde del alcance: el jog cartesiano no estira el brazo ni cambia la configuración del codo»; J2 estimada nunca pasó de -2.03°, física al final -2.03°; codo negativo
+3 Hall antes de subir J4: 1000 (J4…J1)
+  al soltar: 6 segmentos sin terminar según el último S; ritmo de la UCI 0.84
+  al soltar: 0 segmentos sin terminar según el último S; ritmo de la UCI 0.82
+  la cola se vació 1 veces durante el jog
+  R 1 s llevó J4 a 111.00 mm; F hasta frenar: «Jog frenado: J4 llegó al límite de su recorrido (120 mm)»; J4 estimada 120.00 mm, física como mucho 119.99 mm
+  al soltar: 2 segmentos sin terminar según el último S; ritmo de la UCI 0.82
+4 PTP a J2 = 95° en 5.44 s; W hasta frenar: «Jog frenado: Z-SoporteEfector-1 tocaría pedestal_de_ensayo (envolventes y margen de 1 mm)»; J2 estimada 107.21°; separación física mínima 1.14 mm
+  al soltar: 5 segmentos sin terminar según el último S; ritmo de la UCI 0.84
+  S para salir: J2 97.82°, sin frenar (None)
+5 sin referencia, jog cartesiano: «Sin referencia, el jog cartesiano está deshabilitado: hacé homing o referencia manual»
+  jog articular J1: 5.00 °/s simulados (el firmware, sin referencia, 5 °/s)
+frenado al soltar: mediana 80 ms y como mucho 90 ms simulados, en 4 jogs; Webots corrió a 0.82× del reloj de la PC
+ENSAYO OK

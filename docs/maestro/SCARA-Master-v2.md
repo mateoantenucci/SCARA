@@ -296,7 +296,7 @@ La búsqueda está acotada en recorrido y en 60 s por eje. Un Hall que no aparec
 
 **Sin referencia (D21, D58).** El firmware baja todo jog a 5 °/s (5 mm/s). El Hall hace de fin de carrera: un jog que lo activa frena solo (`ERR 10 fin`), y uno que arranca sobre un imán puede salir de él, pero no seguir hacia el tope. Capturar y reproducir quedan bloqueados: `SEG` exige referencia.
 
-**Con referencia (D28).** La URC planifica también el jog en segmentos cortos, verificados contra límites, alcance y colisiones; el jog frena antes de un límite o de un choque con la torre.
+**Con referencia (D28, D75).** La URC planifica también el jog, en segmentos de 20 ms verificados contra límites, alcance, configuración del codo y colisiones: el jog frena antes de un límite o de un choque con la torre (§8).
 
 **Watchdog.** Si la UCI pasa 1 s sin mensajes de la URC, frena sola.
 
@@ -327,15 +327,46 @@ El profesor pidió mover el robot a mano, guardar puntos, armar trayectorias con
 
 | Tecla | Acción |
 | --- | --- |
-| W / S, A / D | Jog cartesiano en el plano |
-| R / F | Subir y bajar |
-| Q / E | Girar la herramienta (rumbo) |
-| Tab | Cambiar a jog articular: las mismas teclas mueven J1–J4 |
-| Mayús | Jog lento |
-| Espacio / Retroceso | Capturar el punto / borrar el último |
-| Enter / Esc | Terminar la trayectoria y pedir nombre / frenar |
+| Tecla | Jog cartesiano | Jog articular |
+| --- | --- | --- |
+| W / S | X + / X − | J2 + / J2 − |
+| D / A | Y + / Y − | J1 + / J1 − |
+| R / F | Subir / bajar (Z) | J4 sube / baja |
+| E / Q | Rumbo + / rumbo − | J3 + / J3 − |
+| Tab | Cambiar de modo | |
+| Mayús | Jog lento | |
+| Espacio / Retroceso | Capturar el punto / borrar el último | |
+| Enter / Esc | Terminar la trayectoria y pedir nombre / frenar | |
 
-El jog cartesiano nunca cambia la configuración del codo. Desde el brazo estirado, que es una singularidad, el codo dobla hacia el lado preferido: J2 negativo por defecto (D31).
+En la pose de reposo, cada tecla mueve hacia el mismo lado en los dos modos. La página muestra siempre el modo, el punto de herramienta y la configuración del codo.
+
+**Jog verificado (D28, D75).** Con referencia, la URC planifica el jog en segmentos de 20 ms ([`urc/jog.py`](../../urc/jog.py)) y mantiene tres en la cola del firmware. Cada uno sale de donde termina el anterior y se verifica antes de enviarlo:
+
+- **Recorrido:** frena antes del límite de cada articulación.
+- **Configuración del codo:** el jog cartesiano nunca la cambia. Desde el brazo estirado, que es una singularidad, el codo dobla hacia el lado preferido: J2 negativo por defecto (D31). Frena antes de estirar el brazo, con |J2| de 2°: el borde del alcance.
+- **Choques:** frena antes de la zona de margen de la torre y del pedestal; desde adentro de esa zona, solo deja alejarse.
+
+Al soltar la tecla, la URC deja de enviar y el robot frena al terminar lo encolado: unos 60 ms. Como el último segmento ya está verificado, no hace falta mirar adelante. La cola se cuenta en el reloj de la UCI, que la URC mide por el período del estado `S`: Webots puede correr más lento que la PC.
+
+| Jog | Normal | Lento (Mayús) |
+| --- | --- | --- |
+| Articular con referencia | 10 °/s (10 mm/s en J4) | 2 °/s |
+| Cartesiano, en el plano | 20 mm/s | 4 mm/s |
+| Rumbo y altura | Como J3 y J4 | Como J3 y J4 |
+| Sin referencia, solo articular (firmware, D58) | 5 °/s | 2 °/s |
+
+Ningún motor pasa de 10 °/s, la velocidad a la que el firmware arranca y frena sin rampa. Cerca del brazo estirado o de la torre, el cartesiano acorta el paso para respetarla. Sin referencia, el jog cartesiano está deshabilitado.
+
+**Ensayo en Webots ([informe](../../validation/jog/INFORME.md)).** Con la URC real contra el controlador compilado, cada jog sostenido como lo hace la página:
+
+| Caso | Resultado |
+| --- | --- |
+| Frenado al soltar la tecla | 80 ms simulados de mediana, 90 como mucho, con Webots a 0,82× |
+| Jog cartesiano en Y | Estimada a 0,06 mm de la recta, simulada a 0,17 mm; rumbo fijo |
+| Hacia afuera desde el codo negativo | Frena con J2 = −2,03°: el codo no cambia |
+| J4 hacia abajo | Frena en 120,00 mm, el límite del recorrido |
+| J2 hacia el pedestal con J4 abajo | Frena a 1,14 mm, fuera de la zona de margen; después sale |
+| Sin referencia | Cartesiano rechazado; articular a 5 °/s |
 
 **Captura y puntos escritos (D13, D21, D34).** Un punto de trayectoria guarda la pose (configuración articular, que incluye la configuración del codo), no el camino. Capturar exige robot referenciado y usa la posición estimada por pasos. También se puede escribir un punto en XYZ y rumbo, o en J1–J4; la URC verifica alcance, límites y choque, y dice qué falla.
 
@@ -613,6 +644,6 @@ Resumen. El texto completo, con qué se descartó y por qué, está en el [regis
 | D33 | Tramo de aproximación al 25 % | Decidido | |
 | D34 | Puntos definidos sin jog | Decidido | |
 
-Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver. Las de la reproducción: D68, validar todo antes de mover y encolar un tramo detrás de otro con sus esperas; D69, la pausa es el `STOP` con rampa y al reanudar se recalcula el resto del tramo. Las de la QA de la ronda 3: D70, jog a 10 °/s frenado antes del límite y de un choque; D71, un PTP puede salir de la zona de margen de un obstáculo; D72, homing más rápido y repetible. Las de la campaña de validación: D73, un ejecutor que corre los ensayos de cada issue y registra la versión ensayada; D74, las trayectorias de demostración en `trayectorias/`.
+Las decisiones de implementación de la ronda siguen en el registro desde D35. Las del tramo PTP: D50, un `SEG` sin confirmar por vez y `OK` demorado con la cola llena; D51, el firmware valida la velocidad de cada motor; D52, `STOP` con rampa; D53, perfil PTP trapezoidal común. Las del tramo LIN: D54, velocidad del punto de herramienta y tolerancia sobre la recta; D55, validación previa de cada segmento. Las del homing: D56, homing por flanco en cinco fases y vuelta al reposo planificada por la URC; D57, Hall de Webots por distancia entre imán y sensor; D58, jog lento sin referencia y Hall como fin de carrera. Las del canal de instrumentación: D59, `scara-sim/1` por el puerto 9001; D60, driver sin corriente en la planta; D61, cómo actúan F4, F5 y la carga. Las del gestor de trayectorias: D62, la trayectoria vive en la URC y el archivo `scara-trayectoria` guarda las articulaciones; D63, capturar con el robot referenciado y quieto, codo conservado al editar y validación de cada punto. Las de la pérdida de pasos: D64, el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad; D65, `EV LOST` al entrar en un imán, sin corregir la cuenta; D66, N2 confirma los límites de D45; D67, F1 baja la corriente de un driver. Las de la reproducción: D68, validar todo antes de mover y encolar un tramo detrás de otro con sus esperas; D69, la pausa es el `STOP` con rampa y al reanudar se recalcula el resto del tramo. Las de la QA de la ronda 3: D70, jog a 10 °/s frenado antes del límite y de un choque; D71, un PTP puede salir de la zona de margen de un obstáculo; D72, homing más rápido y repetible. Las de la campaña de validación: D73, un ejecutor que corre los ensayos de cada issue y registra la versión ensayada; D74, las trayectorias de demostración en `trayectorias/`. La del jog verificado: D75, segmentos de 20 ms con tres en cola, contados en el reloj de la UCI.
 
 ADR 0001 ([simular el diseño sin hardware](../adr/0001-simulacion-del-diseno-sin-hardware.md)) es anterior al registro y enmarca todo el documento.

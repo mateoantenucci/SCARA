@@ -126,7 +126,8 @@ def handler_for(session, bench=None, manager=None, player=None):
                 if not isinstance(request, dict):
                     raise ValueError("Se requiere un objeto JSON")
                 if self.path == "/api/jog":
-                    session.jog(request.get("joint"), request.get("direction"), request.get("motor", False))
+                    session.jog(request.get("joint"), request.get("direction"), request.get("motor", False),
+                                request.get("mode", "articular"), request.get("slow", False))
                 elif self.path == "/api/ptp":
                     # Sin confirm, solo planifica: la página muestra la duración y pregunta.
                     target, speed = ptp_order(request)

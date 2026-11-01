@@ -43,7 +43,7 @@
 <main>
   <div class="eyebrow">Unidad Remota de Coordinación · protocolo scara/1</div>
   <h1>SCARA · URC</h1>
-  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. La UCI arranca con los motores sin corriente: habilitalos primero. Mantené una tecla de jog para mover una articulación; al soltar, frena. <kbd>Esc</kbd> frena todo.</p>
+  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. La UCI arranca con los motores sin corriente: habilitalos primero. Mantené una tecla de jog para mover el robot; al soltar, frena. <kbd>Tab</kbd> cambia entre jog articular y cartesiano, <kbd>Mayús</kbd> da jog lento y <kbd>Esc</kbd> frena todo.</p>
 
   <section class="card" aria-label="Conexión">
     <div class="row">
@@ -100,23 +100,28 @@
       <thead><tr><th>Articulación</th><th>Estimada</th><th>Hall</th></tr></thead>
       <tbody id="joints"></tbody>
     </table>
-    <p class="muted">Rumbo de la herramienta (J1 + J2 + J3): <strong id="heading">—</strong></p>
+    <p class="muted">Punto de herramienta: <strong id="tool">—</strong> · rumbo (J1 + J2 + J3): <strong id="heading">—</strong></p>
+    <p class="muted">Configuración del codo: <strong id="elbow">—</strong></p>
   </section>
 
   <section class="card" aria-label="Jog">
-    <h2 id="jog-title">Jog articular</h2>
-    <p class="muted" id="jog-help">Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos. Con referencia va a 10 °/s (10 mm/s en J4) y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s, y solo lo frena el Hall.</p>
     <div class="row">
-      <button data-axis="1" data-direction="-"><span>J1</span> − <kbd>A</kbd></button>
-      <button data-axis="1" data-direction="+"><span>J1</span> + <kbd>D</kbd></button>
-      <button data-axis="2" data-direction="-"><span>J2</span> − <kbd>S</kbd></button>
-      <button data-axis="2" data-direction="+"><span>J2</span> + <kbd>W</kbd></button>
+      <h2 id="jog-title" style="margin: 0">Jog articular</h2>
+      <button id="jog-mode" type="button">Cambiar a cartesiano <kbd>Tab</kbd></button>
+      <span class="badge" id="jog-elbow">Codo: —</span>
+    </div>
+    <p class="muted" id="jog-help"></p>
+    <div class="row">
+      <button data-axis="1" data-direction="-"><span></span> <kbd>A</kbd></button>
+      <button data-axis="1" data-direction="+"><span></span> <kbd>D</kbd></button>
+      <button data-axis="2" data-direction="-"><span></span> <kbd>S</kbd></button>
+      <button data-axis="2" data-direction="+"><span></span> <kbd>W</kbd></button>
     </div>
     <div class="row" style="margin-top: 8px">
-      <button data-axis="3" data-direction="-"><span>J3</span> − <kbd>Q</kbd></button>
-      <button data-axis="3" data-direction="+"><span>J3</span> + <kbd>E</kbd></button>
-      <button data-axis="4" data-direction="-"><span>J4</span> sube <kbd>R</kbd></button>
-      <button data-axis="4" data-direction="+"><span>J4</span> baja <kbd>F</kbd></button>
+      <button data-axis="3" data-direction="-"><span></span> <kbd>Q</kbd></button>
+      <button data-axis="3" data-direction="+"><span></span> <kbd>E</kbd></button>
+      <button data-axis="4" data-direction="-"><span></span> <kbd>R</kbd></button>
+      <button data-axis="4" data-direction="+"><span></span> <kbd>F</kbd></button>
     </div>
     <div class="row" style="margin-top: 12px">
       <label><input type="checkbox" id="by-motor"> Jog por motor (M1–M4, sin compensar el acople; no afecta al PTP)</label>
@@ -172,14 +177,23 @@
 <script src="/banco.js" defer></script>
 <script>
 const NAMES = ["J1", "J2", "J3", "J4"];
-// Jog articular (D12): A/D J1, W/S J2, Q/E J3, R/F J4. J4 es positivo hacia abajo.
+// Jog (D12): las mismas teclas en los dos modos. Articular: A/D J1, W/S J2,
+// Q/E J3, R/F J4 (J4 es positivo hacia abajo). Cartesiano: A/D en Y, W/S en
+// X, Q/E el rumbo y R/F la altura; en la pose de reposo, cada tecla mueve
+// hacia el mismo lado que en el articular (urc/jog.py).
 const KEYS = {
   KeyA: [1, "-"], KeyD: [1, "+"], KeyS: [2, "-"], KeyW: [2, "+"],
   KeyQ: [3, "-"], KeyE: [3, "+"], KeyR: [4, "-"], KeyF: [4, "+"],
 };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
 const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos", HOMING: "Homing" };
-let held = null, timer = null, lastStatus = null, lastTravel = null;
+let held = null, timer = null, lastStatus = null, lastTravel = null, referenced = false;
+let jogMode = "articular";
+const LABELS = {
+  articular: { "1-": "J1 −", "1+": "J1 +", "2-": "J2 −", "2+": "J2 +", "3-": "J3 −", "3+": "J3 +", "4-": "J4 sube", "4+": "J4 baja" },
+  cartesiano: { "1-": "Y −", "1+": "Y +", "2-": "X −", "2+": "X +", "3-": "Rumbo −", "3+": "Rumbo +", "4-": "Z sube", "4+": "Z baja" },
+};
+const ELBOWS = { negativo: "J2 negativo", positivo: "J2 positivo", estirado: "brazo estirado (el jog cartesiano toma J2 negativo)" };
 
 function format(joint, value) {
   return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
@@ -206,16 +220,17 @@ function jogButton(joint, direction) {
   return document.querySelector(`[data-axis="${joint}"][data-direction="${direction}"]`);
 }
 
-function startJog(joint, direction) {
-  const key = `${joint}${direction}`;
+function startJog(joint, direction, slow = false) {
+  const key = `${joint}${direction}${slow ? "lento" : ""}`;
   if (held === key) return;
   stopJog();
   held = key;
   jogButton(joint, direction).classList.add("active");
-  const motor = byMotor.checked;
+  const motor = jogMode === "articular" && byMotor.checked;
+  const request = { joint, direction, motor, mode: jogMode, slow };
   // Un pedido que no llega a tiempo se cancela: si la URC estaba caída, no
   // debe llegar tarde y mover el robot con la tecla ya suelta.
-  const send = () => post("/api/jog", { joint, direction, motor }, 2 * REFRESH_MS).then(() => show(null), show);
+  const send = () => post("/api/jog", request, 2 * REFRESH_MS).then(() => show(null), show);
   send();
   timer = setInterval(send, REFRESH_MS);
 }
@@ -229,18 +244,38 @@ function stopJog(notify = true) {
   if (notify) post("/api/jog/stop").catch(show);
 }
 
-// El jog por motor renombra los botones: cada uno mueve un solo motor.
+// Los botones y la ayuda dicen qué mueve cada tecla en el modo actual.
+function renderJog() {
+  const cartesian = jogMode === "cartesiano";
+  const motor = !cartesian && byMotor.checked;
+  for (const button of document.querySelectorAll("[data-axis]")) {
+    const label = LABELS[jogMode][button.dataset.axis + button.dataset.direction];
+    button.querySelector("span").textContent = motor ? label.replace("J", "M") : label;
+    button.disabled = cartesian && !referenced;
+  }
+  byMotor.disabled = cartesian;
+  document.getElementById("jog-title").textContent = cartesian ? "Jog cartesiano" : motor ? "Jog por motor" : "Jog articular";
+  document.getElementById("jog-mode").firstChild.textContent = `Cambiar a ${cartesian ? "articular" : "cartesiano"} `;
+  document.getElementById("jog-help").textContent = cartesian
+    ? (referenced
+      ? "Cada tecla mueve el punto de herramienta en X, Y o Z, o gira el rumbo, sin cambiar lo demás. Nunca cambia la configuración del codo: frena antes del brazo estirado, del límite de recorrido o de un choque. Con Mayús, lento."
+      : "Sin referencia, el jog cartesiano está deshabilitado: la URC no sabe dónde está el robot. Usá el jog articular, o hacé homing.")
+    : motor
+      ? "Cada tecla mueve un solo motor. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo. No cambia «Ir a una pose», que siempre mueve las articulaciones."
+      : "Cada tecla mueve una articulación sin cambiar las demás. Con referencia va a 10 °/s (10 mm/s en J4) en segmentos que la URC verifica, y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s, y solo lo frena el Hall. Con Mayús, a 2 °/s.";
+}
+
+function toggleJogMode() {
+  stopJog();
+  jogMode = jogMode === "articular" ? "cartesiano" : "articular";
+  renderJog();
+}
+
 byMotor.addEventListener("change", () => {
   stopJog();
-  const motor = byMotor.checked;
-  for (const button of document.querySelectorAll("[data-axis]")) {
-    button.querySelector("span").textContent = (motor ? "M" : "J") + button.dataset.axis;
-  }
-  document.getElementById("jog-title").textContent = motor ? "Jog por motor" : "Jog articular";
-  document.getElementById("jog-help").textContent = motor
-    ? "Cada tecla mueve un solo motor. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo. No cambia «Ir a una pose», que siempre mueve las articulaciones."
-    : "Cada tecla mueve una articulación sin cambiar las demás: para J1, el firmware mueve M1 y M2 juntos. Con referencia va a 10 °/s (10 mm/s en J4) y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s, y solo lo frena el Hall.";
+  renderJog();
 });
+document.getElementById("jog-mode").addEventListener("click", toggleJogMode);
 
 // Stop, Parada inmediata y Deshabilitar cortan el jog de la página (si no, el
 // próximo pedido lo reanuda) sin enviar antes JOG STOP: la orden misma frena
@@ -251,31 +286,54 @@ function order(path) {
   post(path).then(() => show(null), show);
 }
 
+let heldKey = null;  // la tecla de jog apretada, para retomarla al cambiar Mayús
 document.addEventListener("keydown", (event) => {
   if (event.code === "Escape") {
     event.preventDefault();
     order("/api/stop");
     return;
   }
-  const jog = KEYS[event.code];
   // Escribiendo una pose o un nombre, las letras no mueven el robot.
   const typing = event.target.closest && event.target.closest("input:not([type=checkbox]):not([type=radio]), select, textarea");
-  if (jog && !typing && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey) {
+  if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
+  if (event.code === "Tab") {
     event.preventDefault();
-    startJog(...jog);
+    if (!event.repeat) toggleJogMode();
+    return;
+  }
+  if ((event.key === "Shift") && heldKey) {
+    startJog(...KEYS[heldKey], true);
+    return;
+  }
+  const jog = KEYS[event.code];
+  if (jog && !event.repeat) {
+    event.preventDefault();
+    heldKey = event.code;
+    startJog(...jog, event.shiftKey);
   }
 });
 document.addEventListener("keyup", (event) => {
-  const jog = KEYS[event.code];
-  if (jog && jog.join("") === held) stopJog();
+  if (event.key === "Shift" && heldKey) {
+    startJog(...KEYS[heldKey], false);
+    return;
+  }
+  if (event.code === heldKey) {
+    heldKey = null;
+    stopJog();
+  }
 });
-window.addEventListener("blur", stopJog);
-document.addEventListener("visibilitychange", () => { if (document.hidden) stopJog(); });
+const release = () => {
+  heldKey = null;
+  stopJog();
+};
+window.addEventListener("blur", release);
+document.addEventListener("visibilitychange", () => { if (document.hidden) release(); });
 for (const button of document.querySelectorAll("[data-axis]")) {
-  button.addEventListener("pointerdown", () => startJog(Number(button.dataset.axis), button.dataset.direction));
+  button.addEventListener("pointerdown", (event) => startJog(Number(button.dataset.axis), button.dataset.direction, event.shiftKey));
   button.addEventListener("pointerup", stopJog);
   button.addEventListener("pointerleave", stopJog);
 }
+renderJog();
 document.getElementById("enable").addEventListener("click", () => post("/api/enable").then(() => show(null), show));
 document.getElementById("stop").addEventListener("click", () => order("/api/stop"));
 document.getElementById("halt").addEventListener("click", () => order("/api/halt"));
@@ -409,6 +467,10 @@ async function refresh() {
     showHoming(state.homing);
     const reference = document.getElementById("reference");
     const homed = state.connected && state.referenced;
+    if (homed !== referenced) {
+      referenced = homed;
+      renderJog();
+    }
     reference.textContent = homed ? "Referenciado" : "Sin referencia";
     reference.className = "badge" + (homed ? " ok" : " warn");
     const mode = document.getElementById("mode");
@@ -419,6 +481,12 @@ async function refresh() {
       `<td>${status ? (status.hall >> joint & 1 ? "activo" : "—") : ""}</td></tr>`).join("");
     document.getElementById("heading").textContent = status
       ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—";
+    const tool = state.connected ? state.tool : null;
+    document.getElementById("tool").textContent = tool
+      ? `X ${tool.x.toFixed(1)} · Y ${tool.y.toFixed(1)} · Z ${tool.z.toFixed(1)} mm` : "—";
+    const elbow = state.connected && state.elbow ? ELBOWS[state.elbow] : "—";
+    document.getElementById("elbow").textContent = elbow;
+    document.getElementById("jog-elbow").textContent = `Codo: ${elbow}`;
     document.getElementById("errors").textContent = state.errors.concat(state.rejected.map((line) => `No entendida: ${line}`)).join("\n");
     document.getElementById("traffic").textContent = state.traffic.map((entry) => `${entry.direction} ${entry.line}`).join("\n");
   } catch (error) {
