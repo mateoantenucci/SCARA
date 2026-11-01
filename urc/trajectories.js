@@ -1,7 +1,7 @@
 // Gestor de trayectorias (D29, D34). La trayectoria la guarda la URC; la
 // página la muestra y pide cada cambio por /api/trayectoria/*. La
 // reproducción va por /api/reproduccion/* y también la planifica la URC.
-// Usa post, format, lastStatus y stopJog de index.html.
+// Usa post, format, copyHere y stopJog de index.html.
 (() => {
   const panel = document.getElementById("trajectory");
   panel.innerHTML = `
@@ -51,6 +51,7 @@
     <div class="row">
       <label><input type="radio" name="tr-kind" value="pose" checked> Punto de herramienta</label>
       <label><input type="radio" name="tr-kind" value="joints"> Articulaciones</label>
+      <button id="tr-here" type="button">Copiar la pose actual</button>
     </div>
     <div class="row fields" id="tr-pose">
       <label>X (mm) <input type="number" step="0.1" value="433"></label>
@@ -227,6 +228,10 @@
     });
   }
 
+  $("tr-here").addEventListener("click", guarded(() => {
+    const clipped = copyHere("tr", kind());
+    feedback(clipped ? new Error(clipped) : null);
+  }));
   $("tr-capture").addEventListener("click", capture);
   $("tr-delete").addEventListener("click", remove);
   $("tr-overwrite").addEventListener("click", guarded(() => {
