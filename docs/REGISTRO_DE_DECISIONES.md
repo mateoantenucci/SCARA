@@ -1,6 +1,6 @@
 # Registro de decisiones: grabar y reproducir trayectorias
 
-Por qué el SCARA quedó diseñado así. Sirve para responder al profesor. Cada entrada dice qué se decidió, por qué y qué se descartó. Las decisiones difíciles de revertir tienen además un ADR en [`docs/adr/`](adr/). El análisis completo está en la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md). El [documento maestro v2](maestro/SCARA-Master-v2.md) lo resume y lo incorporará completo en su versión final.
+Por qué el SCARA quedó diseñado así. Sirve para responder al profesor. Cada entrada dice qué se decidió, por qué y qué se descartó. Las decisiones difíciles de revertir tienen además un ADR en [`docs/adr/`](adr/). El análisis completo está en la [investigación del 29/10/2026](INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md). El [documento maestro v2](maestro/SCARA-Master-v2.md) lo resume: cada decisión con su porqué en una línea (sección 11).
 
 Estados:
 
@@ -417,6 +417,8 @@ Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta
   - La página lo ofrece con una casilla, «Modo de prueba: jog por motor». Las mismas teclas mueven M1–M4 en lugar de J1–J4.
 - **Por qué:** muestra en la defensa lo que pidió el profesor: mover M1 gira el brazo, el antebrazo conserva su orientación, J2 cambia al revés que J1 y el rumbo de la herramienta queda igual. Una sola orden `JOG` con dos formas mantiene un solo camino en el firmware.
 - **Descartado:** un comando aparte (`JOGM`) y medir la velocidad del motor en pasos por segundo (dependería del microstepping, y el protocolo no lo conoce, ADR 0003).
+- **Estado:** Aceptada.
+
 ## Arduino UNO y socat (issue #16)
 
 Decisiones tomadas al escribir la capa de hardware del UNO y ensayar el camino serie. El detalle está en [UCI en el Arduino UNO](ARDUINO_UNO.md).
@@ -536,6 +538,8 @@ Decisiones tomadas al implementar el tramo LIN y la validación de tramos en la 
 - **Descartado:**
   - Muestrear el camino en puntos sueltos: entre dos muestras podría haber un choque.
   - Verificar choques en la recta en articulaciones entre los extremos del tramo: no es el camino de un LIN.
+- **Estado:** Aceptada.
+
 ## Sensores Hall y homing (issue #8)
 
 Decisiones tomadas al implementar los Hall en la planta de Webots y el homing del firmware. La forma de `HOME` y `EV HOMED` está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#homing); la evidencia, en la [validación del homing](../validation/homing/INFORME.md).
@@ -606,6 +610,7 @@ Decisiones tomadas al implementar el canal que solo existe en la simulación (AD
   - La carga cambia `toolMass` del `SCARA.proto` (de 0 a 5 kg). Hoy cambia la física de la herramienta; la pérdida de pasos por carga llega con N2 (#15).
   - `RECARGA` recarga el mundo: el controlador se vuelve a conectar a los dos canales y la UCI arranca de nuevo.
 - **Por qué:** cerrar la conexión sería otra falla (la URC la vería como una desconexión de Webots). El reinicio tiene que ser del firmware, no del mundo, para que se vea que la URC detecta el `BOOT` con el robot en la misma pose.
+- **Estado:** Aceptada.
 
 ## Captura de puntos y gestor de trayectorias (issue #12)
 
@@ -720,6 +725,7 @@ Decisiones tomadas al implementar la reproducción desde el gestor de trayectori
   - El firmware ya frena así, con la cola vaciada al instante. Una rampa planificada por la URC sobre la recta tendría que esperar que se ejecute lo ya encolado, hasta 320 ms a plena velocidad.
   - Si el robot se movió durante la pausa, el resto sería otra recta.
 - **Descartado:** frenar con una rampa planificada por la URC, reanudar desde cualquier pose y repetir la espera completa.
+- **Estado:** Aceptada.
 
 ## QA de la ronda 3
 
@@ -783,6 +789,7 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - Una prueba sin Webots ([`tests/test_demos.py`](../tests/test_demos.py)) carga cada una por HTTP y la reproduce en loop de 2 vueltas desde el reposo: así quedan validados sus tramos, la vuelta del último punto al primero y el tramo de aproximación. El ensayo de la campaña las reproduce en Webots.
 - **Por qué:** con `python -m urc.app`, sin opciones, aparecen en «Cargar» para la defensa. Si alguien cambia los límites, el modelo o el planificador y una demo deja de valer, la suite lo dice antes de la defensa.
 - **Descartado:** guardarlas en `validation/` (la URC no las vería sin `--trayectorias`) y capturarlas con jog (los puntos escritos se repiten exactos y se leen en el archivo).
+- **Estado:** Aceptada.
 
 ## Jog cartesiano y jog verificado
 
