@@ -187,7 +187,7 @@ const KEYS = {
 };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
 const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos", HOMING: "Homing" };
-let held = null, timer = null, lastStatus = null, lastTravel = null, referenced = false;
+let held = null, timer = null, lastStatus = null, lastTravel = null, lastTool = null, lastElbow = null, referenced = false;
 let jogMode = "articular";
 const LABELS = {
   articular: { "1-": "J1 −", "1+": "J1 +", "2-": "J2 −", "2+": "J2 +", "3-": "J3 −", "3+": "J3 +", "4-": "J4 sube", "4+": "J4 baja" },
@@ -400,11 +400,20 @@ for (const radio of document.querySelectorAll("input[name=ptp-kind]")) {
     document.getElementById("ptp-pose").hidden = ptpKind() !== "pose";
   });
 }
+// Copia la pose actual en los campos del modo elegido (prefijo ptp o tr).
 // La posición estimada puede quedar un poco fuera del recorrido (un jog sin
-// referencia, el redondeo a pasos): se copia recortada, así es un destino válido.
-document.getElementById("ptp-here").addEventListener("click", () => {
-  if (!lastStatus) return;
-  const inputs = document.querySelectorAll("#ptp-joints input");
+// referencia, el redondeo a pasos): en articulaciones se copia recortada, así
+// es un destino válido. Devuelve el aviso del recorte, si hubo.
+function copyHere(prefix, kind) {
+  if (!lastStatus || !lastTool) throw new Error("Sin UCI: no hay pose para copiar");
+  if (kind === "pose") {
+    const inputs = document.querySelectorAll(`#${prefix}-pose input`);
+    [lastTool.x, lastTool.y, lastTool.z, lastTool.heading / 100].forEach((value, i) => { inputs[i].value = value.toFixed(2); });
+    // Con el brazo estirado queda el codo preferido.
+    document.getElementById(`${prefix}-elbow`).value = lastElbow === "positivo" ? "1" : "-1";
+    return null;
+  }
+  const inputs = document.querySelectorAll(`#${prefix}-joints input`);
   const clipped = [];
   lastStatus.position.forEach((value, joint) => {
     const [low, high] = lastTravel[joint];
@@ -412,9 +421,14 @@ document.getElementById("ptp-here").addEventListener("click", () => {
     if (inside !== value) clipped.push(`${NAMES[joint]} ${format(joint, value)} → ${format(joint, inside)}`);
     inputs[joint].value = (inside / 100).toFixed(2);
   });
-  ptpFeedback(clipped.length ? `Fuera del recorrido, se copió recortado: ${clipped.join(", ")}.` : null);
-  document.querySelector("input[name=ptp-kind][value=joints]").checked = true;
-  document.querySelector("input[name=ptp-kind][value=joints]").dispatchEvent(new Event("change"));
+  return clipped.length ? `Fuera del recorrido, se copió recortado: ${clipped.join(", ")}.` : null;
+}
+document.getElementById("ptp-here").addEventListener("click", () => {
+  try {
+    ptpFeedback(copyHere("ptp", ptpKind()));
+  } catch (error) {
+    ptpFeedback(error.message);
+  }
 });
 document.getElementById("ptp-go").addEventListener("click", async () => {
   const request = { speed: Number(document.getElementById("ptp-speed").value) };
@@ -482,6 +496,8 @@ async function refresh() {
     document.getElementById("heading").textContent = status
       ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—";
     const tool = state.connected ? state.tool : null;
+    lastTool = tool;
+    lastElbow = state.connected ? state.elbow : null;
     document.getElementById("tool").textContent = tool
       ? `X ${tool.x.toFixed(1)} · Y ${tool.y.toFixed(1)} · Z ${tool.z.toFixed(1)} mm` : "—";
     const elbow = state.connected && state.elbow ? ELBOWS[state.elbow] : "—";
