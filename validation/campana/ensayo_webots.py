@@ -8,7 +8,8 @@ azar por defecto (hasta ±10° en J1–J3) y sin referencia.
   1. F3 con el Hall de J1 trabado inactivo: el homing referencia J4, no
      encuentra el Hall de J1 y aborta con ERR 11, sin declarar referencia;
   2. con el Hall libre, el homing se repite y termina en la pose de reposo;
-  3. teach & play: tres puntos capturados con jog (Espacio), guardados,
+  3. teach & play: tres puntos capturados (Espacio) después de un jog con
+     órdenes JOG de scara/1, sin el jog de la URC, que cambia con #11; guardados,
      cargados del archivo y reproducidos con tramos LIN y PTP;
   4. cada trayectoria de demostración de trayectorias/ se carga y se
      reproduce sin errores; al terminar, la posición estimada está en su

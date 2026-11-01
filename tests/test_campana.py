@@ -28,7 +28,9 @@ class ScenarioTests(unittest.TestCase):
             with self.subTest(scenario["id"]):
                 for key in ("nombre", "inicial", "esperado", "tolerancia", "pasos"):
                     self.assertTrue(scenario[key].strip(), key)
-                self.assertTrue((ROOT / campana.ENSAYOS[scenario["ensayo"]][0]).is_file())
+                self.assertTrue(scenario["ensayos"])
+                for name in scenario["ensayos"]:
+                    self.assertTrue((ROOT / campana.ENSAYOS[name][0]).is_file())
 
     def test_the_spec_scenarios_are_all_there(self):
         ids = {e["id"] for e in campana.ESCENARIOS}
@@ -50,8 +52,8 @@ class RecordTests(unittest.TestCase):
         for scenario in self.record["escenarios"]:
             with self.subTest(scenario["id"]):
                 self.assertEqual(scenario["resultado"], "OK")
-                self.assertTrue((ROOT / scenario["registro"]).is_file())
-                self.assertIn("ENSAYO OK", (ROOT / scenario["registro"]).read_text(encoding="utf-8", errors="replace"))
+                for log in scenario["registros"]:
+                    self.assertIn("ENSAYO OK", (ROOT / log).read_text(encoding="utf-8", errors="replace"))
 
     def test_the_version_is_identified(self):
         version = self.record["version"]

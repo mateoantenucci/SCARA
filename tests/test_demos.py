@@ -71,6 +71,8 @@ class DemoTrajectoryTests(unittest.TestCase):
         last_number = 0
         for path in DEMOS:
             with self.subTest(path.name):
+                # Si una demo falla a mitad, Stop la corta: la siguiente arranca igual.
+                self.addCleanup(self.player.stop)
                 # Cada demo arranca en el reposo, referenciado, como después del homing.
                 robot.uci.send(f"S IDLE 15 {' '.join(map(str, REST))} 0 16 {last_number}")
                 wait_for(lambda: (s := self.session.snapshot()["status"]) and s["position"] == list(REST))
