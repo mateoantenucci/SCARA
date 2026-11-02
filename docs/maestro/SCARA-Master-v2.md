@@ -338,6 +338,8 @@ La búsqueda está acotada en recorrido y en 60 s por eje. Un Hall que no aparec
 
 El profesor pidió mover el robot a mano, guardar puntos, armar trayectorias con nombre y reproducirlas siguiendo rectas o el menor recorrido. AGSABOT es la referencia de la idea, no de la implementación (D0).
 
+**La página de la URC (D78–D80).** Una barra fija arriba dice lo que vale ahora: el enlace con la UCI y hace cuánto llegó su estado, los motores, la referencia (dudosa, en rojo), qué hace el robot y, en simulación, la carga y las fallas activas; ahí están Stop y Parada inmediata. A la derecha, fijos, la posición estimada y el registro de eventos que lleva la URC, con número y hora. Lo que hay que ver enseguida (una orden rechazada y por qué, un `EV LOST`, un `BOOT` inesperado, el enlace cortado) aparece además como aviso emergente. Un botón que la URC rechazaría por el estado del robot queda deshabilitado y dice por qué.
+
 **Jog desde la URC (D12, [ADR 0007](../adr/0007-jog-desde-la-urc.md)).** Con el teclado de la página de la URC, estilo videojuego. Funciona igual con el robot real, que no tiene botonera.
 
 | Tecla | Jog cartesiano | Jog articular |
@@ -557,7 +559,7 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | Botonera física y teclas en Webots | El jog va por la URC; se puede agregar sin cambiar el firmware |
 | Construcción y cableado del robot real | Se entrega firmware que compila para el UNO y la receta de socat |
 
-**Canal de instrumentación y banco de ensayo (D2, [ADR 0004](../adr/0004-canal-de-instrumentacion-separado.md), D59).** Lo que solo existe en la simulación viaja por otro puerto (9001) y otro protocolo de texto, `scara-sim/1`: el controlador de Webots envía la posición física simulada, leída de los sensores de posición de Webots, y recibe las fallas, la carga y la recarga del mundo. En la URC, un panel aparte, «Banco de ensayo (solo simulación)», muestra la columna «Simulado» junto a la estimada por pasos y la diferencia. Sin el canal, como con el robot real, el panel no aparece y la URC funciona igual. Capturar y planificar usan siempre la posición estimada: la sesión, el planificador y la validación no conocen el canal, y una prueba lo verifica.
+**Canal de instrumentación y banco de ensayo (D2, [ADR 0004](../adr/0004-canal-de-instrumentacion-separado.md), D59).** Lo que solo existe en la simulación viaja por otro puerto (9001) y otro protocolo de texto, `scara-sim/1`: el controlador de Webots envía la posición física simulada, leída de los sensores de posición de Webots, y recibe las fallas, la carga y la recarga del mundo. En la URC, la columna «Simulado» y la diferencia aparecen junto a la estimada por pasos, y un panel aparte, «Banco de ensayo (solo simulación)», inyecta las fallas y la carga: la URC confirma cada orden con el estado del simulador y dice lo vigente (D79). Sin el canal, como con el robot real, el panel no aparece y la URC funciona igual. Capturar y planificar usan siempre la posición estimada: la sesión, el planificador y la validación no conocen el canal, y una prueba lo verifica.
 
 | Falla | Qué hace el banco | Qué se ve |
 | --- | --- | --- |
@@ -700,6 +702,9 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D70 | Con referencia, jog a 10 °/s, frenado por la URC antes del límite y del choque | A 5 °/s no servía para mostrar, y con referencia el jog no verificaba nada. Desde D75 rige solo para el jog por motor | |
 | D71 | Un PTP puede salir de la zona de margen de un obstáculo si se aleja | Desde muy cerca, todo camino se rechazaba y el robot quedaba encerrado | |
 | D75 | Con referencia, el jog son segmentos de 20 ms planificados de a uno, tres en cola contados en el reloj de la UCI | Es D28 con el cartesiano; el robot frena en 60 ms sobre el último segmento verificado | |
+| D78 | La página separa lo que vale ahora (barra de estado), lo que hay que ver ahora (avisos emergentes) y lo que pasó (registro de eventos con número y hora, que lleva la URC) | En la QA, el aviso de pérdida de pasos quedaba lejos del botón y los errores no tenían hora; el registro en la URC no pierde nada entre dos consultas | |
+| D79 | El banco separa lo pedido de lo vigente, y la URC confirma cada orden con el estado `SIM` | «Aplicar» no decía si se había aplicado, el polling pisaba lo editado y el simulador puede no aplicar una orden | |
+| D80 | Órdenes a la izquierda, posición y registro fijos a la derecha; un botón bloqueado dice por qué | La página medía 3700 px en una columna, y reproducir con la referencia dudosa parecía permitido hasta el rechazo | |
 
 ### Canal de instrumentación, pérdida de pasos y fallas
 

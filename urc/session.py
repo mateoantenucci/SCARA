@@ -19,6 +19,7 @@ import time
 from scara.collisions import CollisionChecker
 from scara.kinematics import load_config
 from urc import jog as jogging, planner, validation
+from urc.events import EventLog
 from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message, segment_line
 
 
@@ -49,6 +50,7 @@ REST = (0, 0, 0, 12000)      # pose de reposo (D30), en centésimas
 PARK_SPEED = 1.0             # «Estacionar» y la vuelta al reposo del homing (D56)
 HOME_ORDER = (4, 1, 2, 3)    # D11
 HOME_START = 1.0             # s para que S muestre HOMING después de enviar HOME
+LINK_LATE = 1.0              # s sin S: el enlace se cortó (F4) y el watchdog del firmware ya frenó (D37)
 
 
 class Session:
@@ -89,12 +91,17 @@ class Session:
         # EV LOST desde la última referencia (F1, D65): la referencia de esos
         # ejes es dudosa hasta su homing.
         self.doubtful = []
+        self.link_late = False       # pasó LINK_LATE sin S: ya se avisó
         # El modelo para planificar se lee una vez.
         self.config = load_config()
         self.checker = CollisionChecker(self.config)
         self.limits = planner.default_limits(self.config)
         self.travel = planner.travel(self.config)
-        self.message = f"Esperando a la UCI en el puerto {self.port}"
+        # El registro de eventos de la página (D78): lo que informa la UCI y lo
+        # que decide la URC, con número y hora; el servidor HTTP y el banco de
+        # ensayo anotan ahí también.
+        self.events = EventLog()
+        self._say(f"Esperando a la UCI en el puerto {self.port}")
         self.closed = threading.Event()
         self.thread = threading.Thread(target=self._run, name="scara-uci", daemon=True)
         self.thread.start()
@@ -146,7 +153,7 @@ class Session:
             self.tramo = dict(summary, kind="PTP", first=self.next_segment, last=self.next_segment - 1,
                               cancelled=None)
             self._enqueue(plan.segments)
-            self.message = f"Tramo PTP en curso: {len(plan.segments)} segmentos, {summary['duration_s']:.2f} s"
+            self._say(f"Tramo PTP en curso: {len(plan.segments)} segmentos, {summary['duration_s']:.2f} s")
         return summary
 
     def run_segments(self, segments, start=None, follows=None, **summary):
@@ -190,7 +197,7 @@ class Session:
             self._require_still("el homing")
             self.homing = {"axes": [], "state": "en curso", "park": True, "seen": False,
                            "sent": time.monotonic()}
-            self.message = "Homing en curso: J4, J1, J2 y J3"
+            self._say("Homing en curso: J4, J1, J2 y J3")
             self._queue("HOME")
 
     def park(self):
@@ -295,6 +302,7 @@ class Session:
                 "connected": self.connected,
                 "peer": self.peer,
                 "message": self.message,
+                "message_time": self.message_time,
                 "firmware": self.firmware,
                 "boots": self.boots,
                 "received": self.received,
@@ -312,6 +320,7 @@ class Session:
                 "traffic": list(self.traffic),
                 "errors": list(self.errors),
                 "rejected": list(self.rejected),
+                "events_version": self.events.version,
             }
 
     def _tool(self, units):
@@ -342,6 +351,16 @@ class Session:
 
     def _referenced(self):
         return self.status is not None and self.status["homed"] == ALL_HOMED
+
+    def _say(self, text, level="info"):
+        """El mensaje de la URC que muestra la página; también va al registro de eventos."""
+        self.message, self.message_time = text, time.time()
+        self.events.add(level, "URC", text)
+
+    def _reject_line(self, text):
+        self.rejected.append(text)
+        # Aviso y no error: el Arduino suele mandar ruido al reiniciarse (D49).
+        self.events.add("aviso", "UCI", f"Línea de la UCI que no respeta scara/1: {text}")
 
     def _jog_segments(self, jog):
         """Jog articular o cartesiano con referencia: la URC lo planifica en segmentos (D28, D75).
@@ -398,7 +417,7 @@ class Session:
         try:
             q = jogging.step(plan["q"], plan["command"], plan["elbow"], self.config, self.checker, self.travel)
         except jogging.Blocked as exc:
-            self.message = f"Jog frenado: {exc}"
+            self._say(f"Jog frenado: {exc}", "aviso")
             self._end_jog()
             return None
         number = self.next_segment
@@ -473,7 +492,7 @@ class Session:
         referencia, ya no se alimenta.
         """
         if self.jog_plan is not None and not self._referenced():
-            self.message = "Jog frenado: el robot perdió la referencia"
+            self._say("Jog frenado: el robot perdió la referencia", "aviso")
             self._end_jog()
         if self.jogging is None or self.jog_plan is not None or self.status["mode"] != "JOG":
             return
@@ -482,7 +501,7 @@ class Session:
         if blocked:
             # _send_pending envía el JOG STOP; las renovaciones de la página lo rechazan.
             self.jog_deadline = 0.0
-            self.message = f"Jog frenado: {blocked}"
+            self._say(f"Jog frenado: {blocked}", "aviso")
 
     def _require_still(self, what):
         if self.status is None:
@@ -520,7 +539,7 @@ class Session:
         página lo dice en el mensaje, no solo en la línea del homing (D87)."""
         if self.homing is not None and self.homing["state"] == "en curso":
             self.homing.update(state=f"abortado: {reason}", park=False)
-            self.message = f"Homing abortado, sin referencia: {reason.replace('homing abortado: ', '')}"
+            self._say(f"Homing abortado, sin referencia: {reason.replace('homing abortado: ', '')}", "aviso")
 
     def _park_after_homing(self):
         """Con los cuatro ejes encontrados y el robot quieto, vuelve al reposo (D11, D56).
@@ -535,10 +554,23 @@ class Session:
             plan = self.park()
         except (ValueError, ConnectionError) as exc:
             with self.lock:
-                self.message = f"Homing terminado, pero no se pudo volver al reposo: {exc}"
+                self._say(f"Homing terminado, pero no se pudo volver al reposo: {exc}", "aviso")
             return
         with self.lock:
-            self.message = f"Homing terminado; volviendo al reposo en {plan['duration_s']:.1f} s"
+            self._say(f"Homing terminado; volviendo al reposo en {plan['duration_s']:.1f} s")
+
+    def _watch_link(self, now):
+        """Avisa una vez cuando el estado S deja de llegar por más de LINK_LATE, y cuando vuelve (D78)."""
+        with self.lock:
+            if self.status is None:
+                return
+            late = now - self.status_time > LINK_LATE
+            if late and not self.link_late:
+                self.events.add("error", "URC", f"Sin estado de la UCI hace más de {LINK_LATE:g} s: el enlace "
+                                "se cortó o la UCI se trabó. El firmware frena solo (watchdog).")
+            elif self.link_late and not late:
+                self.events.add("ok", "URC", "Volvió a llegar el estado de la UCI")
+            self.link_late = late
 
     def _enqueue(self, segments):
         """Numera los segmentos y los suma al tramo actual: salen de a uno, con cada OK."""
@@ -595,7 +627,7 @@ class Session:
             self._end_jog()
             self.jog_last = None
             self._discard_outgoing()
-            self.message = "UCI conectada"
+            self._say("UCI conectada", "ok")
             self._queue("HELLO")
 
     def _detach(self, reason):
@@ -605,7 +637,7 @@ class Session:
             self._end_jog()
             self._discard_outgoing()
             self._cancel_segments("la UCI se desconectó")
-            self.message = f"UCI desconectada: {reason}. Esperando que se vuelva a conectar."
+            self._say(f"UCI desconectada: {reason}. Esperando que se vuelva a conectar.", "error")
 
     def _receive(self, raw):
         """Una línea mala se informa y se descarta; no corta el enlace."""
@@ -616,7 +648,7 @@ class Session:
                     raise ValueError("línea de más de 64 bytes")
                 line = raw.decode("ascii").rstrip("\r")
             except ValueError as exc:
-                self.rejected.append(f"{raw[:LINE_MAX]!r}: {exc}")
+                self._reject_line(f"{raw[:LINE_MAX]!r}: {exc}")
                 return
             if not line.strip():
                 return
@@ -626,7 +658,7 @@ class Session:
             try:
                 message = parse_message(line)
             except ValueError as exc:
-                self.rejected.append(f"{line!r}: {exc}")
+                self._reject_line(f"{line!r}: {exc}")
                 return
             kind = message["kind"]
             if kind in ("BOOT", "HI"):
@@ -652,31 +684,34 @@ class Session:
                 if (self.status["mode"] == "IDLE" and not self._segments_pending()
                         and self._tramo_running()):
                     self._cancel_segments("el robot se detuvo antes de terminar")
+                    self._say("Movimiento cancelado: el robot se detuvo antes de terminar", "aviso")
             elif kind == "EV" and message["event"] == "LOST":
                 self._lost_steps(message["joint"], message["steps"])
             elif kind == "EV":
                 self.doubtful = [item for item in self.doubtful if item["joint"] != message["joint"]]
+                self.events.add("info", "UCI", f"EV HOMED {message['joint']}: J{message['joint']} referenciado")
                 if self.homing is not None and message["joint"] not in self.homing["axes"]:
                     self.homing["axes"].append(message["joint"])
                     if sorted(self.homing["axes"]) == sorted(HOME_ORDER) and self.homing["state"] == "en curso":
                         self.homing["state"] = "terminado"
-                        self.message = "Homing terminado: los cuatro ejes referenciados"
+                        self._say("Homing terminado: los cuatro ejes referenciados", "ok")
             elif kind == "OK":
                 self.last_ok = message["number"]
                 if message["number"] == self.in_flight:
                     self.in_flight = None
             elif kind == "ERR":
                 self.errors.append(f"ERR {message['code']} {message['word']}: {message['cause']}")
+                self.events.add("error", "UCI", self.errors[-1])
                 # Con segmentos en ejecución, el firmware frena con rampa ante
                 # todo ERR: el resto del tramo ya no se envía.
                 if self._tramo_running():
                     self._cancel_segments(f"la UCI respondió ERR {message['code']} {message['word']}")
-                    self.message = f"Tramo cancelado: ERR {message['code']} {message['word']}"
+                    self._say(f"Tramo cancelado: ERR {message['code']} {message['word']}", "aviso")
                 if self._jog_draining() or self.jog_plan is not None:
                     # Igual con los del jog, aunque ya se haya soltado la tecla:
                     # frena y descarta la cola.
                     if self.jog_plan is not None:
-                        self.message = f"Jog frenado: ERR {message['code']} {message['word']}"
+                        self._say(f"Jog frenado: ERR {message['code']} {message['word']}", "aviso")
                     self._end_jog()
                     self.jog_last = None
                     if self.in_flight is not None and not self._segments_pending():
@@ -695,8 +730,8 @@ class Session:
         """
         self.doubtful = [item for item in self.doubtful if item["joint"] != joint]
         self.doubtful.append({"joint": joint, "steps": steps})
-        self.message = (f"Pérdida de pasos en J{joint}: {steps:+d} pasos completos al cruzar su Hall. "
-                        "La referencia es dudosa: conviene hacer homing.")
+        self._say(f"Pérdida de pasos en J{joint}: {steps:+d} pasos completos al cruzar su Hall. "
+                  "La referencia es dudosa: conviene hacer homing.", "error")
         self.errors.append(f"EV LOST {joint} {steps}: referencia dudosa de J{joint}, conviene hacer homing")
 
     def _booted(self):
@@ -713,10 +748,10 @@ class Session:
             # A mitad de una conexión: la UCI se reinició sola (falla F5).
             # También va a la lista de errores, que no la pisa el próximo
             # mensaje (D87).
-            self.message = "BOOT inesperado: la UCI se reinició y perdió la referencia (F5)"
+            self._say("BOOT inesperado: la UCI se reinició y perdió la referencia (F5)", "error")
             self.errors.append("BOOT inesperado: la UCI se reinició sin corriente y sin referencia (F5)")
         else:
-            self.message = "La UCI arrancó: sin referencia hasta ZERO u homing"
+            self._say("La UCI arrancó: sin referencia hasta ZERO u homing")
 
     def _send_pending(self, client, now):
         lines = []
@@ -774,6 +809,7 @@ class Session:
                     buffer = buffer[:LINE_MAX]
                 self._send_pending(client, time.monotonic())
                 self._park_after_homing()
+                self._watch_link(time.monotonic())
             except OSError as exc:
                 if client is not None:
                     client.close()

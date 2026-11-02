@@ -76,13 +76,13 @@ Cada paso se validó contra el código y contra los ensayos de Webots que lo eje
 
    La consola de Webots dice `UCI: conectada a la URC en 127.0.0.1:9000`. El orden no importa: si Webots arranca primero, reintenta cada segundo.
 
-3. **Qué se ve:** en «Tráfico scara/1», el `BOOT` del firmware, el `HELLO` de la URC y el `HI scara/1 1`; el estado `S` llega 20 veces por segundo con modo `OFF` (sin corriente) y sin referencia. Aparece el panel «Banco de ensayo (solo simulación)», porque el controlador se conectó también al 9001.
+3. **Qué se ve:** la barra de arriba pasa a «UCI conectada · actualizado hace» unas décimas de segundo, con «Motores sin corriente» y «Sin referencia»: el estado `S` llega 20 veces por segundo con modo `OFF`. El registro de eventos, a la derecha, dice «UCI conectada» y «La UCI arrancó: sin referencia hasta ZERO u homing». En «Diagnóstico · Tráfico scara/1», plegado al final, se ven el `BOOT` del firmware, el `HELLO` de la URC y el `HI scara/1 1`. Aparece el panel «Banco de ensayo (solo simulación)», porque el controlador se conectó también al 9001.
 
 4. **Qué se explica:** la URC es servidor y la UCI se conecta (D1); el firmware arranca con la primera conexión, como el UNO cuando socat abre el puerto (D36); arranca sin corriente (D40); el banco de ensayo va por otro canal, que el robot real no tiene (D2, ADR 0004).
 
 ### 2.2 Habilitar y homing
 
-1. **«Habilitar motores»**: el modo pasa de `OFF` a `IDLE`. El robot está cerca de la pose de reposo, con el desvío al azar de hasta ±10° en J1–J3 con el que arranca el mundo (D11, D57).
+1. **«Habilitar motores»**: el modo pasa de `OFF` a `IDLE` y la barra dice «Motores con corriente». El robot está cerca de la pose de reposo, con el desvío al azar de hasta ±10° en J1–J3 con el que arranca el mundo (D11, D57).
 2. **«Homing…»**: la página dibuja la pose de reposo y pregunta «¿El robot está en la pose de reposo?». Responder **«Sí, está en reposo»**.
 3. **Qué se ve:** J4 sube hasta su Hall, después J1 (M1 y M2 juntos), J2 (M2 solo) y J3. Cada eje busca rápido, retrocede y vuelve lento al flanco: `EV HOMED 4`, `EV HOMED 1`, `EV HOMED 2`, `EV HOMED 3`. Con los cuatro, la URC vuelve sola a la pose de reposo con un PTP. Unos 55 s de homing y 14 s de vuelta (D72).
 4. **Qué se explica:** por qué ese orden y ese sentido (D11, D56), por qué el flanco y no el centro del imán (D56), cómo se activa el Hall en Webots (D57). Mientras el robot se mueve hay tiempo para el material de la sección 5.3.
@@ -128,13 +128,13 @@ El orden importa: F1 y F2 necesitan referencia; F5 la borra; F3 y F4 se muestran
 1. **F1 · Pérdida de pasos por carga (D64–D67).**
    1. En «Ir a una pose (PTP)», J4 = 60 mm y J1–J3 en 0 → **«Ir a la pose…»** y confirmar.
    2. «Carga en la herramienta (g)»: 4850 (con la herramienta, 5 kg; D85) → **«Aplicar»**. «F1 · Corriente del driver de» M4 al 50 % → **«Aplicar»**.
-   3. «Ir a una pose» con J4 = 10 mm. La estimada sube; en la columna «Simulado» del banco, J4 no sube: la planta perdió pasos, en múltiplos de 4 pasos completos, y el firmware no se entera.
-   4. M4 al 100 % y **«Estacionar…»**. Al bajar, J4 entra en el imán de abajo y el firmware envía `EV LOST 4` con los pasos perdidos. La página avisa «Referencia dudosa (EV LOST)», y reproducir queda bloqueado hasta un homing (D68).
+   3. «Ir a una pose» con J4 = 10 mm. La estimada sube; en la columna «Simulado», junto a la estimada, J4 no sube y la «Diferencia» se pone en rojo: la planta perdió pasos, en múltiplos de 4 pasos completos, y el firmware no se entera.
+   4. M4 al 100 % y **«Estacionar…»**. Al bajar, J4 entra en el imán de abajo y el firmware envía `EV LOST 4` con los pasos perdidos. Sin mover la vista del botón: la barra dice «Referencia dudosa (EV LOST)» en rojo, aparece el aviso de la pérdida de pasos y el evento queda en el registro con su hora. «▶ Desde el principio» queda deshabilitado con «Reproducir bloqueado» y el motivo, hasta un homing (D68, D78, D80).
    5. Carga de nuevo en 0 g (la herramienta sola).
 2. **F2 · Driver de M4 sin corriente (D60).** «Ir a una pose» con J4 = 60 mm. Marcar **«F2 · Driver de M4 sin corriente (J4 cae)»**: en «Simulado», J4 cae hasta abajo; la estimada sigue en 60 mm. Desmarcarla: el motor retiene J4 donde quedó, y el firmware sigue creyendo que está en 60. Es la falla silenciosa que, sin encoders, se ve recién en un Hall.
 3. **F5 · Reinicio de la UCI (D43, D61).** **«F5 · Reiniciar la UCI…»** y confirmar. La URC avisa «BOOT inesperado: la UCI se reinició y perdió la referencia (F5)». La UCI arranca sin corriente: J4 queda abajo y J1–J3 donde estaban. Esto también limpia lo que dejaron F1 y F2.
 4. **F3 · Hall trabado inactivo.** **«Habilitar motores»**. En «F3 · Hall trabado», J1 → `inactivo`. **«Homing…»** y confirmar: J4 se referencia y J1 recorre toda su búsqueda sin ver el imán: `ERR 11 ausente`, y el homing aborta sin declarar referencia (D56). Con J4 en `activo`, el homing aborta con `ERR 12 trabado` (escenario F3a).
-5. **F4 · Enlace cortado (watchdog, D37).** Sin referencia, el jog articular es el `JOG` lento del firmware. Mantener **D** y, sin soltarla, marcar con el mouse **«F4 · Cortar el enlace scara/1 (actúa el watchdog)»**: el estado deja de llegar y el brazo frena solo en menos de 1 s. Desmarcarla: el robot está quieto.
+5. **F4 · Enlace cortado (watchdog, D37).** Sin referencia, el jog articular es el `JOG` lento del firmware. Mantener **D** y, sin soltarla, marcar con el mouse **«F4 · Cortar el enlace scara/1 (actúa el watchdog)»**: el estado deja de llegar, la barra pasa a «Enlace cortado» y el brazo frena solo en menos de 1 s. Desmarcarla: el robot está quieto y el registro dice «Volvió a llegar el estado de la UCI».
 6. **Cierre.** F3 de J1 en `libre` y **«Homing…»**: termina en la pose de reposo y el robot queda referenciado.
 7. **Qué se explica:** cómo se detecta cada falla sin encoders (tabla de la sección 5.4); el catálogo y por qué F6 no se hizo (D23).
 
@@ -334,6 +334,20 @@ Los pasos completos que la planta dice que el motor se corrió de lo que contó 
 
 **¿Cómo se entera el operador de un homing abortado o de un reinicio de la UCI?**
 El mensaje de estado dice «Homing abortado, sin referencia» con la causa, por ejemplo `ERR 12 trabado`. El `BOOT` inesperado queda además en la lista de errores, que la siguiente orden no pisa (D87).
+
+### Interfaz de operación
+
+**¿Cómo se entera el operador de lo que pasa? ¿Dónde tiene que mirar?**
+Cada cosa tiene su lugar (D78). La barra de arriba dice lo que vale ahora: el enlace, los motores, la referencia, qué hace el robot y el banco. Un aviso emergente muestra lo que hay que ver ahora: una orden rechazada y por qué, un `EV LOST`, un `BOOT` inesperado o el enlace cortado; los errores quedan hasta cerrarlos. El registro de eventos guarda todo con número y hora; lo lleva la URC, así que no se pierde entre dos consultas ni al recargar la página.
+
+**¿Qué significa «actualizado hace 0.1 s»?**
+El tiempo desde el último estado `S` de la UCI, que llega 20 veces por segundo. Desde 0,5 s el enlace está demorado y desde 1 s cortado: el firmware ya frenó solo por el watchdog y la posición de la página no es la actual (D37, D78).
+
+**¿Cómo saben que una falla del banco se aplicó?**
+La URC espera que el estado del simulador la muestre: anota el cambio («Carga en la herramienta: 150 g → 500 g») o, si en 2 s no llegó, que no se aplicó. Al lado de cada control dice lo vigente, y lo editado no se pisa hasta aplicarlo (D79).
+
+**¿Por qué hay botones deshabilitados?**
+Porque la URC los rechazaría por el estado del robot: sin corriente no hay homing, sin referencia no se estaciona ni se reproduce, y con la referencia dudosa no se reproduce (D68). La página dice el motivo junto al botón, y la URC lo sigue verificando (D80).
 
 ### Proceso y validación
 

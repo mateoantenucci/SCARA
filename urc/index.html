@@ -5,74 +5,163 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SCARA · URC</title>
   <style>
-    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #172b36; background: #eef3f4; }
+    :root {
+      color-scheme: light; font-family: system-ui, sans-serif;
+      --ink: #172b36; --muted: #49616b; --line: #d3dfe3; --bg: #eef3f4; --accent: #086e78;
+      --ok: #0b6748; --ok-bg: #d9f0e6; --warn: #7a5200; --warn-bg: #fff1d6;
+      --error: #a62929; --error-bg: #fbe6e6; --idle-bg: #e7edef;
+      color: var(--ink); background: var(--bg);
+    }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { margin: 0; }
-    main { max-width: 960px; margin: auto; padding: 28px 20px 40px; }
-    h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 3px 0 8px; }
-    h2 { font-size: 1.1rem; margin: 0 0 12px; }
-    p { line-height: 1.5; margin: 8px 0; }
-    .eyebrow { text-transform: uppercase; letter-spacing: .1em; font-size: .75rem; font-weight: 700; color: #496570; }
-    .muted { color: #49616b; }
-    .card { background: white; border: 1px solid #d3dfe3; border-radius: 14px; padding: 20px; margin: 16px 0; }
-    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .badge { display: inline-block; background: #e7edef; border-radius: 20px; padding: 5px 10px; font-size: .82rem; font-weight: 700; }
-    .badge.ok { background: #d9f0e6; color: #0b6748; }
-    .badge.warn { background: #fff1d6; color: #7a5200; }
-    button.danger { border-color: #a62929; color: #a62929; }
-    button.danger:hover { background: #fbeaea; }
-    table { border-collapse: collapse; width: 100%; font-size: .95rem; }
-    th, td { text-align: right; padding: 8px 6px; border-bottom: 1px solid #e4ebee; font-variant-numeric: tabular-nums; }
-    th:first-child, td:first-child { text-align: left; }
-    th { font-size: .78rem; color: #49616b; }
-    button { font: inherit; border: 1px solid #a9bcc4; background: #fff; color: #173d47; border-radius: 7px; padding: 10px 14px; cursor: pointer; font-weight: 650; touch-action: none; }
-    button:hover { background: #eaf4f5; }
-    button.active { background: #086e78; border-color: #086e78; color: white; }
+    body { margin: 0; background: var(--bg); }
+    h2 { font-size: 1.05rem; margin: 0 0 10px; }
+    h3 { font-size: .95rem; margin: 16px 0 8px; }
+    p { line-height: 1.45; margin: 6px 0; }
+    .muted { color: var(--muted); }
+    .small { font-size: .85rem; }
+    .card { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 0 0 14px; scroll-margin-top: calc(var(--bar-height, 90px) + 14px); }
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .row + .row { margin-top: 8px; }
+    .grow { flex: 1; }
+    .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
+    .badge { display: inline-block; background: var(--idle-bg); border-radius: 20px; padding: 4px 10px; font-size: .82rem; font-weight: 700; }
+    button { font: inherit; border: 1px solid #a9bcc4; background: #fff; color: #173d47; border-radius: 7px; padding: 8px 13px; cursor: pointer; font-weight: 650; touch-action: none; }
+    button:hover:not(:disabled) { background: #eaf4f5; }
+    button.active { background: var(--accent); border-color: var(--accent); color: white; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    button.primary:hover:not(:disabled) { background: #065a62; }
+    button.danger { border-color: var(--error); color: var(--error); }
+    button.danger:hover:not(:disabled) { background: var(--error-bg); }
     button:disabled { opacity: .45; cursor: not-allowed; }
-    kbd { border: 1px solid #a9bcc4; border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; font-size: .85rem; background: #f7fafb; }
-    #feedback, .feedback { min-height: 1.5em; font-size: .9rem; color: #a62929; }
-    .feedback details { margin-top: .25em; color: #444; }
-    .feedback summary { cursor: pointer; color: #a62929; }
+    kbd { border: 1px solid #a9bcc4; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: .8rem; background: #f7fafb; color: var(--ink); }
+    table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+    th, td { text-align: right; padding: 6px 5px; border-bottom: 1px solid #e4ebee; font-variant-numeric: tabular-nums; }
+    th:first-child, td:first-child { text-align: left; }
+    th { font-size: .75rem; color: var(--muted); }
+    input, select { font: inherit; padding: 5px 6px; border: 1px solid #a9bcc4; border-radius: 6px; background: white; }
+    input.edited { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+    .feedback details { margin-top: .25em; color: var(--ink); }
+    .feedback summary { cursor: pointer; color: var(--error); }
     .fields { margin: 10px 0; }
-    .fields input { width: 7em; }
-    input, select { font: inherit; padding: 6px; border: 1px solid #a9bcc4; border-radius: 6px; }
+    .fields input { width: 6.5em; }
+    #feedback, .feedback { min-height: 1.4em; font-size: .9rem; color: var(--error); }
+    .hint { background: #f2f7f8; border-left: 4px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; }
+    .hint.warn { background: var(--warn-bg); border-color: #c98a00; }
+    .hint.error { background: var(--error-bg); border-color: var(--error); }
+    .blocked { color: var(--warn); font-size: .88rem; font-weight: 600; }
+    .blocked::before { content: "⛔ "; }
+    details.more > summary, details.diagnostic > summary { cursor: pointer; color: var(--muted); font-size: .88rem; }
+    details.diagnostic > summary { font-weight: 700; font-size: 1rem; color: var(--ink); }
     dialog { border: 1px solid #a9bcc4; border-radius: 14px; max-width: 420px; }
     pre { white-space: pre-wrap; font: .8rem ui-monospace, monospace; background: #f4f7f8; padding: 10px; border-radius: 6px; max-height: 260px; overflow: auto; margin: 0; }
+
+    /* Barra de estado: lo que vale ahora, siempre a la vista (D78). */
+    .bar { position: sticky; top: 0; z-index: 30; background: white; border-bottom: 1px solid var(--line); box-shadow: 0 2px 8px rgba(23, 43, 54, .07); }
+    .bar-inner { max-width: 1480px; margin: auto; padding: 8px 16px; }
+    .brand { font-weight: 800; font-size: 1.05rem; margin-right: 4px; white-space: nowrap; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 4px 10px; font-size: .82rem; font-weight: 700; background: var(--idle-bg); color: var(--ink); white-space: nowrap; text-decoration: none; }
+    .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #8aa1aa; flex: none; }
+    .chip.ok { background: var(--ok-bg); color: var(--ok); } .chip.ok::before { background: #1f9d6b; }
+    .chip.warn { background: var(--warn-bg); color: var(--warn); } .chip.warn::before { background: #d69500; }
+    .chip.error { background: var(--error-bg); color: var(--error); } .chip.error::before { background: #d23b3b; }
+    .chip.busy::before { background: var(--accent); animation: pulse 1s infinite; }
+    a.chip:hover { text-decoration: underline; }
+    @keyframes pulse { 50% { opacity: .25; } }
+    button.help { padding: 0; width: 22px; height: 22px; border-radius: 50%; font-size: .78rem; line-height: 1; }
+    .help-text { margin: 8px 0 0; font-size: .86rem; max-width: 80ch; color: var(--muted); }
+    .message { margin-top: 6px; font-size: .9rem; }
+    .message .label { font-size: .72rem; font-weight: 800; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
+    .bar button { padding: 7px 12px; }
+
+    /* Dos columnas: las órdenes a la izquierda; la posición y el registro, fijos a la derecha. */
+    .layout { max-width: 1480px; margin: auto; padding: 14px 16px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
+    .side { position: sticky; top: calc(var(--bar-height, 90px) + 14px); height: calc(100vh - var(--bar-height, 90px) - 28px); display: flex; flex-direction: column; }
+    .side .card { margin-bottom: 12px; }
+    .log { flex: 1; min-height: 220px; display: flex; flex-direction: column; margin-bottom: 0 !important; }
+    @media (max-width: 999px) {
+      .layout { grid-template-columns: 1fr; }
+      .side { position: static; height: auto; }
+      .log { max-height: 60vh; }
+    }
+
+    #tr-points td { white-space: nowrap; padding: 4px 3px; }
+    #tr-points button { padding: 2px 7px; }
+    .pos th, .pos td { padding: 4px 4px; }
+    .side p { margin: 4px 0; }
+    .pos td.differs { color: var(--error); font-weight: 700; }
+    .hall-on { color: var(--ok); font-weight: 700; }
+
+    /* Registro de eventos. */
+    .events { list-style: none; margin: 8px 0 0; padding: 0; overflow: auto; flex: 1; border-top: 1px solid var(--line); }
+    .event { padding: 7px 4px 7px 10px; border-bottom: 1px solid #edf2f3; border-left: 4px solid transparent; font-size: .86rem; }
+    .event .head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: .76rem; color: var(--muted); }
+    .event .n { font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .event time { font-variant-numeric: tabular-nums; }
+    .event .source { font-weight: 700; }
+    .event .repeats { margin-left: auto; }
+    .event .text { margin-top: 2px; line-height: 1.35; }
+    .event.ok { border-left-color: #1f9d6b; }
+    .event.aviso { border-left-color: #d69500; background: #fffaf0; }
+    .event.error { border-left-color: #d23b3b; background: #fff5f5; }
+    .event.new { animation: arrive 4s ease-out; }
+    @keyframes arrive { from { background: #fff1b8; } }
+    details.detail { margin-top: 4px; font-size: .84rem; }
+    details.detail summary { cursor: pointer; color: var(--muted); }
+
+    /* Avisos emergentes. */
+    .toasts { position: fixed; right: 16px; bottom: 16px; z-index: 40; display: flex; flex-direction: column; gap: 8px; width: min(380px, calc(100vw - 32px)); }
+    .toast { background: white; border: 1px solid var(--line); border-left: 6px solid #8aa1aa; border-radius: 10px; padding: 10px 12px; box-shadow: 0 6px 20px rgba(23, 43, 54, .18); font-size: .9rem; animation: slide .2s ease-out; }
+    .toast .head { display: flex; gap: 8px; align-items: baseline; }
+    .toast .head strong { flex: 1; }
+    .toast .meta { font-size: .74rem; color: var(--muted); white-space: nowrap; }
+    .toast .close { border: 0; padding: 0 4px; font-size: 1.1rem; line-height: 1; background: none; color: var(--muted); }
+    .toast p { margin: 4px 0 0; }
+    .toast.ok { border-left-color: #1f9d6b; } .toast.ok strong { color: var(--ok); }
+    .toast.aviso { border-left-color: #d69500; } .toast.aviso strong { color: var(--warn); }
+    .toast.error { border-left-color: #d23b3b; background: #fffafa; } .toast.error strong { color: var(--error); }
+    @keyframes slide { from { transform: translateY(12px); opacity: 0; } }
   </style>
 </head>
 <body>
-<main>
-  <div class="eyebrow">Unidad Remota de Coordinación · protocolo scara/1</div>
-  <h1>SCARA · URC</h1>
-  <p class="muted">La URC espera que la UCI (Webots o el Arduino) se conecte. La UCI arranca con los motores sin corriente: habilitalos primero. Mantené una tecla de jog para mover el robot; al soltar, frena. <kbd>Tab</kbd> cambia entre jog articular y cartesiano, <kbd>Mayús</kbd> da jog lento y <kbd>Esc</kbd> frena todo.</p>
-
-  <section class="card" aria-label="Conexión">
+<header class="bar" id="bar" aria-label="Estado actual">
+  <div class="bar-inner">
     <div class="row">
-      <span class="badge" id="connection">Sin UCI</span>
-      <span class="badge" id="reference">Sin referencia</span>
-      <span class="badge" id="mode">—</span>
-    </div>
-    <p id="message" class="muted">Consultando a la URC…</p>
-    <p id="firmware" class="muted"></p>
-    <div class="row">
-      <button id="enable">Habilitar motores</button>
-      <button id="disable">Deshabilitar motores…</button>
+      <span class="brand" title="Unidad Remota de Coordinación · protocolo scara/1">SCARA · URC</span>
+      <span class="chip" id="link">Consultando a la URC…</span>
+      <button type="button" class="help" id="link-help-button" aria-expanded="false" aria-controls="link-help" title="Qué es esto">?</button>
+      <span class="chip" id="motors">Motores: —</span>
+      <span class="chip" id="reference">Referencia: —</span>
+      <span class="chip" id="mode">—</span>
+      <a class="chip" id="bench-chip" href="#banco" title="Ir al banco de ensayo" hidden></a>
+      <span class="grow"></span>
       <button id="stop">Stop <kbd>Esc</kbd></button>
       <button id="halt" class="danger">Parada inmediata</button>
     </div>
-  </section>
+    <div class="row message"><span class="label">URC</span><span class="muted" id="message-time"></span><span id="message">Consultando a la URC…</span></div>
+    <p class="help-text" id="link-help" hidden>La UCI (Webots o el Arduino) manda su estado —posición estimada, modo y referencia— 20 veces por segundo. «Actualizado hace» es el tiempo desde el último. Si pasa de 0,5 s, el enlace está demorado; desde 1 s, el firmware ya frenó solo (watchdog) y lo que muestra la página no es la posición actual. F4 del banco de ensayo corta el enlace a propósito.</p>
+  </div>
+</header>
 
-  <section class="card" aria-label="Referencia">
-    <h2>Referencia</h2>
-    <p class="muted">Sin referencia, el robot no sabe dónde está: solo se permite jog articular lento, que el Hall de cada eje frena como fin de carrera. El homing busca los Hall en orden J4, J1, J2, J3 y después vuelve a la pose de reposo.</p>
+<div class="layout">
+<main>
+  <section class="card" aria-label="Motores y referencia">
+    <h2>Motores y referencia</h2>
+    <p class="hint" id="next-step">Consultando a la URC…</p>
     <div class="row">
-      <button id="home">Homing…</button>
-      <button id="zero">Referencia manual…</button>
-      <button id="park">Estacionar…</button>
+      <button id="enable" data-needs="uci">Habilitar motores</button>
+      <button id="disable" data-needs="uci">Deshabilitar motores…</button>
+      <span class="sep"></span>
+      <button id="home" data-needs="motores">Homing…</button>
+      <button id="zero" data-needs="uci">Referencia manual…</button>
+      <button id="park" data-needs="referencia">Estacionar…</button>
     </div>
-    <p class="muted">Homing: <strong id="homing">—</strong></p>
+    <p class="muted" id="homing-line" hidden>Homing: <strong id="homing">—</strong></p>
     <div id="reference-feedback" class="feedback" role="status" aria-live="polite"></div>
+    <details class="more">
+      <summary>Cómo funciona</summary>
+      <p class="muted small">La UCI arranca con los motores sin corriente: habilitalos primero. Sin referencia, el robot no sabe dónde está: solo se permite jog articular lento, que el Hall de cada eje frena como fin de carrera. El homing busca los Hall en orden J4, J1, J2, J3 y después vuelve a la pose de reposo. «Estacionar» lleva el robot referenciado a la pose de reposo.</p>
+    </details>
   </section>
 
   <dialog id="rest-dialog">
@@ -96,48 +185,38 @@
     </div>
   </dialog>
 
-  <section class="card" aria-label="Posición estimada por pasos">
-    <h2>Posición estimada por pasos</h2>
-    <table>
-      <thead><tr><th>Articulación</th><th>Estimada</th><th>Hall</th></tr></thead>
-      <tbody id="joints"></tbody>
-    </table>
-    <p class="muted">Punto de herramienta: <strong id="tool">—</strong> · rumbo (J1 + J2 + J3): <strong id="heading">—</strong></p>
-    <p class="muted">Configuración del codo: <strong id="elbow">—</strong></p>
-  </section>
-
   <section class="card" aria-label="Jog">
     <div class="row">
       <h2 id="jog-title" style="margin: 0">Jog articular</h2>
       <button id="jog-mode" type="button">Cambiar a cartesiano <kbd>Tab</kbd></button>
       <span class="badge" id="jog-elbow">Codo: —</span>
     </div>
-    <p class="muted" id="jog-help"></p>
+    <p class="muted small" id="jog-help"></p>
     <div class="row">
       <button data-axis="1" data-direction="-"><span></span> <kbd>A</kbd></button>
       <button data-axis="1" data-direction="+"><span></span> <kbd>D</kbd></button>
       <button data-axis="2" data-direction="-"><span></span> <kbd>S</kbd></button>
       <button data-axis="2" data-direction="+"><span></span> <kbd>W</kbd></button>
-    </div>
-    <div class="row" style="margin-top: 8px">
+      <span class="sep"></span>
       <button data-axis="3" data-direction="-"><span></span> <kbd>Q</kbd></button>
       <button data-axis="3" data-direction="+"><span></span> <kbd>E</kbd></button>
       <button data-axis="4" data-direction="-"><span></span> <kbd>R</kbd></button>
       <button data-axis="4" data-direction="+"><span></span> <kbd>F</kbd></button>
     </div>
-    <div class="row" style="margin-top: 12px">
+    <div class="row" style="margin-top: 10px">
       <label><input type="checkbox" id="by-motor"> Jog por motor (M1–M4, sin compensar el acople; no afecta al PTP)</label>
     </div>
+    <p class="muted small">Mantené la tecla para mover; al soltar, frena. <kbd>Mayús</kbd> da jog lento, <kbd>Tab</kbd> cambia de modo y <kbd>Esc</kbd> frena todo. Con el cursor en un campo de texto, las teclas no mueven el robot.</p>
     <div id="feedback" role="status" aria-live="polite"></div>
   </section>
 
   <section class="card" aria-label="Ir a una pose">
     <h2>Ir a una pose (PTP)</h2>
-    <p class="muted">Todas las articulaciones se mueven a la vez y llegan juntas. La URC verifica límites y choques, muestra la duración y pide confirmación. Exige el robot referenciado y quieto.</p>
+    <p class="muted small">Todas las articulaciones se mueven a la vez y llegan juntas. La URC verifica límites y choques, muestra la duración y pide confirmación. Exige el robot referenciado y quieto.</p>
     <div class="row">
       <label><input type="radio" name="ptp-kind" value="joints" checked> Articulaciones</label>
       <label><input type="radio" name="ptp-kind" value="pose"> Punto de herramienta</label>
-      <button id="ptp-here" type="button">Copiar la pose actual</button>
+      <button id="ptp-here" type="button" data-needs="estado">Copiar la pose actual</button>
     </div>
     <div class="row fields" id="ptp-joints">
       <label>J1 (°) <input type="number" step="0.01" value="0"></label>
@@ -153,29 +232,56 @@
       <label>Codo <select id="ptp-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
     </div>
     <div class="row">
-      <label>Velocidad (%) <input id="ptp-speed" type="number" min="1" max="100" step="1" value="25"></label>
-      <button id="ptp-go">Ir a la pose…</button>
+      <label>Velocidad (%) <input id="ptp-speed" type="number" min="1" max="100" step="1" value="25" style="width: 5em"></label>
+      <button id="ptp-go" class="primary" data-needs="referencia">Ir a la pose…</button>
     </div>
-    <p id="tramo" class="muted"></p>
+    <p class="blocked" data-blocked="referencia" data-what="Ir a una pose" hidden></p>
+    <p id="tramo" class="muted small"></p>
     <div id="ptp-feedback" class="feedback" role="status" aria-live="polite"></div>
   </section>
 
   <section class="card" id="trajectory" aria-label="Trayectoria"></section>
 
-  <section class="card" aria-label="Errores">
-    <h2>Errores</h2>
-    <p class="muted">Los informados por la UCI con <code>ERR</code> y las líneas de la UCI que la URC no entendió.</p>
-    <pre id="errors"></pre>
-  </section>
-
-  <section class="card" aria-label="Tráfico scara/1">
-    <h2>Tráfico scara/1</h2>
-    <p class="muted">Sin el estado S (20/s), PING (4/s) ni los SEG y OK de los tramos (50/s).</p>
-    <pre id="traffic"></pre>
-  </section>
   <!-- Banco de ensayo (solo simulación, ADR 0004): lo arma banco.js si hay canal de instrumentación. -->
   <section class="card" id="banco" aria-label="Banco de ensayo" hidden></section>
+
+  <section class="card" aria-label="Diagnóstico">
+    <details class="diagnostic" id="diagnostic">
+      <summary>Diagnóstico · Tráfico scara/1</summary>
+      <p class="muted small">Las líneas del protocolo serie entre la URC y la UCI, para revisar el enlace o el firmware: no hace falta mirarlas para operar el robot. Sin el estado S (20/s), PING (4/s) ni los SEG y OK de los tramos (50/s). Los ERR y las líneas que la URC no entendió también van al registro de eventos.</p>
+      <p class="muted small" id="firmware"></p>
+      <pre id="traffic"></pre>
+    </details>
+  </section>
 </main>
+
+<aside class="side">
+  <section class="card" aria-label="Posición estimada por pasos">
+    <h2>Posición estimada por pasos</h2>
+    <table class="pos">
+      <thead><tr><th>Art.</th><th>Estimada</th><th class="sim" hidden title="Posición física del simulador (banco de ensayo)">Simulado</th><th class="sim" hidden title="Simulado − estimada">Diferencia</th><th>Hall</th></tr></thead>
+      <tbody id="joints"></tbody>
+    </table>
+    <p class="small">Herramienta: <strong id="tool">—</strong></p>
+    <p class="small">Rumbo (J1 + J2 + J3): <strong id="heading">—</strong> · Codo: <strong id="elbow">—</strong></p>
+    <p class="small muted sim" hidden>«Simulado»: la posición física del simulador, que el robot real no conoce (banco de ensayo).</p>
+  </section>
+  <section class="card log" aria-label="Registro de eventos">
+    <div class="row">
+      <h2 style="margin: 0" title="Lo que informa la UCI, lo que hace la URC y las órdenes, con número y hora; el más nuevo arriba">Registro de eventos</h2>
+      <span class="badge" id="events-count"></span>
+      <span class="grow"></span>
+      <label class="small"><input type="checkbox" id="events-important"> Solo avisos y errores</label>
+    </div>
+    <ol class="events" id="events" aria-live="off"></ol>
+    <p class="muted small" id="events-empty">Todavía no hay eventos.</p>
+  </section>
+</aside>
+</div>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="/avisos.js"></script>
 <script src="/banco.js" defer></script>
 <script>
 const NAMES = ["J1", "J2", "J3", "J4"];
@@ -188,9 +294,16 @@ const KEYS = {
   KeyQ: [3, "-"], KeyE: [3, "+"], KeyR: [4, "-"], KeyF: [4, "+"],
 };
 const REFRESH_MS = 150;  // la URC frena si no se renueva en 500 ms
+const POLL_MS = 200;
+// El enlace (D78): la UCI manda S cada 50 ms. Pasado LINK_SLOW está demorado;
+// pasado LINK_LOST, el watchdog del firmware ya frenó (1 s sin mensajes, D37).
+const LINK_SLOW = 0.5, LINK_LOST = 1.0;
 const MODES = { OFF: "Motores sin corriente", IDLE: "Quieto", JOG: "Jog", RUN: "Ejecutando segmentos", HOMING: "Homing" };
 let held = null, timer = null, lastStatus = null, lastTravel = null, lastTool = null, lastElbow = null, referenced = false;
 let jogMode = "articular";
+// Lo último que contestó la URC: el estado de la sesión, el del banco (null
+// sin canal de instrumentación) y el de la reproducción (lo pone trajectories.js).
+let urcState = null, benchState = null, urcPlayback = null;
 const LABELS = {
   articular: { "1-": "J1 −", "1+": "J1 +", "2-": "J2 −", "2+": "J2 +", "3-": "J3 −", "3+": "J3 +", "4-": "J4 sube", "4+": "J4 baja" },
   cartesiano: { "1-": "Y −", "1+": "Y +", "2-": "X −", "2+": "X +", "3-": "Rumbo −", "3+": "Rumbo +", "4-": "Z sube", "4+": "Z baja" },
@@ -201,13 +314,19 @@ function format(joint, value) {
   return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
 }
 
+// Un rechazo de la URC llega como error (una línea) y, si hay, detail (por
+// qué y qué probar). El aviso emergente lo saca del registro de eventos, así
+// que después de un rechazo se consulta enseguida.
 async function post(path, body = {}, timeoutMs = null) {
   const response = await fetch(path, {
     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
     signal: timeoutMs === null ? undefined : AbortSignal.timeout(timeoutMs),
   });
   const data = await response.json();
-  if (!response.ok) throw requestError(data);
+  if (!response.ok) {
+    pollSoon();
+    throw requestError(data);
+  }
   return data;
 }
 
@@ -234,6 +353,42 @@ function show(error) {
   const text = error && error.name === "TimeoutError" ? "La URC no responde" : error && error.message;
   document.getElementById("feedback").textContent = text || "";
 }
+
+// Lo que falta para una orden, o null (D78): need es uci, estado, motores,
+// referencia o seguro (referencia sin pérdida de pasos, para reproducir).
+// Los botones con data-needs quedan deshabilitados y la página dice por
+// qué; la URC igual lo verifica.
+function missing(need, state = urcState) {
+  if (!state) return "La URC no responde";
+  if (!state.connected) return "No hay una UCI conectada";
+  if (need === "uci") return null;
+  const status = state.status;
+  if (!status) return "Todavía no llegó el estado de la UCI";
+  if (need === "estado") return null;
+  if (status.mode === "OFF") return "Los motores están sin corriente; habilitalos primero";
+  if (need === "motores") return null;
+  if (!state.referenced) return "Sin referencia; hacé homing o referencia manual";
+  if (need === "referencia") return null;
+  if (state.doubtful.length) {
+    const joints = state.doubtful.map((item) => `J${item.joint}`).join(", ");
+    return `La referencia de ${joints} es dudosa por pérdida de pasos; hacé homing`;
+  }
+  return null;
+}
+
+function applyNeeds() {
+  for (const element of document.querySelectorAll("[data-needs]")) {
+    const reason = missing(element.dataset.needs);
+    element.disabled = reason !== null;
+    element.title = reason || "";
+  }
+  for (const line of document.querySelectorAll("[data-blocked]")) {
+    const reason = missing(line.dataset.blocked);
+    line.hidden = reason === null;
+    line.textContent = reason === null ? "" : `${line.dataset.what}: ${lower(reason)}.`;
+  }
+}
+const lower = (text) => text[0].toLowerCase() + text.slice(1);
 
 const byMotor = document.getElementById("by-motor");
 
@@ -355,18 +510,21 @@ for (const button of document.querySelectorAll("[data-axis]")) {
   button.addEventListener("pointerleave", stopJog);
 }
 renderJog();
-document.getElementById("enable").addEventListener("click", () => post("/api/enable").then(() => show(null), show));
+// Motores y referencia: el resultado de cada botón queda debajo de ellos.
+const referenceFeedback = (error) => {
+  document.getElementById("reference-feedback").textContent = error ? error.message : "";
+};
+document.getElementById("enable").addEventListener("click", () => post("/api/enable").then(() => referenceFeedback(null), referenceFeedback));
 document.getElementById("stop").addEventListener("click", () => order("/api/stop"));
 document.getElementById("halt").addEventListener("click", () => order("/api/halt"));
 document.getElementById("disable").addEventListener("click", () => {
-  if (confirm("Sin corriente, J4 cae y la referencia se pierde. ¿Deshabilitar los motores?")) order("/api/disable");
+  if (!confirm("Sin corriente, J4 cae y la referencia se pierde. ¿Deshabilitar los motores?")) return;
+  stopJog(false);
+  post("/api/disable").then(() => referenceFeedback(null), referenceFeedback);
 });
 // Homing y referencia manual parten de la pose de reposo (D30): la página la
 // dibuja y pide confirmarla. Sin referencia, nadie verifica choques.
 const restDialog = document.getElementById("rest-dialog");
-const referenceFeedback = (error) => {
-  document.getElementById("reference-feedback").textContent = error ? error.message : "";
-};
 let restAction = null;
 function askRest(title, help, path) {
   stopJog();
@@ -396,14 +554,10 @@ document.getElementById("park").addEventListener("click", () => {
 });
 
 const AXES = [4, 1, 2, 3];
-function showHoming(homing) {
-  const text = document.getElementById("homing");
-  if (!homing) {
-    text.textContent = "—";
-    return;
-  }
+function homingText(homing) {
+  if (!homing) return "—";
   const axes = AXES.map((axis) => `J${axis} ${homing.axes.includes(axis) ? "✓" : "…"}`).join(" · ");
-  text.textContent = `${axes} · ${homing.state}`;
+  return `${axes} · ${homing.state}`;
 }
 
 // Ir a una pose (PTP): primero planifica y muestra la duración; después envía.
@@ -474,64 +628,210 @@ document.getElementById("ptp-go").addEventListener("click", async () => {
   }
 });
 
-function showTramo(tramo) {
-  const text = document.getElementById("tramo");
-  if (!tramo) {
-    text.textContent = "";
-    return;
-  }
+function tramoText(tramo) {
+  if (!tramo) return "";
   const state = tramo.cancelled ? `cancelado (${tramo.cancelled})`
     : tramo.done === tramo.segments ? "terminado" : "en curso";
-  text.textContent = `Último movimiento (${tramo.kind}): ${tramo.done} de ${tramo.segments} segmentos, ${tramo.duration_s.toFixed(2)} s · ${state}`;
+  return `Último movimiento (${tramo.kind}): ${tramo.done} de ${tramo.segments} segmentos, ${tramo.duration_s.toFixed(2)} s · ${state}`;
 }
 
-async function refresh() {
-  try {
-    const state = await (await fetch("/api/estado")).json();
-    const connection = document.getElementById("connection");
-    connection.textContent = state.connected ? `UCI conectada · ${state.peer}` : "Sin UCI";
-    connection.className = "badge" + (state.connected ? " ok" : "");
-    document.getElementById("message").textContent = state.message;
-    document.getElementById("firmware").textContent = state.firmware
-      ? `Protocolo ${state.firmware.protocol} · firmware ${state.firmware.version} · arranques vistos: ${state.boots}`
-      : "";
-    const status = state.connected ? state.status : null;
-    lastStatus = status;
-    lastTravel = state.travel;
-    showTramo(state.tramo);
-    showHoming(state.homing);
-    const reference = document.getElementById("reference");
-    const homed = state.connected && state.referenced;
-    if (homed !== referenced) {
-      referenced = homed;
-      renderJog();
+// --- Barra de estado y posición --------------------------------------------
+
+const $ = (id) => document.getElementById(id);
+// Escribe solo si cambió: así el polling no rehace el DOM cinco veces por segundo.
+function put(element, text, className = null) {
+  if (element.textContent !== text) element.textContent = text;
+  if (className !== null && element.className !== className) element.className = className;
+}
+
+function linkChip(state) {
+  if (!state) return ["La URC no responde", "chip error"];
+  if (!state.connected) return ["Sin UCI · esperando que se conecte", "chip warn"];
+  const status = state.status;
+  if (!status) return ["UCI conectada · esperando su estado", "chip warn busy"];
+  const age = status.age_s;
+  if (age > LINK_LOST) return [`Enlace cortado · sin estado hace ${age.toFixed(1)} s`, "chip error"];
+  if (age > LINK_SLOW) return [`Enlace demorado · actualizado hace ${age.toFixed(1)} s`, "chip warn"];
+  return [`UCI conectada · actualizado hace ${age.toFixed(1)} s`, "chip ok"];
+}
+
+function referenceChip(state) {
+  const status = state && state.connected ? state.status : null;
+  if (!status) return ["Referencia: —", "chip"];
+  if (state.doubtful.length) {
+    const joints = state.doubtful.map((item) => `J${item.joint} (${item.steps > 0 ? "+" : ""}${item.steps} pasos)`).join(", ");
+    return [`Referencia dudosa (EV LOST): ${joints}`, "chip error"];
+  }
+  return state.referenced ? ["Referenciado", "chip ok"] : ["Sin referencia", "chip warn"];
+}
+
+function modeChip(state) {
+  const status = state && state.connected ? state.status : null;
+  if (!status || status.mode === "OFF") return ["—", "chip"];
+  const playback = urcPlayback;
+  if (playback && ["reproduciendo", "pausando", "pausada", "validando"].includes(playback.state)) {
+    return [`Reproducción: ${playback.state}`, "chip busy"];
+  }
+  if (status.mode === "HOMING") return [`Homing: ${homingText(state.homing)}`, "chip busy"];
+  if (status.mode === "JOG") return [state.jog && state.jog.mode === "cartesiano" ? "Jog cartesiano" : "Jog", "chip busy"];
+  return [MODES[status.mode], status.mode === "RUN" ? "chip busy" : "chip"];
+}
+
+// El banco vigente en una línea: la carga y las fallas activas.
+function benchSummary(bench) {
+  const faults = [];
+  bench.current_pct.forEach((current, motor) => { if (current !== 100) faults.push(`F1 M${motor + 1} ${current} %`); });
+  if (bench.faults.F2) faults.push("F2 M4 sin corriente");
+  bench.faults.F3.forEach((stuck, joint) => { if (stuck !== "libre") faults.push(`F3 J${joint + 1} ${stuck}`); });
+  if (bench.faults.F4) faults.push("F4 enlace cortado");
+  return { load: `${bench.load_g} g`, faults };
+}
+
+function renderBar(state) {
+  put($("link"), ...linkChip(state));
+  const status = state && state.connected ? state.status : null;
+  put($("motors"), ...(!status ? ["Motores: —", "chip"]
+    : status.mode === "OFF" ? ["Motores sin corriente", "chip warn"] : ["Motores con corriente", "chip ok"]));
+  put($("reference"), ...referenceChip(state));
+  put($("mode"), ...modeChip(state));
+  $("mode").hidden = $("mode").textContent === "—";
+  const chip = $("bench-chip");
+  chip.hidden = !benchState || !benchState.simulated;
+  if (!chip.hidden) {
+    const { load, faults } = benchSummary(benchState);
+    const pending = benchState.pending.length ? " · aplicando…" : "";
+    put(chip, `Banco: carga ${load} · ${faults.length ? faults.join(" · ") : "sin fallas"}${pending}`,
+      faults.length ? "chip warn" : "chip");
+  }
+  put($("message"), state ? state.message : "La URC no responde: revisá la terminal donde corre python -m urc.app.");
+  put($("message-time"), state && state.message_time
+    ? new Date(state.message_time * 1000).toLocaleTimeString("es-AR", { hour12: false }) : "");
+}
+
+// El próximo paso para dejar el robot listo, en el panel de motores y referencia.
+function nextStep(state) {
+  if (!state) return ["La URC no responde: revisá la terminal donde corre la URC.", "hint error"];
+  if (!state.connected) return ["Esperando a la UCI: abrí el mundo de Webots o conectá el Arduino.", "hint warn"];
+  const status = state.status;
+  if (!status) return ["UCI conectada: esperando su estado.", "hint warn"];
+  if (status.mode === "OFF") return ["Los motores están sin corriente: «Habilitar motores».", "hint warn"];
+  if (state.doubtful.length) return [`${missing("seguro", state)}. Hasta entonces no se puede reproducir.`, "hint error"];
+  if (!state.referenced) return ["Sin referencia: solo jog articular lento. Hacé «Homing…» (o «Referencia manual…»).", "hint warn"];
+  return ["Listo: motores con corriente y robot referenciado.", "hint"];
+}
+
+function renderPosition(state) {
+  const status = state && state.connected ? state.status : null;
+  const sim = benchState && benchState.simulated ? benchState.simulated : null;
+  for (const cell of document.querySelectorAll(".sim")) cell.hidden = !sim;
+  const body = $("joints");
+  if (body.rows.length !== 4) {
+    body.replaceChildren(...NAMES.map((name) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${name}</td><td></td><td></td><td></td><td></td>`;
+      return row;
+    }));
+  }
+  NAMES.forEach((name, joint) => {
+    const cells = body.rows[joint].cells;
+    put(cells[1], status ? format(joint, status.position[joint]) : "—");
+    cells[2].hidden = cells[3].hidden = !sim;
+    if (sim) {
+      put(cells[2], format(joint, sim[joint]));
+      // Sin referencia, la estimada no dice dónde está el eje: la diferencia no significa nada.
+      const homed = status && (status.homed >> joint & 1);
+      const difference = homed ? sim[joint] - status.position[joint] : null;
+      // Un paso completo o más (D65): la planta no está donde cree el firmware.
+      put(cells[3], difference === null ? "—" : format(joint, difference),
+        difference !== null && Math.abs(difference) >= (joint === 3 ? 2 : 45) ? "differs" : "");
+      cells[3].title = homed ? "" : `${name} sin referencia`;
     }
-    reference.textContent = homed ? "Referenciado" : "Sin referencia";
-    reference.className = "badge" + (homed ? " ok" : " warn");
-    const mode = document.getElementById("mode");
-    mode.textContent = status ? MODES[status.mode] : "—";
-    mode.className = "badge" + (status && status.mode === "OFF" ? " warn" : "");
-    document.getElementById("joints").innerHTML = NAMES.map((name, joint) =>
-      `<tr><td>${name}</td><td>${status ? format(joint, status.position[joint]) : "—"}</td>` +
-      `<td>${status ? (status.hall >> joint & 1 ? "activo" : "—") : ""}</td></tr>`).join("");
-    document.getElementById("heading").textContent = status
-      ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—";
-    const tool = state.connected ? state.tool : null;
-    lastTool = tool;
-    lastElbow = state.connected ? state.elbow : null;
-    document.getElementById("tool").textContent = tool
-      ? `X ${tool.x.toFixed(1)} · Y ${tool.y.toFixed(1)} · Z ${tool.z.toFixed(1)} mm` : "—";
-    const elbow = state.connected && state.elbow ? ELBOWS[state.elbow] : "—";
-    document.getElementById("elbow").textContent = elbow;
-    document.getElementById("jog-elbow").textContent = `Codo: ${elbow}`;
-    document.getElementById("errors").textContent = state.errors.concat(state.rejected.map((line) => `No entendida: ${line}`)).join("\n");
-    document.getElementById("traffic").textContent = state.traffic.map((entry) => `${entry.direction} ${entry.line}`).join("\n");
-  } catch (error) {
-    document.getElementById("message").textContent = "La URC no responde.";
+    const on = status && (status.hall >> joint & 1);
+    put(cells[4], status ? (on ? "activo" : "—") : "", on ? "hall-on" : "");
+  });
+  put($("heading"), status ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—");
+  const tool = state && state.connected ? state.tool : null;
+  put($("tool"), tool ? `X ${tool.x.toFixed(1)} · Y ${tool.y.toFixed(1)} · Z ${tool.z.toFixed(1)} mm` : "—");
+  const elbow = state && state.connected && state.elbow ? ELBOWS[state.elbow] : "—";
+  put($("elbow"), elbow.replace(/ \(.*\)$/, ""));
+  put($("jog-elbow"), `Codo: ${elbow}`);
+}
+
+function renderDiagnostic(state) {
+  put($("firmware"), state && state.firmware
+    ? `Protocolo ${state.firmware.protocol} · firmware ${state.firmware.version} · arranques vistos: ${state.boots}` : "");
+  if ($("diagnostic").open && state) {
+    put($("traffic"), state.traffic.map((entry) => `${entry.direction} ${entry.line}`).join("\n"));
   }
 }
-refresh();
-setInterval(refresh, 200);
+
+// La altura de la barra fija, para la columna de la derecha.
+new ResizeObserver(([entry]) => {
+  document.documentElement.style.setProperty("--bar-height", `${entry.target.offsetHeight}px`);
+}).observe($("bar"));
+$("link-help-button").addEventListener("click", (event) => {
+  const help = $("link-help");
+  help.hidden = !help.hidden;
+  event.currentTarget.setAttribute("aria-expanded", String(!help.hidden));
+});
+
+async function refresh() {
+  let state = null;
+  try {
+    const [session, bench] = await Promise.all(["/api/estado", "/api/banco"].map((path) =>
+      fetch(path, { signal: AbortSignal.timeout(2000) }).then((response) => response.json())));
+    state = session;
+    benchState = bench.connected ? bench : null;
+    avisos.dismiss("urc");
+  } catch (error) {
+    benchState = null;
+    avisos.notify("urc", { level: "error", title: "URC", text: "La URC no responde: revisá la terminal donde corre python -m urc.app." });
+  }
+  urcState = state;
+  const status = state && state.connected ? state.status : null;
+  lastStatus = status;
+  lastTravel = state && state.travel;
+  lastTool = state && state.connected ? state.tool : null;
+  lastElbow = state && state.connected ? state.elbow : null;
+  const homed = Boolean(state && state.connected && state.referenced);
+  if (homed !== referenced) {
+    referenced = homed;
+    renderJog();
+  }
+  renderBar(state);
+  put($("next-step"), ...nextStep(state));
+  put($("homing"), homingText(state && state.homing));
+  $("homing-line").hidden = !(state && state.homing);
+  put($("tramo"), tramoText(state && state.tramo));
+  renderPosition(state);
+  renderDiagnostic(state);
+  applyNeeds();
+  document.dispatchEvent(new Event("urc:estado"));
+  if (!state) return;
+  avisos.update(state.events_version);
+  if (state.connected) avisos.settle("UCI desconectada");
+  if (status && status.age_s <= LINK_SLOW) avisos.settle("Sin estado de la UCI");
+  if (status && !state.doubtful.length) avisos.settle("Pérdida de pasos");
+}
+
+// Una consulta por vez: la próxima sale POLL_MS después de que llegó la
+// anterior. pollSoon la adelanta (después de un rechazo, para el aviso).
+let pollTimer = null, polling = false, again = false;
+async function poll() {
+  clearTimeout(pollTimer);
+  if (polling) {
+    again = true;
+    return;
+  }
+  polling = true;
+  await refresh();
+  polling = false;
+  pollTimer = setTimeout(poll, again ? 0 : POLL_MS);
+  again = false;
+}
+const pollSoon = () => { clearTimeout(pollTimer); pollTimer = setTimeout(poll, 30); };
+$("diagnostic").addEventListener("toggle", () => renderDiagnostic(urcState));
+poll();
 </script>
 <script src="/trajectories.js"></script>
 </body>

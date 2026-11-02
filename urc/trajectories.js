@@ -1,7 +1,8 @@
 // Gestor de trayectorias (D29, D34). La trayectoria la guarda la URC; la
 // página la muestra y pide cada cambio por /api/trayectoria/*. La
 // reproducción va por /api/reproduccion/* y también la planifica la URC.
-// Usa post, format, copyHere y stopJog de index.html.
+// Usa post, format, copyHere, stopJog, missing y pollSoon de index.html, y
+// deja el estado de la reproducción en urcPlayback para la barra de estado.
 (() => {
   const panel = document.getElementById("trajectory");
   panel.innerHTML = `
@@ -23,11 +24,12 @@
     </table>
     <p id="tr-empty" class="muted">Sin puntos: capturá con <kbd>Espacio</kbd> o escribí uno abajo.</p>
     <div class="row" style="margin-top: 12px">
-      <button id="tr-capture">Capturar <kbd>Espacio</kbd></button>
-      <button id="tr-overwrite">Sobrescribir con la pose actual</button>
-      <button id="tr-go">Ir al punto…</button>
+      <button id="tr-capture" data-needs="referencia">Capturar <kbd>Espacio</kbd></button>
+      <button id="tr-overwrite" data-needs="referencia">Sobrescribir con la pose actual</button>
+      <button id="tr-go" data-needs="referencia">Ir al punto…</button>
       <button id="tr-delete">Borrar <kbd>Retroceso</kbd></button>
     </div>
+    <p class="blocked" data-blocked="referencia" data-what="Capturar, sobrescribir e ir al punto" hidden></p>
     <h2 style="margin-top: 18px">Reproducción</h2>
     <p class="muted">Antes de mover, la URC valida todos los tramos. El robot llega primero al punto de partida con el tramo 0,
       un PTP al 25 % × la velocidad global, salvo que ya esté ahí. Con loop, la vuelta del último punto al primero usa los
@@ -44,6 +46,7 @@
       <button id="pl-resume">Reanudar</button>
       <button id="pl-stop">Stop <kbd>Esc</kbd></button>
     </div>
+    <p id="pl-blocked" class="blocked" hidden></p>
     <p id="pl-status" class="muted"></p>
     <div id="pl-feedback" class="feedback" role="status" aria-live="polite"></div>
     <h2 style="margin-top: 18px">Punto escrito</h2>
@@ -96,7 +99,10 @@
     const data = await response.json();
     if (response.status === 409 && allow && confirm(data.error)) return send(path, { ...body, [allow]: true });
     if (response.status === 409 && allow) return null;
-    if (!response.ok) throw requestError(data);
+    if (!response.ok) {
+      pollSoon();  // el aviso del rechazo sale del registro de eventos
+      throw requestError(data);
+    }
     return data;
   }
 
@@ -339,10 +345,17 @@
   }
 
   function showPlayback(state) {
-    playback = state;
+    playback = urcPlayback = state;
     const active = ACTIVE.includes(state.state);
     $("pl-status").textContent = describe(state);
-    $("pl-play").disabled = $("pl-play-selected").disabled = active || state.state === "validando";
+    // Sin referencia, con la referencia dudosa (D68) o sin puntos, reproducir
+    // queda bloqueado y dice por qué (D78). La URC igual lo verifica.
+    const blocked = active || state.state === "validando" ? null
+      : missing("seguro") || (trajectory.points.length ? null : "la trayectoria no tiene puntos");
+    $("pl-blocked").hidden = !blocked;
+    $("pl-blocked").textContent = blocked ? `Reproducir bloqueado: ${lower(blocked)}.` : "";
+    $("pl-play").title = $("pl-play-selected").title = blocked || "";
+    $("pl-play").disabled = $("pl-play-selected").disabled = active || state.state === "validando" || Boolean(blocked);
     $("pl-pause").disabled = state.state !== "reproduciendo";
     $("pl-resume").disabled = state.state !== "pausada";
     $("pl-stop").disabled = !active;
