@@ -173,8 +173,7 @@ class PlaybackHttpTests(unittest.TestCase):
         # El punto 3 cambia de codo: la recta es imposible y se sugiere PTP (D14).
         self.points(P1, P2, (2000, 5000, 1000, 3000))
         error = self.play(expect=400)["error"]
-        self.assertIn("Tramo 3 (LIN), cambio de codo", error)
-        self.assertIn("Usá un tramo PTP", error)
+        self.assertEqual(error, "Tramo 3 (punto 2 → punto 3, LIN): el codo cambia de lado. Cambiá el punto 3 a PTP.")
         self.assertEqual(robot.segments, [])
         self.post("/api/trayectoria/editar", {"index": 2, "kind": "PTP"}, expect=200)
         self.assertEqual(self.play()["state"], "reproduciendo")
@@ -183,7 +182,10 @@ class PlaybackHttpTests(unittest.TestCase):
         self.robot(P1)
         # Del punto 3 al 1 la recta cambia de codo: con loop se valida la vuelta.
         self.points(P1, P2, (2000, 5000, 1000, 3000), p2={"kind": "PTP"})
-        self.assertIn("Tramo de vuelta (LIN), cambio de codo", self.play({"loops": 2}, expect=400)["error"])
+        error = self.play({"loops": 2}, expect=400)
+        self.assertEqual(error["error"], "Tramo de vuelta del loop (punto 3 → punto 1, LIN): el codo cambia de lado. "
+                                         "Cambiá el punto 1 a PTP.")
+        self.assertIn("La vuelta del loop usa el tipo y la velocidad del punto 1.", error["detail"])
 
     # --- Reproducción -------------------------------------------------------
 

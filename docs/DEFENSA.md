@@ -118,7 +118,7 @@ Después de la defensa, borrar el archivo de la trayectoria grabada en `trayecto
    - `demo-pick-and-place.json` si sobra tiempo: bajar y subir en LIN con 1 s de espera, cruzar en PTP; ~19 s.
 
    Las duraciones son las planificadas que registró la campaña (T3). Con **Loop** en «N vueltas» o «Sin fin» se muestra la vuelta del último punto al primero.
-4. **Un LIN imposible se rechaza antes de mover.** En el barrido PTP, cambiar el tramo del punto 3 a LIN y dar play: la URC responde «Tramo 3 (LIN), cambio de codo: J2 pasa de -60° a 60°; para cambiar de lado el brazo tendría que estirarse, que es una singularidad. Usá un tramo PTP.» y el robot no se mueve (D14, D55). Volver a PTP **sin guardar**, para no tocar la demo versionada.
+4. **Un LIN imposible se rechaza antes de mover.** En el barrido PTP, cambiar el tramo del punto 3 a LIN y dar play: la URC responde «Tramo 3 (punto 2 → punto 3, LIN): el codo cambia de lado. Cambiá el punto 3 a PTP.» y el robot no se mueve (D14, D55). «Por qué» despliega la explicación: en el punto 2 J2 = -60° y en el punto 3, 60°, y para pasar el codo de lado el brazo tiene que estirarse, una singularidad (D77). Volver a PTP **sin guardar**, para no tocar la demo versionada.
 5. **Qué se explica:** LIN contra PTP (D53, D54), la tolerancia de 0,127 mm del plan y la de la ejecución (D54; T2 de la campaña), los segmentos con el reloj del firmware (D6, D50, ADR 0005).
 
 ### 2.6 Fallas F1–F5
@@ -289,7 +289,7 @@ En LIN el punto de herramienta sigue una recta, a velocidad constante del extrem
 El plan se aparta a lo sumo 0,127 mm: el redondeo a la centésima y la cuerda de cada segmento, que crece con la velocidad. La ejecución suma medio paso de M1 y M2, hasta 0,25 mm con 1/8. En Webots, los LIN quedaron a 0,21 mm como mucho, dentro de 0,38 mm la estimada y 0,46 mm la física (D54, D76; T2 de la campaña).
 
 **¿Qué pasa si una recta es imposible?**
-Se rechaza antes de arrancar, con el tramo, el motivo (alcance, codo, límite, velocidad o colisión), dónde ocurre y qué probar; casi siempre, PTP. El robot nunca arranca un tramo que no puede terminar (D14, D55). Se muestra en la demo.
+Se rechaza antes de arrancar con un mensaje corto: el tramo y entre qué puntos, qué pasa (alcance, codo, límite, velocidad o colisión) y qué punto cambiar; casi siempre, a PTP. «Por qué» despliega los valores, dónde ocurre y las alternativas. En loop, el tramo de vuelta usa el tipo del punto 1, y el porqué lo dice (D77). El robot nunca arranca un tramo que no puede terminar (D14, D55). Se muestra en la demo.
 
 **¿Y si el robot quedó pegado a la torre? ¿Puede salir?**
 Sí. Un PTP que arranca dentro de la zona de margen de un obstáculo se acepta si la separación crece hasta salir de ella y el resto del camino la respeta. Antes, todo camino desde ahí se rechazaba y el robot quedaba encerrado (D71).
@@ -450,6 +450,6 @@ Para el cierre y para cualquier pregunta sobre precisión:
 | Webots no se conecta | ¿Está la URC levantada en el 9000? ¿Hay otra URC u otro Webots abierto? |
 | Homing aborta sin falla inyectada | Revisar que F3 esté en `libre` en los cuatro ejes; repetir el homing (D72). Si no, **«Referencia manual…»** |
 | «Para reproducir, el robot tiene que estar referenciado» | Hacer homing. Con referencia dudosa (F1), también |
-| Un tramo se rechaza | Leer el motivo: lo dice el tramo y qué probar (D55) |
+| Un tramo se rechaza | Leer el mensaje: dice el tramo, entre qué puntos y qué punto cambiar; «Por qué» explica el motivo (D55, D77) |
 | El robot quedó en una pose rara | **«Estacionar…»**; si no hay referencia, jog articular lento hasta la pose de reposo y homing |
 | Todo trabado | **«Recargar el mundo…»** en el banco: la UCI arranca de nuevo, sin referencia |

@@ -32,6 +32,8 @@
     button:disabled { opacity: .45; cursor: not-allowed; }
     kbd { border: 1px solid #a9bcc4; border-bottom-width: 2px; border-radius: 4px; padding: 1px 6px; font-size: .85rem; background: #f7fafb; }
     #feedback, .feedback { min-height: 1.5em; font-size: .9rem; color: #a62929; }
+    .feedback details { margin-top: .25em; color: #444; }
+    .feedback summary { cursor: pointer; color: #a62929; }
     .fields { margin: 10px 0; }
     .fields input { width: 7em; }
     input, select { font: inherit; padding: 6px; border: 1px solid #a9bcc4; border-radius: 6px; }
@@ -205,8 +207,27 @@ async function post(path, body = {}, timeoutMs = null) {
     signal: timeoutMs === null ? undefined : AbortSignal.timeout(timeoutMs),
   });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.error);
+  if (!response.ok) throw requestError(data);
   return data;
+}
+
+// Un tramo rechazado trae, además del mensaje, el porqué (D77).
+function requestError(data) {
+  return Object.assign(new Error(data.error), { detail: data.detail || null });
+}
+
+// El mensaje de un error y, si lo tiene, el porqué plegado.
+function showError(element, error) {
+  element.replaceChildren();
+  if (!error) return;
+  element.append(error.message);
+  if (error.detail) {
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Por qué";
+    details.append(summary, error.detail);
+    element.append(details);
+  }
 }
 
 function show(error) {
@@ -449,7 +470,7 @@ document.getElementById("ptp-go").addEventListener("click", async () => {
     await post("/api/ptp", { ...request, confirm: true });
     ptpFeedback(null);
   } catch (error) {
-    ptpFeedback(error.message);
+    showError(document.getElementById("ptp-feedback"), error);
   }
 });
 

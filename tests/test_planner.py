@@ -184,20 +184,5 @@ class PoseTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             planner.joints_from_pose(900, 0, 100, 0)
 
-    def test_check_target_rejects_limits_and_collisions(self):
-        planner.check_target((0, 0, 0, 12000), (3000, -6000, 1000, 6000))
-        with self.assertRaisesRegex(ValueError, "J1"):
-            planner.check_target((0, 0, 0, 12000), (14000, 0, 0, 12000))
-        with self.assertRaisesRegex(ValueError, "J4"):
-            planner.check_target((0, 0, 0, 12000), (0, 0, 0, 12500))
-        # Desde fuera del recorrido (un jog o el redondeo a pasos junto al
-        # límite), un PTP lo trae de vuelta.
-        planner.check_target((13503, 0, 0, 12000), (0, 0, 0, 12000))
-        planner.check_target((14000, 0, 0, 12000), (9000, 0, 0, 12000))
-        # Codo plegado del todo: el antebrazo toca la torre (D30).
-        with self.assertRaisesRegex(ValueError, "Recorrido rechazado"):
-            planner.check_target((0, 0, 0, 12000), (0, 13500, 0, 12000))
-
-
 if __name__ == "__main__":
     unittest.main()

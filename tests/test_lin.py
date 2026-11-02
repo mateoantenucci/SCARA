@@ -7,7 +7,7 @@ from scara.collisions import CollisionChecker
 from scara.kinematics import forward, load_config
 from urc import planner, validation
 from urc.planner import SEGMENT_MS, plan_lin
-from urc.validation import Rejection, check_lin, check_tramo
+from urc.validation import Rejection, check_lin, check_ptp, check_tramo
 
 
 CONFIG = load_config()
@@ -138,8 +138,10 @@ class ValidationTests(unittest.TestCase):
             check_tramo(kind, start, target, speed, 3, LIMITS, CONFIG, CHECKER)
         rejection = caught.exception
         self.assertIn(f"Tramo 3 ({kind})", str(rejection))
-        if kind == "LIN":
-            self.assertIn("PTP", str(rejection))
+        # Un LIN imposible sugiere PTP (D14), en el mensaje o, si primero
+        # conviene bajar la velocidad, en el porqué.
+        if kind == "LIN" and rejection.hint != "destino":
+            self.assertIn("PTP", f"{rejection} {rejection.detail}")
         return rejection
 
     def test_a_valid_line_returns_its_plan(self):
@@ -159,8 +161,8 @@ class ValidationTests(unittest.TestCase):
         # extremo no llega a menos de 191 mm.
         rejection = self.reject(pose(300, -60, 30, 0), pose(300, 80, 30, 0))
         self.assertEqual(rejection.reason, "alcance")
-        self.assertIn("103 mm", str(rejection))
-        self.assertIn("191 mm", str(rejection))
+        self.assertIn("103 mm", rejection.detail)
+        self.assertIn("191 mm", rejection.detail)
 
     def test_elbow_change(self):
         rejection = self.reject((3000, -6000, 1000, 6000), (3000, 6000, 1000, 6000))
@@ -190,7 +192,8 @@ class ValidationTests(unittest.TestCase):
         # Saliendo del brazo estirado no alcanza con ir más lento: es la singularidad.
         rejection = self.reject((0, 0, 0, 6467), pose(400, 0, 30, 0), 0.1)
         self.assertEqual(rejection.reason, "velocidad")
-        self.assertIn("casi estirado", str(rejection))
+        self.assertIn("casi estirado", rejection.detail)
+        self.assertIn("bajar la velocidad puede no alcanzar", rejection.detail)
 
     def test_collision_with_the_tower(self):
         # Los dos extremos están libres, pero la recta acerca el soporte del
@@ -205,16 +208,59 @@ class ValidationTests(unittest.TestCase):
         # Codo plegado del todo: el antebrazo toca la torre (D30).
         rejection = self.reject((0, 0, 0, 12000), (0, 13500, 0, 12000), kind="PTP")
         self.assertEqual(rejection.reason, "colision")
-        self.assertIsNone(rejection.suggestion)
+        self.assertIn("puede chocar con", str(rejection))
+        self.assertIn("Agregá un punto intermedio antes del destino", rejection.suggestion)
         self.assertEqual(self.reject(START, (14000, 0, 0, 6000), kind="PTP").reason, "limite")
         with self.assertRaises(ValueError):
             check_tramo("CIRC", START, TARGET, 0.5, 1, LIMITS, CONFIG, CHECKER)
 
-    def test_a_rejection_is_a_value_error_with_every_part(self):
-        rejection = Rejection("codo", "J2 cambia de signo", tramo=2)
+    def test_a_ptp_brings_back_a_pose_outside_the_travel(self):
+        # Desde fuera del recorrido (un jog o el redondeo a pasos junto al
+        # límite), un PTP lo trae de vuelta.
+        check_ptp((13503, 0, 0, 12000), (0, 0, 0, 12000), 1.0, None, LIMITS, CONFIG, CHECKER)
+        check_ptp((14000, 0, 0, 12000), (9000, 0, 0, 12000), 1.0, None, LIMITS, CONFIG, CHECKER)
+        rejection = self.reject((0, 0, 0, 12000), (0, 0, 0, 12500), kind="PTP")
+        self.assertIn("J4 fuera de su recorrido en el destino", str(rejection))
+        self.assertEqual(rejection.detail, "En el destino, J4 = 125 mm, y su recorrido va de 0 mm a 120 mm.")
+
+    def test_a_rejection_is_a_short_message_and_a_detail(self):
+        rejection = Rejection("codo", "el codo cambia de lado", "J2 cambia de signo.", tramo=2, hint="negativo")
         self.assertIsInstance(rejection, ValueError)
-        self.assertEqual(str(rejection), "Tramo 2 (LIN), cambio de codo: J2 cambia de signo. Usá un tramo PTP.")
+        self.assertEqual(str(rejection), "Tramo 2 (LIN): el codo cambia de lado. Usá un tramo PTP.")
+        self.assertEqual(rejection.detail, "J2 cambia de signo. También podés grabar el destino con J2 negativo, "
+                                           "del mismo lado que el inicio.")
         self.assertEqual(set(validation.REASONS), {"alcance", "codo", "limite", "velocidad", "colision"})
+
+    def test_a_rejection_names_the_points_and_what_to_change(self):
+        # La vuelta del loop usa el tipo y la velocidad del punto 1 (D32): el
+        # mensaje dice de qué punto a qué punto y que hay que cambiar el 1.
+        place = validation.Place("de vuelta", "punto 4", "punto 1", 1)
+        rejection = self.reject_at((3000, -6000, 1000, 6000), (3000, 6000, 1000, 6000), place)
+        self.assertEqual(str(rejection), "Tramo de vuelta del loop (punto 4 → punto 1, LIN): el codo cambia de lado. "
+                                         "Cambiá el punto 1 a PTP.")
+        self.assertTrue(rejection.detail.startswith("En el punto 4, J2 = -60°, y en el punto 1, J2 = 60°"))
+        self.assertIn("También podés grabar el punto 1 con J2 negativo, del mismo lado que el punto 4.",
+                      rejection.detail)
+        self.assertIn("La vuelta del loop usa el tipo y la velocidad del punto 1.", rejection.detail)
+        place = validation.Place(3, "punto 2", "punto 3", 3)
+        rejection = self.reject_at(pose(470, 0, 30, 0), pose(498, 0, 30, 0), place)
+        self.assertEqual(str(rejection), "Tramo 3 (punto 2 → punto 3, LIN): M1 (J1) no da la aceleración que pide "
+                                         "la recta. Bajá la velocidad del punto 3 o la global.")
+        self.assertIn("Si no alcanza, cambiá el punto 3 a PTP.", rejection.detail)
+        place = validation.Place(0, "pose actual", "punto 1", 1)
+        rejection = self.reject_at((0, 0, 0, 12000), (0, 13500, 0, 12000), place, "PTP")
+        self.assertTrue(str(rejection).startswith("Tramo 0 (pose actual → punto 1, PTP de aproximación): "))
+        self.assertTrue(str(rejection).endswith("Llevá el robot con jog a una pose más despejada."))
+        place = validation.Place(None, "pose actual", "punto 2")
+        rejection = self.reject_at(START, (14000, 0, 0, 6000), place, "PTP")
+        self.assertEqual(str(rejection), "Movimiento PTP (pose actual → punto 2): J1 fuera de su recorrido en el "
+                                         "punto 2. Corregí el punto 2.")
+        self.assertEqual(rejection.detail, "En el punto 2, J1 = 140°, y su recorrido va de -135° a 135°.")
+
+    def reject_at(self, start, target, place, kind="LIN"):
+        with self.assertRaises(Rejection) as caught:
+            check_tramo(kind, start, target, 1.0, place, LIMITS, CONFIG, CHECKER)
+        return caught.exception
 
 
 if __name__ == "__main__":

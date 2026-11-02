@@ -434,16 +434,16 @@ El plan mide su propio apartamiento: en una recta típica al 50 % es de 0,02 mm.
 | Motivo | Cuándo se rechaza |
 | --- | --- |
 | Límite articular | Un extremo fuera de su recorrido, o el camino lleva J1 o J3 más allá (por ejemplo, al pasar por detrás del robot). |
-| Cambio de codo | J2 cambia de signo entre los extremos. Para cambiar de lado el brazo tendría que estirarse, que es una singularidad. |
+| Cambio de codo | J2 cambia de signo entre los extremos. Para pasar el codo de un lado al otro el brazo tiene que estirarse del todo (J2 = 0°), una singularidad donde ninguna recta se puede seguir. |
 | Fuera de alcance | La recta pasa a menos de 191 mm del eje de J1, el radio mínimo con J2 a ±135°. |
 | Velocidad excesiva | Una articulación o un motor supera su velocidad o aceleración. Pasa cerca del brazo estirado, donde J2 tiene que girar cada vez más rápido para el mismo avance. |
 | Colisión | El chequeo de colisiones existente, en cada segmento. Por ejemplo, una recta entre dos puntos libres que acerca el soporte del efector a la torre. |
 
-El rechazo dice el tramo, el motivo y dónde ocurre, y sugiere PTP. Si el motivo es la velocidad, sugiere primero bajarla. Por ejemplo:
+El rechazo es un mensaje corto: el tramo y entre qué puntos, qué pasa y qué punto cambiar. Aparte, plegado bajo «Por qué», van los valores, dónde ocurre y las alternativas (D77). Si el motivo es la velocidad, sugiere primero bajarla. Por ejemplo:
 
 ```text
-Tramo 3 (LIN), velocidad excesiva: M1 (J1) necesitaría aceleración de 145.14 °/s² (máximo 140.00)
-al 39 % del tramo. Bajá la velocidad del tramo o usá un tramo PTP.
+Tramo 3 (punto 2 → punto 3, LIN): M1 (J1) no da la aceleración que pide la recta. Bajá la velocidad del punto 3 o la global.
+Por qué: Al 39 % de la recta, M1 (J1) necesitaría 145.14 °/s², y su máximo es 140.00 °/s². Si no alcanza, cambiá el punto 3 a PTP.
 ```
 
 Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 tendría que arrancar de golpe. Por eso el primer movimiento de un programa es el tramo de aproximación PTP (D32).
@@ -507,7 +507,7 @@ Implementada en el issue #13, en la URC ([`urc/playback.py`](../../urc/playback.
 | 2 … n | Punto anterior → punto | Con el tipo, la velocidad × la global y la espera del punto. |
 | Vuelta (loop) | Último punto → punto 1 | Con los parámetros del punto 1. Abre cada vuelta nueva. |
 
-Si un tramo falla, el mensaje dice cuál («Tramo 0», «Tramo 3», «Tramo de vuelta»), por qué y qué probar. Sin referencia, o con la referencia dudosa por una pérdida de pasos, la reproducción no arranca:
+Si un tramo falla, el mensaje dice cuál y entre qué puntos («Tramo 0 (pose actual → punto 1, PTP de aproximación)», «Tramo 3 (punto 2 → punto 3, LIN)», «Tramo de vuelta del loop (punto 4 → punto 1, LIN)»), qué pasa y qué punto cambiar, con el porqué aparte (D77). Sin referencia, o con la referencia dudosa por una pérdida de pasos, la reproducción no arranca:
 
 ```text
 Para reproducir, el robot tiene que estar referenciado (homing o referencia manual)
@@ -717,6 +717,7 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D85 | La carga del banco se suma a la herramienta: de 0 a 4850 g | Webots no acepta una masa de 0, y el panel mostraba 150 g sin carga; con la herramienta son los 5 kg de D76 | |
 | D86 | «Pasos perdidos» cuenta desde el último homing del eje o desde que el motor recuperó la corriente | Es lo que el firmware no sabe; después del homing, lo perdido antes ya no está en su cuenta | |
 | D87 | El homing abortado se dice en el mensaje de estado; el `BOOT` inesperado va también a Errores | En la QA, con `ERR 12` la página seguía en «Homing en curso», y el aviso de F5 se pisaba | |
+| D77 | Cada rechazo de un tramo es un mensaje corto que nombra sus puntos y qué punto cambiar, con el porqué plegado | Con el LIN en el punto 1, el loop fallaba y el mensaje no decía de qué punto a qué punto ni cuál cambiar | |
 
 ### Bala trazadora y protocolo completo
 

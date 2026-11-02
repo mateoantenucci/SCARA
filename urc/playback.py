@@ -55,8 +55,10 @@ class Tramo:
             left -= WAIT_MS
         return self.motion + waits
 
-    def rejection_label(self):
-        return {"0": 0, "vuelta": "de vuelta"}.get(self.label, self.label)
+    def place(self, origin):
+        """Dónde está el tramo, para el rechazo: origin es «punto 2» o una pose («pose actual»)."""
+        tramo = {"0": 0, "vuelta": "de vuelta"}.get(self.label, self.label)
+        return validation.Place(tramo, origin, f"punto {self.point + 1}", self.point + 1)
 
 
 class Player:
@@ -146,7 +148,7 @@ class Player:
                     raise ValueError("La trayectoria cambió durante la pausa: frená con Stop y reproducí de nuevo")
             if self.pending and self.pending[0].motion is None:
                 tramo = self.pending[0]
-                plan = self._check(tramo.kind, pose, tramo.target, tramo.speed, tramo.rejection_label())
+                plan = self._check(tramo.kind, pose, tramo.target, tramo.speed, tramo.place("pose de la pausa"))
                 self.pending[0] = replace(tramo, motion=plan.segments)
             self.state, self.message = "reproduciendo", "Reproducción en curso"
             try:
@@ -201,8 +203,9 @@ class Player:
         target = points[start]["joints"]
         approach = None
         if any(abs(a - b) > step for a, b, step in zip(pose, target, AT_POINT)):
-            plan = self._check("PTP", pose, target, self.approach_speed * scale, 0)
-            approach = Tramo(start, "0", "PTP", self.approach_speed * scale, target, plan.segments, 0)
+            approach = Tramo(start, "0", "PTP", self.approach_speed * scale, target, None, 0)
+            plan = self._check("PTP", pose, target, approach.speed, approach.place("pose actual"))
+            approach = replace(approach, motion=plan.segments)
         arrivals = range(1, len(points)) if loops != 1 else range(start + 1, len(points))
         tramos = {index: self._tramo(points, index, index - 1, str(index + 1), scale) for index in arrivals}
         if loops != 1:
@@ -221,11 +224,12 @@ class Player:
         point = points[index]
         speed = point["speed"] / 100 * scale
         tramo = Tramo(index, label, point["kind"], speed, point["joints"], None, round(point["wait"] * 1000))
-        plan = self._check(point["kind"], points[previous]["joints"], point["joints"], speed, tramo.rejection_label())
+        plan = self._check(point["kind"], points[previous]["joints"], point["joints"], speed,
+                           tramo.place(f"punto {previous + 1}"))
         return replace(tramo, motion=plan.segments)
 
-    def _check(self, kind, start, target, speed, label):
-        return validation.check_tramo(kind, tuple(start), tuple(target), speed, label, self.session.limits,
+    def _check(self, kind, start, target, speed, place):
+        return validation.check_tramo(kind, tuple(start), tuple(target), speed, place, self.session.limits,
                                       self.session.config, self.session.checker)
 
     # --- Seguimiento (con self.lock tomado) ----------------------------------

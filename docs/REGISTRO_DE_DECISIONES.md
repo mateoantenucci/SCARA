@@ -695,7 +695,7 @@ Decisiones tomadas al implementar la reproducción desde el gestor de trayectori
 **D68 · La reproducción valida todo antes de mover y encola un tramo detrás de otro, con sus esperas, en un solo movimiento.**
 - **Decisión:**
   - Play desde el principio o desde el punto seleccionado, con velocidad global (% entero de 10 a 100, que multiplica la de cada tramo y no se guarda) y loop: N vueltas o sin fin.
-  - Antes de enviar nada, la URC planifica y valida (D55) todo lo que se va a ejecutar: el tramo 0, cada tramo de la trayectoria y, con loop, la vuelta del último punto al primero y los tramos anteriores al punto de partida. El rechazo dice cuál: «Tramo 0», «Tramo 3» o «Tramo de vuelta».
+  - Antes de enviar nada, la URC planifica y valida (D55) todo lo que se va a ejecutar: el tramo 0, cada tramo de la trayectoria y, con loop, la vuelta del último punto al primero y los tramos anteriores al punto de partida. El rechazo dice cuál y entre qué puntos: «Tramo 0», «Tramo 3» o «Tramo de vuelta del loop» (D77).
   - Tramo 0: PTP desde la posición estimada hasta el punto de partida, al 25 % × la velocidad global (`--aproximacion` cambia el 25 %), con espera de 0 s. Se omite si el robot está a lo sumo a 6 centésimas de grado en J1–J3 y a 1 centésima de mm en J4: menos de un paso de 1/8, redondeado hacia arriba. Entonces el primer tramo parte del punto grabado, no de la pose del robot.
   - Exige el robot referenciado, quieto y sin referencia dudosa (D65). Si en plena reproducción llega un `EV LOST`, la URC la detiene con `STOP`.
   - La espera de un punto son segmentos sin movimiento en su destino, de hasta 1 s cada uno.
@@ -844,6 +844,19 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - J4 a 50 mm/s: son los 10 000 pulsos/s del Timer1, sin margen.
   - Subir el jog: arranca sin rampa y necesita una en el firmware (D70).
 - **Estado:** Aceptada. Reemplaza los valores de D45 y la conclusión de D66.
+
+## Mensajes de rechazo
+
+**D77 · Cada rechazo de un tramo es un mensaje corto que nombra sus puntos y qué punto cambiar; el porqué va aparte, plegado.**
+- **Decisión:**
+  - El mensaje tiene una línea: el tramo con sus extremos y su tipo, qué pasa y qué cambiar. Por ejemplo, «Tramo 3 (punto 2 → punto 3, LIN): el codo cambia de lado. Cambiá el punto 3 a PTP.». El de vuelta es «Tramo de vuelta del loop (punto 4 → punto 1, LIN)»; el de aproximación, «Tramo 0 (pose actual → punto 1, PTP de aproximación)»; al reanudar, el extremo es la pose de la pausa.
+  - Qué pasa es concreto: la articulación o el motor («M1 (J1) no da la aceleración que pide la recta», «J3 sale de su recorrido al 34 % de la recta») o la parte del robot y el obstáculo («el efector puede chocar con la pieza Torre de la base»), sin el sufijo del CAD.
+  - La URC responde `{"error": <mensaje>, "detail": <porqué>}`, y la página muestra el porqué plegado bajo «Por qué», en la reproducción, en «Ir al punto» y en el PTP manual. El porqué da los valores (J2 de cada extremo, el valor pedido contra el máximo, el porcentaje de la recta) y las alternativas. En la vuelta del loop, explica que usa el tipo y la velocidad del punto 1, y que sin loop a ese punto se llega con el tramo de aproximación, que es PTP.
+  - Una sola sugerencia en el mensaje, según el motivo. Por codo, alcance o límite en el camino: PTP. Por velocidad: bajar la del punto o la global; el porqué agrega que, si no alcanza (cerca del brazo estirado puede no alcanzar), PTP. Por choque: PTP o un punto intermedio; en la aproximación y en un PTP suelto, mover con jog. Un destino fuera del recorrido: corregir el punto.
+  - «Ir al punto», el PTP manual y «Estacionar» validan con `check_ptp` y dan el mismo tipo de mensaje («Movimiento PTP (pose actual → punto 2): …»). `planner.check_target` se elimina.
+  - Los recorridos se dicen en grados y mm, no en centésimas.
+- **Por qué:** con un LIN en el punto 1, la reproducción simple funcionaba y el loop no: el punto 1 se alcanza con el tramo 0, que es PTP, y su LIN solo rige en la vuelta. El mensaje decía «Tramo de vuelta» y «Usá un tramo PTP» sin decir de qué punto a qué punto ni cuál cambiar, y el operador tenía que probar. Con toda la explicación en el mensaje quedaba un párrafo largo: lo que hace falta para actuar va en una línea, y el porqué queda a un click.
+- **Estado:** Aceptada. Amplía el formato del rechazo de D55 y D68.
 
 ## QA del banco de ensayo
 

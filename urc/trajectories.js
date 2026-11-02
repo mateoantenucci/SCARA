@@ -86,7 +86,7 @@
   const ELBOWS = { "-1": "J2 −", "0": "estirado", "1": "J2 +" };
   let trajectory = { points: [], dirty: false }, selected = null, playback = { state: "inactiva", current: null };
 
-  const feedback = (error) => { $("tr-feedback").textContent = error ? error.message : ""; };
+  const feedback = (error) => showError($("tr-feedback"), error);
 
   // Un 409 es un pedido que descartaría trabajo: se pregunta y se repite con el permiso.
   async function send(path, body = {}, allow = null) {
@@ -96,7 +96,7 @@
     const data = await response.json();
     if (response.status === 409 && allow && confirm(data.error)) return send(path, { ...body, [allow]: true });
     if (response.status === 409 && allow) return null;
-    if (!response.ok) throw new Error(data.error);
+    if (!response.ok) throw requestError(data);
     return data;
   }
 
@@ -317,7 +317,7 @@
 
   // --- Reproducción (D29, D32, D33) ---
   const ACTIVE = ["reproduciendo", "pausando", "pausada"];
-  const plFeedback = (error) => { $("pl-feedback").textContent = error ? error.message : ""; };
+  const plFeedback = (error) => showError($("pl-feedback"), error);
   const seconds = (value) => `${value.toFixed(2)} s`;
 
   function describe(state) {

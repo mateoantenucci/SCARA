@@ -18,7 +18,7 @@ import time
 
 from scara.collisions import CollisionChecker
 from scara.kinematics import load_config
-from urc import jog as jogging, planner
+from urc import jog as jogging, planner, validation
 from urc.protocol import LINE_MAX, PROTOCOL, check_order, parse_message, segment_line
 
 
@@ -116,11 +116,12 @@ class Session:
             else:
                 self._queue(line)
 
-    def move_ptp(self, target, speed=0.25, dry_run=False):
+    def move_ptp(self, target, speed=0.25, dry_run=False, name="destino"):
         """Tramo PTP desde la posición estimada hasta target (J1–J4 en centésimas).
 
-        Valida límites y choques en todo el camino. Con dry_run solo planifica:
-        la página muestra la duración y pide confirmación.
+        Valida límites y choques en todo el camino; name nombra el destino en
+        el rechazo («punto 3»). Con dry_run solo planifica: la página
+        muestra la duración y pide confirmación.
         """
         with self.lock:
             self._require_robot()
@@ -131,8 +132,9 @@ class Session:
                     or self._jog_draining()):
                 raise ValueError("El robot se está moviendo: esperá a que frene")
             start = tuple(status["position"])
-        planner.check_target(start, target, self.config, self.checker)
-        plan = planner.plan_ptp(start, target, speed, self.limits)
+        place = validation.Place(None, "pose actual", name)
+        plan = validation.check_ptp(start, planner.check_units(target, "Destino"), speed, place, self.limits,
+                                    self.config, self.checker)
         summary = {"start": list(start), "target": list(target), "speed": speed, "segments": len(plan.segments),
                    "duration_s": len(plan.segments) * planner.SEGMENT_MS / 1000}
         if dry_run or not plan.segments:
@@ -193,7 +195,7 @@ class Session:
 
     def park(self):
         """Estacionar: PTP a la pose de reposo (D30), con el robot referenciado."""
-        return self.move_ptp(REST, PARK_SPEED)
+        return self.move_ptp(REST, PARK_SPEED, name="pose de reposo")
 
     def jog(self, joint, direction, motor=False, mode="articular", slow=False):
         """Mantiene el jog mientras la página lo renueve antes de jog_hold.

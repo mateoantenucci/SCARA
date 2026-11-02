@@ -14,6 +14,7 @@ from urc.instrumentation import Instrumentation
 from urc.playback import APPROACH_SPEED, Player
 from urc.session import Session
 from urc.trajectories import Conflict, TrajectoryManager
+from urc.validation import Rejection
 
 
 MAX_BODY = 1024
@@ -160,6 +161,9 @@ def handler_for(session, bench=None, manager=None, player=None):
                 self.reply(409, {"error": str(exc)})
             except OSError as exc:
                 self.reply(500, {"error": f"Error de archivo: {exc}"})
+            except Rejection as exc:
+                # Un tramo imposible: el mensaje corto y el porqué aparte (D77).
+                self.reply(400, {"error": str(exc), "detail": exc.detail})
             except (ValueError, RecursionError) as exc:
                 self.reply(400, {"error": str(exc)})
 
