@@ -72,6 +72,7 @@ class Instrumentation:
                 "power": state.get("power"),
                 "faults": state.get("faults"),
                 "load_g": state.get("load_g"),
+                "load_max": LOAD_MAX,        # el tope del campo de la página sale de acá
                 "current_pct": state.get("current_pct"),
                 "lost_steps": state.get("lost_steps"),
                 "age_s": None if self.state_time is None else round(time.monotonic() - self.state_time, 3),

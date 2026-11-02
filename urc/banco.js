@@ -19,7 +19,7 @@
     <p class="hint" id="banco-now"></p>
     <h3>Carga</h3>
     <div class="row">
-      <label>Carga en la herramienta (g) <input type="number" id="banco-load" min="0" max="5000" step="50" style="width: 6em"></label>
+      <label>Carga en la herramienta (g) <input type="number" id="banco-load" min="0" step="50" style="width: 6em"></label>
       <button id="banco-load-set">Aplicar</button>
       <span class="small" id="banco-load-state"></span>
     </div>
@@ -147,6 +147,8 @@
     if ($("banco-now").textContent !== now) $("banco-now").textContent = now;
     $("banco-now").className = faults.length ? "hint warn" : "hint";
 
+    // El tope es LOAD_MAX de la URC (urc/instrumentation.py): no se repite acá.
+    if ($("banco-load").max !== String(bench.load_max)) $("banco-load").max = bench.load_max;
     sync($("banco-load"), String(bench.load_g), "carga");
     state($("banco-load-state"), "carga", { text: `${bench.load_g} g`, raw: bench.load_g }, $("banco-load"));
     const motor = Number(f1.value);

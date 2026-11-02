@@ -188,6 +188,9 @@ class BenchConfirmationTests(unittest.TestCase):
         event = self.bench.events.since()["events"][-1]
         self.assertEqual((event["level"], event["text"]), ("ok", "F1 · corriente del driver de M4: 100 % → 50 %"))
 
+    def test_the_page_takes_the_load_limit_from_the_urc(self):
+        self.assertEqual(self.bench.snapshot()["load_max"], instrumentation.LOAD_MAX)
+
     def test_an_order_already_in_force_is_confirmed_too(self):
         self.bench.order({"carga": 150})
         self.sim.send(self.LINE.format(current=100))
