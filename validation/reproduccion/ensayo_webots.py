@@ -45,6 +45,7 @@ WORLD = ROOT / "webots" / "worlds" / "_ensayo_reproduccion.wbt"
 OBSERVER = ROOT / "webots" / "controllers" / "_observador_reproduccion"
 LOG = open(sys.argv[1], "w", encoding="utf-8", newline="\n")
 REST = (0, 0, 0, 12000)
+STEP = (5.625, 5.625, 5.625, 0.5)  # unidades de scara/1 por paso de 1/8
 # Trayectoria mixta: cómo se llega a cada punto (el 1 rige la vuelta del loop).
 POINTS = [
     ((30, -60, 10, 60), {"kind": "LIN", "speed": 50}),
@@ -73,7 +74,24 @@ def wait(predicate, what, timeout=60):
         if value:
             return value
         time.sleep(0.02)
-    raise AssertionError(f"no se cumplió: {what}")
+    # Una falla intermitente de «vuelta al reposo» dejó el registro vacío y sin
+    # el estado: que quede en el registro y en el error con qué se esperaba.
+    detail = f"no se cumplió: {what}; {describe(session.snapshot())}"
+    log(detail)
+    raise AssertionError(detail)
+
+
+def describe(state):
+    """Estado de la URC para el registro de una falla: modo, referencia, cola y pose contra el reposo."""
+    status, segments, homing = state["status"], state["segments"], state["homing"]
+    if not status:
+        return "sin estado de la UCI"
+    position = status["position"]
+    off = [round((p - r) / step, 1) for p, r, step in zip(position, REST, STEP)]
+    return (f"modo {status['mode']}, homed {status['homed']:04b}, homing "
+            f"{homing['state'] if homing else None}, cola {segments['pending']} pendientes y en vuelo "
+            f"{segments['in_flight']}, tramo {state['tramo']}, estimada {position} contra el reposo "
+            f"{list(REST)}: {off} pasos")
 
 
 def still(session):
