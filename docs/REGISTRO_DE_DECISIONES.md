@@ -610,7 +610,7 @@ Decisiones tomadas al implementar el canal que solo existe en la simulación (AD
   - La carga cambia `toolMass` del `SCARA.proto` (de 0 a 5 kg). Hoy cambia la física de la herramienta; la pérdida de pasos por carga llega con N2 (#15).
   - `RECARGA` recarga el mundo: el controlador se vuelve a conectar a los dos canales y la UCI arranca de nuevo.
 - **Por qué:** cerrar la conexión sería otra falla (la URC la vería como una desconexión de Webots). El reinicio tiene que ser del firmware, no del mundo, para que se vea que la URC detecta el `BOOT` con el robot en la misma pose.
-- **Estado:** Aceptada.
+- **Estado:** Aceptada. D85 corrige la carga: es la que se agrega a la herramienta, de 0 a 4850 g.
 
 ## Captura de puntos y gestor de trayectorias (issue #12)
 
@@ -695,7 +695,7 @@ Decisiones tomadas al implementar la reproducción desde el gestor de trayectori
 **D68 · La reproducción valida todo antes de mover y encola un tramo detrás de otro, con sus esperas, en un solo movimiento.**
 - **Decisión:**
   - Play desde el principio o desde el punto seleccionado, con velocidad global (% entero de 10 a 100, que multiplica la de cada tramo y no se guarda) y loop: N vueltas o sin fin.
-  - Antes de enviar nada, la URC planifica y valida (D55) todo lo que se va a ejecutar: el tramo 0, cada tramo de la trayectoria y, con loop, la vuelta del último punto al primero y los tramos anteriores al punto de partida. El rechazo dice cuál: «Tramo 0», «Tramo 3» o «Tramo de vuelta».
+  - Antes de enviar nada, la URC planifica y valida (D55) todo lo que se va a ejecutar: el tramo 0, cada tramo de la trayectoria y, con loop, la vuelta del último punto al primero y los tramos anteriores al punto de partida. El rechazo dice cuál y entre qué puntos: «Tramo 0», «Tramo 3» o «Tramo de vuelta del loop» (D77).
   - Tramo 0: PTP desde la posición estimada hasta el punto de partida, al 25 % × la velocidad global (`--aproximacion` cambia el 25 %), con espera de 0 s. Se omite si el robot está a lo sumo a 6 centésimas de grado en J1–J3 y a 1 centésima de mm en J4: menos de un paso de 1/8, redondeado hacia arriba. Entonces el primer tramo parte del punto grabado, no de la pose del robot.
   - Exige el robot referenciado, quieto y sin referencia dudosa (D65). Si en plena reproducción llega un `EV LOST`, la URC la detiene con `STOP`.
   - La espera de un punto son segmentos sin movimiento en su destino, de hasta 1 s cada uno.
@@ -844,3 +844,80 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - J4 a 50 mm/s: son los 10 000 pulsos/s del Timer1, sin margen.
   - Subir el jog: arranca sin rampa y necesita una en el firmware (D70).
 - **Estado:** Aceptada. Reemplaza los valores de D45 y la conclusión de D66.
+
+## Mensajes de rechazo
+
+**D77 · Cada rechazo de un tramo es un mensaje corto que nombra sus puntos y qué punto cambiar; el porqué va aparte, plegado.**
+- **Decisión:**
+  - El mensaje tiene una línea: el tramo con sus extremos y su tipo, qué pasa y qué cambiar. Por ejemplo, «Tramo 3 (punto 2 → punto 3, LIN): el codo cambia de lado. Cambiá el punto 3 a PTP.». El de vuelta es «Tramo de vuelta del loop (punto 4 → punto 1, LIN)»; el de aproximación, «Tramo 0 (pose actual → punto 1, PTP de aproximación)»; al reanudar, el extremo es la pose de la pausa.
+  - Qué pasa es concreto: la articulación o el motor («M1 (J1) no da la aceleración que pide la recta», «J3 sale de su recorrido al 34 % de la recta») o la parte del robot y el obstáculo («el efector puede chocar con la pieza Torre de la base»), sin el sufijo del CAD.
+  - La URC responde `{"error": <mensaje>, "detail": <porqué>}`, y la página muestra el porqué plegado bajo «Por qué», en la reproducción, en «Ir al punto» y en el PTP manual. El porqué da los valores (J2 de cada extremo, el valor pedido contra el máximo, el porcentaje de la recta) y las alternativas. En la vuelta del loop, explica que usa el tipo y la velocidad del punto 1, y que sin loop a ese punto se llega con el tramo de aproximación, que es PTP.
+  - Una sola sugerencia en el mensaje, según el motivo. Por codo, alcance o límite en el camino: PTP. Por velocidad: bajar la del punto o la global; el porqué agrega que, si no alcanza (cerca del brazo estirado puede no alcanzar), PTP. Por choque: PTP o un punto intermedio; en la aproximación y en un PTP suelto, mover con jog. Un destino fuera del recorrido: corregir el punto.
+  - «Ir al punto», el PTP manual y «Estacionar» validan con `check_ptp` y dan el mismo tipo de mensaje («Movimiento PTP (pose actual → punto 2): …»). `planner.check_target` se elimina.
+  - Los recorridos se dicen en grados y mm, no en centésimas.
+- **Por qué:** con un LIN en el punto 1, la reproducción simple funcionaba y el loop no: el punto 1 se alcanza con el tramo 0, que es PTP, y su LIN solo rige en la vuelta. El mensaje decía «Tramo de vuelta» y «Usá un tramo PTP» sin decir de qué punto a qué punto ni cuál cambiar, y el operador tenía que probar. Con toda la explicación en el mensaje quedaba un párrafo largo: lo que hace falta para actuar va en una línea, y el porqué queda a un click.
+- **Estado:** Aceptada. Amplía el formato del rechazo de D55 y D68.
+
+## QA del banco de ensayo
+
+Decisiones tomadas al revisar con Webots los pasos de la QA humana de las fallas (R6), con los límites de D76. El recorrido corregido y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana).
+
+**D85 · La carga del banco es la que se agrega a la herramienta: de 0 a 4850 g, para no pasar de 5 kg.**
+- **Decisión:**
+  - `CARGA gramos` deja `toolMass` del `SCARA.proto` en 0,15 kg (el pistón y su soporte) más la carga, y `SIM` informa la carga sin la herramienta. 0 g es la herramienta sola, que es como arranca el mundo.
+  - El banco acepta de 0 a 4850 g: con la herramienta, 5 kg, la masa con la que D76 verificó los límites. El tope está en `TOOL_MAX` del controlador (`stepper.h`) y en `LOAD_MAX` de `urc/instrumentation.py`.
+- **Por qué:**
+  - `CARGA 0` dejaba `toolMass` en 0, y Webots no acepta una masa nula: la consola avisaba «valor inválido» y la herramienta seguía con la carga anterior. Sacar la carga no funcionaba.
+  - El panel decía «carga» y mostraba la masa de la herramienta: sin carga marcaba 150 g, y para sacarla había que escribir 150.
+  - Con 5 kg encima de la herramienta (5,15 kg), el jog de J4, que arranca sin rampa, se atrasa 1,006 pasos completos con la corriente nominal: no pierde pasos, pero pasa el criterio de las pruebas de N2 (menos de un paso completo).
+- **Descartado:** la carga como masa total, con un mínimo de 150 g (lo que se quiere al escribir 0 es sacarla), y 5000 g de carga (pasa el criterio de los límites).
+- **Estado:** Aceptada. Corrige la carga de D61.
+
+**D86 · «Pasos perdidos» cuenta desde el último homing del eje, o desde que el motor recuperó la corriente.**
+- **Decisión:**
+  - El contador de Mj del banco vuelve a cero con el `EV HOMED j` del firmware (J1 → M1, J2 → M2, J3 → M3, J4 → M4) y, como antes, cuando el motor recupera la corriente (`ENABLE`, F2 apagada). El controlador lo ve en lo que escribe el firmware, también con F4.
+  - No lo limpian `ZERO` ni el homing de otro eje. La planta no cambia: el rotor sigue donde está, solo cambia desde dónde se cuenta.
+  - El número es la verdad del simulador: los pasos completos que el motor se corrió de los pulsos que le contó el firmware desde que esa cuenta empezó a valer. Siempre es múltiplo de 4 (D64); positivo, el eje quedó más adelante de lo que contó el firmware.
+- **Por qué:** el banco compara la verdad con lo que sabe el robot. Después del homing la cuenta del firmware vuelve a salir del imán, y lo que se perdió antes ya no está en ella: un «M1: 4» que seguía ahí parecía una falla sin corregir, mientras la columna «Diferencia» volvía a cero.
+- **Descartado:** acumularlo hasta recargar el mundo (era lo que hacía, y confundía), un botón para ponerlo en cero (otra orden de `scara-sim/1` para lo que ya hace el homing) y limpiarlo con `ZERO` (la referencia manual no mide nada: la diferencia sigue si el robot no estaba en el reposo).
+- **Estado:** Aceptada. Precisa D67.
+
+**D87 · El homing abortado se dice en el mensaje de estado; el `BOOT` inesperado va también a Errores.**
+- **Decisión:**
+  - Si el homing aborta (`ERR 11`, `ERR 12`, `ERR 4`, Stop, la UCI no lo empieza o se detiene sin terminar), el mensaje de estado dice «Homing abortado, sin referencia:» y la causa, por ejemplo «ERR 12 trabado: el Hall no se apagó, está trabado activo».
+  - El `BOOT` a mitad de una conexión (F5) se agrega, además del mensaje, a la lista de errores, como `EV LOST` (D65).
+- **Por qué:** en la QA de F3, el homing abortaba con `ERR 12` pero el mensaje seguía en «Homing en curso: J4, J1, J2 y J3»; el aborto solo se veía en la línea del homing y en Errores. El aviso de F5 vivía en el mensaje de estado, una sola línea que la siguiente orden pisa.
+- **Descartado:** una notificación aparte en la página: es trabajo de la interfaz, y con esto la URC ya da el texto.
+- **Estado:** Aceptada.
+
+## Interfaz de operación (QA de la ronda 5)
+
+Decisiones tomadas al rehacer la página de la URC después de la QA humana de la ronda 5: [`urc/index.html`](../urc/index.html), [`urc/avisos.js`](../urc/avisos.js), [`urc/trajectories.js`](../urc/trajectories.js), [`urc/banco.js`](../urc/banco.js) y el registro de eventos ([`urc/events.py`](../urc/events.py)). Pruebas en [`tests/test_eventos.py`](../tests/test_eventos.py).
+
+**D78 · La página separa lo que vale ahora, lo que hay que ver ahora y lo que pasó: barra de estado, avisos emergentes y un registro de eventos que lleva la URC.**
+- **Decisión:**
+  - **Barra de estado**, fija arriba: el enlace con la UCI («UCI conectada · actualizado hace 0.1 s»: demorado desde 0,5 s sin estado `S`, cortado desde 1 s, con una ayuda breve), los motores, la referencia («Referencia dudosa (EV LOST): J4», en rojo), qué hace el robot (quieto, jog, homing con su avance, reproducción), el banco vigente en simulación (carga y fallas activas) y el último mensaje de la URC con su hora. Stop y Parada inmediata están en la barra.
+  - **Registro de eventos**, que lleva la URC ([`urc/events.py`](../urc/events.py)). Anotan la sesión (cada mensaje; cada `ERR`, `EV LOST` y `EV HOMED`; las líneas que no respetan `scara/1`; el homing abortado; el estado `S` que deja de llegar por más de 1 s y cuando vuelve), el servidor HTTP (cada orden que mueve o frena el robot o cambia el banco, antes de ejecutarla, y cada orden rechazada, con su error y, si lo trae, su detalle) y el banco (D79). Cada evento lleva número, hora de la PC, nivel (info, ok, aviso o error) y quién lo produjo. Uno igual al anterior dentro de 3 s suma una repetición («×11»): el jog contra un límite se renueva cada 150 ms. La página lo pide con `/api/eventos?desde=versión` y lo muestra a la derecha, el más nuevo arriba, con un filtro de avisos y errores.
+  - **Avisos emergentes**, abajo a la derecha, para lo que no es info. Salen del registro, así que dicen su número y su hora. Una orden rechazada y un aviso se van a los 10 s; una confirmación, a los 5 s; un error (`ERR`, `EV LOST`, `BOOT` inesperado, UCI desconectada, enlace cortado) queda hasta cerrarlo o hasta que se resuelve: el enlace vuelve, el homing limpia la duda. El detalle de un rechazo va plegado.
+  - Cada grupo de botones conserva su línea de resultado: el aviso emergente es para verlo ahora; la línea, para saber qué pasó con ese botón.
+- **Por qué:** en la QA de la ronda 5, después de «Aplicar» nada decía qué estaba vigente; con F1 en M4, el aviso de pérdida de pasos de «Estacionar» quedaba 3000 px más abajo, en un panel de errores sin hora ni número que no distinguía dos `ERR` iguales; y «último estado S hace 0.0 s» no le decía nada al operador. El registro lo lleva la URC porque la página consulta cada 200 ms: comparando estados, perdería lo que pasa entre dos consultas, no distinguiría dos eventos iguales y se borraría al recargar.
+- **Descartado:** armar el historial en la página; un aviso emergente por cada evento (el jog contra un límite daría uno cada 150 ms); `alert()` (frena la página y el jog).
+- **Estado:** Aceptada.
+
+**D79 · El banco separa lo pedido de lo vigente, y la URC confirma cada orden con el estado `SIM`.**
+- **Decisión:**
+  - Los campos del banco son lo pedido. Un campo editado queda marcado y la página no lo pisa hasta aplicarlo; al lado de cada control dice lo vigente («vigente: 150 g»), «sin aplicar» si difiere, y «aplicando…» hasta la confirmación. Arriba del panel y en la barra de estado están la carga y las fallas activas.
+  - La URC confirma cada orden que cambia el estado del simulador (la carga, F1 de cada motor, F2, F3 de cada articulación y F4): espera que el estado `SIM` muestre el valor pedido. Si llega, anota el cambio, «Carga en la herramienta: 150 g → 500 g»; si en 2 s no llegó, «No se aplicó Carga en la herramienta: se pidió 0 g y el simulador sigue en 150 g». Los cambios que nadie pidió, como los de F5 o de recargar el mundo, se anotan como información. F5 y la recarga no tienen qué confirmar: se ven en el `BOOT` y en la reconexión.
+  - La posición simulada y la diferencia con la estimada pasan junto a la estimada, a la derecha. La diferencia se marca en rojo desde un paso completo, y solo en los ejes referenciados: sin referencia, la estimada no dice dónde está el eje.
+- **Por qué:** en la QA, «Aplicar» no decía si se había aplicado, y un porcentaje editado volvía al valor anterior al hacer click afuera: el polling lo pisaba cada 250 ms. Además, el simulador puede no aplicar una orden (en la QA, la carga de 0 g no se aplicaba), y el banco tiene que decirlo.
+- **Descartado:** confirmar solo en la página (el registro no lo sabría) y dejar de actualizar el panel mientras tiene el foco (tampoco mostraría lo vigente).
+- **Estado:** Aceptada.
+
+**D80 · Las órdenes a la izquierda y lo que se mira siempre a la derecha; un botón bloqueado dice por qué.**
+- **Decisión:**
+  - Dos columnas. A la derecha, fijas al desplazarse, la posición estimada (con la simulada, D79) y el registro de eventos (D78). A la izquierda, en el orden de uso: motores y referencia, con el paso que falta para operar (habilitar los motores, hacer homing), jog, ir a una pose, trayectoria y reproducción, banco y diagnóstico. Con menos de 1000 px de ancho, una sola columna.
+  - Un botón que la URC rechazaría por el estado del robot queda deshabilitado, con el motivo en su ayuda y en una línea junto a él: «Homing…» sin corriente; «Estacionar…», «Ir a la pose…», capturar, sobrescribir e «Ir al punto…» sin referencia; reproducir sin referencia, con la referencia dudosa (D68) o sin puntos: «Reproducir bloqueado: la referencia de J4 es dudosa por pérdida de pasos; hacé homing.». La URC lo sigue verificando.
+  - «Tráfico scara/1» queda plegado en «Diagnóstico», con una línea que dice qué es. Los `ERR` y las líneas no entendidas van al registro de eventos.
+- **Por qué:** en la QA, la página medía 3700 px en una sola columna, y los botones más usados quedaban lejos de sus mensajes. Con la referencia dudosa, reproducir parecía permitido hasta que la URC lo rechazaba. El tráfico del protocolo no le dice nada al operador.
+- **Descartado:** pestañas (esconderían la posición o el banco mientras se usa el otro) y deshabilitar por estados de un instante, como el robot en movimiento (los botones parpadearían durante el jog; eso lo rechaza la URC con su motivo).
+- **Estado:** Aceptada.

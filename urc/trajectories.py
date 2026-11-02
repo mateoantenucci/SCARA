@@ -168,11 +168,13 @@ class TrajectoryManager:
         mientras tanto, no se mueve.
         """
         with self.lock:
-            joints = self.points[self._index(request.get("index"))]["joints"]
+            index = self._index(request.get("index"))
+            joints = self.points[index]["joints"]
         confirm = request.get("confirm", False) is True
         if confirm and request.get("target") != list(joints):
             raise ValueError("El punto cambió desde que se planificó: volvé a pedir «Ir al punto»")
-        return (202 if confirm else 200), self.session.move_ptp(joints, GO_SPEED, dry_run=not confirm)
+        return (202 if confirm else 200), self.session.move_ptp(joints, GO_SPEED, dry_run=not confirm,
+                                                                name=f"punto {index + 1}")
 
     # --- Archivo -------------------------------------------------------------
 

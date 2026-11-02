@@ -338,6 +338,8 @@ La búsqueda está acotada en recorrido y en 60 s por eje. Un Hall que no aparec
 
 El profesor pidió mover el robot a mano, guardar puntos, armar trayectorias con nombre y reproducirlas siguiendo rectas o el menor recorrido. AGSABOT es la referencia de la idea, no de la implementación (D0).
 
+**La página de la URC (D78–D80).** Una barra fija arriba dice lo que vale ahora: el enlace con la UCI y hace cuánto llegó su estado, los motores, la referencia (dudosa, en rojo), qué hace el robot y, en simulación, la carga y las fallas activas; ahí están Stop y Parada inmediata. A la derecha, fijos, la posición estimada y el registro de eventos que lleva la URC, con número y hora. Lo que hay que ver enseguida (una orden rechazada y por qué, un `EV LOST`, un `BOOT` inesperado, el enlace cortado) aparece además como aviso emergente. Un botón que la URC rechazaría por el estado del robot queda deshabilitado y dice por qué.
+
 **Jog desde la URC (D12, [ADR 0007](../adr/0007-jog-desde-la-urc.md)).** Con el teclado de la página de la URC, estilo videojuego. Funciona igual con el robot real, que no tiene botonera.
 
 | Tecla | Jog cartesiano | Jog articular |
@@ -434,16 +436,16 @@ El plan mide su propio apartamiento: en una recta típica al 50 % es de 0,02 mm.
 | Motivo | Cuándo se rechaza |
 | --- | --- |
 | Límite articular | Un extremo fuera de su recorrido, o el camino lleva J1 o J3 más allá (por ejemplo, al pasar por detrás del robot). |
-| Cambio de codo | J2 cambia de signo entre los extremos. Para cambiar de lado el brazo tendría que estirarse, que es una singularidad. |
+| Cambio de codo | J2 cambia de signo entre los extremos. Para pasar el codo de un lado al otro el brazo tiene que estirarse del todo (J2 = 0°), una singularidad donde ninguna recta se puede seguir. |
 | Fuera de alcance | La recta pasa a menos de 191 mm del eje de J1, el radio mínimo con J2 a ±135°. |
 | Velocidad excesiva | Una articulación o un motor supera su velocidad o aceleración. Pasa cerca del brazo estirado, donde J2 tiene que girar cada vez más rápido para el mismo avance. |
 | Colisión | El chequeo de colisiones existente, en cada segmento. Por ejemplo, una recta entre dos puntos libres que acerca el soporte del efector a la torre. |
 
-El rechazo dice el tramo, el motivo y dónde ocurre, y sugiere PTP. Si el motivo es la velocidad, sugiere primero bajarla. Por ejemplo:
+El rechazo es un mensaje corto: el tramo y entre qué puntos, qué pasa y qué punto cambiar. Aparte, plegado bajo «Por qué», van los valores, dónde ocurre y las alternativas (D77). Si el motivo es la velocidad, sugiere primero bajarla. Por ejemplo:
 
 ```text
-Tramo 3 (LIN), velocidad excesiva: M1 (J1) necesitaría aceleración de 145.14 °/s² (máximo 140.00)
-al 39 % del tramo. Bajá la velocidad del tramo o usá un tramo PTP.
+Tramo 3 (punto 2 → punto 3, LIN): M1 (J1) no da la aceleración que pide la recta. Bajá la velocidad del punto 3 o la global.
+Por qué: Al 39 % de la recta, M1 (J1) necesitaría 145.14 °/s², y su máximo es 140.00 °/s². Si no alcanza, cambiá el punto 3 a PTP.
 ```
 
 Desde el brazo estirado, una recta casi siempre se rechaza, aun despacio: J2 tendría que arrancar de golpe. Por eso el primer movimiento de un programa es el tramo de aproximación PTP (D32).
@@ -507,7 +509,7 @@ Implementada en el issue #13, en la URC ([`urc/playback.py`](../../urc/playback.
 | 2 … n | Punto anterior → punto | Con el tipo, la velocidad × la global y la espera del punto. |
 | Vuelta (loop) | Último punto → punto 1 | Con los parámetros del punto 1. Abre cada vuelta nueva. |
 
-Si un tramo falla, el mensaje dice cuál («Tramo 0», «Tramo 3», «Tramo de vuelta»), por qué y qué probar. Sin referencia, o con la referencia dudosa por una pérdida de pasos, la reproducción no arranca:
+Si un tramo falla, el mensaje dice cuál y entre qué puntos («Tramo 0 (pose actual → punto 1, PTP de aproximación)», «Tramo 3 (punto 2 → punto 3, LIN)», «Tramo de vuelta del loop (punto 4 → punto 1, LIN)»), qué pasa y qué punto cambiar, con el porqué aparte (D77). Sin referencia, o con la referencia dudosa por una pérdida de pasos, la reproducción no arranca:
 
 ```text
 Para reproducir, el robot tiene que estar referenciado (homing o referencia manual)
@@ -557,7 +559,7 @@ El proyecto simula el diseño; no hay robot físico con el que calibrar ([ADR 00
 | Botonera física y teclas en Webots | El jog va por la URC; se puede agregar sin cambiar el firmware |
 | Construcción y cableado del robot real | Se entrega firmware que compila para el UNO y la receta de socat |
 
-**Canal de instrumentación y banco de ensayo (D2, [ADR 0004](../adr/0004-canal-de-instrumentacion-separado.md), D59).** Lo que solo existe en la simulación viaja por otro puerto (9001) y otro protocolo de texto, `scara-sim/1`: el controlador de Webots envía la posición física simulada, leída de los sensores de posición de Webots, y recibe las fallas, la carga y la recarga del mundo. En la URC, un panel aparte, «Banco de ensayo (solo simulación)», muestra la columna «Simulado» junto a la estimada por pasos y la diferencia. Sin el canal, como con el robot real, el panel no aparece y la URC funciona igual. Capturar y planificar usan siempre la posición estimada: la sesión, el planificador y la validación no conocen el canal, y una prueba lo verifica.
+**Canal de instrumentación y banco de ensayo (D2, [ADR 0004](../adr/0004-canal-de-instrumentacion-separado.md), D59).** Lo que solo existe en la simulación viaja por otro puerto (9001) y otro protocolo de texto, `scara-sim/1`: el controlador de Webots envía la posición física simulada, leída de los sensores de posición de Webots, y recibe las fallas, la carga y la recarga del mundo. En la URC, la columna «Simulado» y la diferencia aparecen junto a la estimada por pasos, y un panel aparte, «Banco de ensayo (solo simulación)», inyecta las fallas y la carga: la URC confirma cada orden con el estado del simulador y dice lo vigente (D79). Sin el canal, como con el robot real, el panel no aparece y la URC funciona igual. Capturar y planificar usan siempre la posición estimada: la sesión, el planificador y la validación no conocen el canal, y una prueba lo verifica.
 
 | Falla | Qué hace el banco | Qué se ve |
 | --- | --- | --- |
@@ -700,6 +702,9 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D70 | Con referencia, jog a 10 °/s, frenado por la URC antes del límite y del choque | A 5 °/s no servía para mostrar, y con referencia el jog no verificaba nada. Desde D75 rige solo para el jog por motor | |
 | D71 | Un PTP puede salir de la zona de margen de un obstáculo si se aleja | Desde muy cerca, todo camino se rechazaba y el robot quedaba encerrado | |
 | D75 | Con referencia, el jog son segmentos de 20 ms planificados de a uno, tres en cola contados en el reloj de la UCI | Es D28 con el cartesiano; el robot frena en 60 ms sobre el último segmento verificado | |
+| D78 | La página separa lo que vale ahora (barra de estado), lo que hay que ver ahora (avisos emergentes) y lo que pasó (registro de eventos con número y hora, que lleva la URC) | En la QA, el aviso de pérdida de pasos quedaba lejos del botón y los errores no tenían hora; el registro en la URC no pierde nada entre dos consultas | |
+| D79 | El banco separa lo pedido de lo vigente, y la URC confirma cada orden con el estado `SIM` | «Aplicar» no decía si se había aplicado, el polling pisaba lo editado y el simulador puede no aplicar una orden | |
+| D80 | Órdenes a la izquierda, posición y registro fijos a la derecha; un botón bloqueado dice por qué | La página medía 3700 px en una columna, y reproducir con la referencia dudosa parecía permitido hasta el rechazo | |
 
 ### Canal de instrumentación, pérdida de pasos y fallas
 
@@ -714,6 +719,10 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D66 | N2 confirma los límites de D45. Reemplazada por D76 | Con la corriente nominal y 5 kg, el par pedido quedaba entre 1,4 y 22 veces por debajo del disponible | |
 | D67 | F1 baja la corriente de un driver: `F1 m porcentaje` | Un TB6600 regulado de menos es una falla real, y muestra la pérdida por carga y por aceleración | |
 | D76 | Motores más rápidos, con el doble del par que piden; el LIN se separa de J4 | El margen de D66 sobraba y la demostración era lenta: un PTP de 90° de J1 pasa de 5,1 a 1,6 s; 2 veces cubre lo que N2 no modela | |
+| D85 | La carga del banco se suma a la herramienta: de 0 a 4850 g | Webots no acepta una masa de 0, y el panel mostraba 150 g sin carga; con la herramienta son los 5 kg de D76 | |
+| D86 | «Pasos perdidos» cuenta desde el último homing del eje o desde que el motor recuperó la corriente | Es lo que el firmware no sabe; después del homing, lo perdido antes ya no está en su cuenta | |
+| D87 | El homing abortado se dice en el mensaje de estado; el `BOOT` inesperado va también a Errores | En la QA, con `ERR 12` la página seguía en «Homing en curso», y el aviso de F5 se pisaba | |
+| D77 | Cada rechazo de un tramo es un mensaje corto que nombra sus puntos y qué punto cambiar, con el porqué plegado | Con el LIN en el punto 1, el loop fallaba y el mensaje no decía de qué punto a qué punto ni cuál cambiar | |
 
 ### Bala trazadora y protocolo completo
 

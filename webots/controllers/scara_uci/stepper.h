@@ -205,6 +205,11 @@ const double FOREARM_MASS = 0.5;
 const double WRIST_MASS = 0.35;      // conjunto Z, sobre el eje de J3
 const double WRIST_INERTIA = 0.00034;
 const double TOOL_RADIUS = 0.03;     // la herramienta y su carga, sobre el eje de J3
+// Pistón y soporte, sin carga: el toolMass de SCARA.proto. La carga del banco
+// de ensayo se suma a esta masa, hasta los 5 kg con los que se verificaron los
+// límites (D76, D85).
+const double TOOL_MASS = 0.15;
+const double TOOL_MAX = 5.0;
 
 // Lo que mueve el motor `motor` (0..3) con `tool` kg en la herramienta
 // (toolMass del proto: pistón, soporte y carga). M1 gira el brazo con todo

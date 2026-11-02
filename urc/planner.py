@@ -18,7 +18,6 @@ fallar en el camino lo verifica urc/validation.py antes de enviar nada.
 from dataclasses import dataclass
 import math
 
-from scara.collisions import CollisionChecker
 from scara.kinematics import arm_angles, forward, inverse, load_config, validate_joints
 
 
@@ -303,37 +302,28 @@ def joints_from_pose(x, y, z, heading, elbow=-1, config=None, current=None):
     return si_to_units(q)
 
 
-def check_target(start, target, config=None, checker=None):
-    """Valida un PTP antes de enviarlo: límites articulares y choques en todo el camino.
-
-    El camino de un PTP es la recta en articulaciones de start a target, la
-    misma que verifica el chequeo de colisiones. El inicio puede estar fuera
-    del recorrido (un jog lo llevó ahí, o el redondeo a pasos junto a un
-    límite): un PTP tiene que poder traerlo de vuelta. El chequeo de
-    colisiones arranca entonces desde el punto más cercano dentro del recorrido,
-    y deja salir de la zona de margen de un obstáculo si el camino se aleja.
-    """
-    config = config or load_config()
-    start, target = check_units(start, "Inicio"), check_units(target, "Destino")
-    problem = out_of_range(target, config)
-    if problem:
-        raise ValueError(f"El destino tiene {problem}")
-    checker = checker or CollisionChecker(config)
-    checker.validate_path(inside_range(start, config), units_to_si(target), leaving=True)
-
-
 def travel(config=None):
     """Recorrido de cada articulación, (mínimo, máximo) en centésimas."""
     config = config or load_config()
     return [tuple(_round(b * scale) for b in bounds) for bounds, scale in zip(config["limits"], SCALE)]
 
 
-def out_of_range(units, config=None):
-    """La primera articulación fuera de su recorrido, como texto para el operador, o None."""
+def outside(units, config=None):
+    """La primera articulación fuera de su recorrido, o None: nombre, valor, mínimo y máximo, en ° o mm."""
     for name, value, (low, high) in zip(NAMES, units, travel(config)):
         if not low <= value <= high:
-            return f"{name} fuera de su recorrido: {value} no está entre {low} y {high} centésimas"
+            unit = " mm" if name == "J4" else "°"
+            return (name, *(f"{v / 100:g}{unit}" for v in (value, low, high)))
     return None
+
+
+def out_of_range(units, config=None):
+    """La primera articulación fuera de su recorrido, como texto para el operador, o None."""
+    found = outside(units, config)
+    if found is None:
+        return None
+    name, value, low, high = found
+    return f"{name} fuera de su recorrido: {value} (va de {low} a {high})"
 
 
 def inside_range(units, config=None):

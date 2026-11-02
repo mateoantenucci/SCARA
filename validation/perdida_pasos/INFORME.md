@@ -1,6 +1,6 @@
 # Pérdida de pasos (N2) y F1 con `EV LOST` en Webots
 
-Issue #15, decisiones D64–D67. Fecha: 31/10/2026. Windows 11, Webots R2025a, controlador `scara_uci` compilado con el `g++` 14.2 de Webots, paso de simulación de 2 ms, tiempo real.
+Issue #15, decisiones D64–D67. Fecha: 31/10/2026; repetido el 01/11/2026 con los límites de D76, la carga de D85 y el contador de D86. Windows 11, Webots R2025a, controlador `scara_uci` compilado con el `g++` 14.2 de Webots, paso de simulación de 2 ms, tiempo real.
 
 ## Qué se ensayó
 
@@ -8,18 +8,18 @@ Issue #15, decisiones D64–D67. Fecha: 31/10/2026. Windows 11, Webots R2025a, c
 
 | Paso | Qué se hace | Resultado |
 | --- | --- | --- |
-| 0 | Homing de los cuatro ejes y vuelta al reposo (PTP de la URC) | 131 s. Ningún `EV LOST`, aunque J4 cruza su imán de abajo al estacionar. Simulado − estimado: 0; 0; 0; −0,25 pasos completos (J4 cede bajo su peso). Pasos perdidos: ninguno |
-| 1 | 5 kg en la herramienta, con la corriente nominal: J4 sube a 10 mm a 30 mm/s y vuelve al reposo | Sin pasos perdidos, diferencia de 0,5 pasos completos en J4 arriba, ningún `EV LOST` al cruzar el Hall de abajo (D66) |
-| 2 | F1 por carga: J4 a 60 mm, driver de M4 al 50 %, PTP a 10 mm | J4 no sube: estimado 10,00 mm, simulado 60,43 mm. Diferencia 1260,75 pasos completos; la planta perdió 1260, múltiplo de 4. Con M4 al 100 % y de vuelta al reposo, el Hall de abajo da `EV LOST 4 1261` y la URC avisa «La referencia es dudosa» |
-| 3 | F1 por aceleración: driver de M1 al 20 % y 5 kg, jog de J1 a 10 °/s, que arranca sin rampa | Al arrancar, la planta perdió 4 pasos completos (diferencia 3,89: el rotor todavía se atrasa en movimiento). Al llegar a su imán, `EV LOST 1 4` y `ERR 10 fin` |
-| 4 | Corriente nominal, herramienta sola y homing de nuevo | La referencia deja de ser dudosa; diferencia de vuelta en menos de un paso |
+| 0 | Homing de los cuatro ejes y vuelta al reposo (PTP de la URC) | 72 s. Ningún `EV LOST`, aunque J4 cruza su imán de abajo al estacionar. Simulado − estimado: 0; 0; 0; −0,25 pasos completos (J4 cede bajo su peso). Pasos perdidos: ninguno |
+| 1 | 5 kg en la herramienta (4850 g de carga, D85), con la corriente nominal: J4 sube a 10 mm a 30 mm/s y vuelve al reposo | Sin pasos perdidos, diferencia de 0,5 pasos completos en J4 arriba, ningún `EV LOST` al cruzar el Hall de abajo (D66) |
+| 2 | F1 por carga: J4 a 60 mm, driver de M4 al 50 %, PTP a 10 mm | J4 no sube: estimado 10,00 mm, simulado 60,11 mm. Diferencia 1252,75 pasos completos; la planta perdió 1252, múltiplo de 4. Con M4 al 100 % y de vuelta al reposo, el Hall de abajo da `EV LOST 4 1254` y la URC avisa «La referencia es dudosa» |
+| 3 | F1 por aceleración: driver de M1 al 20 % y 5 kg, jog de J1 a 10 °/s, que arranca sin rampa | Al arrancar, la planta perdió 4 pasos completos (diferencia 3,67: el rotor todavía se atrasa en movimiento). Al llegar a su imán, `EV LOST 1 4` y `ERR 10 fin` |
+| 4 | Corriente nominal, herramienta sola y homing de nuevo | La referencia deja de ser dudosa; diferencia de vuelta en menos de un paso, y «Pasos perdidos» vuelve a 0 en los cuatro motores (D86) |
 
 `ENSAYO OK`. La simulación siguió estable con el paso de 2 ms durante todo el ensayo, incluidos los 5 kg y el motor ahogado.
 
 ## Qué muestra
 
 - «Simulado» se aparta de lo estimado en múltiplos de cuatro pasos completos, y solo cuando la carga o la aceleración superan el par: con la corriente nominal no pasa, ni con 5 kg (D64, D66).
-- El firmware lo descubre sin encoders, al entrar en un imán, con los mismos pasos que perdió la planta (±1 por la lectura del Hall en movimiento, bajo la tolerancia de 2 pasos completos, D65).
+- El firmware lo descubre sin encoders, al entrar en un imán, con los mismos pasos que perdió la planta (±1 en J1 y ±2 en J4, que cruza el Hall a 40 mm/s, por la lectura del Hall en movimiento; D65).
 - Cruzar los Hall sin pasos perdidos (homing, estacionar, subir y bajar con 5 kg) no da falsos `EV LOST`.
 
 ## Además

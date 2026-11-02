@@ -106,7 +106,8 @@ class DefenseScriptTests(unittest.TestCase):
         """El rechazo del LIN del punto 3 de la demo del barrido, como lo da la validación (D55)."""
         points = json.loads((DEFAULT_FOLDER / "demo-barrido-ptp.json").read_text(encoding="utf-8"))["points"]
         with self.assertRaises(validation.Rejection) as caught:
-            validation.check_tramo("LIN", tuple(points[1]["joints"]), tuple(points[2]["joints"]), 1.0, 3)
+            validation.check_tramo("LIN", tuple(points[1]["joints"]), tuple(points[2]["joints"]), 1.0,
+                                   validation.Place(3, "punto 2", "punto 3", 3))
         self.assertEqual(caught.exception.reason, "codo")
         return str(caught.exception)
 
