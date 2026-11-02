@@ -8,15 +8,17 @@ import json
 import math
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 from urc import planner, trajectories
-from urc.instrumentation import Instrumentation
+from urc.instrumentation import Instrumentation, describe, order_line
 from urc.playback import APPROACH_SPEED, Player
 from urc.session import Session
 from urc.trajectories import Conflict, TrajectoryManager
 
 
 MAX_BODY = 1024
+SCRIPTS = {"/avisos.js", "/trajectories.js", "/banco.js"}  # los scripts de la página, junto a index.html
 # Órdenes sin parámetros de la página.
 ORDERS = {
     "/api/jog/stop": Session.jog_stop,
@@ -68,6 +70,30 @@ PLAYBACK = {
     "/api/reproduccion/stop": Player.stop,
 }
 
+# Cómo se llama cada orden en el registro de eventos (D78). Las rechazadas se
+# anotan todas; de las aceptadas, las que mueven o frenan el robot o cambian
+# el banco: el jog (cada 150 ms) y la edición de la trayectoria no.
+ORDER_NAMES = {
+    "/api/jog": "Jog", "/api/jog/stop": "Soltar el jog", "/api/stop": "Stop", "/api/halt": "Parada inmediata",
+    "/api/enable": "Habilitar motores", "/api/disable": "Deshabilitar motores", "/api/home": "Homing",
+    "/api/zero": "Referencia manual", "/api/park": "Estacionar", "/api/ptp": "Ir a una pose",
+    "/api/banco": "Banco de ensayo", "/api/reproduccion/reproducir": "Reproducir",
+    "/api/reproduccion/pausa": "Pausa", "/api/reproduccion/reanudar": "Reanudar",
+    "/api/reproduccion/stop": "Stop de la reproducción",
+    "/api/trayectoria/capturar": "Capturar", "/api/trayectoria/punto": "Agregar un punto",
+    "/api/trayectoria/editar": "Editar un punto", "/api/trayectoria/sobrescribir": "Sobrescribir un punto",
+    "/api/trayectoria/borrar": "Borrar un punto", "/api/trayectoria/mover": "Mover un punto",
+    "/api/trayectoria/ir": "Ir al punto", "/api/trayectoria/nueva": "Nueva trayectoria",
+    "/api/trayectoria/guardar": "Guardar la trayectoria", "/api/trayectoria/cargar": "Cargar una trayectoria",
+}
+QUIET = {"/api/jog", "/api/jog/stop"} | {path for path in ORDER_NAMES if path.startswith("/api/trayectoria/")}
+
+
+def _units(target):
+    """J1–J4 en centésimas, como los lee el operador."""
+    return ", ".join(f"{name} {value / 100:.2f}{' mm' if name == 'J4' else '°'}"
+                     for name, value in zip(planner.NAMES, target))
+
 
 def handler_for(session, bench=None, manager=None, player=None):
     """bench: el canal de instrumentación, que solo existe en la simulación (ADR 0004)."""
@@ -88,18 +114,35 @@ def handler_for(session, bench=None, manager=None, player=None):
             self.end_headers()
             self.wfile.write(body)
 
+        def ordered(self, text=None):
+            """Anota la orden del operador antes de ejecutarla, si es de las que se anotan.
+
+            Así queda antes de lo que la URC hace con ella; si la rechaza, el
+            rechazo va después.
+            """
+            if self.path not in QUIET:
+                name = ORDER_NAMES.get(self.path, self.path)
+                session.events.add("info", "Operador", f"{name}: {text}" if text else name)
+
+        def refuse(self, status, data):
+            """Rechaza una orden: la respuesta lleva error (una línea) y, si hay, detail; el registro, las dos."""
+            session.events.add("aviso", ORDER_NAMES.get(self.path, self.path), data["error"], data.get("detail"),
+                               rejected=True)
+            self.reply(status, data)
+
         def do_GET(self):
-            if self.path == "/":
+            if self.path.startswith("/api/eventos"):
+                # ?desde=v: solo lo nuevo o repetido después de la versión v.
+                since = parse_qs(urlsplit(self.path).query).get("desde", ["0"])[0]
+                self.reply(200, session.events.since(int(since) if since.isdigit() else 0))
+            elif self.path == "/":
                 self.reply(200, Path(__file__).with_name("index.html").read_bytes(), "text/html; charset=utf-8")
-            elif self.path == "/trajectories.js":
-                self.reply(200, Path(__file__).with_name("trajectories.js").read_bytes(),
-                           "text/javascript; charset=utf-8")
+            elif self.path in SCRIPTS:
+                self.reply(200, Path(__file__).with_name(self.path[1:]).read_bytes(), "text/javascript; charset=utf-8")
             elif self.path == "/api/estado":
                 self.reply(200, session.snapshot())
             elif self.path == "/api/banco":
                 self.reply(200, bench.snapshot() if bench else {"connected": False})
-            elif self.path == "/banco.js":
-                self.reply(200, Path(__file__).with_name("banco.js").read_bytes(), "text/javascript; charset=utf-8")
             elif self.path == "/api/trayectoria":
                 self.reply(200, manager.state())
             elif self.path == "/api/trayectorias":
@@ -132,36 +175,48 @@ def handler_for(session, bench=None, manager=None, player=None):
                     # Sin confirm, solo planifica: la página muestra la duración y pregunta.
                     target, speed = ptp_order(request)
                     confirm = request.get("confirm", False) is True
+                    if confirm:
+                        self.ordered(f"{_units(target)} al {round(speed * 100)} %")
                     plan = session.move_ptp(target, speed, dry_run=not confirm)
                     self.reply(202 if confirm else 200, plan)
                     return
                 elif self.path == "/api/banco":
                     if bench is None:
                         raise ConnectionError("No hay canal de instrumentación: solo existe en la simulación")
+                    self.ordered(describe(order_line(request)))
                     bench.order(request)
                     self.reply(202, {"message": "Orden enviada al banco de ensayo"})
                     return
                 elif self.path == "/api/stop":
                     # Esc: frena todo, también la reproducción en curso o en pausa.
+                    self.ordered()
                     player.stop()
                 elif self.path in PLAYBACK:
+                    self.ordered()
                     self.reply(202, PLAYBACK[self.path](player, request))
                     return
                 elif self.path in ORDERS:
+                    self.ordered()
                     ORDERS[self.path](session)
-                elif (result := trajectories.route(manager, self.path, request)) is not None:
-                    self.reply(*result)
+                elif self.path in trajectories.ROUTES:
+                    index = request.get("index")
+                    if self.path == "/api/trayectoria/ir" and request.get("confirm") is True and type(index) is int:
+                        session.events.add("info", "Operador", f"Ir al punto {index + 1}")
+                    self.reply(*trajectories.route(manager, self.path, request))
                     return
                 else:
                     self.reply(404, {"error": "Ruta desconocida"})
                     return
                 self.reply(202, {"message": "Orden enviada a la UCI"})
-            except (ConnectionError, Conflict) as exc:
+            except Conflict as exc:
+                # Una pregunta, no un rechazo: la página la confirma y repite el pedido.
                 self.reply(409, {"error": str(exc)})
+            except ConnectionError as exc:
+                self.refuse(409, {"error": str(exc)})
             except OSError as exc:
-                self.reply(500, {"error": f"Error de archivo: {exc}"})
+                self.refuse(500, {"error": f"Error de archivo: {exc}"})
             except (ValueError, RecursionError) as exc:
-                self.reply(400, {"error": str(exc)})
+                self.refuse(400, {"error": str(exc)})
 
     return Handler
 
@@ -177,7 +232,7 @@ def main():
                         metavar="1-100", help="Velocidad del tramo de aproximación, %% de la máxima (D33)")
     args = parser.parse_args()
     session = Session(port=args.uci_port)
-    bench = Instrumentation(port=args.sim_port)
+    bench = Instrumentation(port=args.sim_port, events=session.events)
     manager = TrajectoryManager(session, args.trayectorias)
     player = Player(session, manager, args.aproximacion / 100)
     server = ThreadingHTTPServer(("127.0.0.1", args.port), handler_for(session, bench, manager, player))
