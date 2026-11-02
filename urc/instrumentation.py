@@ -11,9 +11,11 @@ scara-sim/1, un protocolo de texto aparte de scara/1:
 
 J1–J4 es la posición física simulada en unidades de scara/1; f3 tiene un
 carácter por articulación: "-" libre, "A" trabado activo, "I" inactivo.
-i1–i4 es la corriente de cada driver en % de la nominal (F1: con menos, el
-motor tiene menos par) y p1–p4, los pasos completos que perdió cada motor
-(D64, D67).
+La carga es la que se agrega a la herramienta, sin el pistón ni su soporte
+(150 g): 0 g es la herramienta sola (D85). i1–i4 es la corriente de cada
+driver en % de la nominal (F1: con menos, el motor tiene menos par) y p1–p4,
+los pasos completos que perdió cada motor desde el último homing de su eje o
+desde que recuperó la corriente (D64, D67, D86).
 
 Solo lo usa el banco de ensayo de la página. La sesión con la UCI, el
 planificador y la validación no lo importan: capturan y planifican con la
@@ -29,7 +31,9 @@ import time
 
 PROTOCOL = "scara-sim/1"
 STUCK = {"-": "libre", "A": "activo", "I": "inactivo"}
-LOAD_MAX = 5000              # gramos
+# Gramos de carga: con los 150 g del pistón y su soporte, los 5 kg con los que
+# se verificaron los límites de los motores (D76, D85).
+LOAD_MAX = 4850
 CURRENT_MIN = 10             # % de la corriente nominal de un driver (F1)
 FIELDS = 19
 

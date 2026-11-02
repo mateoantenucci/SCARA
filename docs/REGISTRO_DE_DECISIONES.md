@@ -610,7 +610,7 @@ Decisiones tomadas al implementar el canal que solo existe en la simulación (AD
   - La carga cambia `toolMass` del `SCARA.proto` (de 0 a 5 kg). Hoy cambia la física de la herramienta; la pérdida de pasos por carga llega con N2 (#15).
   - `RECARGA` recarga el mundo: el controlador se vuelve a conectar a los dos canales y la UCI arranca de nuevo.
 - **Por qué:** cerrar la conexión sería otra falla (la URC la vería como una desconexión de Webots). El reinicio tiene que ser del firmware, no del mundo, para que se vea que la URC detecta el `BOOT` con el robot en la misma pose.
-- **Estado:** Aceptada.
+- **Estado:** Aceptada. D85 corrige la carga: es la que se agrega a la herramienta, de 0 a 4850 g.
 
 ## Captura de puntos y gestor de trayectorias (issue #12)
 
@@ -844,3 +844,35 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - J4 a 50 mm/s: son los 10 000 pulsos/s del Timer1, sin margen.
   - Subir el jog: arranca sin rampa y necesita una en el firmware (D70).
 - **Estado:** Aceptada. Reemplaza los valores de D45 y la conclusión de D66.
+
+## QA del banco de ensayo
+
+Decisiones tomadas al revisar con Webots los pasos de la QA humana de las fallas (R6), con los límites de D76. El recorrido corregido y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana).
+
+**D85 · La carga del banco es la que se agrega a la herramienta: de 0 a 4850 g, para no pasar de 5 kg.**
+- **Decisión:**
+  - `CARGA gramos` deja `toolMass` del `SCARA.proto` en 0,15 kg (el pistón y su soporte) más la carga, y `SIM` informa la carga sin la herramienta. 0 g es la herramienta sola, que es como arranca el mundo.
+  - El banco acepta de 0 a 4850 g: con la herramienta, 5 kg, la masa con la que D76 verificó los límites. El tope está en `TOOL_MAX` del controlador (`stepper.h`) y en `LOAD_MAX` de `urc/instrumentation.py`.
+- **Por qué:**
+  - `CARGA 0` dejaba `toolMass` en 0, y Webots no acepta una masa nula: la consola avisaba «valor inválido» y la herramienta seguía con la carga anterior. Sacar la carga no funcionaba.
+  - El panel decía «carga» y mostraba la masa de la herramienta: sin carga marcaba 150 g, y para sacarla había que escribir 150.
+  - Con 5 kg encima de la herramienta (5,15 kg), el jog de J4, que arranca sin rampa, se atrasa 1,006 pasos completos con la corriente nominal: no pierde pasos, pero pasa el criterio de las pruebas de N2 (menos de un paso completo).
+- **Descartado:** la carga como masa total, con un mínimo de 150 g (lo que se quiere al escribir 0 es sacarla), y 5000 g de carga (pasa el criterio de los límites).
+- **Estado:** Aceptada. Corrige la carga de D61.
+
+**D86 · «Pasos perdidos» cuenta desde el último homing del eje, o desde que el motor recuperó la corriente.**
+- **Decisión:**
+  - El contador de Mj del banco vuelve a cero con el `EV HOMED j` del firmware (J1 → M1, J2 → M2, J3 → M3, J4 → M4) y, como antes, cuando el motor recupera la corriente (`ENABLE`, F2 apagada). El controlador lo ve en lo que escribe el firmware, también con F4.
+  - No lo limpian `ZERO` ni el homing de otro eje. La planta no cambia: el rotor sigue donde está, solo cambia desde dónde se cuenta.
+  - El número es la verdad del simulador: los pasos completos que el motor se corrió de los pulsos que le contó el firmware desde que esa cuenta empezó a valer. Siempre es múltiplo de 4 (D64); positivo, el eje quedó más adelante de lo que contó el firmware.
+- **Por qué:** el banco compara la verdad con lo que sabe el robot. Después del homing la cuenta del firmware vuelve a salir del imán, y lo que se perdió antes ya no está en ella: un «M1: 4» que seguía ahí parecía una falla sin corregir, mientras la columna «Diferencia» volvía a cero.
+- **Descartado:** acumularlo hasta recargar el mundo (era lo que hacía, y confundía), un botón para ponerlo en cero (otra orden de `scara-sim/1` para lo que ya hace el homing) y limpiarlo con `ZERO` (la referencia manual no mide nada: la diferencia sigue si el robot no estaba en el reposo).
+- **Estado:** Aceptada. Precisa D67.
+
+**D87 · El homing abortado se dice en el mensaje de estado; el `BOOT` inesperado va también a Errores.**
+- **Decisión:**
+  - Si el homing aborta (`ERR 11`, `ERR 12`, `ERR 4`, Stop, la UCI no lo empieza o se detiene sin terminar), el mensaje de estado dice «Homing abortado, sin referencia:» y la causa, por ejemplo «ERR 12 trabado: el Hall no se apagó, está trabado activo».
+  - El `BOOT` a mitad de una conexión (F5) se agrega, además del mensaje, a la lista de errores, como `EV LOST` (D65).
+- **Por qué:** en la QA de F3, el homing abortaba con `ERR 12` pero el mensaje seguía en «Homing en curso: J4, J1, J2 y J3»; el aborto solo se veía en la línea del homing y en Errores. El aviso de F5 vivía en el mensaje de estado, una sola línea que la siguiente orden pisa.
+- **Descartado:** una notificación aparte en la página: es trabajo de la interfaz, y con esto la URC ya da el texto.
+- **Estado:** Aceptada.

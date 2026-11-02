@@ -66,6 +66,9 @@ class InstrumentationTests(unittest.TestCase):
                               ({"falla": "F4", "activa": True}, "F4 1"),
                               ({"falla": "F5"}, "F5"),
                               ({"carga": 500}, "CARGA 500"),
+                              # Sin carga: queda la herramienta sola (D85).
+                              ({"carga": 0}, "CARGA 0"),
+                              ({"carga": 4850}, "CARGA 4850"),
                               ({"recarga": True}, "RECARGA")):
             with self.subTest(request=request):
                 self.bench.order(request)
@@ -77,7 +80,7 @@ class InstrumentationTests(unittest.TestCase):
                         {"falla": "F1", "motor": 1, "corriente": 5}, {"falla": "F1", "motor": 1, "corriente": 101},
                         {"falla": "F1", "motor": 1, "corriente": 50.5}, {"falla": "F2", "activa": 1}, {"falla": "F3", "articulacion": 5,
                         "estado": "activo"}, {"falla": "F3", "articulacion": 1, "estado": "roto"},
-                        {"carga": -1}, {"carga": 9000}, {"carga": True}, {}):
+                        {"carga": -1}, {"carga": 4851}, {"carga": True}, {}):
             with self.subTest(request=request), self.assertRaises(ValueError):
                 self.bench.order(request)
         client.send("SIM 1 2 3")

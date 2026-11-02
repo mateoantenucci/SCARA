@@ -514,8 +514,11 @@ class Session:
             self._end_homing("la UCI no empezó el homing")
 
     def _end_homing(self, reason):
+        """El homing abortado deja sin referencia los ejes de ese HOME, y la
+        página lo dice en el mensaje, no solo en la línea del homing (D87)."""
         if self.homing is not None and self.homing["state"] == "en curso":
             self.homing.update(state=f"abortado: {reason}", park=False)
+            self.message = f"Homing abortado, sin referencia: {reason.replace('homing abortado: ', '')}"
 
     def _park_after_homing(self):
         """Con los cuatro ejes encontrados y el robot quieto, vuelve al reposo (D11, D56).
@@ -706,7 +709,10 @@ class Session:
         self._discard_outgoing()
         if self.greeted:
             # A mitad de una conexión: la UCI se reinició sola (falla F5).
+            # También va a la lista de errores, que no la pisa el próximo
+            # mensaje (D87).
             self.message = "BOOT inesperado: la UCI se reinició y perdió la referencia (F5)"
+            self.errors.append("BOOT inesperado: la UCI se reinició sin corriente y sin referencia (F5)")
         else:
             self.message = "La UCI arrancó: sin referencia hasta ZERO u homing"
 

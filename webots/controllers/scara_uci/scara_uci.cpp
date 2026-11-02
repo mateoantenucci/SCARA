@@ -289,6 +289,7 @@ public:
     std::uniform_real_distribution<double> spread(-deviation, deviation);
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       steps_[i] = 0;
+      lostBefore_[i] = 0;
       current_[i] = 1.0;
       ramp_[i] = 0;
       start_[i] = REST[i] + (i < 3 ? spread(random) * TWO_PI / 360.0 : 0.0);
@@ -417,10 +418,16 @@ public:
   // (falla F1: un TB6600 regulado de menos tiene menos par).
   void setCurrent(int motor, double fraction) { current_[motor] = fraction; }
   double current(int motor) const { return current_[motor]; }
-  // Pasos completos que el motor se corrió de los pulsos que recibió: la
-  // verdad del simulador, para el banco de ensayo. Positivo: el eje quedó
-  // más adelante de lo que contó el firmware.
-  long lost(int motor) const { return -rotors_[motor].lost() / (scara::STEPS_PER_REV / plant::FULL_STEPS_PER_REV); }
+  // Pasos completos que el motor se corrió de los pulsos que recibió desde
+  // que el firmware referenció su eje o desde que el motor recuperó la
+  // corriente: la verdad del simulador, para el banco de ensayo (D86).
+  // Positivo: el eje quedó más adelante de lo que contó el firmware.
+  long lost(int motor) const {
+    return -(rotors_[motor].lost() - lostBefore_[motor]) / (scara::STEPS_PER_REV / plant::FULL_STEPS_PER_REV);
+  }
+  // El homing de Jj vuelve a contar los pasos de Mj desde el imán: lo que el
+  // motor perdió antes ya no está en la cuenta del firmware.
+  void referenced(int motor) { lostBefore_[motor] = rotors_[motor].lost(); }
 
   // Posición física simulada de Jj+1, en radianes o metros.
   double physical(int joint) const { return truth_[joint] ? truth_[joint]->getValue() : 0.0; }
@@ -477,6 +484,7 @@ private:
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       if (gained & (1 << i)) {
         rotors_[i].reset(steps_[i]);
+        lostBefore_[i] = 0;
         ramp_[i] = 0;
       }
     }
@@ -498,6 +506,7 @@ private:
   webots::PositionSensor* truth_[scara::MOTOR_COUNT];
   int stuck_[scara::MOTOR_COUNT];
   long steps_[scara::MOTOR_COUNT];
+  long lostBefore_[scara::MOTOR_COUNT];  // pulsos perdidos hasta la última referencia del eje
   double start_[scara::MOTOR_COUNT];  // pose real al arrancar, en radianes y metros
   webots::Motor* motors_[scara::MOTOR_COUNT];
   webots::Node* sensors_[scara::MOTOR_COUNT];
@@ -527,7 +536,13 @@ public:
     while (cut_ && byte >= 0) byte = link_.readByte();
     return byte;
   }
+  // El firmware escribe cada mensaje entero. EV HOMED j pone en cero los
+  // pasos perdidos de Mj en el banco de ensayo (D86), aunque F4 lo corte.
   void write(const char* text) {
+    int axis = 0;
+    if (std::sscanf(text, "EV HOMED %d", &axis) == 1 && axis >= 1 && axis <= scara::MOTOR_COUNT) {
+      plant_.referenced(axis - 1);
+    }
     if (!cut_) link_.write(text);
   }
   void cut(bool on) { cut_ = on; }
@@ -549,8 +564,9 @@ private:
 // con la posición física simulada en unidades de scara/1, los Hall que ve el
 // firmware, la máscara de motores con corriente, las fallas (f3: un carácter
 // por articulación, "-" libre, "A" trabado activo, "I" inactivo), la carga
-// en gramos, la corriente de cada driver en % de la nominal (F1) y los pasos
-// completos que perdió cada motor (D64). Órdenes de la URC: F1 m porcentaje,
+// en gramos (sin el pistón ni su soporte, D85), la corriente de cada driver en
+// % de la nominal (F1) y los pasos completos que perdió cada motor desde la
+// última referencia de su eje (D64, D86). Órdenes de la URC: F1 m porcentaje,
 // F2 0|1, F3 j activo|inactivo|libre, F4 0|1, F5, CARGA gramos, RECARGA.
 class Bench {
 public:
@@ -619,8 +635,11 @@ private:
       hal_.cut(value == 1);
     } else if (line == "F5") {
       reboot_ = true;
-    } else if (whole(std::sscanf(line.c_str(), "CARGA %ld%n", &value, &used), 1) && value >= 0 && value <= 5000) {
-      if (load_) load_->setSFFloat(value / 1000.0);
+    } else if (whole(std::sscanf(line.c_str(), "CARGA %ld%n", &value, &used), 1) && value >= 0 &&
+               value <= std::lround((plant::TOOL_MAX - plant::TOOL_MASS) * 1000.0)) {
+      // La carga se suma al pistón y su soporte: con 0 g queda la herramienta
+      // sola. Webots no acepta una masa de 0 (D85).
+      if (load_) load_->setSFFloat(plant::TOOL_MASS + value / 1000.0);
     } else if (line == "RECARGA") {
       std::printf("SIM: recarga del mundo pedida por la URC\n");
       std::fflush(stdout);
@@ -642,7 +661,7 @@ private:
       stuck[j] = plant_.stuck(j) == 1 ? 'A' : plant_.stuck(j) == 0 ? 'I' : '-';
     }
     stuck[4] = '\0';
-    long grams = load_ ? std::lround(load_->getSFFloat() * 1000.0) : 0;
+    long grams = load_ ? std::lround((load_->getSFFloat() - plant::TOOL_MASS) * 1000.0) : 0;
     std::snprintf(out, sizeof out, "SIM %ld %ld %ld %ld %d %d %d %s %d %ld %ld %ld %ld %ld %ld %ld %ld %ld\n",
                   units[0], units[1], units[2], units[3], plant_.hall(), plant_.powered(), plant_.failed() ? 1 : 0,
                   stuck, hal_.cut() ? 1 : 0, grams, percent(0), percent(1), percent(2), percent(3), plant_.lost(0),

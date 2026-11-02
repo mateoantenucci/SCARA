@@ -32,7 +32,7 @@
     </div>
     <h3>Carga y mundo</h3>
     <div class="row">
-      <label>Carga en la herramienta (g) <input type="number" id="banco-load" min="0" max="5000" step="50"></label>
+      <label>Carga en la herramienta (g) <input type="number" id="banco-load" min="0" max="4850" step="50"></label>
       <button id="banco-load-set">Aplicar</button>
       <button id="banco-reload" class="danger">Recargar el mundo…</button>
     </div>

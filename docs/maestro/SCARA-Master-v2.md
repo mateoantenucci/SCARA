@@ -714,6 +714,9 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D66 | N2 confirma los límites de D45. Reemplazada por D76 | Con la corriente nominal y 5 kg, el par pedido quedaba entre 1,4 y 22 veces por debajo del disponible | |
 | D67 | F1 baja la corriente de un driver: `F1 m porcentaje` | Un TB6600 regulado de menos es una falla real, y muestra la pérdida por carga y por aceleración | |
 | D76 | Motores más rápidos, con el doble del par que piden; el LIN se separa de J4 | El margen de D66 sobraba y la demostración era lenta: un PTP de 90° de J1 pasa de 5,1 a 1,6 s; 2 veces cubre lo que N2 no modela | |
+| D85 | La carga del banco se suma a la herramienta: de 0 a 4850 g | Webots no acepta una masa de 0, y el panel mostraba 150 g sin carga; con la herramienta son los 5 kg de D76 | |
+| D86 | «Pasos perdidos» cuenta desde el último homing del eje o desde que el motor recuperó la corriente | Es lo que el firmware no sabe; después del homing, lo perdido antes ya no está en su cuenta | |
+| D87 | El homing abortado se dice en el mensaje de estado; el `BOOT` inesperado va también a Errores | En la QA, con `ERR 12` la página seguía en «Homing en curso», y el aviso de F5 se pisaba | |
 
 ### Bala trazadora y protocolo completo
 

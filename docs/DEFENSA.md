@@ -127,10 +127,10 @@ El orden importa: F1 y F2 necesitan referencia; F5 la borra; F3 y F4 se muestran
 
 1. **F1 · Pérdida de pasos por carga (D64–D67).**
    1. En «Ir a una pose (PTP)», J4 = 60 mm y J1–J3 en 0 → **«Ir a la pose…»** y confirmar.
-   2. «Carga en la herramienta (g)»: 5000 → **«Aplicar»**. «F1 · Corriente del driver de» M4 al 50 % → **«Aplicar»**.
+   2. «Carga en la herramienta (g)»: 4850 (con la herramienta, 5 kg; D85) → **«Aplicar»**. «F1 · Corriente del driver de» M4 al 50 % → **«Aplicar»**.
    3. «Ir a una pose» con J4 = 10 mm. La estimada sube; en la columna «Simulado» del banco, J4 no sube: la planta perdió pasos, en múltiplos de 4 pasos completos, y el firmware no se entera.
    4. M4 al 100 % y **«Estacionar…»**. Al bajar, J4 entra en el imán de abajo y el firmware envía `EV LOST 4` con los pasos perdidos. La página avisa «Referencia dudosa (EV LOST)», y reproducir queda bloqueado hasta un homing (D68).
-   5. Carga de nuevo en 150 g (la herramienta sola).
+   5. Carga de nuevo en 0 g (la herramienta sola).
 2. **F2 · Driver de M4 sin corriente (D60).** «Ir a una pose» con J4 = 60 mm. Marcar **«F2 · Driver de M4 sin corriente (J4 cae)»**: en «Simulado», J4 cae hasta abajo; la estimada sigue en 60 mm. Desmarcarla: el motor retiene J4 donde quedó, y el firmware sigue creyendo que está en 60. Es la falla silenciosa que, sin encoders, se ve recién en un Hall.
 3. **F5 · Reinicio de la UCI (D43, D61).** **«F5 · Reiniciar la UCI…»** y confirmar. La URC avisa «BOOT inesperado: la UCI se reinició y perdió la referencia (F5)». La UCI arranca sin corriente: J4 queda abajo y J1–J3 donde estaban. Esto también limpia lo que dejaron F1 y F2.
 4. **F3 · Hall trabado inactivo.** **«Habilitar motores»**. En «F3 · Hall trabado», J1 → `inactivo`. **«Homing…»** y confirmar: J4 se referencia y J1 recorre toda su búsqueda sin ver el imán: `ERR 11 ausente`, y el homing aborta sin declarar referencia (D56). Con J4 en `activo`, el homing aborta con `ERR 12 trabado` (escenario F3a).
@@ -325,6 +325,15 @@ Arranca sin corriente y sin referencia, y no retoma nada solo (D40). En Webots, 
 
 **¿Por qué sin corriente se pierde la referencia?**
 Un paso a paso sin corriente gira libre: J4 cae y cualquier eje se puede mover a mano sin que el firmware cuente. En la planta, al volver la corriente el motor retiene el eje donde quedó, y lo que se movió no lo sabe nadie (D40, D60).
+
+**¿Qué es la carga del banco y por qué llega a 4850 g?**
+La masa que se agrega a la herramienta, que sola pesa 150 g (el pistón y su soporte): 0 g es la herramienta sola. Con 4850 g suman los 5 kg con los que se verificaron los límites de los motores. Antes la carga era la masa total, y 0 g no funcionaba: Webots no acepta una masa nula (D85).
+
+**¿Qué cuenta «Pasos perdidos» y cuándo vuelve a cero?**
+Los pasos completos que la planta dice que el motor se corrió de lo que contó el firmware, desde el último homing de su eje o desde que el motor recuperó la corriente. Siempre en múltiplos de 4, un ciclo eléctrico. Con M4 al 50 % y 5 kg, al pedir subir J4 crece unos 250 por segundo simulado: el campo avanza a los 10 mm/s del jog y el rotor no lo sigue (D64, D86).
+
+**¿Cómo se entera el operador de un homing abortado o de un reinicio de la UCI?**
+El mensaje de estado dice «Homing abortado, sin referencia» con la causa, por ejemplo `ERR 12 trabado`. El `BOOT` inesperado queda además en la lista de errores, que la siguiente orden no pisa (D87).
 
 ### Proceso y validación
 

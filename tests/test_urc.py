@@ -190,6 +190,8 @@ class SessionTests(unittest.TestCase):
         self.assertIsNone(state["status"])
         self.assertIsNone(state["jog"])
         self.assertIn("F5", state["message"])
+        # Y queda en la lista de errores, que el próximo mensaje no pisa (D87).
+        self.assertIn("BOOT inesperado", state["errors"][-1])
         # El jog se olvidó: si la página lo sigue pidiendo, la URC lo reenvía.
         self.session.jog(1, "+")
         self.assertEqual(self.uci.receive(), "JOG 1 + 500")
@@ -647,6 +649,9 @@ class HomingTests(unittest.TestCase):
         self.uci.send("ERR 12 trabado")
         state = wait_for(lambda: (s := self.session.snapshot())["homing"]["state"] != "en curso" and s)
         self.assertIn("ERR 12 trabado", state["homing"]["state"])
+        # El mensaje de la página también lo dice (D87): no queda en «Homing en curso».
+        self.assertEqual(state["message"],
+                         "Homing abortado, sin referencia: ERR 12 trabado: el Hall no se apagó, está trabado activo")
         self.uci.send("S IDLE 0 -500 0 0 300 9 16 0")
         self.assertTrue(self.uci.silent(0.3))
 
@@ -728,7 +733,8 @@ class LostStepsTests(unittest.TestCase):
         self.lose("EV LOST 4 8")
         self.uci.send("EV LOST 1 -4")
         self.uci.send("EV HOMED 4")
-        state = wait_for(lambda: len((s := self.session.snapshot())["doubtful"]) == 1 and s)
+        # Hasta que llegue el EV HOMED, la lista también tiene un solo eje: J4.
+        state = wait_for(lambda: (s := self.session.snapshot())["doubtful"] == [{"joint": 1, "steps": -4}] and s)
         self.assertEqual(state["doubtful"], [{"joint": 1, "steps": -4}])
 
     def test_only_homing_clears_the_doubt(self):

@@ -22,8 +22,8 @@ void check(bool condition, const char* what, double a, double b) {
 }
 
 const double DT = 0.002;  // el paso de Webots
-const double NOMINAL_TOOL = 0.15;  // kg: toolMass del proto sin carga
-const double HEAVY_TOOL = 5.0;     // kg: lo máximo que acepta el banco de ensayo
+const double NOMINAL_TOOL = plant::TOOL_MASS;     // kg: la herramienta sin carga
+const double HEAVY_TOOL = plant::TOOL_MAX;        // kg: con la carga máxima del banco de ensayo (D85)
 const long CYCLE = plant::STEPS_PER_CYCLE * scara::MICROSTEPS;  // pulsos de 4 pasos completos
 
 // Pulsos por grado del eje del motor.
@@ -169,7 +169,7 @@ void againstAStop() {
 // Margen de par en los límites de D45, a la velocidad máxima: el disponible
 // contra el que piden la aceleración máxima, el peso (al subir) y la fricción.
 void table() {
-  std::printf("motor  esquina(°/s)  disponible(N·m)  pedido 0,15 kg  margen  pedido 5 kg  margen\n");
+  std::printf("motor  esquina(°/s)  disponible(N·m)  pedido sin carga  margen  pedido con 5 kg  margen\n");
   for (int motor = 0; motor < 4; ++motor) {
     const plant::MotorSpec& spec = plant::MOTORS[motor];
     double speed = scara::MOTOR_MAX_SPEED[motor] * plant::PI / 180;

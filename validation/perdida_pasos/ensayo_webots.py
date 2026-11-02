@@ -111,8 +111,9 @@ try:
     assert all(abs(s) < 1 for s in steps), steps
 
     # 1. 5 kg con la corriente nominal: J4 sube y baja a 40 mm/s sin perder pasos.
-    bench.order({"carga": 5000})
-    wait(lambda: bench.snapshot()["load_g"] == 5000, "carga de 5 kg")
+    # 4850 g de carga y los 150 g de la herramienta (D85).
+    bench.order({"carga": 4850})
+    wait(lambda: bench.snapshot()["load_g"] == 4850, "carga de 5 kg")
     time.sleep(1)
     move(session, (0, 0, 0, 1000))
     steps, sim = gap(session, bench)
@@ -164,16 +165,19 @@ try:
 
     # 4. Un homing limpia la duda (con la corriente nominal y la herramienta sola).
     bench.order({"falla": "F1", "motor": 1, "corriente": 100})
-    bench.order({"carga": 150})
-    wait(lambda: bench.snapshot()["current_pct"][0] == 100 and bench.snapshot()["load_g"] == 150, "nominal")
+    bench.order({"carga": 0})
+    wait(lambda: bench.snapshot()["current_pct"][0] == 100 and bench.snapshot()["load_g"] == 0, "nominal")
     session.order("JOG 1 + 500")
     time.sleep(2)
     session.order("JOG STOP")
     time.sleep(0.5)
     state = home(session, "homing de nuevo")
     steps, sim = gap(session, bench)
-    log(f"4 homing de nuevo: EV LOST {state['doubtful']}; diferencia {[round(s, 2) for s in steps]} pasos completos")
+    log(f"4 homing de nuevo: EV LOST {state['doubtful']}; diferencia {[round(s, 2) for s in steps]} pasos completos; "
+        f"pasos perdidos {sim['lost_steps']}")
+    # El homing también pone en cero los pasos perdidos del banco (D86).
     assert state["doubtful"] == [] and all(abs(s) < 1 for s in steps), steps
+    assert sim["lost_steps"] == [0, 0, 0, 0], sim["lost_steps"]
     log("ENSAYO OK")
 finally:
     webots.kill()
