@@ -844,3 +844,35 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - J4 a 50 mm/s: son los 10 000 pulsos/s del Timer1, sin margen.
   - Subir el jog: arranca sin rampa y necesita una en el firmware (D70).
 - **Estado:** Aceptada. Reemplaza los valores de D45 y la conclusión de D66.
+
+## Interfaz de operación (QA de la ronda 5)
+
+Decisiones tomadas al rehacer la página de la URC después de la QA humana de la ronda 5: [`urc/index.html`](../urc/index.html), [`urc/avisos.js`](../urc/avisos.js), [`urc/trajectories.js`](../urc/trajectories.js), [`urc/banco.js`](../urc/banco.js) y el registro de eventos ([`urc/events.py`](../urc/events.py)). Pruebas en [`tests/test_eventos.py`](../tests/test_eventos.py).
+
+**D78 · La página separa lo que vale ahora, lo que hay que ver ahora y lo que pasó: barra de estado, avisos emergentes y un registro de eventos que lleva la URC.**
+- **Decisión:**
+  - **Barra de estado**, fija arriba: el enlace con la UCI («UCI conectada · actualizado hace 0.1 s»: demorado desde 0,5 s sin estado `S`, cortado desde 1 s, con una ayuda breve), los motores, la referencia («Referencia dudosa (EV LOST): J4», en rojo), qué hace el robot (quieto, jog, homing con su avance, reproducción), el banco vigente en simulación (carga y fallas activas) y el último mensaje de la URC con su hora. Stop y Parada inmediata están en la barra.
+  - **Registro de eventos**, que lleva la URC ([`urc/events.py`](../urc/events.py)). Anotan la sesión (cada mensaje; cada `ERR`, `EV LOST` y `EV HOMED`; las líneas que no respetan `scara/1`; el homing abortado; el estado `S` que deja de llegar por más de 1 s y cuando vuelve), el servidor HTTP (cada orden que mueve o frena el robot o cambia el banco, antes de ejecutarla, y cada orden rechazada, con su error y, si lo trae, su detalle) y el banco (D79). Cada evento lleva número, hora de la PC, nivel (info, ok, aviso o error) y quién lo produjo. Uno igual al anterior dentro de 3 s suma una repetición («×11»): el jog contra un límite se renueva cada 150 ms. La página lo pide con `/api/eventos?desde=versión` y lo muestra a la derecha, el más nuevo arriba, con un filtro de avisos y errores.
+  - **Avisos emergentes**, abajo a la derecha, para lo que no es info. Salen del registro, así que dicen su número y su hora. Una orden rechazada y un aviso se van a los 10 s; una confirmación, a los 5 s; un error (`ERR`, `EV LOST`, `BOOT` inesperado, UCI desconectada, enlace cortado) queda hasta cerrarlo o hasta que se resuelve: el enlace vuelve, el homing limpia la duda. El detalle de un rechazo va plegado.
+  - Cada grupo de botones conserva su línea de resultado: el aviso emergente es para verlo ahora; la línea, para saber qué pasó con ese botón.
+- **Por qué:** en la QA de la ronda 5, después de «Aplicar» nada decía qué estaba vigente; con F1 en M4, el aviso de pérdida de pasos de «Estacionar» quedaba 3000 px más abajo, en un panel de errores sin hora ni número que no distinguía dos `ERR` iguales; y «último estado S hace 0.0 s» no le decía nada al operador. El registro lo lleva la URC porque la página consulta cada 200 ms: comparando estados, perdería lo que pasa entre dos consultas, no distinguiría dos eventos iguales y se borraría al recargar.
+- **Descartado:** armar el historial en la página; un aviso emergente por cada evento (el jog contra un límite daría uno cada 150 ms); `alert()` (frena la página y el jog).
+- **Estado:** Aceptada.
+
+**D79 · El banco separa lo pedido de lo vigente, y la URC confirma cada orden con el estado `SIM`.**
+- **Decisión:**
+  - Los campos del banco son lo pedido. Un campo editado queda marcado y la página no lo pisa hasta aplicarlo; al lado de cada control dice lo vigente («vigente: 150 g»), «sin aplicar» si difiere, y «aplicando…» hasta la confirmación. Arriba del panel y en la barra de estado están la carga y las fallas activas.
+  - La URC confirma cada orden que cambia el estado del simulador (la carga, F1 de cada motor, F2, F3 de cada articulación y F4): espera que el estado `SIM` muestre el valor pedido. Si llega, anota el cambio, «Carga en la herramienta: 150 g → 500 g»; si en 2 s no llegó, «No se aplicó Carga en la herramienta: se pidió 0 g y el simulador sigue en 150 g». Los cambios que nadie pidió, como los de F5 o de recargar el mundo, se anotan como información. F5 y la recarga no tienen qué confirmar: se ven en el `BOOT` y en la reconexión.
+  - La posición simulada y la diferencia con la estimada pasan junto a la estimada, a la derecha. La diferencia se marca en rojo desde un paso completo, y solo en los ejes referenciados: sin referencia, la estimada no dice dónde está el eje.
+- **Por qué:** en la QA, «Aplicar» no decía si se había aplicado, y un porcentaje editado volvía al valor anterior al hacer click afuera: el polling lo pisaba cada 250 ms. Además, el simulador puede no aplicar una orden (en la QA, la carga de 0 g no se aplicaba), y el banco tiene que decirlo.
+- **Descartado:** confirmar solo en la página (el registro no lo sabría) y dejar de actualizar el panel mientras tiene el foco (tampoco mostraría lo vigente).
+- **Estado:** Aceptada.
+
+**D80 · Las órdenes a la izquierda y lo que se mira siempre a la derecha; un botón bloqueado dice por qué.**
+- **Decisión:**
+  - Dos columnas. A la derecha, fijas al desplazarse, la posición estimada (con la simulada, D79) y el registro de eventos (D78). A la izquierda, en el orden de uso: motores y referencia, con el paso que falta para operar (habilitar los motores, hacer homing), jog, ir a una pose, trayectoria y reproducción, banco y diagnóstico. Con menos de 1000 px de ancho, una sola columna.
+  - Un botón que la URC rechazaría por el estado del robot queda deshabilitado, con el motivo en su ayuda y en una línea junto a él: «Homing…» sin corriente; «Estacionar…», «Ir a la pose…», capturar, sobrescribir e «Ir al punto…» sin referencia; reproducir sin referencia, con la referencia dudosa (D68) o sin puntos: «Reproducir bloqueado: la referencia de J4 es dudosa por pérdida de pasos; hacé homing.». La URC lo sigue verificando.
+  - «Tráfico scara/1» queda plegado en «Diagnóstico», con una línea que dice qué es. Los `ERR` y las líneas no entendidas van al registro de eventos.
+- **Por qué:** en la QA, la página medía 3700 px en una sola columna, y los botones más usados quedaban lejos de sus mensajes. Con la referencia dudosa, reproducir parecía permitido hasta que la URC lo rechazaba. El tráfico del protocolo no le dice nada al operador.
+- **Descartado:** pestañas (esconderían la posición o el banco mientras se usa el otro) y deshabilitar por estados de un instante, como el robot en movimiento (los botones parpadearían durante el jog; eso lo rechaza la URC con su motivo).
+- **Estado:** Aceptada.
