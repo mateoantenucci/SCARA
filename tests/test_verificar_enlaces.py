@@ -23,7 +23,8 @@ class VerificarEnlacesTests(unittest.TestCase):
             "docs/con espacio.md": "",
         })
         rotos = enlaces_rotos(raiz)
-        self.assertEqual(rotos, [("docs/A.md", "falta.png"), ("README.md", "docs/FALTA.md")])
+        # El orden de rglob/sorted cambia entre Windows y macOS (mayúsculas).
+        self.assertCountEqual(rotos, [("docs/A.md", "falta.png"), ("README.md", "docs/FALTA.md")])
 
     def test_ignora_codigo_y_carpetas_historicas(self):
         raiz = self._repo({

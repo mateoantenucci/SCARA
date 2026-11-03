@@ -133,7 +133,7 @@ private:
     while ((end = hal_.output.find('\n')) != std::string::npos) {
       std::string line = hal_.output.substr(0, end);
       hal_.output.erase(0, end + 1);
-      if (line.size() + 1 > scara::LINE_MAX) tooLong_.push_back(line);
+      if (line.size() + 1 > scara::LINE_BYTES) tooLong_.push_back(line);
       pending_.push_back(line);
     }
   }
