@@ -87,7 +87,7 @@ int64_t divideRounded64(int64_t value, int64_t divisor) {
 // Código y palabra de cada ERR. Son estables: se agregan, no se renumeran.
 const int32_t ERR_COMMAND = 1;    // comando desconocido o bytes no permitidos
 const int32_t ERR_ARGUMENTS = 2;  // faltan, sobran o están fuera de rango
-const int32_t ERR_LENGTH = 3;     // línea de más de LINE_MAX bytes
+const int32_t ERR_LENGTH = 3;     // línea de más de LINE_BYTES bytes
 const int32_t ERR_WATCHDOG = 4;   // sin mensajes de la URC: se frenó solo
 const int32_t ERR_BUSY = 5;       // no se acepta con otro movimiento en curso
 const int32_t ERR_DISABLED = 6;   // no se acepta sin corriente en los drivers
@@ -130,7 +130,7 @@ void Firmware::begin() {
 
 // BOOT o HI: protocolo y versión de firmware.
 void Firmware::sendIdentity(const char* greeting) {
-  char out[LINE_MAX];
+  char out[LINE_BYTES];
   char* end = append(append(append(append(out, greeting), PROTOCOL), " "), FIRMWARE_VERSION);
   append(end, "\n")[0] = '\0';
   hal_.write(out);
@@ -184,8 +184,8 @@ void Firmware::receive(int byte) {
     }
     return;
   }
-  // Hasta LINE_MAX - 1 caracteres más el LF.
-  if (length_ >= LINE_MAX - 1) {
+  // Hasta LINE_BYTES - 1 caracteres más el LF.
+  if (length_ >= LINE_BYTES - 1) {
     overflow_ = true;
     return;
   }
@@ -334,7 +334,7 @@ void Firmware::checkLostSteps() {
     int32_t edge = stepsToUnits(axis, counted) < middle ? HALL_EDGE[axis] : HALL_FAR_EDGE[axis];
     int32_t difference = unitsToSteps(axis, edge) - counted;
     if (difference < 2 * MICROSTEPS && difference > -2 * MICROSTEPS) continue;
-    char out[LINE_MAX];
+    char out[LINE_BYTES];
     char* end = append(append(append(out, "EV LOST "), static_cast<int32_t>(axis + 1)), " ");
     append(append(end, divideRounded(difference, MICROSTEPS)), "\n")[0] = '\0';
     hal_.write(out);
@@ -484,7 +484,7 @@ void Firmware::finishHomeAxis() {
   homed_ |= static_cast<uint8_t>(1 << axis);
   found_ |= static_cast<uint8_t>(1 << axis);
   homedNow_ |= static_cast<uint8_t>(1 << axis);
-  char out[LINE_MAX];
+  char out[LINE_BYTES];
   append(append(append(out, "EV HOMED "), static_cast<int32_t>(axis + 1)), "\n")[0] = '\0';
   hal_.write(out);
   if (++homeIndex_ < homeCount_) {
@@ -761,13 +761,13 @@ void Firmware::sendStatus() {
 }
 
 void Firmware::sendOk(int32_t number) {
-  char out[LINE_MAX];
+  char out[LINE_BYTES];
   append(append(append(out, "OK "), number), "\n")[0] = '\0';
   hal_.write(out);
 }
 
 void Firmware::sendError(int32_t code, const char* text) {
-  char out[LINE_MAX];
+  char out[LINE_BYTES];
   char* end = append(append(append(append(out, "ERR "), code), " "), text);
   append(end, "\n")[0] = '\0';
   hal_.write(out);

@@ -15,7 +15,7 @@ namespace scara {
 
 const char PROTOCOL[] = "scara/1";
 const int32_t FIRMWARE_VERSION = 1;
-const uint8_t LINE_MAX = 64;            // bytes por mensaje, incluido el LF (D4)
+const uint8_t LINE_BYTES = 64;            // bytes por mensaje, incluido el LF (D4)
 const uint32_t STATUS_PERIOD_MS = 50;   // estado S a 20/s (D27)
 const uint32_t WATCHDOG_MS = 1000;      // sin mensajes de la URC => frena (D27)
 const int32_t JOG_SPEED_MAX = 1000;     // centésimas por segundo
@@ -89,7 +89,7 @@ private:
   void reject(int32_t code, const char* text);
 
   Hal& hal_;
-  char line_[LINE_MAX];
+  char line_[LINE_BYTES];
   uint8_t length_;
   bool invalid_;                 // la línea en curso tiene bytes no permitidos
   bool overflow_;
