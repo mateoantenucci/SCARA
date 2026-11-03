@@ -54,8 +54,9 @@ const avisos = (() => {
     toast.setAttribute("role", level === "error" ? "alert" : "status");
     toast.life = life;
     toast.text = text;
-    const close = element("button", "close", "×");
-    close.title = "Cerrar";
+    const close = element("button", "close");
+    close.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    close.title = close.ariaLabel = "Cerrar";
     close.addEventListener("click", () => dismiss(key));
     const head = element("div", "head");
     head.append(element("strong", "", title), element("span", "meta", meta), close);
@@ -90,11 +91,12 @@ const avisos = (() => {
   }
 
   // Los eventos info (las órdenes aceptadas, lo que la URC va haciendo)
-  // quedan solo en el registro.
+  // quedan solo en el registro. Un evento con el mismo texto y nivel que uno
+  // a la vista lo actualiza (número y hora) en lugar de apilar otro.
   function announce(event) {
     if (event.level === "info") return;
-    notify(`evento ${event.n}`, { level: event.level, title: heading(event), text: event.text, detail: event.detail,
-      meta: meta(event) });
+    notify(`${event.level} ${heading(event)} ${event.text}`, { level: event.level, title: heading(event), text: event.text,
+      detail: event.detail, meta: meta(event) });
   }
 
   function render() {

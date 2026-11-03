@@ -1,89 +1,108 @@
 // Gestor de trayectorias (D29, D34). La trayectoria la guarda la URC; la
 // página la muestra y pide cada cambio por /api/trayectoria/*. La
 // reproducción va por /api/reproduccion/* y también la planifica la URC.
-// Usa post, format, copyHere, stopJog, missing y pollSoon de index.html, y
-// deja el estado de la reproducción en urcPlayback para la barra de estado.
+// Usa post, format, copyHere, stopJog, missing, ask y pollSoon de index.html,
+// y deja el estado de la reproducción en urcPlayback para la barra de estado.
 (() => {
   const panel = document.getElementById("trajectory");
+  const ICON_GRIP = '<svg viewBox="0 0 12 12" aria-hidden="true"><circle cx="4" cy="2.5" r="1.2" fill="currentColor"/><circle cx="8" cy="2.5" r="1.2" fill="currentColor"/><circle cx="4" cy="6" r="1.2" fill="currentColor"/><circle cx="8" cy="6" r="1.2" fill="currentColor"/><circle cx="4" cy="9.5" r="1.2" fill="currentColor"/><circle cx="8" cy="9.5" r="1.2" fill="currentColor"/></svg>';
+  const ICON_UP = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 10l4.5-4.5 4.5 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const ICON_DOWN = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 6l4.5 4.5L12.5 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
   panel.innerHTML = `
-    <h2>Trayectoria: <span id="tr-name"></span> <span class="badge warn" id="tr-dirty" hidden>cambios sin guardar</span></h2>
-    <p class="muted"><kbd>Espacio</kbd> captura la posición estimada por pasos después del punto seleccionado (robot referenciado y quieto).
-      <kbd>Retroceso</kbd> borra el seleccionado; después de capturar, es el último capturado. <kbd>Enter</kbd> termina y pide el nombre.
-      Cada fila dice cómo se llega a ese punto: tipo de tramo, velocidad y espera.</p>
-    <div class="row">
+    <div class="card-head">
+      <h2>Trayectoria</h2>
+      <span class="badge" id="tr-name"></span>
+      <span class="badge warn" id="tr-dirty" hidden>cambios sin guardar</span>
+      <span class="grow"></span>
       <button id="tr-new">Nueva</button>
       <select id="tr-files" aria-label="Trayectorias guardadas"></select>
       <button id="tr-load">Cargar</button>
       <button id="tr-save">Guardar</button>
       <button id="tr-save-as">Guardar como…</button>
     </div>
-    <table style="margin-top: 12px">
+    <div class="scroll"><table>
       <thead><tr><th>#</th><th>X (mm)</th><th>Y (mm)</th><th>Z (mm)</th><th>Rumbo</th><th>Codo</th>
         <th>Tramo</th><th>Vel. (%)</th><th>Espera (s)</th><th></th></tr></thead>
       <tbody id="tr-points"></tbody>
-    </table>
-    <p id="tr-empty" class="muted">Sin puntos: capturá con <kbd>Espacio</kbd> o escribí uno abajo.</p>
+    </table></div>
+    <p id="tr-empty" class="note" style="margin-top: 8px">Sin puntos. Llevá el robot con el jog y capturá con <kbd>Espacio</kbd>, o escribí un punto más abajo.</p>
     <div class="row" style="margin-top: 12px">
-      <button id="tr-capture" data-needs="referencia">Capturar <kbd>Espacio</kbd></button>
+      <button id="tr-capture" class="primary" data-needs="referencia">Capturar <kbd>Espacio</kbd></button>
       <button id="tr-overwrite" data-needs="referencia">Sobrescribir con la pose actual</button>
       <button id="tr-go" data-needs="referencia">Ir al punto…</button>
-      <button id="tr-delete">Borrar <kbd>Retroceso</kbd></button>
+      <span class="sep"></span>
+      <button id="tr-delete" class="danger">Borrar <kbd>Retroceso</kbd></button>
     </div>
     <p class="blocked" data-blocked="referencia" data-what="Capturar, sobrescribir e ir al punto" hidden></p>
-    <h2 style="margin-top: 18px">Reproducción</h2>
-    <p class="muted">Antes de mover, la URC valida todos los tramos. El robot llega primero al punto de partida con el tramo 0,
-      un PTP al 25 % × la velocidad global, salvo que ya esté ahí. Con loop, la vuelta del último punto al primero usa los
-      parámetros del punto 1. La velocidad global no se guarda en el archivo. <kbd>Esc</kbd> frena todo.</p>
-    <div class="row">
-      <label>Velocidad global (%) <input id="pl-speed" type="number" min="10" max="100" step="10" value="100" style="width: 5em"></label>
-      <label>Loop <select id="pl-loop"><option value="1">Sin loop</option><option value="n">N vueltas</option><option value="inf">Sin fin</option></select></label>
-      <label id="pl-times-label" hidden>Vueltas <input id="pl-times" type="number" min="2" step="1" value="2" style="width: 5em"></label>
-    </div>
-    <div class="row" style="margin-top: 8px">
-      <button id="pl-play">▶ Desde el principio</button>
-      <button id="pl-play-selected">▶ Desde el seleccionado</button>
-      <button id="pl-pause">Pausa</button>
-      <button id="pl-resume">Reanudar</button>
-      <button id="pl-stop">Stop <kbd>Esc</kbd></button>
-    </div>
-    <p id="pl-blocked" class="blocked" hidden></p>
-    <p id="pl-status" class="muted"></p>
-    <div id="pl-feedback" class="feedback" role="status" aria-live="polite"></div>
-    <h2 style="margin-top: 18px">Punto escrito</h2>
-    <p class="muted">En XYZ, un punto nuevo usa el codo elegido; uno editado conserva el suyo (para cambiarlo, editá J1–J4).</p>
-    <div class="row">
-      <label><input type="radio" name="tr-kind" value="pose" checked> Punto de herramienta</label>
-      <label><input type="radio" name="tr-kind" value="joints"> Articulaciones</label>
-      <button id="tr-here" type="button">Copiar la pose actual</button>
-    </div>
-    <div class="row fields" id="tr-pose">
-      <label>X (mm) <input type="number" step="0.1" value="433"></label>
-      <label>Y (mm) <input type="number" step="0.1" value="0"></label>
-      <label>Z (mm) <input type="number" step="0.1" value="34.7"></label>
-      <label>Rumbo (°) <input type="number" step="0.1" value="-20"></label>
-      <label>Codo <select id="tr-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
-    </div>
-    <div class="row fields" id="tr-joints" hidden>
-      <label>J1 (°) <input type="number" step="0.01" value="0"></label>
-      <label>J2 (°) <input type="number" step="0.01" value="0"></label>
-      <label>J3 (°) <input type="number" step="0.01" value="0"></label>
-      <label>J4 (mm) <input type="number" step="0.01" value="120"></label>
-    </div>
-    <div class="row">
-      <button id="tr-add">Agregar después del seleccionado</button>
-      <button id="tr-apply">Aplicar al seleccionado</button>
-    </div>
     <div id="tr-feedback" class="feedback" role="status" aria-live="polite"></div>
+    <details class="help" id="tr-written">
+      <summary>Escribir un punto</summary>
+      <div class="row" style="margin-top: 10px">
+        <div class="seg" role="group" aria-label="Cómo se escribe el punto">
+          <label><input type="radio" name="tr-kind" value="pose" checked> Punto de herramienta</label>
+          <label><input type="radio" name="tr-kind" value="joints"> Articulaciones</label>
+        </div>
+        <button id="tr-here" type="button">Copiar la pose actual</button>
+      </div>
+      <div class="row fields" id="tr-pose" style="margin-top: 10px">
+        <label class="field">X (mm) <input type="number" step="0.1" value="433"></label>
+        <label class="field">Y (mm) <input type="number" step="0.1" value="0"></label>
+        <label class="field">Z (mm) <input type="number" step="0.1" value="34.7"></label>
+        <label class="field">Rumbo (°) <input type="number" step="0.1" value="-20"></label>
+        <label class="field">Codo <select id="tr-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
+      </div>
+      <div class="row fields" id="tr-joints" style="margin-top: 10px" hidden>
+        <label class="field">J1 (°) <input type="number" step="0.01" value="0"></label>
+        <label class="field">J2 (°) <input type="number" step="0.01" value="0"></label>
+        <label class="field">J3 (°) <input type="number" step="0.01" value="0"></label>
+        <label class="field">J4 (mm) <input type="number" step="0.01" value="120"></label>
+      </div>
+      <div class="row" style="margin-top: 10px">
+        <button id="tr-add">Agregar después del seleccionado</button>
+        <button id="tr-apply">Aplicar al seleccionado</button>
+      </div>
+      <p>En XYZ, un punto nuevo usa el codo elegido; uno editado conserva el suyo (para cambiarlo, editá J1–J4).</p>
+    </details>
+    <details class="help">
+      <summary>Cómo funciona</summary>
+      <p><kbd>Espacio</kbd> captura la posición estimada por pasos después del punto seleccionado (robot referenciado y quieto). <kbd>Retroceso</kbd> borra el seleccionado; después de capturar, es el último capturado. <kbd>Enter</kbd> termina y pide el nombre.</p>
+      <p>Cada fila dice cómo se llega a ese punto: tipo de tramo (LIN, recta del punto de herramienta; PTP, las articulaciones a la vez), velocidad y espera al llegar. Las filas se reordenan con las flechas o arrastrando el número.</p>
+    </details>
     <dialog id="tr-name-dialog">
       <form method="dialog">
         <h2>Guardar la trayectoria</h2>
-        <label>Nombre <input type="text" id="tr-name-input" maxlength="60" required></label>
-        <div class="row" style="margin-top: 12px">
-          <button value="save">Guardar</button>
+        <label class="field" style="display: flex; margin-top: 10px">Nombre <input type="text" id="tr-name-input" maxlength="60" required></label>
+        <div class="row">
           <button value="cancel" formnovalidate>Cancelar</button>
+          <button value="save" class="primary">Guardar</button>
         </div>
       </form>
     </dialog>`;
+
+  document.getElementById("playback").innerHTML = `
+    <div class="card-head">
+      <h2>Reproducción</h2>
+      <span class="grow"></span>
+      <label class="field">Velocidad global (%) <input id="pl-speed" type="number" min="10" max="100" step="10" value="100" style="width: 5.5em"></label>
+      <label class="field">Loop <select id="pl-loop"><option value="1">Sin loop</option><option value="n">N vueltas</option><option value="inf">Sin fin</option></select></label>
+      <label class="field" id="pl-times-label" hidden>Vueltas <input id="pl-times" type="number" min="2" step="1" value="2" style="width: 5em"></label>
+    </div>
+    <div class="row">
+      <button id="pl-play" class="primary">▶ Desde el principio</button>
+      <button id="pl-play-selected">▶ Desde el seleccionado</button>
+      <span class="sep"></span>
+      <button id="pl-pause">Pausa</button>
+      <button id="pl-resume">Reanudar</button>
+      <button id="pl-stop" class="danger">Stop <kbd>Esc</kbd></button>
+    </div>
+    <p id="pl-blocked" class="blocked" hidden></p>
+    <p id="pl-status" class="status-line"></p>
+    <div id="pl-feedback" class="feedback" role="status" aria-live="polite"></div>
+    <details class="help">
+      <summary>Cómo funciona</summary>
+      <p>Antes de mover, la URC valida todos los tramos. El robot llega primero al punto de partida con el tramo 0, un PTP al 25 % × la velocidad global, salvo que ya esté ahí. Con loop, la vuelta del último punto al primero usa los parámetros del punto 1. La velocidad global no se guarda en el archivo. <kbd>Esc</kbd> frena todo.</p>
+    </details>`;
 
   const $ = (id) => document.getElementById(id);
   const ELBOWS = { "-1": "J2 −", "0": "estirado", "1": "J2 +" };
@@ -97,8 +116,11 @@
       method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
     });
     const data = await response.json();
-    if (response.status === 409 && allow && confirm(data.error)) return send(path, { ...body, [allow]: true });
-    if (response.status === 409 && allow) return null;
+    if (response.status === 409 && allow) {
+      const ok = await ask(data.error, { title: "Hay trabajo que se perdería",
+        confirm: allow === "discard" ? "Descartar los cambios" : "Reemplazar", danger: true });
+      return ok ? send(path, { ...body, [allow]: true }) : null;
+    }
     if (!response.ok) {
       pollSoon();  // el aviso del rechazo sale del registro de eventos
       throw requestError(data);
@@ -134,9 +156,8 @@
     const current = playback.current;
     for (const tr of $("tr-points").children) {
       const index = Number(tr.dataset.index);
-      const running = current && current.point === index;
-      tr.style.background = running ? "#ffe2a8" : index === selected ? "#d9eef0" : "";
-      tr.style.fontWeight = running ? "700" : "";
+      tr.classList.toggle("running", Boolean(current && current.point === index));
+      tr.classList.toggle("selected", index === selected);
     }
   }
 
@@ -145,12 +166,13 @@
     tr.dataset.index = index;
     const t = point.tool;
     // Solo el número se arrastra: en una fila arrastrable los campos no se editan bien.
-    tr.innerHTML = `<td draggable="true" title="Arrastrar para reordenar" style="cursor: grab">⠿ ${index + 1}</td><td>${t.x.toFixed(2)}</td><td>${t.y.toFixed(2)}</td><td>${t.z.toFixed(2)}</td>` +
+    tr.innerHTML = `<td><span class="grip" draggable="true" title="Arrastrar para reordenar">${ICON_GRIP}<strong>${index + 1}</strong></span></td>` +
+      `<td>${t.x.toFixed(2)}</td><td>${t.y.toFixed(2)}</td><td>${t.z.toFixed(2)}</td>` +
       `<td>${t.heading.toFixed(2)}°</td><td>${ELBOWS[point.elbow]}</td>` +
-      `<td><select data-field="kind"><option>LIN</option><option>PTP</option></select></td>` +
-      `<td><input data-field="speed" type="number" min="1" max="100" step="1" value="${point.speed}" style="width: 4.5em"></td>` +
-      `<td><input data-field="wait" type="number" min="0" max="600" step="0.1" value="${point.wait}" style="width: 4.5em"></td>` +
-      `<td><button data-move="-1" title="Subir">↑</button> <button data-move="1" title="Bajar">↓</button></td>`;
+      `<td><select data-field="kind" aria-label="Tipo de tramo"><option>LIN</option><option>PTP</option></select></td>` +
+      `<td><input data-field="speed" type="number" min="1" max="100" step="1" value="${point.speed}" aria-label="Velocidad"></td>` +
+      `<td><input data-field="wait" type="number" min="0" max="600" step="0.1" value="${point.wait}" aria-label="Espera"></td>` +
+      `<td><span class="moves"><button class="quiet" data-move="-1" title="Subir" aria-label="Subir">${ICON_UP}</button><button class="quiet" data-move="1" title="Bajar" aria-label="Bajar">${ICON_DOWN}</button></span></td>`;
     tr.querySelector("select").value = point.kind;
     return tr;
   }
@@ -208,7 +230,15 @@
     if (selected === null) throw new Error("Seleccioná un punto de la lista");
     return selected;
   };
-  const guarded = (action) => () => { try { return action(); } catch (error) { feedback(error); } };
+  // Un error al preparar la orden, sincrónico o de una promesa, va a la línea de resultado.
+  const guarded = (action) => () => {
+    try {
+      const result = action();
+      if (result && typeof result.catch === "function") result.catch(feedback);
+    } catch (error) {
+      feedback(error);
+    }
+  };
 
   const capture = () => act("capturar", { after: after() });
   const remove = () => {
@@ -240,9 +270,10 @@
   }));
   $("tr-capture").addEventListener("click", capture);
   $("tr-delete").addEventListener("click", remove);
-  $("tr-overwrite").addEventListener("click", guarded(() => {
+  $("tr-overwrite").addEventListener("click", guarded(async () => {
     const index = needSelected();
-    if (confirm(`¿Sobrescribir el punto ${index + 1} con la pose actual?`)) act("sobrescribir", { index });
+    if (await ask(`El punto ${index + 1} toma la posición estimada actual del robot.`,
+      { title: `¿Sobrescribir el punto ${index + 1}?`, confirm: "Sobrescribir" })) act("sobrescribir", { index });
   }));
   $("tr-add").addEventListener("click", guarded(() => {
     const request = written();
@@ -261,7 +292,9 @@
         return;
       }
       const target = plan.target.map((value, joint) => format(joint, value)).join(", ");
-      if (!confirm(`PTP al punto ${index + 1} (${target}) al ${plan.speed * 100} %: ${plan.duration_s.toFixed(2)} s. ¿Mover el robot?`)) return;
+      const ok = await ask(`PTP al punto ${index + 1} (${target}) al ${plan.speed * 100} %. Tarda ${plan.duration_s.toFixed(2)} s.`,
+        { title: "¿Mover el robot?", confirm: "Mover" });
+      if (!ok) return;
       await send("ir", { index, confirm: true, target: plan.target });
       feedback(null);
     } catch (error) {

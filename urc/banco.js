@@ -7,50 +7,54 @@
 // no lo pisa el polling; al lado dice lo vigente, y «aplicando…» hasta que el
 // estado SIM muestra la orden aplicada. La URC anota en el registro de
 // eventos lo que cambió y si una orden no se aplicó.
-// Usa post, benchState, benchSummary y el evento urc:estado de index.html.
+// Usa post, ask, benchState, benchSummary y el evento urc:estado de index.html.
 (() => {
   const panel = document.getElementById("banco");
   const NAMES = ["J1", "J2", "J3", "J4"];
   const STUCK = { libre: "libre", activo: "trabado activo", inactivo: "trabado inactivo" };
 
   panel.innerHTML = `
-    <h2>Banco de ensayo (solo simulación)</h2>
-    <p class="muted small">Llega por el canal de instrumentación, que el robot real no tiene. La URC no usa estos datos para capturar ni planificar: siempre usa la posición estimada por pasos. La posición simulada está junto a la estimada, a la derecha.</p>
-    <p class="hint" id="banco-now"></p>
-    <h3>Carga</h3>
-    <div class="row">
-      <label>Carga en la herramienta (g) <input type="number" id="banco-load" min="0" step="50" style="width: 6em"></label>
+    <div class="card-head">
+      <h2>Banco de ensayo (solo simulación)</h2>
+      <span class="badge" id="banco-now"></span>
+    </div>
+    <div class="row fields">
+      <label class="field">Carga en la herramienta (g) <input type="number" id="banco-load" min="0" step="50" style="width: 6em"></label>
       <button id="banco-load-set">Aplicar</button>
       <span class="small" id="banco-load-state"></span>
     </div>
     <h3>Fallas</h3>
-    <div class="row">
-      <label>F1 · Corriente del driver de <select id="banco-f1-motor"></select></label>
-      <label>al <input type="number" id="banco-f1-current" min="10" max="100" step="10" style="width: 5em"> % de la nominal</label>
+    <div class="row fields">
+      <label class="field">F1 · Corriente del driver de <select id="banco-f1-motor"></select></label>
+      <label class="field">% de la nominal <input type="number" id="banco-f1-current" min="10" max="100" step="10" style="width: 5em"></label>
       <button id="banco-f1-set">Aplicar</button>
       <span class="small" id="banco-f1-state"></span>
     </div>
-    <p class="muted small">Con menos corriente el motor tiene menos par: con carga o al arrancar, pierde pasos.</p>
     <div class="row">
-      <label><input type="checkbox" id="banco-f2"> F2 · Driver de M4 sin corriente (J4 cae)</label>
+      <label class="check"><input type="checkbox" id="banco-f2"> F2 · Driver de M4 sin corriente (J4 cae)</label>
       <span class="small" id="banco-f2-state"></span>
     </div>
-    <div class="row" id="banco-f3">F3 · Hall trabado: </div>
+    <div class="row fields" id="banco-f3"><span class="small" style="font-weight: 600; padding-bottom: 7px">F3 · Hall trabado</span></div>
     <div class="row">
-      <label><input type="checkbox" id="banco-f4"> F4 · Cortar el enlace scara/1 (actúa el watchdog)</label>
+      <label class="check"><input type="checkbox" id="banco-f4"> F4 · Cortar el enlace scara/1 (actúa el watchdog)</label>
       <span class="small" id="banco-f4-state"></span>
     </div>
-    <div class="row">
-      <button id="banco-f5">F5 · Reiniciar la UCI…</button>
+    <div class="row" style="margin-top: 12px">
+      <button id="banco-f5" class="danger">F5 · Reiniciar la UCI…</button>
       <button id="banco-reload" class="danger">Recargar el mundo…</button>
     </div>
     <div id="banco-feedback" class="feedback" role="status" aria-live="polite"></div>
     <h3>Motores en el simulador</h3>
-    <table>
+    <div class="scroll"><table>
       <thead><tr><th>Motor</th><th>Con corriente</th><th>Corriente del driver</th><th>Pasos perdidos</th></tr></thead>
       <tbody id="banco-motors"></tbody>
-    </table>
-    <p class="muted small" id="banco-hall"></p>`;
+    </table></div>
+    <p class="note" id="banco-hall" style="margin-top: 8px"></p>
+    <details class="help">
+      <summary>Cómo funciona</summary>
+      <p>Llega por el canal de instrumentación, que el robot real no tiene. La URC no usa estos datos para capturar ni planificar: siempre usa la posición estimada por pasos. La posición simulada está junto a la estimada, a la derecha.</p>
+      <p>F1: con menos corriente el motor tiene menos par; con carga o al arrancar, pierde pasos. Cada orden se confirma cuando el simulador la muestra aplicada: al lado del control dice lo vigente y «aplicando…» mientras tanto.</p>
+    </details>`;
 
   const $ = (id) => document.getElementById(id);
   const f1 = $("banco-f1-motor");
@@ -58,6 +62,7 @@
   const f3 = $("banco-f3");
   NAMES.forEach((name, index) => {
     const label = document.createElement("label");
+    label.className = "field";
     label.textContent = `${name} `;
     const select = document.createElement("select");
     select.dataset.joint = String(index + 1);
@@ -114,13 +119,13 @@
   });
   // Otro motor: el porcentaje muestra el suyo, salvo que se haya editado.
   f1.addEventListener("change", render);
-  $("banco-f5").addEventListener("click", () => {
-    if (confirm("¿Reiniciar la UCI? El firmware vuelve a arrancar sin corriente y sin referencia (F5).")) {
-      order(null, { falla: "F5" });
-    }
+  $("banco-f5").addEventListener("click", async () => {
+    if (await ask("El firmware vuelve a arrancar sin corriente y sin referencia (F5).",
+      { title: "¿Reiniciar la UCI?", confirm: "Reiniciar", danger: true })) order(null, { falla: "F5" });
   });
-  $("banco-reload").addEventListener("click", () => {
-    if (confirm("¿Recargar el mundo de Webots? La UCI vuelve a arrancar sin referencia.")) order(null, { recarga: true });
+  $("banco-reload").addEventListener("click", async () => {
+    if (await ask("La UCI vuelve a arrancar sin referencia.",
+      { title: "¿Recargar el mundo de Webots?", confirm: "Recargar", danger: true })) order(null, { recarga: true });
   });
 
   // El control muestra lo vigente, salvo que lo estén editando o la orden no se haya confirmado.
@@ -145,7 +150,7 @@
     const { load, faults } = benchSummary(bench);
     const now = `Vigente en el simulador: carga ${load} · ${faults.length ? faults.join(" · ") : "sin fallas"}`;
     if ($("banco-now").textContent !== now) $("banco-now").textContent = now;
-    $("banco-now").className = faults.length ? "hint warn" : "hint";
+    $("banco-now").className = faults.length ? "badge warn" : "badge";
 
     // El tope es LOAD_MAX de la URC (urc/instrumentation.py): no se repite acá.
     if ($("banco-load").max !== String(bench.load_max)) $("banco-load").max = bench.load_max;

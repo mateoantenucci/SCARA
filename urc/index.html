@@ -6,250 +6,384 @@
   <title>SCARA · URC</title>
   <style>
     :root {
-      color-scheme: light; font-family: system-ui, sans-serif;
-      --ink: #172b36; --muted: #49616b; --line: #d3dfe3; --bg: #eef3f4; --accent: #086e78;
-      --ok: #0b6748; --ok-bg: #d9f0e6; --warn: #7a5200; --warn-bg: #fff1d6;
-      --error: #a62929; --error-bg: #fbe6e6; --idle-bg: #e7edef;
-      color: var(--ink); background: var(--bg);
+      color-scheme: light;
+      --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      --bg: #eef2f4; --surface: #ffffff; --surface-2: #f4f7f8; --surface-3: #e9eff1;
+      --ink: #16252d; --muted: #5b6e77; --faint: #647680;
+      --line: #dbe3e7; --line-strong: #b7c5cb;
+      --accent: #0a6c75; --accent-strong: #075860; --accent-soft: #e2f0f1; --accent-ring: rgba(10, 108, 117, .3);
+      --ok: #0f6b4b; --ok-soft: #dcf2e7; --ok-dot: #1f9d6b;
+      --warn: #7a5200; --warn-soft: #fff0d2; --warn-dot: #d99a00;
+      --error: #a82c2c; --error-soft: #fbe7e7; --error-dot: #d23b3b;
+      --radius: 12px; --radius-sm: 8px;
+      --shadow: 0 1px 2px rgba(22, 37, 45, .05), 0 8px 20px -10px rgba(22, 37, 45, .14);
+      --bar-height: 96px;
+      font-family: var(--font); font-size: 15px; color: var(--ink); background: var(--bg);
     }
     * { box-sizing: border-box; }
     [hidden] { display: none !important; }
-    body { margin: 0; background: var(--bg); }
-    h2 { font-size: 1.05rem; margin: 0 0 10px; }
-    h3 { font-size: .95rem; margin: 16px 0 8px; }
-    p { line-height: 1.45; margin: 6px 0; }
+    body { margin: 0; background: var(--bg); line-height: 1.4; }
+    ::selection { background: var(--accent-soft); color: var(--accent-strong); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    h2 { font-size: 1rem; font-weight: 700; letter-spacing: -.01em; margin: 0; }
+    h3 { font-size: .78rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); margin: 18px 0 8px; }
+    p { margin: 0; }
     .muted { color: var(--muted); }
     .small { font-size: .85rem; }
-    .card { background: white; border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 0 0 14px; scroll-margin-top: calc(var(--bar-height, 90px) + 14px); }
+    .note { font-size: .85rem; color: var(--muted); max-width: 72ch; }
+    strong { font-weight: 650; }
+
+    /* Tarjetas y filas. */
+    .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; margin: 0 0 14px; box-shadow: var(--shadow); scroll-margin-top: calc(var(--bar-height) + 14px); min-width: 0; }
+    .scroll { overflow-x: auto; }
+    .card-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 34px; margin-bottom: 12px; }
+    .card-head .grow { flex: 1; }
     .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .row + .row { margin-top: 8px; }
+    .row + .row { margin-top: 10px; }
     .grow { flex: 1; }
     .sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 4px; }
-    .badge { display: inline-block; background: var(--idle-bg); border-radius: 20px; padding: 4px 10px; font-size: .82rem; font-weight: 700; }
-    button { font: inherit; border: 1px solid #a9bcc4; background: #fff; color: #173d47; border-radius: 7px; padding: 8px 13px; cursor: pointer; font-weight: 650; touch-action: none; }
-    button:hover:not(:disabled) { background: #eaf4f5; }
-    button.active { background: var(--accent); border-color: var(--accent); color: white; }
-    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
-    button.primary:hover:not(:disabled) { background: #065a62; }
-    button.danger { border-color: var(--error); color: var(--error); }
-    button.danger:hover:not(:disabled) { background: var(--error-bg); }
-    button:disabled { opacity: .45; cursor: not-allowed; }
-    kbd { border: 1px solid #a9bcc4; border-bottom-width: 2px; border-radius: 4px; padding: 0 5px; font-size: .8rem; background: #f7fafb; color: var(--ink); }
-    table { border-collapse: collapse; width: 100%; font-size: .92rem; }
-    th, td { text-align: right; padding: 6px 5px; border-bottom: 1px solid #e4ebee; font-variant-numeric: tabular-nums; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--surface-3); color: var(--muted); border-radius: 20px; padding: 3px 10px; font-size: .78rem; font-weight: 700; white-space: nowrap; }
+    .badge.warn { background: var(--warn-soft); color: var(--warn); }
+    .badge.ok { background: var(--ok-soft); color: var(--ok); }
+
+    /* Botones: uno solo por tarjeta es el principal. */
+    button { font: inherit; font-size: .9rem; font-weight: 600; line-height: 1.2; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); padding: 6px 12px; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; touch-action: none; white-space: nowrap; transition: background-color .15s ease-out, border-color .15s ease-out, box-shadow .15s ease-out; }
+    button:hover:not(:disabled) { background: var(--surface-2); border-color: #a1b2b9; }
+    button:active:not(:disabled) { background: var(--surface-3); }
+    button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    button.primary:hover:not(:disabled) { background: var(--accent-strong); border-color: var(--accent-strong); }
+    button.danger { border-color: #e4b0b0; color: var(--error); }
+    button.danger:hover:not(:disabled) { background: var(--error-soft); border-color: var(--error); }
+    button.danger.solid { background: var(--error); border-color: var(--error); color: #fff; }
+    button.danger.solid:hover:not(:disabled) { background: #8f2323; border-color: #8f2323; }
+    button.active { background: var(--accent); border-color: var(--accent); color: #fff; box-shadow: inset 0 2px 4px rgba(0, 0, 0, .18); }
+    button.quiet { border-color: transparent; background: transparent; color: var(--muted); }
+    button.quiet:hover:not(:disabled) { background: var(--surface-3); color: var(--ink); }
+    button:disabled { opacity: .42; cursor: not-allowed; }
+    button svg { width: 16px; height: 16px; flex: none; }
+    kbd { font: 600 .72rem/1 var(--font); color: var(--muted); background: var(--surface-2); border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; padding: 3px 5px; min-width: 1.5em; text-align: center; white-space: nowrap; }
+    button.primary kbd, button.active kbd { color: #fff; background: rgba(255, 255, 255, .16); border-color: rgba(255, 255, 255, .4); }
+
+    /* Control segmentado: un modo a la vez. */
+    .seg { display: inline-flex; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); overflow: hidden; background: var(--surface); }
+    .seg > button, .seg > label { border: 0; border-radius: 0; background: transparent; min-height: 32px; padding: 5px 12px; font-size: .88rem; font-weight: 600; color: var(--muted); display: inline-flex; align-items: center; gap: 8px; cursor: pointer; position: relative; white-space: nowrap; }
+    .seg > * + * { border-left: 1px solid var(--line-strong); }
+    .seg > button:hover:not(:disabled), .seg > label:hover { background: var(--surface-2); color: var(--ink); }
+    .seg > button.active, .seg > label:has(input:checked) { background: var(--accent); color: #fff; }
+    .seg > label input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .seg > label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    /* Campos. */
+    input, select { font: inherit; font-size: .92rem; color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong); border-radius: var(--radius-sm); padding: 5px 8px; min-height: 34px; font-variant-numeric: tabular-nums; }
+    input[type=number] { width: 6.5em; }
+    input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; border-color: var(--accent); }
+    input.edited { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-ring); }
+    input[type=checkbox] { width: 16px; height: 16px; min-height: 0; margin: 0; accent-color: var(--accent); }
+    label.check { display: inline-flex; align-items: center; gap: 8px; font-size: .9rem; cursor: pointer; }
+    .field { display: inline-flex; flex-direction: column; gap: 4px; font-size: .76rem; font-weight: 700; color: var(--muted); letter-spacing: .02em; }
+    .field select { font-weight: 500; }
+    .fields { gap: 10px; align-items: flex-end; }
+
+    /* Lo que impide una orden y el resultado de cada grupo de botones. */
+    .hint { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--accent-soft); color: var(--accent-strong); font-weight: 600; font-size: .92rem; }
+    .hint::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: currentColor; margin-top: .45em; opacity: .8; }
+    .hint.warn { background: var(--warn-soft); color: var(--warn); }
+    .hint.error { background: var(--error-soft); color: var(--error); }
+    .blocked { display: flex; align-items: center; gap: 6px; color: var(--warn); font-size: .85rem; font-weight: 600; margin-top: 8px; }
+    .blocked::before { content: ""; flex: none; width: 14px; height: 14px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M5.6 5.6l12.8 12.8'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M5.6 5.6l12.8 12.8'/%3E%3C/svg%3E") center / contain no-repeat; }
+    .feedback { min-height: 1.3em; font-size: .88rem; color: var(--error); margin-top: 8px; }
+    .feedback:empty { margin-top: 0; min-height: 0; }
+    .feedback details { margin-top: .25em; color: var(--ink); font-weight: 400; }
+    .feedback summary { cursor: pointer; color: var(--error); font-weight: 600; }
+    .status-line { font-size: .88rem; color: var(--muted); margin-top: 10px; }
+    .status-line:empty { display: none; }
+
+    /* Ayuda plegada al pie de cada tarjeta: no hace falta leerla para operar. */
+    details.help { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
+    details.help > summary { list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: .82rem; font-weight: 600; user-select: none; }
+    details.help > summary::-webkit-details-marker { display: none; }
+    details.help > summary::before { content: ""; width: 14px; height: 14px; background: currentColor; -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.2'/%3E%3Ccircle cx='12' cy='17' r='.6' fill='black'/%3E%3C/svg%3E") center / contain no-repeat; mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .8-1 1.5v.2'/%3E%3Ccircle cx='12' cy='17' r='.6' fill='black'/%3E%3C/svg%3E") center / contain no-repeat; }
+    details.help > summary:hover { color: var(--ink); }
+    details.help p { font-size: .86rem; color: var(--muted); max-width: 76ch; margin: 8px 0 0; }
+    details.help p + p { margin-top: 6px; }
+
+    /* Tablas. */
+    table { border-collapse: collapse; width: 100%; font-size: .9rem; }
+    th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; white-space: nowrap; }
     th:first-child, td:first-child { text-align: left; }
-    th { font-size: .75rem; color: var(--muted); }
-    input, select { font: inherit; padding: 5px 6px; border: 1px solid #a9bcc4; border-radius: 6px; background: white; }
-    input.edited { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-    .feedback details { margin-top: .25em; color: var(--ink); }
-    .feedback summary { cursor: pointer; color: var(--error); }
-    .fields { margin: 10px 0; }
-    .fields input { width: 6.5em; }
-    #feedback, .feedback { min-height: 1.4em; font-size: .9rem; color: var(--error); }
-    .hint { background: #f2f7f8; border-left: 4px solid var(--accent); padding: 8px 10px; border-radius: 0 6px 6px 0; }
-    .hint.warn { background: var(--warn-bg); border-color: #c98a00; }
-    .hint.error { background: var(--error-bg); border-color: var(--error); }
-    .blocked { color: var(--warn); font-size: .88rem; font-weight: 600; }
-    .blocked::before { content: "⛔ "; }
-    details.more > summary, details.diagnostic > summary { cursor: pointer; color: var(--muted); font-size: .88rem; }
-    details.diagnostic > summary { font-weight: 700; font-size: 1rem; color: var(--ink); }
-    dialog { border: 1px solid #a9bcc4; border-radius: 14px; max-width: 420px; }
-    pre { white-space: pre-wrap; font: .8rem ui-monospace, monospace; background: #f4f7f8; padding: 10px; border-radius: 6px; max-height: 260px; overflow: auto; margin: 0; }
+    th { font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover td { background: var(--surface-2); }
+
+    dialog { border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; max-width: 440px; box-shadow: 0 24px 60px -20px rgba(22, 37, 45, .45); color: var(--ink); }
+    dialog::backdrop { background: rgba(22, 37, 45, .35); }
+    dialog h2 { font-size: 1.05rem; margin-bottom: 8px; }
+    dialog p { margin: 6px 0 0; }
+    dialog .row { margin-top: 16px; justify-content: flex-end; }
+    pre { white-space: pre-wrap; font: .78rem/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--surface-2); border: 1px solid var(--line); padding: 10px 12px; border-radius: var(--radius-sm); max-height: 280px; overflow: auto; margin: 10px 0 0; }
 
     /* Barra de estado: lo que vale ahora, siempre a la vista (D78). */
-    .bar { position: sticky; top: 0; z-index: 30; background: white; border-bottom: 1px solid var(--line); box-shadow: 0 2px 8px rgba(23, 43, 54, .07); }
-    .bar-inner { max-width: 1480px; margin: auto; padding: 8px 16px; }
-    .brand { font-weight: 800; font-size: 1.05rem; margin-right: 4px; white-space: nowrap; }
-    .chip { display: inline-flex; align-items: center; gap: 6px; border-radius: 20px; padding: 4px 10px; font-size: .82rem; font-weight: 700; background: var(--idle-bg); color: var(--ink); white-space: nowrap; text-decoration: none; }
-    .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #8aa1aa; flex: none; }
-    .chip.ok { background: var(--ok-bg); color: var(--ok); } .chip.ok::before { background: #1f9d6b; }
-    .chip.warn { background: var(--warn-bg); color: var(--warn); } .chip.warn::before { background: #d69500; }
-    .chip.error { background: var(--error-bg); color: var(--error); } .chip.error::before { background: #d23b3b; }
+    .bar { position: sticky; top: 0; z-index: 30; background: rgba(255, 255, 255, .94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    .bar-inner { max-width: 1480px; margin: auto; padding: 10px 20px 8px; }
+    .brand { display: inline-flex; align-items: baseline; gap: 6px; font-weight: 800; font-size: 1.05rem; letter-spacing: -.01em; white-space: nowrap; margin-right: 6px; }
+    .brand small { font-size: .78rem; font-weight: 700; color: var(--muted); letter-spacing: .04em; }
+    .chip { display: inline-flex; align-items: center; gap: 7px; border-radius: 20px; padding: 5px 11px; font-size: .82rem; font-weight: 700; background: var(--surface-3); color: var(--muted); white-space: nowrap; text-decoration: none; line-height: 1.2; }
+    .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); flex: none; }
+    .chip.ok { background: var(--ok-soft); color: var(--ok); } .chip.ok::before { background: var(--ok-dot); }
+    .chip.warn { background: var(--warn-soft); color: var(--warn); } .chip.warn::before { background: var(--warn-dot); }
+    .chip.error { background: var(--error-soft); color: var(--error); } .chip.error::before { background: var(--error-dot); }
     .chip.busy::before { background: var(--accent); animation: pulse 1s infinite; }
-    a.chip:hover { text-decoration: underline; }
+    a.chip { cursor: pointer; } a.chip:hover { filter: brightness(.96); }
     @keyframes pulse { 50% { opacity: .25; } }
-    button.help { padding: 0; width: 22px; height: 22px; border-radius: 50%; font-size: .78rem; line-height: 1; }
-    .help-text { margin: 8px 0 0; font-size: .86rem; max-width: 80ch; color: var(--muted); }
-    .message { margin-top: 6px; font-size: .9rem; }
-    .message .label { font-size: .72rem; font-weight: 800; letter-spacing: .06em; color: var(--muted); text-transform: uppercase; }
-    .bar button { padding: 7px 12px; }
+    .bar .actions { display: flex; gap: 8px; margin-left: auto; }
+    .message { display: flex; gap: 10px; align-items: baseline; margin-top: 8px; font-size: .86rem; color: var(--muted); }
+    .message .label { font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--faint); }
+    .message #message { color: var(--ink); }
+    .message time { font-variant-numeric: tabular-nums; }
 
     /* Dos columnas: las órdenes a la izquierda; la posición y el registro, fijos a la derecha. */
-    .layout { max-width: 1480px; margin: auto; padding: 14px 16px 40px; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 14px; align-items: start; }
-    .side { position: sticky; top: calc(var(--bar-height, 90px) + 14px); height: calc(100vh - var(--bar-height, 90px) - 28px); display: flex; flex-direction: column; }
-    .side .card { margin-bottom: 12px; }
+    .layout { max-width: 1480px; margin: auto; padding: 16px 20px 48px; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
+    main, .side { min-width: 0; }
+    .side { position: sticky; top: calc(var(--bar-height) + 16px); height: calc(100vh - var(--bar-height) - 32px); display: flex; flex-direction: column; }
     .log { flex: 1; min-height: 220px; display: flex; flex-direction: column; margin-bottom: 0 !important; }
-    @media (max-width: 999px) {
+    @media (max-width: 1040px) {
       .layout { grid-template-columns: 1fr; }
       .side { position: static; height: auto; }
       .log { max-height: 60vh; }
     }
 
-    #tr-points td { white-space: nowrap; padding: 4px 3px; }
-    #tr-points button { padding: 2px 7px; }
-    .pos th, .pos td { padding: 4px 4px; }
-    .side p { margin: 4px 0; }
+    /* Jog: un par de botones por eje, grandes porque se mantienen apretados. */
+    .jog-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+    .jog-pair { display: grid; grid-template-columns: 1fr 1fr; }
+    .jog-pair button { min-height: 46px; border-radius: 0; justify-content: space-between; padding: 6px 10px; font-size: .92rem; }
+    .jog-pair button:first-child { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
+    .jog-pair button:last-child { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; margin-left: -1px; }
+    .jog-pair button.active { position: relative; z-index: 1; }
+    @media (max-width: 720px) { .jog-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 460px) { .jog-grid { grid-template-columns: 1fr; } }
+
+    /* Posición. */
+    .pos th, .pos td { padding: 5px 6px; }
     .pos td.differs { color: var(--error); font-weight: 700; }
     .hall-on { color: var(--ok); font-weight: 700; }
+    .tool { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 10px; margin: 12px 0 0; }
+    .tool > div { background: var(--surface-2); border-radius: var(--radius-sm); padding: 6px 10px; }
+    .tool dt { font-size: .7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+    .tool dd { margin: 0; font-weight: 650; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .tool-meta { font-size: .85rem; color: var(--muted); margin-top: 8px; }
+
+    /* Trayectoria. */
+    #tr-points td { padding: 4px 6px; }
+    #tr-points tr { cursor: default; }
+    #tr-points tr.selected td { background: var(--accent-soft); }
+    #tr-points tr.running td { background: var(--warn-soft); font-weight: 700; }
+    #tr-points input, #tr-points select { min-height: 30px; padding: 3px 6px; font-size: .88rem; }
+    #tr-points input { width: 4.5em; }
+    #tr-points button { min-height: 28px; padding: 2px 6px; }
+    #tr-points .grip { cursor: grab; color: var(--faint); display: inline-flex; align-items: center; gap: 6px; }
+    #tr-points .grip svg { width: 12px; height: 12px; }
+    .moves { display: inline-flex; gap: 4px; }
 
     /* Registro de eventos. */
-    .events { list-style: none; margin: 8px 0 0; padding: 0; overflow: auto; flex: 1; border-top: 1px solid var(--line); }
-    .event { padding: 7px 4px 7px 10px; border-bottom: 1px solid #edf2f3; border-left: 4px solid transparent; font-size: .86rem; }
-    .event .head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: .76rem; color: var(--muted); }
-    .event .n { font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .events { list-style: none; margin: 10px -18px 0; padding: 0; overflow: auto; flex: 1; border-top: 1px solid var(--line); }
+    .event { padding: 8px 18px 8px 16px; border-bottom: 1px solid var(--line); font-size: .85rem; display: grid; grid-template-columns: 10px 1fr; column-gap: 8px; }
+    .event::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); margin-top: .45em; }
+    .event .head { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; font-size: .74rem; color: var(--muted); }
+    .event .n { font-weight: 700; font-variant-numeric: tabular-nums; }
     .event time { font-variant-numeric: tabular-nums; }
-    .event .source { font-weight: 700; }
+    .event .source { font-weight: 700; color: var(--ink); }
     .event .repeats { margin-left: auto; }
-    .event .text { margin-top: 2px; line-height: 1.35; }
-    .event.ok { border-left-color: #1f9d6b; }
-    .event.aviso { border-left-color: #d69500; background: #fffaf0; }
-    .event.error { border-left-color: #d23b3b; background: #fff5f5; }
-    .event.new { animation: arrive 4s ease-out; }
-    @keyframes arrive { from { background: #fff1b8; } }
-    details.detail { margin-top: 4px; font-size: .84rem; }
+    .event .text { grid-column: 2; margin-top: 1px; line-height: 1.35; }
+    .event .detail { grid-column: 2; }
+    .event.ok::before { background: var(--ok-dot); }
+    .event.aviso { background: #fffbf2; } .event.aviso::before { background: var(--warn-dot); }
+    .event.error { background: #fff6f6; } .event.error::before { background: var(--error-dot); }
+    .event.new { animation: arrive 3s ease-out; }
+    @keyframes arrive { from { background: #fff3c4; } }
+    details.detail { margin-top: 4px; font-size: .82rem; }
     details.detail summary { cursor: pointer; color: var(--muted); }
+    details.detail p { margin: 4px 0 0; }
 
     /* Avisos emergentes. */
     .toasts { position: fixed; right: 16px; bottom: 16px; z-index: 40; display: flex; flex-direction: column; gap: 8px; width: min(380px, calc(100vw - 32px)); }
-    .toast { background: white; border: 1px solid var(--line); border-left: 6px solid #8aa1aa; border-radius: 10px; padding: 10px 12px; box-shadow: 0 6px 20px rgba(23, 43, 54, .18); font-size: .9rem; animation: slide .2s ease-out; }
-    .toast .head { display: flex; gap: 8px; align-items: baseline; }
-    .toast .head strong { flex: 1; }
-    .toast .meta { font-size: .74rem; color: var(--muted); white-space: nowrap; }
-    .toast .close { border: 0; padding: 0 4px; font-size: 1.1rem; line-height: 1; background: none; color: var(--muted); }
+    .toast { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px 10px 14px; box-shadow: 0 10px 30px -8px rgba(22, 37, 45, .3); font-size: .88rem; animation: slide .2s ease-out; }
+    .toast .head { display: flex; gap: 8px; align-items: center; }
+    .toast .head strong { flex: 1; display: inline-flex; align-items: center; gap: 8px; }
+    .toast .head strong::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--faint); }
+    .toast .meta { font-size: .72rem; color: var(--muted); white-space: nowrap; }
+    .toast .close { border: 0; padding: 0; min-height: 0; width: 24px; height: 24px; background: none; color: var(--muted); border-radius: 50%; }
+    .toast .close:hover { background: var(--surface-3); color: var(--ink); }
     .toast p { margin: 4px 0 0; }
-    .toast.ok { border-left-color: #1f9d6b; } .toast.ok strong { color: var(--ok); }
-    .toast.aviso { border-left-color: #d69500; } .toast.aviso strong { color: var(--warn); }
-    .toast.error { border-left-color: #d23b3b; background: #fffafa; } .toast.error strong { color: var(--error); }
+    .toast.ok strong { color: var(--ok); } .toast.ok strong::before { background: var(--ok-dot); }
+    .toast.aviso strong { color: var(--warn); } .toast.aviso strong::before { background: var(--warn-dot); }
+    .toast.error { background: #fff8f8; } .toast.error strong { color: var(--error); } .toast.error strong::before { background: var(--error-dot); }
     @keyframes slide { from { transform: translateY(12px); opacity: 0; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   </style>
 </head>
 <body>
 <header class="bar" id="bar" aria-label="Estado actual">
   <div class="bar-inner">
     <div class="row">
-      <span class="brand" title="Unidad Remota de Coordinación · protocolo scara/1">SCARA · URC</span>
-      <span class="chip" id="link">Consultando a la URC…</span>
-      <button type="button" class="help" id="link-help-button" aria-expanded="false" aria-controls="link-help" title="Qué es esto">?</button>
+      <span class="brand" title="Unidad Remota de Coordinación · protocolo scara/1">SCARA <small>URC</small></span>
+      <span class="chip" id="link" title="La UCI manda su estado 20 veces por segundo. Más de 0,5 s sin estado: enlace demorado; desde 1 s, el firmware ya frenó solo (watchdog).">Consultando a la URC…</span>
       <span class="chip" id="motors">Motores: —</span>
       <span class="chip" id="reference">Referencia: —</span>
       <span class="chip" id="mode">—</span>
       <a class="chip" id="bench-chip" href="#banco" title="Ir al banco de ensayo" hidden></a>
-      <span class="grow"></span>
-      <button id="stop">Stop <kbd>Esc</kbd></button>
-      <button id="halt" class="danger">Parada inmediata</button>
+      <div class="actions">
+        <button id="stop" title="Frena todo con rampa y conserva la referencia">Stop <kbd>Esc</kbd></button>
+        <button id="halt" class="danger solid" title="Para en seco. Si había movimiento, pierde la referencia">Parada inmediata</button>
+      </div>
     </div>
-    <div class="row message"><span class="label">URC</span><span class="muted" id="message-time"></span><span id="message">Consultando a la URC…</span></div>
-    <p class="help-text" id="link-help" hidden>La UCI (Webots o el Arduino) manda su estado —posición estimada, modo y referencia— 20 veces por segundo. «Actualizado hace» es el tiempo desde el último. Si pasa de 0,5 s, el enlace está demorado; desde 1 s, el firmware ya frenó solo (watchdog) y lo que muestra la página no es la posición actual. F4 del banco de ensayo corta el enlace a propósito.</p>
+    <div class="message"><span class="label">URC</span><time id="message-time"></time><span id="message">Consultando a la URC…</span></div>
   </div>
 </header>
 
 <div class="layout">
 <main>
   <section class="card" aria-label="Motores y referencia">
-    <h2>Motores y referencia</h2>
+    <div class="card-head"><h2>Motores y referencia</h2></div>
     <p class="hint" id="next-step">Consultando a la URC…</p>
-    <div class="row">
-      <button id="enable" data-needs="uci">Habilitar motores</button>
-      <button id="disable" data-needs="uci">Deshabilitar motores…</button>
+    <div class="row" style="margin-top: 12px">
+      <button id="enable" data-needs="apagado">Habilitar motores</button>
+      <button id="disable" data-needs="motores">Deshabilitar motores…</button>
       <span class="sep"></span>
       <button id="home" data-needs="motores">Homing…</button>
-      <button id="zero" data-needs="uci">Referencia manual…</button>
+      <button id="zero" data-needs="motores">Referencia manual…</button>
       <button id="park" data-needs="referencia">Estacionar…</button>
     </div>
-    <p class="muted" id="homing-line" hidden>Homing: <strong id="homing">—</strong></p>
+    <p class="status-line" id="homing-line" hidden>Homing: <strong id="homing">—</strong></p>
     <div id="reference-feedback" class="feedback" role="status" aria-live="polite"></div>
-    <details class="more">
+    <details class="help">
       <summary>Cómo funciona</summary>
-      <p class="muted small">La UCI arranca con los motores sin corriente: habilitalos primero. Sin referencia, el robot no sabe dónde está: solo se permite jog articular lento, que el Hall de cada eje frena como fin de carrera. El homing busca los Hall en orden J4, J1, J2, J3 y después vuelve a la pose de reposo. «Estacionar» lleva el robot referenciado a la pose de reposo.</p>
+      <p>La UCI arranca con los motores sin corriente: habilitalos primero. Sin referencia el robot no sabe dónde está y solo se permite jog articular lento, que el Hall de cada eje frena como fin de carrera.</p>
+      <p>El homing busca los Hall en orden J4, J1, J2, J3 y vuelve a la pose de reposo. «Referencia manual» declara la pose de reposo sin buscar los Hall: es menos precisa. «Estacionar» lleva el robot referenciado a la pose de reposo.</p>
     </details>
   </section>
 
   <dialog id="rest-dialog">
     <h2 id="rest-title">¿El robot está en la pose de reposo?</h2>
-    <p>Brazo estirado: J1 = J2 = J3 = 0° y J4 abajo. Visto desde arriba:</p>
-    <svg viewBox="0 0 320 120" width="320" height="120" role="img" aria-label="Pose de reposo vista desde arriba: brazo y antebrazo alineados hacia adelante desde la torre">
-      <circle cx="40" cy="60" r="26" fill="#d3dfe3" stroke="#49616b"/>
-      <text x="40" y="104" font-size="11" text-anchor="middle" fill="#49616b">torre</text>
+    <p class="muted">Brazo estirado: J1 = J2 = J3 = 0° y J4 abajo. Visto desde arriba:</p>
+    <svg viewBox="0 0 320 120" width="320" height="120" role="img" aria-label="Pose de reposo vista desde arriba: brazo y antebrazo alineados hacia adelante desde la torre" style="display: block; margin: 10px auto 0">
+      <circle cx="40" cy="60" r="26" fill="#dbe3e7" stroke="#5b6e77"/>
+      <text x="40" y="104" font-size="11" text-anchor="middle" fill="#5b6e77">torre</text>
       <rect x="40" y="52" width="120" height="16" rx="8" fill="#c96a55"/>
       <rect x="160" y="54" width="120" height="12" rx="6" fill="#3a7bb0"/>
-      <circle cx="40" cy="60" r="5" fill="#172b36"/><circle cx="160" cy="60" r="5" fill="#172b36"/>
+      <circle cx="40" cy="60" r="5" fill="#16252d"/><circle cx="160" cy="60" r="5" fill="#16252d"/>
       <circle cx="280" cy="60" r="7" fill="#3aa078"/>
-      <text x="100" y="44" font-size="11" text-anchor="middle" fill="#49616b">brazo</text>
-      <text x="220" y="44" font-size="11" text-anchor="middle" fill="#49616b">antebrazo</text>
-      <text x="280" y="90" font-size="11" text-anchor="middle" fill="#49616b">J4 abajo</text>
+      <text x="100" y="44" font-size="11" text-anchor="middle" fill="#5b6e77">brazo</text>
+      <text x="220" y="44" font-size="11" text-anchor="middle" fill="#5b6e77">antebrazo</text>
+      <text x="280" y="90" font-size="11" text-anchor="middle" fill="#5b6e77">J4 abajo</text>
     </svg>
-    <p id="rest-help" class="muted"></p>
+    <p id="rest-help" class="note"></p>
     <div class="row">
-      <button id="rest-confirm">Sí, está en reposo</button>
       <button id="rest-cancel">Cancelar</button>
+      <button id="rest-confirm" class="primary">Sí, está en reposo</button>
     </div>
   </dialog>
 
+  <!-- Confirmación de una orden que mueve el robot o descarta trabajo: reemplaza a confirm(), que congela la página. -->
+  <dialog id="ask-dialog">
+    <form method="dialog">
+      <h2 id="ask-title">Confirmar</h2>
+      <p id="ask-text"></p>
+      <div class="row">
+        <button value="cancel" id="ask-cancel" type="submit" formnovalidate>Cancelar</button>
+        <button value="ok" id="ask-confirm" type="submit" class="primary">Confirmar</button>
+      </div>
+    </form>
+  </dialog>
+
   <section class="card" aria-label="Jog">
-    <div class="row">
-      <h2 id="jog-title" style="margin: 0">Jog articular</h2>
-      <button id="jog-mode" type="button">Cambiar a cartesiano <kbd>Tab</kbd></button>
+    <div class="card-head">
+      <h2 id="jog-title">Jog articular</h2>
+      <div class="seg" role="group" aria-label="Modo de jog">
+        <button type="button" id="jog-articular" class="active">Articular</button>
+        <button type="button" id="jog-cartesiano">Cartesiano <kbd>Tab</kbd></button>
+      </div>
+      <label class="check" title="Jog por motor (M1–M4, sin compensar el acople; no afecta al PTP)"><input type="checkbox" id="by-motor"> Jog por motor (M1–M4)</label>
+      <span class="grow"></span>
       <span class="badge" id="jog-elbow">Codo: —</span>
     </div>
-    <p class="muted small" id="jog-help"></p>
-    <div class="row">
-      <button data-axis="1" data-direction="-"><span></span> <kbd>A</kbd></button>
-      <button data-axis="1" data-direction="+"><span></span> <kbd>D</kbd></button>
-      <button data-axis="2" data-direction="-"><span></span> <kbd>S</kbd></button>
-      <button data-axis="2" data-direction="+"><span></span> <kbd>W</kbd></button>
-      <span class="sep"></span>
-      <button data-axis="3" data-direction="-"><span></span> <kbd>Q</kbd></button>
-      <button data-axis="3" data-direction="+"><span></span> <kbd>E</kbd></button>
-      <button data-axis="4" data-direction="-"><span></span> <kbd>R</kbd></button>
-      <button data-axis="4" data-direction="+"><span></span> <kbd>F</kbd></button>
+    <div class="jog-grid">
+      <div class="jog-pair">
+        <button data-axis="1" data-direction="-"><span></span> <kbd>A</kbd></button>
+        <button data-axis="1" data-direction="+"><span></span> <kbd>D</kbd></button>
+      </div>
+      <div class="jog-pair">
+        <button data-axis="2" data-direction="-"><span></span> <kbd>S</kbd></button>
+        <button data-axis="2" data-direction="+"><span></span> <kbd>W</kbd></button>
+      </div>
+      <div class="jog-pair">
+        <button data-axis="3" data-direction="-"><span></span> <kbd>Q</kbd></button>
+        <button data-axis="3" data-direction="+"><span></span> <kbd>E</kbd></button>
+      </div>
+      <div class="jog-pair">
+        <button data-axis="4" data-direction="-"><span></span> <kbd>R</kbd></button>
+        <button data-axis="4" data-direction="+"><span></span> <kbd>F</kbd></button>
+      </div>
     </div>
-    <div class="row" style="margin-top: 10px">
-      <label><input type="checkbox" id="by-motor"> Jog por motor (M1–M4, sin compensar el acople; no afecta al PTP)</label>
-    </div>
-    <p class="muted small">Mantené la tecla para mover; al soltar, frena. <kbd>Mayús</kbd> da jog lento, <kbd>Tab</kbd> cambia de modo y <kbd>Esc</kbd> frena todo. Con el cursor en un campo de texto, las teclas no mueven el robot.</p>
-    <div id="feedback" role="status" aria-live="polite"></div>
+    <p class="note" id="jog-help" style="margin-top: 10px"></p>
+    <p class="note" style="margin-top: 6px">Mantené la tecla o el botón; al soltar, frena. <kbd>Mayús</kbd> lento · <kbd>Esc</kbd> frena todo. Con el cursor en un campo de texto, las teclas no mueven el robot.</p>
+    <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+    <details class="help">
+      <summary>Cómo funciona</summary>
+      <p><strong>Articular:</strong> cada tecla mueve una articulación sin cambiar las demás. Con referencia va a 10 °/s (10 mm/s en J4) en segmentos que la URC verifica, y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s y solo lo frena el Hall. Con Mayús, a 2 °/s.</p>
+      <p><strong>Cartesiano:</strong> cada tecla mueve el punto de herramienta en X, Y o Z, o gira el rumbo, sin cambiar lo demás. Nunca cambia la configuración del codo: frena antes del brazo estirado, del límite de recorrido o de un choque. Exige referencia.</p>
+      <p><strong>Por motor:</strong> cada tecla mueve un solo motor, sin compensar el acople M1/M2. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo. No cambia «Ir a una pose», que siempre mueve las articulaciones.</p>
+    </details>
   </section>
 
   <section class="card" aria-label="Ir a una pose">
-    <h2>Ir a una pose (PTP)</h2>
-    <p class="muted small">Todas las articulaciones se mueven a la vez y llegan juntas. La URC verifica límites y choques, muestra la duración y pide confirmación. Exige el robot referenciado y quieto.</p>
-    <div class="row">
-      <label><input type="radio" name="ptp-kind" value="joints" checked> Articulaciones</label>
-      <label><input type="radio" name="ptp-kind" value="pose"> Punto de herramienta</label>
+    <div class="card-head">
+      <h2>Ir a una pose (PTP)</h2>
+      <div class="seg" role="group" aria-label="Cómo se escribe la pose">
+        <label><input type="radio" name="ptp-kind" value="joints" checked> Articulaciones</label>
+        <label><input type="radio" name="ptp-kind" value="pose"> Punto de herramienta</label>
+      </div>
+      <span class="grow"></span>
       <button id="ptp-here" type="button" data-needs="estado">Copiar la pose actual</button>
     </div>
     <div class="row fields" id="ptp-joints">
-      <label>J1 (°) <input type="number" step="0.01" value="0"></label>
-      <label>J2 (°) <input type="number" step="0.01" value="0"></label>
-      <label>J3 (°) <input type="number" step="0.01" value="0"></label>
-      <label>J4 (mm) <input type="number" step="0.01" value="120"></label>
+      <label class="field">J1 (°) <input type="number" step="0.01" value="0"></label>
+      <label class="field">J2 (°) <input type="number" step="0.01" value="0"></label>
+      <label class="field">J3 (°) <input type="number" step="0.01" value="0"></label>
+      <label class="field">J4 (mm) <input type="number" step="0.01" value="120"></label>
     </div>
     <div class="row fields" id="ptp-pose" hidden>
-      <label>X (mm) <input type="number" step="0.1" value="500"></label>
-      <label>Y (mm) <input type="number" step="0.1" value="0"></label>
-      <label>Z (mm) <input type="number" step="0.1" value="0"></label>
-      <label>Rumbo (°) <input type="number" step="0.1" value="0"></label>
-      <label>Codo <select id="ptp-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
+      <label class="field">X (mm) <input type="number" step="0.1" value="500"></label>
+      <label class="field">Y (mm) <input type="number" step="0.1" value="0"></label>
+      <label class="field">Z (mm) <input type="number" step="0.1" value="0"></label>
+      <label class="field">Rumbo (°) <input type="number" step="0.1" value="0"></label>
+      <label class="field">Codo <select id="ptp-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
     </div>
-    <div class="row">
-      <label>Velocidad (%) <input id="ptp-speed" type="number" min="1" max="100" step="1" value="25" style="width: 5em"></label>
+    <div class="row fields" style="margin-top: 12px">
+      <label class="field">Velocidad (%) <input id="ptp-speed" type="number" min="1" max="100" step="1" value="25" style="width: 5.5em"></label>
       <button id="ptp-go" class="primary" data-needs="referencia">Ir a la pose…</button>
     </div>
     <p class="blocked" data-blocked="referencia" data-what="Ir a una pose" hidden></p>
-    <p id="tramo" class="muted small"></p>
+    <p id="tramo" class="status-line"></p>
     <div id="ptp-feedback" class="feedback" role="status" aria-live="polite"></div>
+    <details class="help">
+      <summary>Cómo funciona</summary>
+      <p>Todas las articulaciones se mueven a la vez y llegan juntas. La URC verifica límites y choques, muestra la duración y pide confirmación antes de mover. Exige el robot referenciado y quieto.</p>
+    </details>
   </section>
 
   <section class="card" id="trajectory" aria-label="Trayectoria"></section>
+
+  <section class="card" id="playback" aria-label="Reproducción"></section>
 
   <!-- Banco de ensayo (solo simulación, ADR 0004): lo arma banco.js si hay canal de instrumentación. -->
   <section class="card" id="banco" aria-label="Banco de ensayo" hidden></section>
 
   <section class="card" aria-label="Diagnóstico">
-    <details class="diagnostic" id="diagnostic">
-      <summary>Diagnóstico · Tráfico scara/1</summary>
-      <p class="muted small">Las líneas del protocolo serie entre la URC y la UCI, para revisar el enlace o el firmware: no hace falta mirarlas para operar el robot. Sin el estado S (20/s), PING (4/s) ni los SEG y OK de los tramos (50/s). Los ERR y las líneas que la URC no entendió también van al registro de eventos.</p>
-      <p class="muted small" id="firmware"></p>
+    <details class="help" id="diagnostic" style="margin: 0; padding: 0; border: 0">
+      <summary style="font-size: 1rem; color: var(--ink)">Diagnóstico · Tráfico scara/1</summary>
+      <p>Las líneas del protocolo serie entre la URC y la UCI, para revisar el enlace o el firmware: no hace falta mirarlas para operar el robot. Sin el estado S (20/s), PING (4/s) ni los SEG y OK de los tramos (50/s). Los ERR y las líneas que la URC no entendió también van al registro de eventos.</p>
+      <p>La UCI (Webots o el Arduino) manda su estado —posición estimada, modo y referencia— 20 veces por segundo. «Actualizado hace» es el tiempo desde el último. Si pasa de 0,5 s, el enlace está demorado; desde 1 s, el firmware ya frenó solo (watchdog) y lo que muestra la página no es la posición actual. F4 del banco de ensayo corta el enlace a propósito.</p>
+      <p id="firmware"></p>
       <pre id="traffic"></pre>
     </details>
   </section>
@@ -257,24 +391,29 @@
 
 <aside class="side">
   <section class="card" aria-label="Posición estimada por pasos">
-    <h2>Posición estimada por pasos</h2>
-    <table class="pos">
+    <div class="card-head"><h2>Posición estimada por pasos</h2></div>
+    <div class="scroll"><table class="pos">
       <thead><tr><th>Art.</th><th>Estimada</th><th class="sim" hidden title="Posición física del simulador (banco de ensayo)">Simulado</th><th class="sim" hidden title="Simulado − estimada">Diferencia</th><th>Hall</th></tr></thead>
       <tbody id="joints"></tbody>
-    </table>
-    <p class="small">Herramienta: <strong id="tool">—</strong></p>
-    <p class="small">Rumbo (J1 + J2 + J3): <strong id="heading">—</strong> · Codo: <strong id="elbow">—</strong></p>
-    <p class="small muted sim" hidden>«Simulado»: la posición física del simulador, que el robot real no conoce (banco de ensayo).</p>
+    </table></div>
+    <dl class="tool" aria-label="Punto de herramienta">
+      <div><dt>X</dt><dd id="tool-x">—</dd></div>
+      <div><dt>Y</dt><dd id="tool-y">—</dd></div>
+      <div><dt>Z</dt><dd id="tool-z">—</dd></div>
+      <div><dt title="J1 + J2 + J3">Rumbo</dt><dd id="heading">—</dd></div>
+    </dl>
+    <p class="tool-meta">Codo: <strong id="elbow">—</strong></p>
+    <p class="tool-meta sim" hidden>«Simulado» es la posición física del simulador, que el robot real no conoce.</p>
   </section>
   <section class="card log" aria-label="Registro de eventos">
-    <div class="row">
-      <h2 style="margin: 0" title="Lo que informa la UCI, lo que hace la URC y las órdenes, con número y hora; el más nuevo arriba">Registro de eventos</h2>
+    <div class="card-head" style="margin-bottom: 0">
+      <h2 title="Lo que informa la UCI, lo que hace la URC y las órdenes, con número y hora; el más nuevo arriba">Registro de eventos</h2>
       <span class="badge" id="events-count"></span>
       <span class="grow"></span>
-      <label class="small"><input type="checkbox" id="events-important"> Solo avisos y errores</label>
+      <label class="check small"><input type="checkbox" id="events-important"> Solo avisos y errores</label>
     </div>
     <ol class="events" id="events" aria-live="off"></ol>
-    <p class="muted small" id="events-empty">Todavía no hay eventos.</p>
+    <p class="note" id="events-empty" style="margin-top: 10px">Todavía no hay eventos.</p>
   </section>
 </aside>
 </div>
@@ -309,6 +448,8 @@ const LABELS = {
   cartesiano: { "1-": "Y −", "1+": "Y +", "2-": "X −", "2+": "X +", "3-": "Rumbo −", "3+": "Rumbo +", "4-": "Z sube", "4+": "Z baja" },
 };
 const ELBOWS = { negativo: "J2 negativo", positivo: "J2 positivo", estirado: "brazo estirado (el jog cartesiano toma J2 negativo)" };
+
+const $ = (id) => document.getElementById(id);
 
 function format(joint, value) {
   return joint === 3 ? `${(value / 100).toFixed(2)} mm` : `${(value / 100).toFixed(2)}°`;
@@ -351,13 +492,35 @@ function showError(element, error) {
 
 function show(error) {
   const text = error && error.name === "TimeoutError" ? "La URC no responde" : error && error.message;
-  document.getElementById("feedback").textContent = text || "";
+  $("feedback").textContent = text || "";
 }
 
-// Lo que falta para una orden, o null (D78): need es uci, estado, motores,
-// referencia o seguro (referencia sin pérdida de pasos, para reproducir).
-// Los botones con data-needs quedan deshabilitados y la página dice por
-// qué; la URC igual lo verifica.
+// Pregunta antes de una orden que mueve el robot o descarta trabajo. Es un
+// diálogo de la página, no confirm(): confirm() congela la página y el jog.
+// Devuelve true si el operador confirmó.
+const askDialog = $("ask-dialog");
+function ask(text, { title = "Confirmar", confirm = "Confirmar", cancel = "Cancelar", danger = false } = {}) {
+  stopJog();
+  $("ask-title").textContent = title;
+  $("ask-text").textContent = text;
+  const button = $("ask-confirm");
+  button.textContent = confirm;
+  button.classList.toggle("danger", danger);
+  button.classList.toggle("primary", !danger);
+  $("ask-cancel").textContent = cancel;
+  askDialog.returnValue = "";
+  askDialog.showModal();
+  button.focus();
+  return new Promise((resolve) => {
+    askDialog.addEventListener("close", () => resolve(askDialog.returnValue === "ok"), { once: true });
+  });
+}
+const dialogOpen = () => document.querySelector("dialog[open]") !== null;
+
+// Lo que falta para una orden, o null (D78): need es uci, estado, apagado,
+// motores, referencia o seguro (referencia sin pérdida de pasos, para
+// reproducir). Los botones con data-needs quedan deshabilitados y la página
+// dice por qué; la URC igual lo verifica.
 function missing(need, state = urcState) {
   if (!state) return "La URC no responde";
   if (!state.connected) return "No hay una UCI conectada";
@@ -365,6 +528,7 @@ function missing(need, state = urcState) {
   const status = state.status;
   if (!status) return "Todavía no llegó el estado de la UCI";
   if (need === "estado") return null;
+  if (need === "apagado") return status.mode === "OFF" ? null : "Los motores ya tienen corriente";
   if (status.mode === "OFF") return "Los motores están sin corriente; habilitalos primero";
   if (need === "motores") return null;
   if (!state.referenced) return "Sin referencia; hacé homing o referencia manual";
@@ -390,7 +554,7 @@ function applyNeeds() {
 }
 const lower = (text) => text[0].toLowerCase() + text.slice(1);
 
-const byMotor = document.getElementById("by-motor");
+const byMotor = $("by-motor");
 
 function jogButton(joint, direction) {
   return document.querySelector(`[data-axis="${joint}"][data-direction="${direction}"]`);
@@ -430,28 +594,33 @@ function renderJog() {
     button.disabled = cartesian && !referenced;
   }
   byMotor.disabled = cartesian;
-  document.getElementById("jog-title").textContent = cartesian ? "Jog cartesiano" : motor ? "Jog por motor" : "Jog articular";
-  document.getElementById("jog-mode").firstChild.textContent = `Cambiar a ${cartesian ? "articular" : "cartesiano"} `;
-  document.getElementById("jog-help").textContent = cartesian
-    ? (referenced
-      ? "Cada tecla mueve el punto de herramienta en X, Y o Z, o gira el rumbo, sin cambiar lo demás. Nunca cambia la configuración del codo: frena antes del brazo estirado, del límite de recorrido o de un choque. Con Mayús, lento."
-      : "Sin referencia, el jog cartesiano está deshabilitado: la URC no sabe dónde está el robot. Usá el jog articular, o hacé homing.")
-    : motor
-      ? "Cada tecla mueve un solo motor. M1 solo gira el brazo y el antebrazo conserva su orientación: cambian J1 y J2, no el rumbo. No cambia «Ir a una pose», que siempre mueve las articulaciones."
-      : "Cada tecla mueve una articulación sin cambiar las demás. Con referencia va a 10 °/s (10 mm/s en J4) en segmentos que la URC verifica, y frena antes del límite de recorrido o de un choque; sin referencia, a 5 °/s, y solo lo frena el Hall. Con Mayús, a 2 °/s.";
+  $("jog-articular").classList.toggle("active", !cartesian);
+  $("jog-cartesiano").classList.toggle("active", cartesian);
+  $("jog-title").textContent = cartesian ? "Jog cartesiano" : motor ? "Jog por motor" : "Jog articular";
+  const help = $("jog-help");
+  help.textContent = cartesian && !referenced
+    ? "Sin referencia, el jog cartesiano está deshabilitado: la URC no sabe dónde está el robot. Usá el jog articular o hacé homing."
+    : cartesian ? "Mueve el punto de herramienta en X, Y o Z, o gira el rumbo. No cambia el codo: frena antes del brazo estirado, del límite o de un choque."
+    : motor ? "Mueve un solo motor, sin compensar el acople M1/M2: con M1 cambian J1 y J2 y el rumbo se conserva."
+    : "";
+  help.hidden = help.textContent === "";
+  help.className = cartesian && !referenced ? "blocked" : "note";
 }
 
-function toggleJogMode() {
+function setJogMode(mode) {
+  if (mode === jogMode) return;
   stopJog();
-  jogMode = jogMode === "articular" ? "cartesiano" : "articular";
+  jogMode = mode;
   renderJog();
 }
+const toggleJogMode = () => setJogMode(jogMode === "articular" ? "cartesiano" : "articular");
 
 byMotor.addEventListener("change", () => {
   stopJog();
   renderJog();
 });
-document.getElementById("jog-mode").addEventListener("click", toggleJogMode);
+$("jog-articular").addEventListener("click", () => setJogMode("articular"));
+$("jog-cartesiano").addEventListener("click", () => setJogMode("cartesiano"));
 
 // Stop, Parada inmediata y Deshabilitar cortan el jog de la página (si no, el
 // próximo pedido lo reanuda) sin enviar antes JOG STOP: la orden misma frena
@@ -465,13 +634,14 @@ function order(path) {
 let heldKey = null;  // la tecla de jog apretada, para retomarla al cambiar Mayús
 document.addEventListener("keydown", (event) => {
   if (event.code === "Escape") {
-    event.preventDefault();
+    // Con un diálogo abierto, Esc también lo cierra.
+    if (!dialogOpen()) event.preventDefault();
     order("/api/stop");
     return;
   }
-  // Escribiendo una pose o un nombre, las letras no mueven el robot.
+  // Escribiendo una pose o un nombre, o con un diálogo abierto, las letras no mueven el robot.
   const typing = event.target.closest && event.target.closest("input:not([type=checkbox]):not([type=radio]), select, textarea");
-  if (typing || event.ctrlKey || event.metaKey || event.altKey) return;
+  if (typing || dialogOpen() || event.ctrlKey || event.metaKey || event.altKey) return;
   if (event.code === "Tab") {
     event.preventDefault();
     if (!event.repeat) toggleJogMode();
@@ -512,43 +682,43 @@ for (const button of document.querySelectorAll("[data-axis]")) {
 renderJog();
 // Motores y referencia: el resultado de cada botón queda debajo de ellos.
 const referenceFeedback = (error) => {
-  document.getElementById("reference-feedback").textContent = error ? error.message : "";
+  $("reference-feedback").textContent = error ? error.message : "";
 };
-document.getElementById("enable").addEventListener("click", () => post("/api/enable").then(() => referenceFeedback(null), referenceFeedback));
-document.getElementById("stop").addEventListener("click", () => order("/api/stop"));
-document.getElementById("halt").addEventListener("click", () => order("/api/halt"));
-document.getElementById("disable").addEventListener("click", () => {
-  if (!confirm("Sin corriente, J4 cae y la referencia se pierde. ¿Deshabilitar los motores?")) return;
+$("enable").addEventListener("click", () => post("/api/enable").then(() => referenceFeedback(null), referenceFeedback));
+$("stop").addEventListener("click", () => order("/api/stop"));
+$("halt").addEventListener("click", () => order("/api/halt"));
+$("disable").addEventListener("click", async () => {
+  if (!await ask("Sin corriente, J4 cae y la referencia se pierde.",
+    { title: "¿Deshabilitar los motores?", confirm: "Deshabilitar", danger: true })) return;
   stopJog(false);
   post("/api/disable").then(() => referenceFeedback(null), referenceFeedback);
 });
 // Homing y referencia manual parten de la pose de reposo (D30): la página la
 // dibuja y pide confirmarla. Sin referencia, nadie verifica choques.
-const restDialog = document.getElementById("rest-dialog");
+const restDialog = $("rest-dialog");
 let restAction = null;
 function askRest(title, help, path) {
   stopJog();
-  document.getElementById("rest-title").textContent = title;
-  document.getElementById("rest-help").textContent = help;
+  $("rest-title").textContent = title;
+  $("rest-help").textContent = help;
   restAction = path;
   restDialog.showModal();
 }
-document.getElementById("rest-confirm").addEventListener("click", () => {
+$("rest-confirm").addEventListener("click", () => {
   restDialog.close();
   post(restAction).then(() => referenceFeedback(null), referenceFeedback);
 });
-document.getElementById("rest-cancel").addEventListener("click", () => restDialog.close());
-document.getElementById("home").addEventListener("click", () => askRest(
+$("rest-cancel").addEventListener("click", () => restDialog.close());
+$("home").addEventListener("click", () => askRest(
   "Homing: ¿el robot está en la pose de reposo?",
   "Si no lo está, cancelá y llevalo con jog articular. El homing sube J4 y busca J1, J2 y J3 en su extremo negativo; al terminar, vuelve a esta pose.",
   "/api/home"));
-document.getElementById("zero").addEventListener("click", () => askRest(
+$("zero").addEventListener("click", () => askRest(
   "Referencia manual: ¿el robot está exactamente en la pose de reposo?",
   "Se declara esta pose como referencia, por las marcas visuales. Es menos precisa que el homing.",
   "/api/zero"));
-document.getElementById("park").addEventListener("click", () => {
-  stopJog();
-  if (confirm("¿Estacionar? El robot va a la pose de reposo con un tramo PTP al 100 %.")) {
+$("park").addEventListener("click", async () => {
+  if (await ask("El robot va a la pose de reposo con un tramo PTP al 100 %.", { title: "¿Estacionar?", confirm: "Estacionar" })) {
     post("/api/park").then(() => referenceFeedback(null), referenceFeedback);
   }
 });
@@ -567,12 +737,12 @@ const values = (id) => [...document.querySelectorAll(`#${id} input`)].map((input
   if (input.value.trim() === "") throw new Error(`Falta ${input.parentElement.textContent.trim()}`);
   return Number(input.value);
 });
-const ptpFeedback = (text) => { document.getElementById("ptp-feedback").textContent = text || ""; };
+const ptpFeedback = (text) => { $("ptp-feedback").textContent = text || ""; };
 
 for (const radio of document.querySelectorAll("input[name=ptp-kind]")) {
   radio.addEventListener("change", () => {
-    document.getElementById("ptp-joints").hidden = ptpKind() !== "joints";
-    document.getElementById("ptp-pose").hidden = ptpKind() !== "pose";
+    $("ptp-joints").hidden = ptpKind() !== "joints";
+    $("ptp-pose").hidden = ptpKind() !== "pose";
   });
 }
 // Copia la pose actual en los campos del modo elegido (prefijo ptp o tr).
@@ -585,7 +755,7 @@ function copyHere(prefix, kind) {
     const inputs = document.querySelectorAll(`#${prefix}-pose input`);
     [lastTool.x, lastTool.y, lastTool.z, lastTool.heading / 100].forEach((value, i) => { inputs[i].value = value.toFixed(2); });
     // Con el brazo estirado queda el codo preferido.
-    document.getElementById(`${prefix}-elbow`).value = lastElbow === "positivo" ? "1" : "-1";
+    $(`${prefix}-elbow`).value = lastElbow === "positivo" ? "1" : "-1";
     return null;
   }
   const inputs = document.querySelectorAll(`#${prefix}-joints input`);
@@ -598,21 +768,21 @@ function copyHere(prefix, kind) {
   });
   return clipped.length ? `Fuera del recorrido, se copió recortado: ${clipped.join(", ")}.` : null;
 }
-document.getElementById("ptp-here").addEventListener("click", () => {
+$("ptp-here").addEventListener("click", () => {
   try {
     ptpFeedback(copyHere("ptp", ptpKind()));
   } catch (error) {
     ptpFeedback(error.message);
   }
 });
-document.getElementById("ptp-go").addEventListener("click", async () => {
-  const request = { speed: Number(document.getElementById("ptp-speed").value) };
+$("ptp-go").addEventListener("click", async () => {
+  const request = { speed: Number($("ptp-speed").value) };
   try {
     if (ptpKind() === "joints") {
       request.joints = values("ptp-joints");
     } else {
       const [x, y, z, heading] = values("ptp-pose");
-      request.pose = { x, y, z, heading, elbow: Number(document.getElementById("ptp-elbow").value) };
+      request.pose = { x, y, z, heading, elbow: Number($("ptp-elbow").value) };
     }
     const plan = await post("/api/ptp", request);
     const target = plan.target.map((value, joint) => format(joint, value)).join(", ");
@@ -620,11 +790,13 @@ document.getElementById("ptp-go").addEventListener("click", async () => {
       ptpFeedback("El robot ya está en esa pose.");
       return;
     }
-    if (!confirm(`PTP a ${target} al ${request.speed} %: ${plan.duration_s.toFixed(2)} s en ${plan.segments} segmentos. ¿Mover el robot?`)) return;
+    const ok = await ask(`Destino: ${target}, al ${request.speed} %. Tarda ${plan.duration_s.toFixed(2)} s en ${plan.segments} segmentos.`,
+      { title: "¿Mover el robot?", confirm: "Mover" });
+    if (!ok) return;
     await post("/api/ptp", { ...request, confirm: true });
     ptpFeedback(null);
   } catch (error) {
-    showError(document.getElementById("ptp-feedback"), error);
+    showError($("ptp-feedback"), error);
   }
 });
 
@@ -637,7 +809,6 @@ function tramoText(tramo) {
 
 // --- Barra de estado y posición --------------------------------------------
 
-const $ = (id) => document.getElementById(id);
 // Escribe solo si cambió: así el polling no rehace el DOM cinco veces por segundo.
 function put(element, text, className = null) {
   if (element.textContent !== text) element.textContent = text;
@@ -708,16 +879,17 @@ function renderBar(state) {
     ? new Date(state.message_time * 1000).toLocaleTimeString("es-AR", { hour12: false }) : "");
 }
 
-// El próximo paso para dejar el robot listo, en el panel de motores y referencia.
+// El próximo paso para dejar el robot listo, en el panel de motores y
+// referencia, y el botón que lo da, que se destaca como principal.
 function nextStep(state) {
-  if (!state) return ["La URC no responde: revisá la terminal donde corre la URC.", "hint error"];
-  if (!state.connected) return ["Esperando a la UCI: abrí el mundo de Webots o conectá el Arduino.", "hint warn"];
+  if (!state) return ["La URC no responde: revisá la terminal donde corre la URC.", "hint error", null];
+  if (!state.connected) return ["Esperando a la UCI: abrí el mundo de Webots o conectá el Arduino.", "hint warn", null];
   const status = state.status;
-  if (!status) return ["UCI conectada: esperando su estado.", "hint warn"];
-  if (status.mode === "OFF") return ["Los motores están sin corriente: «Habilitar motores».", "hint warn"];
-  if (state.doubtful.length) return [`${missing("seguro", state)}. Hasta entonces no se puede reproducir.`, "hint error"];
-  if (!state.referenced) return ["Sin referencia: solo jog articular lento. Hacé «Homing…» (o «Referencia manual…»).", "hint warn"];
-  return ["Listo: motores con corriente y robot referenciado.", "hint"];
+  if (!status) return ["UCI conectada: esperando su estado.", "hint warn", null];
+  if (status.mode === "OFF") return ["Los motores están sin corriente: «Habilitar motores».", "hint warn", "enable"];
+  if (state.doubtful.length) return [`${missing("seguro", state)}. Hasta entonces no se puede reproducir.`, "hint error", "home"];
+  if (!state.referenced) return ["Sin referencia: solo jog articular lento. Hacé «Homing…» (o «Referencia manual…»).", "hint warn", "home"];
+  return ["Listo: motores con corriente y robot referenciado.", "hint", null];
 }
 
 function renderPosition(state) {
@@ -751,10 +923,13 @@ function renderPosition(state) {
   });
   put($("heading"), status ? format(0, status.position[0] + status.position[1] + status.position[2]) : "—");
   const tool = state && state.connected ? state.tool : null;
-  put($("tool"), tool ? `X ${tool.x.toFixed(1)} · Y ${tool.y.toFixed(1)} · Z ${tool.z.toFixed(1)} mm` : "—");
+  put($("tool-x"), tool ? `${tool.x.toFixed(1)} mm` : "—");
+  put($("tool-y"), tool ? `${tool.y.toFixed(1)} mm` : "—");
+  put($("tool-z"), tool ? `${tool.z.toFixed(1)} mm` : "—");
   const elbow = state && state.connected && state.elbow ? ELBOWS[state.elbow] : "—";
   put($("elbow"), elbow.replace(/ \(.*\)$/, ""));
-  put($("jog-elbow"), `Codo: ${elbow}`);
+  put($("jog-elbow"), `Codo: ${elbow.replace(/ \(.*\)$/, "")}`);
+  $("jog-elbow").title = elbow;
 }
 
 function renderDiagnostic(state) {
@@ -769,11 +944,6 @@ function renderDiagnostic(state) {
 new ResizeObserver(([entry]) => {
   document.documentElement.style.setProperty("--bar-height", `${entry.target.offsetHeight}px`);
 }).observe($("bar"));
-$("link-help-button").addEventListener("click", (event) => {
-  const help = $("link-help");
-  help.hidden = !help.hidden;
-  event.currentTarget.setAttribute("aria-expanded", String(!help.hidden));
-});
 
 async function refresh() {
   let state = null;
@@ -799,7 +969,9 @@ async function refresh() {
     renderJog();
   }
   renderBar(state);
-  put($("next-step"), ...nextStep(state));
+  const [text, className, suggested] = nextStep(state);
+  put($("next-step"), text, className);
+  for (const id of ["enable", "home"]) $(id).classList.toggle("primary", id === suggested);
   put($("homing"), homingText(state && state.homing));
   $("homing-line").hidden = !(state && state.homing);
   put($("tramo"), tramoText(state && state.tramo));
