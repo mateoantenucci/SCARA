@@ -36,6 +36,9 @@ TOOL_SPEED = (15000, 9000)
 TOOL_ACCELERATION = (30000, 14000)
 # Grados o metros del modelo → unidades de scara/1.
 SCALE = (100 * 180 / math.pi,) * 3 + (100 * 1000,)
+# Media centésima de mm, en metros: un punto de herramienta redondeado al
+# micrón puede dejar una articulación apenas fuera de su límite (D88).
+POSE_SLACK = 0.5 / 100 / 1000
 
 
 @dataclass(frozen=True)
@@ -298,7 +301,8 @@ def joints_from_pose(x, y, z, heading, elbow=-1, config=None, current=None):
         raise ValueError("X, Y, Z y rumbo tienen que ser números")
     if current is not None:
         current = units_to_si(check_units(current, "Pose de referencia"))
-    q = inverse(x / 1000, y / 1000, z / 1000, math.radians(heading), current=current, elbow=elbow, config=config)
+    q = inverse(x / 1000, y / 1000, z / 1000, math.radians(heading), current=current, elbow=elbow, config=config,
+                slack=POSE_SLACK)
     return si_to_units(q)
 
 

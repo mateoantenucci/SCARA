@@ -754,8 +754,9 @@ function copyHere(prefix, kind) {
   if (kind === "pose") {
     const inputs = document.querySelectorAll(`#${prefix}-pose input`);
     [lastTool.x, lastTool.y, lastTool.z, lastTool.heading / 100].forEach((value, i) => { inputs[i].value = value.toFixed(2); });
-    // Con el brazo estirado queda el codo preferido.
-    $(`${prefix}-elbow`).value = lastElbow === "positivo" ? "1" : "-1";
+    // Con el brazo estirado queda el codo preferido. Los puntos de trayectoria no eligen codo (D88).
+    const elbow = $(`${prefix}-elbow`);
+    if (elbow) elbow.value = lastElbow === "positivo" ? "1" : "-1";
     return null;
   }
   const inputs = document.querySelectorAll(`#${prefix}-joints input`);

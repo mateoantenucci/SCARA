@@ -82,17 +82,18 @@ class TrajectoryHttpTests(unittest.TestCase):
         # Cada tramo nace LIN, al 50 % y sin espera (D22), y muestra XYZ, rumbo y codo.
         second = trajectory["points"][1]
         self.assertEqual((second["kind"], second["speed"], second["wait"]), ("LIN", 50, 0))
-        self.assertEqual(second["tool"], {"x": 433.01, "y": 0.0, "z": 34.67, "heading": -20.0})
+        self.assertEqual(second["tool"], {"x": 433.013, "y": 0.0, "z": 34.667, "heading": -20.0})
         self.assertEqual([p["elbow"] for p in trajectory["points"]], [0, -1, -1])
         # Enter: el operador le pone nombre y la guarda.
         saved = self.post("guardar", {"name": "Demostración 1"})
         self.assertEqual((saved["name"], saved["file"], saved["dirty"]), ("Demostración 1", "demostracion-1.json", False))
         document = json.loads((self.folder / "demostracion-1.json").read_text(encoding="utf-8"))
         self.assertEqual((document["format"], document["version"], document["name"]),
-                         ("scara-trayectoria", 1, "Demostración 1"))
+                         ("scara-trayectoria", 2, "Demostración 1"))
         self.assertIn("saved", document)
-        self.assertIn("joints", document["units"])
-        self.assertEqual(document["points"][1]["joints"], [3000, -6000, 1000, 6000])
+        # Se guarda el punto de herramienta, no las articulaciones ni el codo (D88).
+        self.assertNotIn("joints", document["units"])
+        self.assertEqual(document["points"][1], {"tool": second["tool"], "kind": "LIN", "speed": 50, "wait": 0})
         # Cerrar (nueva) y volver a cargar: la misma trayectoria.
         empty = self.post("nueva")
         self.assertEqual((empty["points"], empty["name"], empty["file"]), ([], None, None))
@@ -139,28 +140,32 @@ class TrajectoryHttpTests(unittest.TestCase):
 
     # --- Puntos escritos a mano ------------------------------------------
 
-    def test_a_point_written_in_xyz_uses_the_preferred_elbow(self):
+    def test_a_point_written_in_xyz_starts_with_the_preferred_elbow(self):
         trajectory = self.post("punto", {"pose": {"x": 433.0, "y": 0.0, "z": 34.7, "heading": -20}})
         for got, want in zip(trajectory["points"][0]["joints"], (3000, -6000, 1000, 6000)):
             self.assertAlmostEqual(got, want, delta=5)
-        trajectory = self.post("punto", {"pose": {"x": 433.0, "y": 0.0, "z": 34.7, "heading": -20, "elbow": 1},
-                                         "after": 0})
-        self.assertEqual(trajectory["points"][1]["elbow"], 1)
-        self.assertGreater(trajectory["points"][1]["joints"][1], 0)
-        trajectory = self.post("punto", {"joints": [10, -20, 30, 40], "after": 1})
-        self.assertEqual(trajectory["points"][2]["joints"], [1000, -2000, 3000, 4000])
-        self.assertEqual(trajectory["selected"], 2)
+        self.assertIn("codo", self.post("punto", {"pose": {"x": 433.0, "y": 0.0, "z": 34.7, "heading": -20,
+                                                           "elbow": 1}}, expect=400)["error"])
+        trajectory = self.post("punto", {"joints": [10, -20, 30, 40], "after": 0})
+        self.assertEqual(trajectory["points"][1]["joints"], [1000, -2000, 3000, 4000])
+        self.assertEqual(trajectory["points"][1]["tool"]["heading"], 20.0)
+        self.assertEqual(trajectory["selected"], 1)
 
-    def test_an_edited_point_keeps_its_elbow(self):
-        self.post("punto", {"joints": [-30, 60, -50, 60]})
-        trajectory = self.post("editar", {"index": 0, "pose": {"x": 420.0, "y": 50.0, "z": 34.7, "heading": -20}})
-        point = trajectory["points"][0]
-        self.assertEqual(point["elbow"], 1)
-        self.assertAlmostEqual(point["tool"]["x"], 420.0, delta=0.1)
-        self.assertAlmostEqual(point["tool"]["y"], 50.0, delta=0.1)
-        # Por articulaciones se puede cambiar todo, también el codo.
-        trajectory = self.post("editar", {"index": 0, "joints": [30, -60, 10, 60]})
-        self.assertEqual(trajectory["points"][0]["elbow"], -1)
+    def test_each_point_keeps_the_elbow_of_the_previous_one_while_it_reaches(self):
+        # Escrito con el codo positivo, se guarda en XYZ y llega con el preferido (D88).
+        trajectory = self.post("punto", {"joints": [-30, 60, -50, 60]})
+        self.assertEqual(trajectory["points"][0]["joints"], [3000, -6000, 1000, 6000])
+        # Con el negativo, J1 pasaría de 135°: solo se alcanza con el positivo.
+        trajectory = self.post("punto", {"joints": [130, 60, 0, 30]})
+        self.assertEqual(trajectory["points"][1]["elbow"], 1)
+        # El siguiente mantiene el positivo aunque también llegue con el negativo.
+        trajectory = self.post("punto", {"pose": {"x": 420.0, "y": 50.0, "z": 34.7, "heading": -20}})
+        self.assertEqual([p["elbow"] for p in trajectory["points"]], [-1, 1, 1])
+        # Al borrar el del medio, el último vuelve al codo del primero.
+        trajectory = self.post("borrar", {"index": 1})
+        self.assertEqual([p["elbow"] for p in trajectory["points"]], [-1, -1])
+        point = trajectory["points"][1]
+        self.assertEqual((point["tool"]["x"], point["tool"]["y"]), (420.0, 50.0))
 
     def test_written_points_are_validated(self):
         cases = (
@@ -168,7 +173,8 @@ class TrajectoryHttpTests(unittest.TestCase):
             ({"joints": [0, 140, 0, 120]}, "J2 fuera de su recorrido"),
             ({"joints": [0, 135, 0, 0]}, "colisión"),
             ({"joints": [0, 0, 0]}, "J1–J4"),
-            ({"pose": {"x": 433, "y": 0, "z": 34.7, "heading": -20, "elbow": 0}}, "codo"),
+            ({"pose": {"x": 433, "y": 0, "z": 34.7}}, "rumbo"),
+            ({"pose": {"x": 433, "y": 0, "z": 34.7, "heading": "-20"}}, "números"),
             ({}, "joints"),
         )
         for request, message in cases:
@@ -268,7 +274,6 @@ class TrajectoryHttpTests(unittest.TestCase):
         self.post("guardar", {"name": "buena"})
         good = json.loads((self.folder / "buena.json").read_text(encoding="utf-8"))
         point = good["points"][0]
-        bare = {key: value for key, value in point.items() if key != "tool"}
 
         def variant(points=None, **fields):
             return dict(good, points=points if points is not None else good["points"], **fields)
@@ -277,18 +282,18 @@ class TrajectoryHttpTests(unittest.TestCase):
             "roto.json": ("{", "JSON"),
             "lista.json": ("[]", "objeto"),
             "formato.json": (variant(format="otra-cosa"), "formato"),
-            "version.json": (variant(version=2), "versión 2"),
+            "version.json": (variant(version=3), "versión 3"),
             "unidades.json": (variant(units={"joints": "grados"}), "unidades"),
             "sin-puntos.json": (variant(points=[]), "puntos"),
-            "limite.json": (variant(points=[point, dict(bare, joints=[0, 14000, 0, 12000])]),
-                            "Punto 2: J2 fuera de su recorrido"),
-            "choque.json": (variant(points=[point, point, dict(bare, joints=[0, 13500, 0, 0])]),
+            "alcance.json": (variant(points=[point, dict(point, tool=dict(point["tool"], x=900.0))]),
+                             "Punto 2: fuera de alcance"),
+            "choque.json": (variant(points=[point, point, dict(point, tool={"x": 73.223, "y": 176.777, "z": 94.667,
+                                                                            "heading": 135.0})]),
                             "Punto 3: colisión"),
             "tipo.json": (variant(points=[dict(point, kind="lin")]), "Punto 1"),
             "falta.json": (variant(points=[{k: v for k, v in point.items() if k != "speed"}]), "Punto 1"),
             "sobra.json": (variant(points=[dict(point, velocidad=50)]), "velocidad"),
-            "xyz.json": (variant(points=[dict(point, tool=dict(point["tool"], x=100.0))]),
-                         "Punto 1: X, Y, Z y rumbo no coinciden"),
+            "sin-rumbo.json": (variant(points=[dict(point, tool={"x": 0, "y": 0, "z": 0})]), "Punto 1: pose"),
             "nombre.json": (variant(name=""), "nombre"),
         }
         for file, (document, message) in cases.items():
@@ -298,9 +303,20 @@ class TrajectoryHttpTests(unittest.TestCase):
         # El rechazo no toca la trayectoria abierta.
         status, trajectory = self.request("GET", "/api/trayectoria")
         self.assertEqual((trajectory["name"], len(trajectory["points"])), ("buena", 1))
-        # Sin XYZ derivados se aceptan: mandan las articulaciones (D13).
-        self.write("sin-xyz.json", variant(points=[bare]))
-        self.assertEqual(self.post("cargar", {"file": "sin-xyz.json"})["points"], trajectory["points"])
+
+    def test_a_version_1_file_loads_and_its_elbow_is_dropped(self):
+        # La versión 1 guardaba las articulaciones; mandaban ellas y los XYZ escritos se ignoraban (D88).
+        units = {"joints": "centésimas de grado (J1–J3) y de mm (J4)", "tool": "mm (x, y, z) y grados (rumbo)",
+                 "speed": "% de la velocidad máxima", "wait": "s"}
+        old = {"format": "scara-trayectoria", "version": 1, "name": "vieja", "units": units,
+               "points": [{"joints": [-3000, 6000, -5000, 6000], "tool": {"x": 1, "y": 2, "z": 3, "heading": 4},
+                           "kind": "PTP", "speed": 30, "wait": 0}]}
+        self.write("vieja.json", old)
+        point = self.post("cargar", {"file": "vieja.json"})["points"][0]
+        self.assertEqual((point["joints"], point["elbow"], point["kind"]), ([3000, -6000, 1000, 6000], -1, "PTP"))
+        self.write("limite.json", dict(old, points=[dict(old["points"][0], joints=[0, 14000, 0, 12000])]))
+        self.assertIn("Punto 1: J2 fuera de su recorrido", self.post("cargar", {"file": "limite.json"},
+                                                                     expect=400)["error"])
 
     def test_only_trajectory_files_of_its_folder_can_be_loaded(self):
         for file in ("../buena.json", "no-existe.json", "a/b.json", "c:x.json", ".json", 3):

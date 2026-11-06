@@ -83,7 +83,8 @@ def _suggestion(reason, kind, hint, place, names):
     point = f"el punto {place.point}" if place and place.point else None
     ptp = f"Cambiá {point} a PTP." if point else "Usá un tramo PTP."
     if reason == "codo":
-        return ptp, f"También podés grabar {names['target']} con J2 {hint}, del mismo lado que {names['origin']}."
+        return ptp, ("La URC mantiene el codo de un punto al siguiente mientras llega; cambiarlo de lado solo "
+                     "se puede con un PTP (D88).")
     if reason == "alcance":
         return ptp, "También podés agregar un punto intermedio para que la recta pase más lejos."
     if reason == "limite":
@@ -152,8 +153,7 @@ def check_lin(start, target, speed=1.0, tramo=None, limits=None, config=None, ch
         raise Rejection("codo", "el codo cambia de lado",
                         f"En {{origin}}, J2 = {start[1] / 100:g}°, y en {{target}}, J2 = {target[1] / 100:g}°: el "
                         "codo está de lados opuestos. Para pasar de uno al otro el brazo tiene que estirarse del "
-                        "todo (J2 = 0°), y ahí ninguna recta se puede seguir: es una singularidad.", tramo=tramo,
-                        hint="negativo" if start[1] < 0 else "positivo")
+                        "todo (J2 = 0°), y ahí ninguna recta se puede seguir: es una singularidad.", tramo=tramo)
     _check_reach(start, target, config, tramo)
     plan = planner.plan_lin(start, target, speed, limits, config)
     count = len(plan.segments)

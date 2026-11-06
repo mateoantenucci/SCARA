@@ -1,16 +1,17 @@
-"""Gestor de trayectorias de la URC (D13, D22, D29, D34).
+"""Gestor de trayectorias de la URC (D13, D22, D29, D34, D88).
 
 La URC guarda la trayectoria que se está editando: la página solo la
 muestra y pide cambios por HTTP (urc/app.py delega acá las rutas
-/api/trayectoria*). Cada punto de trayectoria es una configuración articular
-en las unidades de scara/1 (ADR 0003), que incluye la configuración del codo,
-más cómo se llega a él: tipo de tramo, velocidad y espera.
+/api/trayectoria*). Cada punto de trayectoria es un punto de herramienta,
+X, Y, Z y rumbo, más cómo se llega a él: tipo de tramo, velocidad y espera.
+La configuración del codo no se guarda: las articulaciones de cada punto
+se resuelven en cadena, con el codo del punto anterior mientras llegue
+(D88).
 
 Cada trayectoria es un archivo JSON con versión de formato y unidades. Todo
-punto se valida al capturarlo, escribirlo, editarlo y cargarlo: límites
-articulares, alcance (si se escribió en XYZ) y choque en reposo. La
-validación de los tramos, que depende del orden y del tipo, es de la
-reproducción (#13, D55).
+punto se valida al capturarlo, escribirlo, editarlo y cargarlo: alcance,
+límites articulares y choque en reposo. La validación de los tramos, que
+depende del orden y del tipo, es de la reproducción (#13, D55).
 """
 
 import datetime
@@ -25,13 +26,14 @@ from pathlib import Path
 from urc import planner
 
 
-FORMAT, VERSION = "scara-trayectoria", 1
+FORMAT, VERSION = "scara-trayectoria", 2
 UNITS = {
-    "joints": "centésimas de grado (J1–J3) y de mm (J4)",
     "tool": "mm (x, y, z) y grados (rumbo)",
     "speed": "% de la velocidad máxima",
     "wait": "s",
 }
+# La versión 1 guardaba las articulaciones, con el codo; se carga y su codo se descarta (D88).
+UNITS_V1 = dict(UNITS, joints="centésimas de grado (J1–J3) y de mm (J4)")
 KINDS = ("LIN", "PTP")
 DEFAULTS = {"kind": "LIN", "speed": 50, "wait": 0}   # D22
 MAX_WAIT = 600               # s
@@ -42,7 +44,9 @@ FILE_MAX = 1024 * 1024       # bytes
 FILE_PATTERN = re.compile(r"[A-Za-z0-9_-]+\.json")
 # Nombres de dispositivo de Windows: no pueden ser archivos.
 RESERVED = re.compile(r"(con|prn|aux|nul|com[0-9]|lpt[0-9])")
-POINT_KEYS = {"joints", "tool", "kind", "speed", "wait"}
+POINT_KEYS = {"tool", "kind", "speed", "wait"}
+POINT_KEYS_V1 = POINT_KEYS | {"joints"}
+TOOL_KEYS = ("x", "y", "z", "heading")
 REQUIRED_KEYS = {"format", "version", "name", "units", "points"}
 DEFAULT_FOLDER = Path(__file__).resolve().parents[1] / "trayectorias"
 
@@ -78,88 +82,65 @@ class TrajectoryManager:
                                 if p.is_file() and FILE_PATTERN.fullmatch(p.name))}
 
     def _describe(self, point):
+        """El punto para la página: su pose y las articulaciones con que se llega, con su codo."""
         joints = point["joints"]
-        return {"joints": list(joints), "tool": self._tool(joints), "elbow": (joints[1] > 0) - (joints[1] < 0),
+        return {"tool": dict(point["tool"]), "joints": list(joints), "elbow": (joints[1] > 0) - (joints[1] < 0),
                 "kind": point["kind"], "speed": point["speed"], "wait": point["wait"]}
 
     def _tool(self, joints):
-        """XYZ (mm) y rumbo (°, J1 + J2 + J3 sin envolver), derivados de las articulaciones."""
-        x, y, z = (round(v * 1000, 2) for v in planner.tool_point(joints, self.config))
-        return {"x": x, "y": y, "z": z, "heading": round(sum(joints[:3]) / 100, 2)}
+        """XYZ (mm) y rumbo (°, J1 + J2 + J3 sin envolver) de unas articulaciones, al micrón."""
+        x, y, z = (round(v * 1000, 3) for v in planner.tool_point(joints, self.config))
+        return {"x": x, "y": y, "z": z, "heading": round(sum(joints[:3]) / 100, 3)}
 
     # --- Edición -------------------------------------------------------------
 
     def capture(self, request):
-        """Espacio: la posición estimada por pasos, después de `after` (D21, D29)."""
+        """Espacio: el punto de herramienta de la posición estimada por pasos, después de `after` (D21, D29)."""
         joints = self._robot_pose()
         with self.lock:
             index = self._after(request)
-            self.points.insert(index, dict(DEFAULTS, joints=self._check_point(joints, index + 1)))
-            return self._changed(index)
+            point = dict(DEFAULTS, tool=self._tool(self._check_point(joints, index + 1)))
+            return self._update(lambda points: points.insert(index, point), index)
 
     def add(self, request):
-        """Punto escrito a mano: J1–J4 o XYZ y rumbo, con el codo preferido o el pedido (D34)."""
+        """Punto escrito a mano: XYZ y rumbo, o J1–J4, que se guardan como XYZ y rumbo (D34, D88)."""
         with self.lock:
             index = self._after(request)
-            if "pose" in request:
-                pose = request["pose"]
-                if not isinstance(pose, dict):
-                    raise ValueError("pose: se esperan X, Y, Z, rumbo y codo")
-                # J1 y J3 dan la vuelta más cercana al punto anterior.
-                near = self.points[index - 1]["joints"] if index else None
-                joints = self._from_pose(pose, pose.get("elbow", -1), near, index + 1)
-            elif "joints" in request:
-                joints = _joints(request["joints"])
-            else:
-                raise ValueError("Se espera joints (J1–J4) o pose (X, Y, Z y rumbo)")
-            self.points.insert(index, dict(DEFAULTS, joints=self._check_point(joints, index + 1)))
-            return self._changed(index)
+            point = dict(DEFAULTS, tool=self._written(request, index + 1))
+            return self._update(lambda points: points.insert(index, point), index)
 
     def edit(self, request):
-        """Cambia la pose o cómo se llega al punto; al escribir XYZ conserva su codo (D34)."""
+        """Cambia la pose o cómo se llega al punto (D34)."""
         with self.lock:
             index = self._index(request.get("index"))
             point = dict(self.points[index])
             fields = {"joints", "pose", "kind", "speed", "wait"} & request.keys()
             if not fields:
                 raise ValueError("Nada para editar: se espera joints, pose, kind, speed o wait")
-            if {"joints", "pose"} <= fields:
-                raise ValueError("Se espera joints o pose, no los dos")
-            if "pose" in request:
-                pose = request["pose"]
-                if not isinstance(pose, dict) or "elbow" in pose:
-                    raise ValueError("pose: se esperan X, Y, Z y rumbo; el punto conserva su codo "
-                                     "(para cambiarlo, editá J1–J4)")
-                elbow = 1 if point["joints"][1] > 0 else -1
-                point["joints"] = self._from_pose(pose, elbow, point["joints"], index + 1)
-            elif "joints" in request:
-                point["joints"] = _joints(request["joints"])
+            if fields & {"joints", "pose"}:
+                point["tool"] = self._written(request, index + 1)
             point.update(_tramo({key: request[key] for key in ("kind", "speed", "wait") if key in request}))
-            point["joints"] = self._check_point(point["joints"], index + 1)
-            self.points[index] = point
-            return self._changed(index)
+            return self._update(lambda points: points.__setitem__(index, point), index)
 
     def overwrite(self, request):
         """Sobrescribe la pose de un punto con la actual; cómo se llega a él no cambia."""
         joints = self._robot_pose()
         with self.lock:
             index = self._index(request.get("index"))
-            self.points[index] = dict(self.points[index], joints=self._check_point(joints, index + 1))
-            return self._changed(index)
+            point = dict(self.points[index], tool=self._tool(self._check_point(joints, index + 1)))
+            return self._update(lambda points: points.__setitem__(index, point), index)
 
     def delete(self, request):
         """Retroceso borra el seleccionado, que después de capturar es el último capturado."""
         with self.lock:
             index = self._index(request.get("index"))
-            del self.points[index]
-            return self._changed(max(index - 1, 0) if self.points else None)
+            return self._update(lambda points: points.pop(index), max(index - 1, 0) if len(self.points) > 1 else None)
 
     def move(self, request):
         with self.lock:
             index = self._index(request.get("index"))
             target = self._index(request.get("to"), "to")
-            self.points.insert(target, self.points.pop(index))
-            return self._changed(target)
+            return self._update(lambda points: points.insert(target, points.pop(index)), target)
 
     def go(self, request):
         """«Ir al punto»: PTP desde la pose actual; sin confirm solo planifica (D29).
@@ -201,7 +182,7 @@ class TrajectoryManager:
             document = {"format": FORMAT, "version": VERSION, "name": name,
                         "saved": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
                         "units": UNITS,
-                        "points": [{key: value for key, value in self._describe(point).items() if key != "elbow"}
+                        "points": [{key: point[key] for key in ("tool", "kind", "speed", "wait")}
                                    for point in self.points]}
             self._write(file, json.dumps(document, ensure_ascii=False, indent=2) + "\n")
             self.name, self.file, self.dirty = name, file, False
@@ -235,11 +216,13 @@ class TrajectoryManager:
             raise ValueError("no es un objeto JSON")
         if document.get("format") != FORMAT:
             raise ValueError(f"formato desconocido: se espera «{FORMAT}»")
-        if document.get("version") != VERSION:
-            raise ValueError(f"versión {document.get('version')} del formato no soportada; esta URC lee la {VERSION}")
+        version = document.get("version")
+        if version not in (1, VERSION) or isinstance(version, bool):
+            raise ValueError(f"versión {version} del formato no soportada; esta URC lee la 1 y la {VERSION}")
         _keys(document, REQUIRED_KEYS, REQUIRED_KEYS | {"saved"})
-        if document["units"] != UNITS:
-            raise ValueError(f"unidades distintas de las de la URC: se esperan {UNITS}")
+        units = UNITS if version == VERSION else UNITS_V1
+        if document["units"] != units:
+            raise ValueError(f"unidades distintas de las de la URC: se esperan {units}")
         try:
             name = _name(document["name"])
         except ValueError as exc:
@@ -247,23 +230,24 @@ class TrajectoryManager:
         points = document["points"]
         if not isinstance(points, list) or not points:
             raise ValueError("la trayectoria no tiene puntos")
-        return name, [self._parse_point(point, number) for number, point in enumerate(points, 1)]
+        return name, self._resolve([self._parse_point(point, number, version)
+                                    for number, point in enumerate(points, 1)])
 
-    def _parse_point(self, point, number):
+    def _parse_point(self, point, number, version):
         try:
             if not isinstance(point, dict):
                 raise ValueError("no es un objeto")
-            _keys(point, POINT_KEYS - {"tool"}, POINT_KEYS)
-            joints = planner.check_units(point["joints"], "J1–J4")
-            parsed = dict(_tramo({key: point[key] for key in ("kind", "speed", "wait")}), joints=joints)
+            if version == VERSION:
+                _keys(point, POINT_KEYS, POINT_KEYS)
+                tool = _pose(point["tool"])
+            else:
+                # En la versión 1 mandaban las articulaciones: los XYZ escritos se ignoran.
+                _keys(point, POINT_KEYS_V1 - {"tool"}, POINT_KEYS_V1)
+                tool = self._tool(self._check_point(planner.check_units(point["joints"], "J1–J4"), number))
+            return dict(_tramo({key: point[key] for key in ("kind", "speed", "wait")}), tool=tool)
         except ValueError as exc:
-            raise ValueError(f"Punto {number}: {exc}") from exc
-        self._check_point(joints, number)
-        # Mandan las articulaciones (D13); los XYZ son para leer, y no se aceptan si no coinciden.
-        if "tool" in point and not _same_tool(point["tool"], self._tool(joints)):
-            raise ValueError(f"Punto {number}: X, Y, Z y rumbo no coinciden con J1–J4, que son los que valen; "
-                             "corregilos o borralos")
-        return parsed
+            message = str(exc)
+            raise ValueError(message if message.startswith("Punto ") else f"Punto {number}: {message}") from exc
 
     # --- Ayudas (con self.lock tomado) ---------------------------------------
 
@@ -282,16 +266,52 @@ class TrajectoryManager:
                              f"{conflict['obstacle']} (envolventes y margen de {self.checker.margin * 1000:g} mm)")
         return tuple(joints)
 
-    def _from_pose(self, pose, elbow, near, number):
-        values = [pose.get(key) for key in ("x", "y", "z", "heading")]
-        if isinstance(elbow, bool) or elbow not in (-1, 1):
-            raise ValueError("El codo debe ser -1 (J2 negativo) o 1 (J2 positivo)")
-        if any(isinstance(v, bool) or not isinstance(v, (int, float)) or not math.isfinite(v) for v in values):
-            raise ValueError("X, Y, Z y rumbo tienen que ser números")
-        try:
-            return planner.joints_from_pose(*values, elbow=elbow, config=self.config, current=near)
-        except ValueError as exc:
-            raise ValueError(f"Punto {number}: fuera de alcance o de los límites: {exc}") from exc
+    def _written(self, request, number):
+        """La pose de un punto escrito: XYZ y rumbo, o J1–J4 convertidos a XYZ y rumbo."""
+        if {"joints", "pose"} <= request.keys():
+            raise ValueError("Se espera joints o pose, no los dos")
+        if "pose" in request:
+            return _pose(request["pose"])
+        if "joints" in request:
+            return self._tool(self._check_point(_joints(request["joints"]), number))
+        raise ValueError("Se espera joints (J1–J4) o pose (X, Y, Z y rumbo)")
+
+    def _update(self, change, selected):
+        """Aplica change a una copia de la lista y la resuelve entera; si un punto falla, no cambia nada."""
+        points = [dict(point) for point in self.points]
+        change(points)
+        self.points = self._resolve(points)
+        return self._changed(selected)
+
+    def _resolve(self, points):
+        """Las articulaciones de cada punto, en cadena: el codo del punto anterior mientras llegue (D88).
+
+        Si con ese codo el punto queda fuera de alcance, de los límites o
+        choca en reposo, toma el otro. El primero empieza por el preferido
+        (J2 negativo, D31). J1 y J3 dan la vuelta más cercana al anterior.
+        """
+        resolved, previous = [], None
+        for number, point in enumerate(points, 1):
+            previous = self._joints_for(point["tool"], previous, number)
+            resolved.append(dict(point, joints=previous))
+        return resolved
+
+    def _joints_for(self, tool, previous, number):
+        side = 1 if previous is not None and previous[1] > 0 else -1
+        # Si con un codo llega pero choca, eso dice más que el alcance del otro.
+        unreachable = blocked = None
+        for elbow in (side, -side):
+            try:
+                joints = planner.joints_from_pose(*(tool[key] for key in TOOL_KEYS), elbow=elbow,
+                                                  config=self.config, current=previous)
+            except ValueError as exc:
+                unreachable = unreachable or f"Punto {number}: fuera de alcance o de los límites: {exc}"
+                continue
+            try:
+                return self._check_point(joints, number)
+            except ValueError as exc:
+                blocked = blocked or str(exc)
+        raise ValueError(blocked or unreachable)
 
     def _after(self, request):
         """Dónde se inserta: después del punto `after` (−1: al principio; sin after: al final)."""
@@ -358,6 +378,16 @@ def _joints(values):
     return planner.check_units([round(v * 100) for v in values], "J1–J4")
 
 
+def _pose(pose):
+    """X, Y, Z (mm) y rumbo (°) escritos, al micrón; el codo no se elige (D88)."""
+    if not isinstance(pose, dict) or set(pose) != set(TOOL_KEYS):
+        raise ValueError("pose: se esperan X, Y, Z y rumbo (el codo lo elige la URC, D88)")
+    if any(isinstance(pose[key], bool) or not isinstance(pose[key], (int, float)) or not math.isfinite(pose[key])
+           or abs(pose[key]) > 1e6 for key in TOOL_KEYS):
+        raise ValueError("X, Y, Z y rumbo tienen que ser números")
+    return {key: round(float(pose[key]), 3) for key in TOOL_KEYS}
+
+
 def _tramo(fields):
     """Tipo, velocidad (% entero) y espera (s) de cómo se llega al punto (D22)."""
     if "kind" in fields and fields["kind"] not in KINDS:
@@ -377,12 +407,6 @@ def _keys(document, required, allowed):
     for key in sorted(required):
         if key not in document:
             raise ValueError(f"falta «{key}»")
-
-
-def _same_tool(written, derived):
-    return (isinstance(written, dict) and written.keys() == derived.keys()
-            and all(isinstance(written[k], (int, float)) and not isinstance(written[k], bool)
-                    and abs(written[k] - derived[k]) <= 0.01 for k in derived))
 
 
 def _name(name):

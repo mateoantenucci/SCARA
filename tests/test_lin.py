@@ -227,8 +227,8 @@ class ValidationTests(unittest.TestCase):
         rejection = Rejection("codo", "el codo cambia de lado", "J2 cambia de signo.", tramo=2, hint="negativo")
         self.assertIsInstance(rejection, ValueError)
         self.assertEqual(str(rejection), "Tramo 2 (LIN): el codo cambia de lado. Usá un tramo PTP.")
-        self.assertEqual(rejection.detail, "J2 cambia de signo. También podés grabar el destino con J2 negativo, "
-                                           "del mismo lado que el inicio.")
+        self.assertEqual(rejection.detail, "J2 cambia de signo. La URC mantiene el codo de un punto al siguiente "
+                                           "mientras llega; cambiarlo de lado solo se puede con un PTP (D88).")
         self.assertEqual(set(validation.REASONS), {"alcance", "codo", "limite", "velocidad", "colision"})
 
     def test_a_rejection_names_the_points_and_what_to_change(self):
@@ -239,8 +239,7 @@ class ValidationTests(unittest.TestCase):
         self.assertEqual(str(rejection), "Tramo de vuelta del loop (punto 4 → punto 1, LIN): el codo cambia de lado. "
                                          "Cambiá el punto 1 a PTP.")
         self.assertTrue(rejection.detail.startswith("En el punto 4, J2 = -60°, y en el punto 1, J2 = 60°"))
-        self.assertIn("También podés grabar el punto 1 con J2 negativo, del mismo lado que el punto 4.",
-                      rejection.detail)
+        self.assertIn("cambiarlo de lado solo se puede con un PTP", rejection.detail)
         self.assertIn("La vuelta del loop usa el tipo y la velocidad del punto 1.", rejection.detail)
         place = validation.Place(3, "punto 2", "punto 3", 3)
         rejection = self.reject_at(pose(470, 0, 30, 0), pose(498, 0, 30, 0), place)

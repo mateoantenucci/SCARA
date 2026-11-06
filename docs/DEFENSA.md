@@ -114,11 +114,11 @@ Después de la defensa, borrar el archivo de la trayectoria grabada en `trayecto
 2. **Pausa** a mitad de un tramo y **Reanudar**: frena con rampa y sigue sobre la misma recta (D69). **Stop** o **Esc** frenan y descartan lo pendiente.
 3. **Cargar las demos** con el selector y **«Cargar»** (si hay cambios sin guardar, la URC pregunta):
    - `demo-cuadrado-lin.json`: cuadrado de 80 mm en LIN, a altura y rumbo fijos; ~11 s al 100 %.
-   - `demo-barrido-ptp.json`: de −90° a +90° en J1 y cambio de configuración del codo, todo PTP; ~15 s.
+   - `demo-barrido-ptp.json`: de −90° a +90° en J1 y vuelta por el otro lado, todo PTP; ~15 s.
    - `demo-pick-and-place.json` si sobra tiempo: bajar y subir en LIN con 1 s de espera, cruzar en PTP; ~19 s.
 
    Las duraciones son las planificadas que registró la campaña (T3). Con **Loop** en «N vueltas» o «Sin fin» se muestra la vuelta del último punto al primero.
-4. **Un LIN imposible se rechaza antes de mover.** En el barrido PTP, cambiar el tramo del punto 3 a LIN y dar play: la URC responde «Tramo 3 (punto 2 → punto 3, LIN): el codo cambia de lado. Cambiá el punto 3 a PTP.» y el robot no se mueve (D14, D55). «Por qué» despliega la explicación: en el punto 2 J2 = -60° y en el punto 3, 60°, y para pasar el codo de lado el brazo tiene que estirarse, una singularidad (D77). Volver a PTP **sin guardar**, para no tocar la demo versionada.
+4. **Un LIN imposible se rechaza antes de mover.** En el barrido PTP, cambiar el tramo del punto 2 a LIN y dar play: la URC responde «Tramo 2 (punto 1 → punto 2, LIN): la recta pasa demasiado cerca de la torre. Cambiá el punto 2 a PTP.» y el robot no se mueve (D14, D55). «Por qué» despliega la explicación: la recta pasa más cerca del eje de J1 de lo que el brazo alcanza con el codo plegado a su límite (D77). Volver a PTP **sin guardar**, para no tocar la demo versionada. Si preguntan por el codo: los puntos son X, Y, Z y rumbo, y cada uno mantiene el codo del anterior mientras llega (D88).
 5. **Qué se explica:** LIN contra PTP (D53, D54), la tolerancia de 0,127 mm del plan y la de la ejecución (D54; T2 de la campaña), los segmentos con el reloj del firmware (D6, D50, ADR 0005).
 
 ### 2.6 Fallas F1–F5
@@ -268,7 +268,7 @@ Con referencia, no: el jog son segmentos de 20 ms que la URC verifica de a uno c
 Desde J2 = 0 hay dos soluciones; el codo dobla hacia el lado preferido, J2 negativo. El jog cartesiano nunca cambia de configuración del codo y frena con |J2| de 2°; para cambiarla se usa PTP o jog articular (D31, D75).
 
 **¿Qué guarda un punto de trayectoria?**
-La pose en articulaciones, enteras en las unidades del protocolo, que incluye la configuración del codo y las vueltas de J1 y J3. No el camino: lo calcula la URC al reproducir, así que no hace falta «mover bien» con las teclas. Archivo JSON con formato y versión (D13, D62).
+El punto de herramienta: X, Y, Z y rumbo. No el codo ni el camino: al reproducir, cada punto mantiene el codo del anterior mientras llega, y solo un PTP lo cambia de lado. Así el robot llega a P1 desde donde esté, y no hace falta «mover bien» con las teclas. Archivo JSON con formato y versión (D13, D62, D88).
 
 **¿Por qué capturar exige el robot quieto?**
 Durante el jog, el estado llega cada 50 ms y el robot sigue frenando después de soltar la tecla: el punto capturado no sería donde se detiene (D63).

@@ -196,9 +196,9 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 - **Estado:** Aceptada. [ADR 0007](adr/0007-jog-desde-la-urc.md).
 
 **D13 · Las trayectorias las guarda la URC.**
-- **Decisión:** se guardan como JSON con versión de formato. Cada punto registra la pose (articulaciones, que incluyen la configuración del codo), no el camino por el que se llegó.
+- **Decisión:** se guardan como JSON con versión de formato. Cada punto registra la pose (punto de herramienta, X, Y, Z y rumbo, desde D88), no el camino por el que se llegó.
 - **Por qué:** igual que en AGSABOT, el robot solo informa la posición y la PC administra los datos. El camino se calcula al reproducir, así que no hace falta "mover bien" con las teclas.
-- **Estado:** Aceptada.
+- **Estado:** Aceptada. El codo ya no se guarda (D88).
 
 **D14 · Tramos LIN o PTP.**
 - **Decisión:** LIN (recta) por defecto y PTP (articular sincronizado) como opción. Si una recta es imposible (fuera de alcance, cambio de codo, límites, choque), se rechaza antes de arrancar y se ofrece PTP.
@@ -245,12 +245,12 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 
 **D34 · Puntos definidos sin jog.**
 - **Decisión:**
-  - Se puede agregar un punto escribiendo XYZ y rumbo, o J1–J4. En XYZ el codo toma la configuración preferida, con opción de elegir la otra.
-  - Se pueden editar puntos capturados; al editar en XYZ se conserva la configuración del codo del punto.
+  - Se puede agregar un punto escribiendo XYZ y rumbo, o J1–J4. ~~En XYZ el codo toma la configuración preferida, con opción de elegir la otra.~~ Desde D88 el codo no se elige.
+  - Se pueden editar puntos capturados. ~~Al editar en XYZ se conserva la configuración del codo del punto.~~
   - La URC valida al agregar, al editar y al cargar un archivo: versión del formato, alcance, límites y choque en reposo. Si algo falla, informa qué punto y por qué.
   - El JSON se puede editar a mano, pero no se promociona.
 - **Por qué:** con jog es difícil clavar un valor exacto. Combinar el jog "a ojo" con la edición permite trayectorias precisas. Un punto escrito nunca fue visitado, así que se valida. Igual el robot llega al paso más cercano: ~0,5 mm en el peor caso.
-- **Estado:** Aceptada.
+- **Estado:** Aceptada. El codo ya no se elige (D88).
 
 **D22 · Parámetros de cada tramo.**
 - **Decisión:**
@@ -628,7 +628,7 @@ Decisiones tomadas al implementar el gestor de trayectorias en la URC: [`urc/tra
   - Las articulaciones guardan la configuración del codo y las vueltas de J1 y J3, que un XYZ con rumbo no determina (D13). En centésimas enteras, guardar y cargar no redondea nada: la trayectoria cargada es exactamente la guardada.
   - Un archivo con claves estrictas detecta los errores de una edición a mano, por ejemplo `velocidad` en lugar de `speed`, que con valores por defecto pasarían inadvertidos.
 - **Descartado:** guardar solo XYZ y rumbo (pierde el codo y las vueltas), guardar las articulaciones en grados con decimales (redondeo al ir y volver), la trayectoria solo en la página (se pierde al recargar y la reproducción no la vería) y elegir cualquier archivo de la PC (la URC solo lee y escribe en su carpeta, sin rutas).
-- **Estado:** Aceptada.
+- **Estado:** Aceptada. Reemplazada en el contenido de los puntos por la versión 2 (D88).
 
 **D63 · Capturar exige el robot referenciado y quieto; un punto escrito o editado conserva su codo y se valida solo.**
 - **Decisión:**
@@ -921,3 +921,17 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
 - **Por qué:** en la QA, la página medía 3700 px en una sola columna, y los botones más usados quedaban lejos de sus mensajes. Con la referencia dudosa, reproducir parecía permitido hasta que la URC lo rechazaba. El tráfico del protocolo no le dice nada al operador.
 - **Descartado:** pestañas (esconderían la posición o el banco mientras se usa el otro) y deshabilitar por estados de un instante, como el robot en movimiento (los botones parpadearían durante el jog; eso lo rechaza la URC con su motivo).
 - **Estado:** Aceptada.
+
+## Puntos de trayectoria en XYZ y rumbo
+
+**D88 · Un punto de trayectoria es un punto de herramienta: X, Y, Z y rumbo. El codo no se guarda; la URC lo elige en cadena, manteniendo el del punto anterior mientras llegue.**
+- **Decisión:**
+  - Cada punto guarda X, Y, Z (mm) y rumbo (°), al micrón, más cómo se llega: tipo, velocidad y espera. Capturar, sobrescribir y escribir en J1–J4 guardan el punto de herramienta de esa pose; el codo y las vueltas de J1 y J3 se descartan.
+  - Las articulaciones de cada punto se resuelven en cadena, cada vez que la lista cambia: el punto 1 empieza por el codo preferido (J2 negativo, D31) y cada uno de los siguientes mantiene el del anterior. Si con ese codo queda fuera de alcance o de los límites, o choca en reposo, toma el otro. J1 y J3 dan la vuelta más cercana al punto anterior. Si un cambio deja algún punto sin solución, se rechaza entero y dice qué punto y por qué.
+  - Un LIN nunca cambia el codo por su cuenta ni se convierte en PTP: si el punto solo se alcanza con el otro codo, la validación lo rechaza antes de mover y sugiere PTP (D14), como antes.
+  - Archivo `scara-trayectoria` versión 2: cada punto lleva `tool`, `kind`, `speed` y `wait`. La versión 1 se sigue cargando: mandan sus `joints`, de los que sale el punto de herramienta, y su codo se descarta. Las demos de `trayectorias/` se reescribieron en la versión 2.
+  - La cinemática inversa de una pose escrita admite media centésima de holgura en los límites: con el redondeo al micrón, un punto capturado justo en un tope (J4 = 0) no queda inalcanzable.
+- **Por qué:** el profesor pidió que el robot llegue a P1 desde donde esté, no con el mismo codo con que se grabó. Guardar el codo hacía fallar LIN entre puntos alcanzables con el mismo codo solo porque se grabaron con codos distintos, y obligaba a elegir el codo al escribir un punto y a editarlo en J1–J4 para cambiarlo.
+- **Lo que no cambia:** una recta no cruza de un codo al otro (la singularidad del brazo estirado), ni pasa por el agujero que el brazo no alcanza junto a la torre, ni sigue un camino que cerca del brazo estirado le pide a J2 más velocidad de la que tiene. Eso es geometría, no cómo se guarda el punto.
+- **Descartado:** dejar que la cinemática inversa elija el codo más cercano en articulaciones (podría cambiarlo en un LIN sin necesidad); resolver cada punto desde la pose del robot al reproducir (la trayectoria dependería de dónde arranca, y el loop podría no cerrar); convertir solo los LIN que fallan en PTP (la recta es lo que pidió el operador).
+- **Estado:** Aceptada. Reemplaza el codo de D13, D34 y D62; cambia la demo del LIN imposible de la defensa.

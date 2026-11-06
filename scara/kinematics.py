@@ -26,11 +26,11 @@ def _numbers(values, count, name):
     return converted
 
 
-def validate_joints(q, config=None):
+def validate_joints(q, config=None, slack=1e-10):
     config = config or load_config()
     q = _numbers(q, 4, "Articulaciones")
     for i, (value, bounds) in enumerate(zip(q, config["limits"]), 1):
-        if not bounds[0] - 1e-10 <= value <= bounds[1] + 1e-10:
+        if not bounds[0] - slack <= value <= bounds[1] + slack:
             raise ValueError(f"J{i} fuera de su recorrido")
     return q
 
@@ -61,8 +61,12 @@ def arm_angles(x, y, elbow, config=None):
     return math.atan2(y, x) - math.atan2(l2 * math.sin(q2), l1 + l2 * math.cos(q2)), q2
 
 
-def inverse(x, y, z, yaw=None, current=None, config=None, elbow=None):
-    """elbow: -1 o 1 restringe la configuracion del codo al signo de q2."""
+def inverse(x, y, z, yaw=None, current=None, config=None, elbow=None, slack=1e-10):
+    """elbow: -1 o 1 restringe la configuracion del codo al signo de q2.
+
+    slack: cuanto puede pasarse una articulacion de su limite (rad o m) por
+    el redondeo del objetivo; la solucion se recorta al limite.
+    """
     config = config or load_config()
     x, y, z = _numbers([x, y, z], 3, "Objetivo XYZ")
     current = validate_joints(current if current is not None else config["initial_positions"], config)
@@ -84,7 +88,8 @@ def inverse(x, y, z, yaw=None, current=None, config=None, elbow=None):
             q1 = shoulder + turn1 * math.tau
             q3 = yaw - q1 - q2 + turn3 * math.tau
             try:
-                candidates.append(validate_joints([q1, q2, q3, q4], config))
+                q = validate_joints([q1, q2, q3, q4], config, slack)
+                candidates.append([min(max(v, low), high) for v, (low, high) in zip(q, config["limits"])])
             except ValueError:
                 continue
     if not candidates:

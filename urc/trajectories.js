@@ -50,7 +50,6 @@
         <label class="field">Y (mm) <input type="number" step="0.1" value="0"></label>
         <label class="field">Z (mm) <input type="number" step="0.1" value="34.7"></label>
         <label class="field">Rumbo (°) <input type="number" step="0.1" value="-20"></label>
-        <label class="field">Codo <select id="tr-elbow"><option value="-1">J2 negativo (preferido)</option><option value="1">J2 positivo</option></select></label>
       </div>
       <div class="row fields" id="tr-joints" style="margin-top: 10px" hidden>
         <label class="field">J1 (°) <input type="number" step="0.01" value="0"></label>
@@ -62,7 +61,7 @@
         <button id="tr-add">Agregar después del seleccionado</button>
         <button id="tr-apply">Aplicar al seleccionado</button>
       </div>
-      <p>En XYZ, un punto nuevo usa el codo elegido; uno editado conserva el suyo (para cambiarlo, editá J1–J4).</p>
+      <p>El punto se guarda como X, Y, Z y rumbo, también si se escribe en J1–J4. El codo no se elige: al reproducir, cada punto mantiene el del anterior mientras llegue; la columna Codo dice cuál toma.</p>
     </details>
     <details class="help">
       <summary>Cómo funciona</summary>
@@ -276,9 +275,7 @@
       { title: `¿Sobrescribir el punto ${index + 1}?`, confirm: "Sobrescribir" })) act("sobrescribir", { index });
   }));
   $("tr-add").addEventListener("click", guarded(() => {
-    const request = written();
-    if (request.pose) request.pose.elbow = Number($("tr-elbow").value);
-    act("punto", { ...request, after: after() });
+    act("punto", { ...written(), after: after() });
   }));
   $("tr-apply").addEventListener("click", guarded(() => act("editar", { index: needSelected(), ...written() })));
   // «Ir al punto»: primero planifica y muestra la duración; después mueve (D29).

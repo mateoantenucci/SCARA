@@ -1,26 +1,19 @@
 {
   "format": "scara-trayectoria",
-  "version": 1,
+  "version": 2,
   "name": "Demo barrido PTP",
-  "saved": "2026-11-01T03:17:41-03:00",
+  "saved": "2026-11-05T21:41:29-03:00",
   "units": {
-    "joints": "centésimas de grado (J1–J3) y de mm (J4)",
     "tool": "mm (x, y, z) y grados (rumbo)",
     "speed": "% de la velocidad máxima",
     "wait": "s"
   },
   "points": [
     {
-      "joints": [
-        -9000,
-        -6000,
-        0,
-        4000
-      ],
       "tool": {
-        "x": -216.51,
+        "x": -216.506,
         "y": -375.0,
-        "z": 54.67,
+        "z": 54.667,
         "heading": -150.0
       },
       "kind": "PTP",
@@ -28,16 +21,10 @@
       "wait": 0
     },
     {
-      "joints": [
-        9000,
-        -6000,
-        0,
-        4000
-      ],
       "tool": {
-        "x": 216.51,
+        "x": 216.506,
         "y": 375.0,
-        "z": 54.67,
+        "z": 54.667,
         "heading": 30.0
       },
       "kind": "PTP",
@@ -45,16 +32,10 @@
       "wait": 0
     },
     {
-      "joints": [
-        6000,
-        6000,
-        0,
-        4000
-      ],
       "tool": {
         "x": 0.0,
-        "y": 433.01,
-        "z": 54.67,
+        "y": 433.013,
+        "z": 54.667,
         "heading": 120.0
       },
       "kind": "PTP",
@@ -62,16 +43,10 @@
       "wait": 1
     },
     {
-      "joints": [
-        -6000,
-        6000,
-        0,
-        8000
-      ],
       "tool": {
         "x": 375.0,
-        "y": -216.51,
-        "z": 14.67,
+        "y": -216.506,
+        "z": 14.667,
         "heading": 0.0
       },
       "kind": "PTP",

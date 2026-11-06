@@ -25,6 +25,8 @@ from urc.trajectories import TrajectoryManager
 REST = (0, 0, 0, 12000)
 # Tres puntos cercanos, con el codo negativo: tramos cortos para que las pruebas vayan rápido.
 P1, P2, P3 = (3000, -6000, 1000, 6000), (2000, -5000, 1000, 6000), (2000, -5000, 1000, 3000)
+# Solo se alcanza con el codo positivo: con el negativo, J1 pasaría de 135°.
+ONLY_POSITIVE = (13000, 6000, 0, 3000)
 CONFIG = load_config()
 
 
@@ -170,8 +172,8 @@ class PlaybackHttpTests(unittest.TestCase):
 
     def test_the_whole_trajectory_is_validated_before_moving(self):
         robot = self.robot(P1)
-        # El punto 3 cambia de codo: la recta es imposible y se sugiere PTP (D14).
-        self.points(P1, P2, (2000, 5000, 1000, 3000))
+        # El punto 3 solo se alcanza con el otro codo: la recta es imposible y se sugiere PTP (D14, D88).
+        self.points(P1, P2, ONLY_POSITIVE)
         error = self.play(expect=400)["error"]
         self.assertEqual(error, "Tramo 3 (punto 2 → punto 3, LIN): el codo cambia de lado. Cambiá el punto 3 a PTP.")
         self.assertEqual(robot.segments, [])
@@ -181,7 +183,7 @@ class PlaybackHttpTests(unittest.TestCase):
     def test_the_loop_back_is_validated_too(self):
         self.robot(P1)
         # Del punto 3 al 1 la recta cambia de codo: con loop se valida la vuelta.
-        self.points(P1, P2, (2000, 5000, 1000, 3000), p2={"kind": "PTP"})
+        self.points(P1, P2, ONLY_POSITIVE, p2={"kind": "PTP"})
         error = self.play({"loops": 2}, expect=400)
         self.assertEqual(error["error"], "Tramo de vuelta del loop (punto 3 → punto 1, LIN): el codo cambia de lado. "
                                          "Cambiá el punto 1 a PTP.")

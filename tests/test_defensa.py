@@ -15,13 +15,13 @@ nada falle. Esta prueba verifica que:
 """
 
 import importlib.util
-import json
 import re
 import unittest
 from pathlib import Path
 
 from urc import validation
-from urc.trajectories import DEFAULT_FOLDER
+from urc.session import Session
+from urc.trajectories import DEFAULT_FOLDER, TrajectoryManager
 
 ROOT = Path(__file__).resolve().parents[1]
 GUION = ROOT / "docs" / "DEFENSA.md"
@@ -103,12 +103,15 @@ class DefenseScriptTests(unittest.TestCase):
                     self.assertIn(text, self.urc)
 
     def rejection(self):
-        """El rechazo del LIN del punto 3 de la demo del barrido, como lo da la validación (D55)."""
-        points = json.loads((DEFAULT_FOLDER / "demo-barrido-ptp.json").read_text(encoding="utf-8"))["points"]
+        """El rechazo del LIN del punto 2 de la demo del barrido, como lo da la validación (D55)."""
+        session = Session(port=0)
+        self.addCleanup(session.close)
+        manager = TrajectoryManager(session, DEFAULT_FOLDER)
+        manager.load({"file": "demo-barrido-ptp.json"})
+        points = [point["joints"] for point in manager.points]
         with self.assertRaises(validation.Rejection) as caught:
-            validation.check_tramo("LIN", tuple(points[1]["joints"]), tuple(points[2]["joints"]), 1.0,
-                                   validation.Place(3, "punto 2", "punto 3", 3))
-        self.assertEqual(caught.exception.reason, "codo")
+            validation.check_tramo("LIN", points[0], points[1], 1.0, validation.Place(2, "punto 1", "punto 2", 2))
+        self.assertEqual(caught.exception.reason, "alcance")
         return str(caught.exception)
 
     def test_los_bloques_suman_el_total(self):

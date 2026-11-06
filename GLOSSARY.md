@@ -122,7 +122,7 @@ Modo de prueba del jog en el que cada tecla mueve un solo motor, sin compensar e
 _Evitar_: Jog articular (en el jog articular el firmware compensa el acople).
 
 **Punto de trayectoria**:
-Pose del robot capturada durante el jog. Registra dónde está el robot, no el camino por el que llegó.
+Punto de herramienta (X, Y, Z y rumbo) capturado durante el jog o escrito a mano. Registra adónde llegar, no el camino ni la configuración del codo: la URC mantiene la del punto anterior mientras llegue.
 _Evitar_: Waypoint, posición grabada.
 
 **Trayectoria**:
