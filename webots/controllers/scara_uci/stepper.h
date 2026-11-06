@@ -143,6 +143,14 @@ public:
     speed_ = speed;
   }
 
+  // Eje retenido por el entorno: el esfuerzo observado ya incluye la carga
+  // normal. La reacción también compensa peso/fricción; no se suman dos veces.
+  void advanceContact(long stator, double dt, const Load& load, double current,
+                      double pulses, double speed, double actuatorReaction) {
+    constrain(pulses, speed);
+    advance(stator, dt, load, current, actuatorReaction - external(load));
+  }
+
   // Pulsos que el rotor no siguió, múltiplo de 4 pasos completos: su
   // equilibrio está en los pulsos emitidos menos estos.
   long lost() const { return lost_; }
@@ -260,8 +268,7 @@ inline double motorReaction(int motor, const double jointEffort[4]) {
 
 inline double jointCapacity(int joint, const double motorTorque[4]) {
   if (joint == 3) return motorTorque[3] * 2 * PI / LEAD * SCREW_EFFICIENCY;
-  double torque = motorTorque[joint] + (joint == 0 ? motorTorque[1] : 0.0);
-  return torque * PULLEY_RATIO * BELT_EFFICIENCY;
+  return motorTorque[joint] * PULLEY_RATIO * BELT_EFFICIENCY;
 }
 
 }  // namespace plant

@@ -55,7 +55,7 @@
     <p class="note">El banco muestra el contacto; el robot continúa y puede perder pasos.</p>
     <div class="row fields">
       <label class="field">X (mm) <input id="banco-obstacle-x" type="number" min="-1000" max="1000" step="1" value="375"></label>
-      <label class="field">Y (mm) <input id="banco-obstacle-y" type="number" min="-1000" max="1000" step="1" value="217"></label>
+      <label class="field">Y (mm) <input id="banco-obstacle-y" type="number" min="-1000" max="1000" step="1" value="-217"></label>
       <button id="banco-obstacle-set">Poner maceta</button>
       <button id="banco-obstacle-remove">Sacar obstáculo</button>
       <span class="small" id="banco-obstacle-state"></span>

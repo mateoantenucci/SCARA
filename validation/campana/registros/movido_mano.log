@@ -1,0 +1,23 @@
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9132 --sim-port 9133 --desvio 0
+UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
+UCI: conectada a la URC en 127.0.0.1:9132
+SIM: conectada a la URC en 127.0.0.1:9133
+UCI: drivers sin corriente
+UCI: drivers con corriente
+C4.1 referencia inicial; diferencia física − estimada [0, 0, 0, -1]
+  MANO con corriente rechazado por la URC: Mover a mano requiere todos los drivers sin corriente: usá DISABLE
+  MANO directo con corriente rechazado por la planta: SIM ERR corriente
+C4.2 recuperación por homing
+UCI: drivers sin corriente
+UCI: drivers con corriente
+  DISABLE, MANO J1 10°, ENABLE: estimada [0, 0, 0, 12000] física [1000, 0, 0, 11999] referenciado False
+  play bloqueado: Para reproducir, el robot tiene que estar referenciado (homing o referencia manual)
+  homing: diferencia en reposo [-1, 0, 0, -1] ; trayectoria terminada, diferencia [-2, 0, 0, 0]
+C4.3 referencia manual fuera del reposo
+UCI: drivers sin corriente
+UCI: drivers con corriente
+  DISABLE, MANO J1 10°, ENABLE: estimada [0, 0, 0, 12000] física [1000, 0, 0, 11999] referenciado False
+  play bloqueado: Para reproducir, el robot tiene que estar referenciado (homing o referencia manual)
+  ZERO fuera del reposo: trayectoria terminada; física − estimada [999, 0, 0, 0] ; sin ERR/EV LOST nuevos; referencia dudosa []
+ENSAYO OK

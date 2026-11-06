@@ -77,7 +77,7 @@ class InstrumentationTests(unittest.TestCase):
         wait_for(lambda: self.bench.snapshot()["obstacle"]["tipo"] == "ninguno")
         self.assertEqual(self.bench.snapshot()["pending"], [])
 
-    def test_invalid_contact_telemetry_does_not_replace_the_last_state(self):
+    def test_invalid_contact_instrumentation_does_not_replace_the_last_state(self):
         client = self.connect()
         client.send("SIM CONTACTO maceta TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
         wait_for(lambda: self.bench.snapshot().get("contact"))
@@ -178,7 +178,8 @@ class IsolationTests(unittest.TestCase):
         sim.send("SIM HELLO scara-sim/1")
         sim.send("SIM 1000 0 0 6000 0 7 1 ---- 0 150 100 100 100 100 0 0 0 0")
         wait_for(lambda: session.snapshot()["referenced"] and bench.snapshot()["simulated"])
-        sim.send("SIM OBSTACULO maceta 375 217 150")
+        # La maceta ocupa el extremo del tramo que la URC va a validar.
+        sim.send("SIM OBSTACULO maceta 500 0 150")
         sim.send("SIM CONTACTO maceta TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
         wait_for(lambda: bench.snapshot().get("contact") == "TOOL")
         with tempfile.TemporaryDirectory() as folder:

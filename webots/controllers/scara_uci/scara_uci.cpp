@@ -303,7 +303,7 @@ public:
     self_ = self;
     sampling_ = static_cast<int>(robot.getBasicTimeStep());
     obstacle_ = 0;
-    obstacleKind_ = "NONE";
+    obstacleKind_ = "ninguno";
     contactBody_ = "NONE";
     contacting_ = false;
     // La carga de la herramienta (toolMass, en kg) la cambia el banco de ensayo.
@@ -448,32 +448,46 @@ public:
         }
       }
     }
-    double capacity[4], position[4], velocity[4];
+    double capacity[4], position[4], velocity[4], actuatorEffort[4];
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
       double value = dt <= 0 || !motors_[i] ? 0.0 : i == 3 ? motors_[i]->getForceFeedback()
                                                                            : motors_[i]->getTorqueFeedback();
-      measuredEffort_[i] = std::isfinite(value) ? value : 0.0;
-      peakEffort_[i] = std::max(peakEffort_[i], std::fabs(measuredEffort_[i]));
+      actuatorEffort[i] = std::isfinite(value) ? value : 0.0;
+      measuredEffort_[i] = actuatorEffort[i];
       position[i] = physical(i);
       velocity[i] = dt > 0 ? (position[i] - previousPhysical_[i]) / dt : 0.0;
       previousPhysical_[i] = position[i];
       capacity[i] = powered_ & (1 << i) ? plant::availableTorque(plant::MOTORS[i], rotors_[i].speed(), current_[i]) : 0.0;
     }
+    // M2 está fijo a la bancada y mueve el ángulo absoluto del antebrazo.
+    // Cancela la reacción del accionamiento J2 sobre ARM; feedback demora un tick.
+    if (dt > 0 && bodies_[0]) {
+      const double torque[3] = {0, 0, actuatorEffort[1]};
+      bodies_[0]->addTorque(torque, true);
+    }
+    measuredEffort_[0] += actuatorEffort[1];
+    for (int i = 0; i < scara::MOTOR_COUNT; ++i)
+      peakEffort_[i] = std::max(peakEffort_[i], std::fabs(measuredEffort_[i]));
     for (int i = 0; dt > 0 && i < scara::MOTOR_COUNT; ++i) {
       if (powered_ & (1 << i)) {
+        bool retained = false;
+        double pulses = 0, speed = 0;
         if (i <= contactedBody) {
-          double pulses = (position[i] - start_[i]) / UNIT[i];
-          double speed = velocity[i] / UNIT[i] * TWO_PI / STEPS_PER_REV;
+          pulses = (position[i] - start_[i]) / UNIT[i];
+          speed = velocity[i] / UNIT[i] * TWO_PI / STEPS_PER_REV;
           if (i == 1) {
             pulses += (position[0] - start_[0]) / UNIT[0];
             speed += velocity[0] / UNIT[0] * TWO_PI / STEPS_PER_REV;
           }
           // El atraso normal del seguidor no debe reanclar un rotor sano.
-          if (std::fabs(rotors_[i].position() - pulses) > scara::MICROSTEPS)
-            rotors_[i].constrain(pulses, speed);
+          retained = std::fabs(rotors_[i].position() - pulses) > scara::MICROSTEPS;
         }
-        rotors_[i].advance(steps_[i], dt, plant::loadOf(i, tool), current_[i],
-                           i <= contactedBody ? plant::motorReaction(i, measuredEffort_) : 0.0);
+        plant::Load load = plant::loadOf(i, tool);
+        if (retained)
+          rotors_[i].advanceContact(steps_[i], dt, load, current_[i], pulses, speed,
+                                    plant::motorReaction(i, measuredEffort_));
+        else
+          rotors_[i].advance(steps_[i], dt, load, current_[i]);
       }
     }
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
@@ -523,7 +537,7 @@ public:
   double current(int motor) const { return current_[motor]; }
   void setObstacle(webots::Node* obstacle, const char* kind) {
     obstacle_ = obstacle;
-    obstacleKind_ = obstacle ? kind : "NONE";
+    obstacleKind_ = obstacle ? kind : "ninguno";
     contacting_ = false;
     contactBody_ = "NONE";
     if (obstacle_) obstacle_->enableContactPointsTracking(sampling_);
@@ -542,7 +556,7 @@ public:
                       scara::MOTOR_MAX_ACCELERATION[m] * plant::PI / 180 +
                   std::fabs(load.gravity) / load.efficiency + load.friction;
     }
-    return plant::jointCapacity(joint, torque);
+    return plant::jointCapacity(joint, torque) + (joint == 0 ? plant::jointCapacity(1, torque) : 0.0);
   }
   void resetEffortPeaks() { std::fill(peakEffort_, peakEffort_ + scara::MOTOR_COUNT, 0.0); }
   // Pasos completos que el motor se corrió de los pulsos que recibió desde
@@ -850,13 +864,13 @@ private:
                   stuck, hal_.cut() ? 1 : 0, grams, percent(0), percent(1), percent(2), percent(3), plant_.lost(0),
                   plant_.lost(1), plant_.lost(2), plant_.lost(3));
     link_.write(out);
-    std::snprintf(out, sizeof out, "SIM OBSTACULO %s %d %d %d\n", obstacle_ ? "maceta" : "ninguno",
+    std::snprintf(out, sizeof out, "SIM OBSTACULO %s %d %d %d\n", plant_.obstacleKind(),
                   obstacleX_, obstacleY_, obstacle_ ? 150 : 0);
     link_.write(out);
     char contact[384];
     std::snprintf(contact, sizeof contact,
         "SIM CONTACTO %s %s %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f %.6f\n",
-        obstacle_ ? "maceta" : "ninguno", plant_.contact() ? plant_.contactBody() : "ninguno",
+        plant_.obstacleKind(), plant_.contact() ? plant_.contactBody() : "ninguno",
         plant_.effort(0), plant_.effort(1), plant_.effort(2), plant_.effort(3),
         plant_.peakEffort(0), plant_.peakEffort(1), plant_.peakEffort(2), plant_.peakEffort(3),
         plant_.effortLimit(0), plant_.effortLimit(1), plant_.effortLimit(2), plant_.effortLimit(3));

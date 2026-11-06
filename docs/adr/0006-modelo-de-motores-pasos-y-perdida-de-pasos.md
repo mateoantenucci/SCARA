@@ -19,3 +19,8 @@ El firmware y la planificación no reciben el contacto. El banco lo muestra sin 
 
 
 Para medir J1, su articulación cuelga de un soporte numérico sin geometría bajo la base estática. Según la [semántica de Physics en Webots](https://github.com/cyberbotics/webots/blob/master/docs/reference/physics.md#how-to-use-physics-nodes), ese soporte se fija al entorno mediante una unión ODE fija. Su masa de 1 kg e inercia diagonal de 0,01 kg·m² solo hacen posible el feedback: no agregan una masa móvil ni cambian CAD o colisiones. La base permanece sin Physics. Sin ese soporte, Webots rechaza el feedback de J1 por no tener un cuerpo físico padre.
+
+
+La capacidad de J1 no se implementa como una suma independiente de dos máximos. El accionamiento ODE de J1 se limita por M1 y el de J2 por M2; el esfuerzo de M2 sobre el brazo se suma cancelando la reacción del motor relativo de J2 sobre ARM. Esto representa a M2 fijo en la bancada y respeta Q1=4η(τ1+τ2), Q2=4ητ2. La cancelación usa el feedback del tick anterior (2 ms): es una aproximación numérica declarada, verificada con la campaña sin obstáculos. El banco muestra Q1 total, mientras el techo de cada accionamiento sigue perteneciendo a un solo motor.
+
+Solo se reancla un rotor si el cuerpo tocado está en su cadena y el mecanismo se aparta de él más de un paso completo. Los ejes que siguen normalmente no reciben la reacción de otros ejes. En un eje retenido, el esfuerzo observado ya contiene la carga normal; se descuenta la contribución de gravedad y fricción del modelo antes de sumarlo como carga externa. Así un contacto horizontal del pistón no agrega una segunda vez el peso de J4.

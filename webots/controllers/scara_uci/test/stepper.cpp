@@ -190,8 +190,7 @@ void contactRelease() {
   plant::Load load = plant::loadOf(0, HEAVY_TOOL);
   const long commanded = 203;
   for (long pulse = 1; pulse <= commanded; ++pulse) {
-    stepper.constrain(0, 0);
-    stepper.advance(pulse, DT, load, 1, -0.56);
+    stepper.advanceContact(pulse, DT, load, 1, 0, 0, -0.56);
   }
   long lost = stepper.lost();
   check(lost > 0 && lost % CYCLE == 0, "bloqueado pierde ciclos completos", lost, commanded);
@@ -207,6 +206,28 @@ void contactRelease() {
   for (int tick = 0; tick < 2000; ++tick) stepper.advance(commanded + 500, DT, load, 1);
   check(stepper.lost() == lost, "pulsos nuevos conservan pérdida", stepper.lost(), lost);
   check(std::fabs(stepper.position() - released - 500) < 1, "continúa desde donde quedó", stepper.position() - released, 500);
+}
+
+// El motor de J1 no dispone del par de M2: ese segundo accionamiento actúa
+// en J2 y su reacción en el brazo se cancela mediante la transmisión fija.
+void actuatorCapacity() {
+  const double motorTorque[4] = {0.56, 0.56, 0.217, 0.14};
+  check(std::fabs(plant::jointCapacity(0, motorTorque) - 2.128) < 1e-9,
+        "accionamiento J1 limitado por M1", plant::jointCapacity(0, motorTorque), 2.128);
+  const double effort[4] = {4.256, 2.128, 0, 0};
+  check(std::fabs(plant::motorReaction(0, effort) + 0.56) < 1e-9 &&
+        std::fabs(plant::motorReaction(1, effort) + 0.56) < 1e-9,
+        "esfuerzo acoplado realizable con ambos motores al límite", plant::motorReaction(0, effort), -0.56);
+}
+
+// Una superficie puede sostener todo el peso sin par del accionamiento:
+// su reacción compensa la gravedad, no la agrega otra vez al rotor.
+void contactSupportsWeight() {
+  plant::Stepper stepper(plant::MOTORS[3], scara::STEPS_PER_REV);
+  plant::Load load = plant::loadOf(3, HEAVY_TOOL);
+  for (int tick = 0; tick < 1000; ++tick) stepper.advanceContact(0, DT, load, 1, 0, 0, 0);
+  check(stepper.position() == 0 && stepper.speed() == 0 && stepper.lost() == 0,
+        "contacto soporta peso sin duplicar gravedad", stepper.position(), stepper.lost());
 }
 
 // Margen de par en los límites de D45, a la velocidad máxima: el disponible
@@ -244,5 +265,7 @@ int main(int argc, char** argv) {
   againstAStop();
   externalLoad();
   contactRelease();
+  actuatorCapacity();
+  contactSupportsWeight();
   return failures == 0 ? 0 : 1;
 }

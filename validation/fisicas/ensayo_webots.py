@@ -5,6 +5,7 @@ Usa los dos primeros puntos de demo-barrido-ptp.json (versión 2), a 25 y
 son los mismos que en la campaña sin obstáculos.
 """
 import json
+from dataclasses import replace
 import os
 from pathlib import Path
 import subprocess
@@ -100,13 +101,20 @@ try:
     middle = [(a + b) / 2 for a, b in zip(start, target)]
     x, y, _ = tool_point(middle)
     position = {"x": round(x * 1000), "y": round(y * 1000)}
+    nominal_limits = session.limits
     results = []
     for speed in (0.25, 1.0):
         log("C1 inicio", speed, start, target, position)
         move(start)
         obstacle("maceta", **position)
+        # El porcentaje de velocidad de la URC conserva aceleraciones (D53).
+        # Para este ensayo se reducen también, explícitamente, los límites D76.
+        with session.lock:
+            session.limits = replace(nominal_limits,
+                joint_acceleration=tuple(a * speed for a in nominal_limits.joint_acceleration),
+                motor_acceleration=tuple(a * speed for a in nominal_limits.motor_acceleration))
         session.move_ptp(target, speed=speed)
-        wait(lambda: bench.snapshot().get("contact"), "contacto con maceta", 60)
+        touch = wait(lambda: (s := bench.snapshot()).get("contact") and s, "contacto con maceta", 60)
         wait(lambda: any(bench.snapshot()["lost_steps"]), "pérdida de pasos", 60)
         # El estator completa su tramo con el obstáculo aún puesto.
         wait(lambda: still(), "fin del tramo contra maceta", 90)
@@ -121,7 +129,7 @@ try:
         assert all(abs(d) < 2 * limit for d, limit in zip(release, STILL)), release
         assert all(v > 0 for v in before["peak_effort"]), before
         assert after["lost_steps"] == lost, (lost, after["lost_steps"])
-        result = {"speed_pct": round(speed * 100), "contact": before["contact"],
+        result = {"speed_pct": round(speed * 100), "acceleration_pct": round(speed * 100), "contact": touch["contact"],
                   "obstacle_mm": position, "estimated": session.snapshot()["status"]["position"],
                   "physical": before["simulated"], "lost_steps": lost,
                   "peak_effort": before["peak_effort"], "effort_limit": before["effort_limit"],
@@ -134,6 +142,8 @@ try:
         move(continued)
         next_offset = [s - e for s, e in zip(bench.snapshot()["simulated"], continued)]
         assert all(abs(a - b) < 2 * limit for a, b, limit in zip(next_offset, offset, STILL)), (offset, next_offset)
+        with session.lock:
+            session.limits = nominal_limits
         # Buscar un Hall sin homing para observar EV LOST con referencia dudosa.
         session.order("JOG 1 - 1000")
         wait(lambda: session.snapshot()["doubtful"], "EV LOST al cruzar Hall", 90)
