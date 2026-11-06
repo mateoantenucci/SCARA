@@ -1,0 +1,71 @@
+======================================================================
+REPRODUCCIÓN Y EVIDENCIA EXPERIMENTAL #51
+Watchdog de scara/1 vs Velocidad de Simulación en Webots
+Fecha: 2026-11-06 18:44:17
+======================================================================
+
+======================================================================
+ESCENARIO: 1. Real-time 1× (control)
+  Parámetros Webots: --mode=realtime, basicTimeStep=2
+======================================================================
+   scara_uci conectado. Velocidad simulación observada: 0.95×
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4] (velocidad: 1.00×)
+   Progreso homing: ejes referenciados [4, 1] (velocidad: 1.00×)
+   Progreso homing: ejes referenciados [4, 1, 2] (velocidad: 0.99×)
+   Progreso homing: ejes referenciados [4, 1, 2, 3] (velocidad: 1.00×)
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   RESULTADO: Homing terminado exitosamente.
+
+======================================================================
+ESCENARIO: 2. Fast >4× (basicTimeStep 8)
+  Parámetros Webots: --mode=fast, basicTimeStep=8
+======================================================================
+   scara_uci conectado. Velocidad simulación observada: 13.61×
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   -> ERROR DETECTADO: ERR 4 watchdog: más de 1 s sin mensajes de la URC: el robot frenó solo
+   RESULTADO: Abortó con ERR 4 watchdog tras referenciar ejes []
+
+======================================================================
+ESCENARIO: 3. Real-time 1× con silencio URC de 450 ms
+  Parámetros Webots: --mode=realtime, basicTimeStep=2
+  Fluctuación URC: 450 ms tras referenciar J1
+======================================================================
+   scara_uci conectado. Velocidad simulación observada: 0.88×
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4] (velocidad: 0.96×)
+   [JITTER] Silenciando envíos durante 450 ms reales tras EV HOMED 1
+   Progreso homing: ejes referenciados [4, 1] (velocidad: 0.94×)
+   Progreso homing: ejes referenciados [4, 1, 2] (velocidad: 1.00×)
+   Progreso homing: ejes referenciados [4, 1, 2, 3] (velocidad: 0.99×)
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   RESULTADO: Homing terminado exitosamente.
+
+======================================================================
+ESCENARIO: 4. Fast ~2.3× con silencio URC de 450 ms
+  Parámetros Webots: --mode=fast, basicTimeStep=2
+  Fluctuación URC: 450 ms tras referenciar J1
+======================================================================
+   scara_uci conectado. Velocidad simulación observada: 0.66×
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4] (velocidad: 1.85×)
+   [JITTER] Silenciando envíos durante 450 ms reales tras EV HOMED 1
+   Progreso homing: ejes referenciados [4, 1] (velocidad: 2.17×)
+   -> ERROR DETECTADO: ERR 4 watchdog: más de 1 s sin mensajes de la URC: el robot frenó solo
+   RESULTADO: Abortó con ERR 4 watchdog tras referenciar ejes [4, 1]
+
+======================================================================
+TABLA COMPARATIVA FINAL DE RESULTADOS #51:
+======================================================================
+Escenario                                  | Velocidad  | Resultado          | Ejes logrados
+--------------------------------------------------------------------------------
+1. Real-time 1× (control)                  | 0.98×       | OK                 | [4, 1, 2, 3]
+2. Fast >4× (basicTimeStep 8)              | 9.86×       | ERR 4 watchdog     | []
+3. Real-time 1× con silencio URC de 450 ms | 0.95×       | OK                 | [4, 1, 2, 3]
+4. Fast ~2.3× con silencio URC de 450 ms   | 1.72×       | ERR 4 watchdog     | [4, 1]
+--------------------------------------------------------------------------------
+EVIDENCIA CONFIRMADA Y ASISTIDA POR ASERCIONES.
