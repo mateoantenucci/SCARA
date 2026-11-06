@@ -271,6 +271,23 @@ const double STOP_MARGIN[scara::MOTOR_COUNT] = {1e-4, 1e-4, 1e-4, 1e-5};
 // Pose de reposo (D30), en radianes y metros: la simulación arranca cerca.
 const double REST[scara::MOTOR_COUNT] = {0.0, 0.0, 0.0, 0.12};
 const char* const JOINT_BODIES[scara::MOTOR_COUNT] = {"ARM", "FOREARM", "WRIST", "TOOL"};
+// Poleas que giran sobre su eje, solo visual (rotating_occurrences de
+// config/cad_integration.json), por campos de SCARA.proto: los nodos
+// internos de un PROTO son de solo lectura para el supervisor. El ángulo sale de las articulaciones y no de
+// los rotores: la correa las une a la salida aunque el motor pierda pasos.
+// Ángulo = gain · (J1, J2, J3).
+struct Pulley {
+  const char* field;  // campo SFRotation de SCARA.proto
+  double gain[3];
+};
+const Pulley PULLEYS[] = {
+    {"spin_2GT_20Teet_635Bore_registro_1", {plant::PULLEY_RATIO, 0, 0}},  // M1
+    // M2 y el eje interior siguen al ángulo absoluto del antebrazo, J1 + J2.
+    {"spin_2GT_20Teet_635Bore_registro_2", {plant::PULLEY_RATIO, plant::PULLEY_RATIO, 0}},
+    {"spin_2GT_80Teet_10Bore_registro_1", {1, 1, 0}},
+    {"spin_2GT_20Teet_5Bore_registro_1", {0, 0, plant::PULLEY_RATIO}},  // M3
+};
+const int PULLEY_COUNT = sizeof PULLEYS / sizeof PULLEYS[0];
 
 class Plant {
 public:
@@ -333,6 +350,10 @@ public:
       if (!sensors_[i] || !magnets_[2 * i] || !magnets_[2 * i + 1]) {
         std::printf("UCI: faltan el sensor o los imanes de J%d en el modelo; su Hall no se activa\n", i + 1);
       }
+    }
+    for (int p = 0; p < PULLEY_COUNT; ++p) {
+      spin_[p] = self ? self->getField(PULLEYS[p].field) : 0;
+      if (spin_[p]) std::copy(spin_[p]->getSFRotation(), spin_[p]->getSFRotation() + 3, axes_[p]);
     }
     std::printf("UCI: arranca a %.2f°, %.2f°, %.2f° de la pose de reposo\n", (start_[0] - REST[0]) * 360 / TWO_PI,
                 (start_[1] - REST[1]) * 360 / TWO_PI, (start_[2] - REST[2]) * 360 / TWO_PI);
@@ -460,6 +481,18 @@ public:
 
   uint8_t hall() const { return hall_; }
 
+  // Gira las poleas de motor y la del eje interior adonde las llevan las
+  // articulaciones (PULLEYS). No cambia la física.
+  void spin() {
+    for (int p = 0; p < PULLEY_COUNT; ++p) {
+      if (!spin_[p]) continue;
+      double angle = 0.0;
+      for (int j = 0; j < 3; ++j) angle += PULLEYS[p].gain[j] * physical(j);
+      const double rotation[4] = {axes_[p][0], axes_[p][1], axes_[p][2], std::remainder(angle, TWO_PI)};
+      spin_[p]->setSFRotation(rotation);
+    }
+  }
+
 private:
   // Desplazamiento de la articulación `j` desde el arranque, en radianes o
   // metros, según dónde están los rotores. J2 es relativo: M2 menos M1.
@@ -512,6 +545,8 @@ private:
   webots::Node* sensors_[scara::MOTOR_COUNT];
   webots::Node* magnets_[2 * scara::MOTOR_COUNT];
   double reach_[2 * scara::MOTOR_COUNT];  // alcance de cada imán, en metros
+  webots::Field* spin_[PULLEY_COUNT];     // rotation de cada polea de PULLEYS
+  double axes_[PULLEY_COUNT][3];
   uint8_t hall_;
 };
 
@@ -706,6 +741,7 @@ int main(int argc, char** argv) {
   while (robot.step(timestep) != -1) {
     link.service();
     plant.sense();
+    plant.spin();
     // Reinicio de la UCI pedido por el banco de ensayo (falla F5): el
     // firmware vuelve a arrancar y anuncia BOOT; los motores no se mueven.
     if (bench.service() && booted) {

@@ -2138,6 +2138,615 @@
       ]
     },
     {
+      "instance_name": "2GT_20Teet_635Bore-registro-1",
+      "basename": "2GT_20Teet_635Bore.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_2GT_20Teet_635Bore_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+      "source_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+      "saved_object_to_assembly": [
+        [
+          0.9260175105431168,
+          0.3774805560125303,
+          -5.639839928964938e-16,
+          -0.08880042133660357
+        ],
+        [
+          -0.3774805560125302,
+          0.9260175105431167,
+          1.4716010990222369e-16,
+          0.010473237861582921
+        ],
+        [
+          5.778091331969345e-16,
+          7.662015259782691e-17,
+          0.9999999999999999,
+          0.2795175026756441
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.3911667377604444,
+          -0.9203198266199919,
+          -1.5550466812640569e-16,
+          -0.0008053998865831836
+        ],
+        [
+          -0.920319826619992,
+          -0.39116673776044447,
+          5.617404564216498e-16,
+          0.05612801068820899
+        ],
+        [
+          -5.778091331969345e-16,
+          -7.662015259782691e-17,
+          -0.9999999999999999,
+          0.14886636883608045
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.3911667377604444,
+          -0.9203198266199919,
+          -1.5550466812640569e-16,
+          -0.0008053998865831836
+        ],
+        [
+          -0.920319826619992,
+          -0.39116673776044447,
+          5.617404564216498e-16,
+          0.05612801068820899
+        ],
+        [
+          -5.778091331969345e-16,
+          -7.662015259782691e-17,
+          -0.9999999999999999,
+          0.14886636883608045
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.00800000037997961,
+        -0.00800000037997961,
+        0.0,
+        0.00800000037997961,
+        0.007977630011737347,
+        0.017999999225139618
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/2GT_20Teet_635Bore.stl",
+          "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+        }
+      ],
+      "body_report": null,
+      "placement_correction": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "2GT_20Teet_635Bore-1",
+          "basename": "2GT_20Teet_635Bore.SLDPRT",
+          "source_cache_stamp": "135",
+          "cached_identity": [
+            "2gt_20teet_635bore.sldprt",
+            "Predeterminado",
+            "135",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.9260175105431168,
+              0.3774805560125303,
+              -5.639839928964938e-16,
+              -0.08880042133660357
+            ],
+            [
+              -0.3774805560125302,
+              0.9260175105431167,
+              1.4716010990222369e-16,
+              0.010473237861582921
+            ],
+            [
+              5.778091331969345e-16,
+              7.662015259782691e-17,
+              0.9999999999999999,
+              0.2795175026756441
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+          "local_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_20Teet_635Bore.stl",
+            "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "2GT_20Teet_635Bore-1",
+          "basename": "2GT_20Teet_635Bore.SLDPRT",
+          "source_cache_stamp": "135",
+          "cached_identity": [
+            "2gt_20teet_635bore.sldprt",
+            "Predeterminado",
+            "135",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.9260175105431168,
+              0.3774805560125303,
+              -5.639839928964938e-16,
+              -0.08880042133660357
+            ],
+            [
+              -0.3774805560125302,
+              0.9260175105431167,
+              1.4716010990222369e-16,
+              0.010473237861582921
+            ],
+            [
+              5.778091331969345e-16,
+              7.662015259782691e-17,
+              0.9999999999999999,
+              0.2795175026756441
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+          "local_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_20Teet_635Bore.stl",
+            "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "2GT_20Teet_635Bore-registro-2",
+      "basename": "2GT_20Teet_635Bore.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_2GT_20Teet_635Bore_registro_2",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+      "source_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+      "saved_object_to_assembly": [
+        [
+          0.9990932358826381,
+          -0.04257588535261792,
+          -2.2397819160504004e-16,
+          0.024333361157181488
+        ],
+        [
+          0.04257588535261792,
+          0.9990932358826381,
+          1.4716010990222369e-16,
+          0.010499991056620677
+        ],
+        [
+          2.1750962425014526e-16,
+          -1.565627402023201e-16,
+          1.0,
+          0.30364637151172463
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.02776024018700906,
+          -0.9996146102697577,
+          -1.504642831179375e-16,
+          0.0008449913042426123
+        ],
+        [
+          -0.9996146102697577,
+          0.02776024018700906,
+          2.2177201754708312e-16,
+          -0.05699373640757166
+        ],
+        [
+          -2.1750962425014526e-16,
+          1.565627402023201e-16,
+          -1.0,
+          0.12473749999999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -0.02776024018700906,
+          -0.9996146102697577,
+          -1.504642831179375e-16,
+          0.0008449913042426123
+        ],
+        [
+          -0.9996146102697577,
+          0.02776024018700906,
+          2.2177201754708312e-16,
+          -0.05699373640757166
+        ],
+        [
+          -2.1750962425014526e-16,
+          1.565627402023201e-16,
+          -1.0,
+          0.12473749999999995
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.00800000037997961,
+        -0.00800000037997961,
+        0.0,
+        0.00800000037997961,
+        0.007977630011737347,
+        0.017999999225139618
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/2GT_20Teet_635Bore.stl",
+          "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+        }
+      ],
+      "body_report": null,
+      "placement_correction": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "2GT_20Teet_635Bore-2",
+          "basename": "2GT_20Teet_635Bore.SLDPRT",
+          "source_cache_stamp": "135",
+          "cached_identity": [
+            "2gt_20teet_635bore.sldprt",
+            "Predeterminado",
+            "135",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.9990932358826381,
+              -0.04257588535261792,
+              -2.2397819160504004e-16,
+              0.024333361157181488
+            ],
+            [
+              0.04257588535261792,
+              0.9990932358826381,
+              1.4716010990222369e-16,
+              0.010499991056620677
+            ],
+            [
+              2.1750962425014526e-16,
+              -1.565627402023201e-16,
+              1.0,
+              0.30364637151172463
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+          "local_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_20Teet_635Bore.stl",
+            "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "2GT_20Teet_635Bore-2",
+          "basename": "2GT_20Teet_635Bore.SLDPRT",
+          "source_cache_stamp": "135",
+          "cached_identity": [
+            "2gt_20teet_635bore.sldprt",
+            "Predeterminado",
+            "135",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              0.9990932358826381,
+              -0.04257588535261792,
+              -2.2397819160504004e-16,
+              0.024333361157181488
+            ],
+            [
+              0.04257588535261792,
+              0.9990932358826381,
+              1.4716010990222369e-16,
+              0.010499991056620677
+            ],
+            [
+              2.1750962425014526e-16,
+              -1.565627402023201e-16,
+              1.0,
+              0.30364637151172463
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_20Teet_635Bore.SLDPRT",
+          "local_sha256": "638e0bc4f8c69714916dc833d1c65606e76aac693b50a597b3c454b803866aa3",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_20Teet_635Bore.stl",
+            "sha256": "59b5342ed9672e51c2db298f1f7a179825ad15258dfbdc785a745b519cc0520e"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
+      "instance_name": "2GT_80Teet_10Bore-registro-1",
+      "basename": "2GT_80Teet_10Bore.SLDPRT",
+      "group": "base",
+      "def_name": "CAD_2GT_80Teet_10Bore_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/2GT_80Teet_10Bore.SLDPRT",
+      "source_sha256": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+      "saved_object_to_assembly": [
+        [
+          -0.06240599018720678,
+          0.9980508465948787,
+          6.750062953590085e-16,
+          -0.03266663884281802
+        ],
+        [
+          0.9980508465948787,
+          0.06240599018720678,
+          -1.4716010990222406e-16,
+          0.010499991056622865
+        ],
+        [
+          -1.8899770851738711e-16,
+          6.645069321654248e-16,
+          -1.0,
+          0.3221079939957112
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          -0.9988663051091748,
+          -0.04760361874421713,
+          1.5715050812917116e-16,
+          -3.161533534967731e-16
+        ],
+        [
+          0.04760361874421713,
+          -0.9988663051091748,
+          -6.727505589113034e-16,
+          -5.336714143516774e-16
+        ],
+        [
+          1.8899770851738711e-16,
+          -6.645069321654248e-16,
+          1.0,
+          0.10627587751601336
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          -0.9988663051091748,
+          -0.04760361874421713,
+          1.5715050812917116e-16,
+          -3.161533534967731e-16
+        ],
+        [
+          0.04760361874421713,
+          -0.9988663051091748,
+          -6.727505589113034e-16,
+          -5.336714143516774e-16
+        ],
+        [
+          1.8899770851738711e-16,
+          -6.645069321654248e-16,
+          1.0,
+          0.10627587751601336
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.027550000697374344,
+        -0.027525177225470543,
+        0.0,
+        0.027550000697374344,
+        0.027525177225470543,
+        0.02070000022649765
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/2GT_80Teet_10Bore.stl",
+          "sha256": "69461078f64d90b43019405973d59bf49fc2bcb25127120e9c0d801bc6ef6185"
+        }
+      ],
+      "body_report": null,
+      "placement_correction": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "0-EnsambleTorre",
+          "source_instance": "2GT_80Teet_10Bore-1",
+          "basename": "2GT_80Teet_10Bore.SLDPRT",
+          "source_cache_stamp": "448",
+          "cached_identity": [
+            "2gt_80teet_10bore.sldprt",
+            "Predeterminado",
+            "448",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.06240599018720678,
+              0.9980508465948787,
+              6.750062953590085e-16,
+              -0.03266663884281802
+            ],
+            [
+              0.9980508465948787,
+              0.06240599018720678,
+              -1.4716010990222406e-16,
+              0.010499991056622865
+            ],
+            [
+              -1.8899770851738711e-16,
+              6.645069321654248e-16,
+              -1.0,
+              0.3221079939957112
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_80Teet_10Bore.SLDPRT",
+          "local_sha256": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_80Teet_10Bore.stl",
+            "sha256": "69461078f64d90b43019405973d59bf49fc2bcb25127120e9c0d801bc6ef6185"
+          },
+          "current_bbox_agrees_with_cached": true
+        },
+        {
+          "source_assembly": "0-EnsambleBase",
+          "source_instance": "2GT_80Teet_10Bore-1",
+          "basename": "2GT_80Teet_10Bore.SLDPRT",
+          "source_cache_stamp": "448",
+          "cached_identity": [
+            "2gt_80teet_10bore.sldprt",
+            "Predeterminado",
+            "448",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.06240599018720678,
+              0.9980508465948787,
+              6.750062953590085e-16,
+              -0.03266663884281802
+            ],
+            [
+              0.9980508465948787,
+              0.06240599018720678,
+              -1.4716010990222406e-16,
+              0.010499991056622865
+            ],
+            [
+              -1.8899770851738711e-16,
+              6.645069321654248e-16,
+              -1.0,
+              0.3221079939957112
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "0-EnsambleBase -> 0-EnsambleTorre",
+            "0-EnsambleTorre -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_80Teet_10Bore.SLDPRT",
+          "local_sha256": "1e9daa6d285240a6326ff45b636a91079d4618870c4046daa4e9e38f1883e46a",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_80Teet_10Bore.stl",
+            "sha256": "69461078f64d90b43019405973d59bf49fc2bcb25127120e9c0d801bc6ef6185"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
       "instance_name": "A-Brazo-1",
       "basename": "A-Brazo.SLDPRT",
       "group": "arm",
@@ -4834,6 +5443,160 @@
       ]
     },
     {
+      "instance_name": "2GT_20Teet_5Bore-registro-1",
+      "basename": "2GT_20Teet_5Bore.SLDPRT",
+      "group": "forearm",
+      "def_name": "CAD_2GT_20Teet_5Bore_registro_1",
+      "disposition": "accepted_mesh",
+      "attachment_status": "registered_mount_visual_only",
+      "source": "Modelos3D/2GT_20Teet_5Bore.SLDPRT",
+      "source_sha256": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+      "saved_object_to_assembly": [
+        [
+          -0.90064171058604,
+          -0.4345624341250077,
+          -1.059644136403814e-15,
+          -0.03037869325014296
+        ],
+        [
+          -0.4345624341250077,
+          0.90064171058604,
+          -8.290407666088933e-16,
+          -0.29245356036459225
+        ],
+        [
+          1.3146296811496213e-15,
+          -2.8618715896226313e-16,
+          -0.9999999999999999,
+          0.2280213715117244
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "canonical_object_pose": [
+        [
+          0.42116320016617004,
+          -0.9069848724349213,
+          8.132410674103064e-16,
+          0.3029541780275229
+        ],
+        [
+          0.9069848724349213,
+          0.42116320016617004,
+          1.0718177339416397e-15,
+          0.0022034131318589634
+        ],
+        [
+          -1.3146296811496213e-15,
+          2.8618715896226313e-16,
+          0.9999999999999999,
+          0.20036250000000017
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "body_from_piece": [
+        [
+          0.45850591431245097,
+          -0.8886913561751929,
+          8.570975383558915e-16,
+          0.05299999999999992
+        ],
+        [
+          0.8886913561751929,
+          0.45850591431245097,
+          1.0370815292245434e-15,
+          5.551115123125783e-17
+        ],
+        [
+          -1.3146296811496213e-15,
+          2.8618715896226313e-16,
+          0.9999999999999999,
+          -0.013000000000000067
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "bbox_local_m": [
+        -0.00800000037997961,
+        -0.00800000037997961,
+        0.0,
+        0.00800000037997961,
+        0.007977630011737347,
+        0.017999999225139618
+      ],
+      "meshes": [
+        {
+          "path": "cad/derivados/stl/2GT_20Teet_5Bore.stl",
+          "sha256": "3571f31a2a1b0ce351b8172857c5c3c2cff29d89e44a9d257e7c4414fdf02701"
+        }
+      ],
+      "body_report": null,
+      "placement_correction": null,
+      "registration_evidence": [
+        {
+          "source_assembly": "B-EnsambleAntebrazo",
+          "source_instance": "2GT_20Teet_5Bore-1",
+          "basename": "2GT_20Teet_5Bore.SLDPRT",
+          "source_cache_stamp": "128",
+          "cached_identity": [
+            "2gt_20teet_5bore.sldprt",
+            "Predeterminado",
+            "128",
+            "1776982682"
+          ],
+          "transform_part_to_global_m": [
+            [
+              -0.90064171058604,
+              -0.4345624341250077,
+              -1.059644136403814e-15,
+              -0.03037869325014296
+            ],
+            [
+              -0.4345624341250077,
+              0.90064171058604,
+              -8.290407666088933e-16,
+              -0.29245356036459225
+            ],
+            [
+              1.3146296811496213e-15,
+              -2.8618715896226313e-16,
+              -0.9999999999999999,
+              0.2280213715117244
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "registration_route": [
+            "B-EnsambleAntebrazo -> 0-EnsambleColision"
+          ],
+          "local_source": "Modelos3D/2GT_20Teet_5Bore.SLDPRT",
+          "local_sha256": "1e026bd715c6564be5cd2daf0774148798fa597ab691166f669b47c84c788a36",
+          "accepted_stl": {
+            "path": "cad/derivados/stl/2GT_20Teet_5Bore.stl",
+            "sha256": "3571f31a2a1b0ce351b8172857c5c3c2cff29d89e44a9d257e7c4414fdf02701"
+          },
+          "current_bbox_agrees_with_cached": true
+        }
+      ]
+    },
+    {
       "instance_name": "Z-BujeExterior-1",
       "basename": "Z-BujeExterior.SLDPRT",
       "group": "wrist",
@@ -5829,7 +6592,7 @@
     }
   ],
   "sources": {
-    "config/cad_integration.json": "f974033cc568cec76d0be0b380df7195cbe90c0966766144701e2ad02c5654b5",
+    "config/cad_integration.json": "980406a7fc53833f8fd68258dd06b7a69fe8a01c4083ce8f52e5cf721ffbc2f2",
     "cad/ensambles/informe.json": "541de5c1b812d549c0afc9e9a41acb13fff0f4f35769de86517ee68dfe96e6d3",
     "cad/ensambles/ejes_propuestos.json": "0ca281741ecfcf408115442e79b8be0aec23bac810618ac7fd49ef73f99ba8a9",
     "cad/ensambles/registro_subensambles.json": "fc57d16b85ed3fda3ccb8c8439b8d2669833484a69ab0f159ac7cc7583aeca53",

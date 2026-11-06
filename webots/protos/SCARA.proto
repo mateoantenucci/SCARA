@@ -14,15 +14,22 @@ PROTO SCARA [
   field SFFloat j2MaxTorque 0.8
   field SFFloat j3MaxTorque 0.3
   field SFFloat j4MaxForce 8.0
+  # Solo visual: transparencia de las carcasas que tapan las poleas (0 a 1) y
+  # giro de las poleas de motor y del eje interior, que lo pone la planta.
+  field SFFloat housingTransparency 0
+  field SFRotation spin_2GT_20Teet_5Bore_registro_1 0 0 1 0
+  field SFRotation spin_2GT_20Teet_635Bore_registro_1 0 0 -1 0
+  field SFRotation spin_2GT_20Teet_635Bore_registro_2 0 0 -1 0
+  field SFRotation spin_2GT_80Teet_10Bore_registro_1 0 0 1 0
 ] {
   DEF BASE Robot { translation IS translation rotation IS rotation
     name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"
     supervisor TRUE controller IS controller controllerArgs IS controllerArgs selfCollision FALSE
     children [ # 0-Torre-1 | validated_individual_bodies_zero_area_cleanup | structural_group_from_assembly
               DEF CAD_0_Torre_1 Pose { translation 6.98768300166908e-17 -7.42678488152571e-18 0.2216
-                rotation 0.712328719358671 -0.701845991351974 0 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl" ] } castShadows FALSE } Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl" ] } castShadows FALSE } Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                rotation 0.712328719358671 -0.701845991351974 0 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
+                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-01.stl" ] } castShadows FALSE } Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
+                  geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-02.stl" ] } castShadows FALSE } Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/torre_por_cuerpos/stl/0-Torre-cuerpo-03.stl" ] } castShadows FALSE } ] }
 # A-CarretelInf-1 | accepted_mesh | provisional_joint_side
               DEF CAD_A_CarretelInf_1 Pose { translation 6.98768300166908e-17 -7.42678488152571e-18 0.2216
@@ -38,7 +45,7 @@ PROTO SCARA [
                   geometry Mesh { url [ "../../cad/derivados/stl/0-ElevadorM2.stl" ] } castShadows FALSE } ] }
 # 0-PlatinaSuperior-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_0_PlatinaSuperior_registro_1 Pose { translation 6.97684097994422e-17 -4.87890977618477e-19 0.2152375
-                rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/stl/0-PlatinaSuperior.stl" ] } castShadows FALSE } ] }
 # 0-SoporteMotores-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_0_SoporteMotores_registro_1 Pose { translation 2.5017965130103e-16 2.19550939928315e-18 0.1528375
@@ -59,7 +66,28 @@ PROTO SCARA [
 # 0-6203-2RS-registro-2 | accepted_mesh | registered_mount_visual_only
               DEF CAD_0_6203_2RS_registro_2 Pose { translation -3.10569712308473e-16 -5.6134567480437e-16 0.1552375
                 rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126 children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/0-6203-2RS.stl" ] } castShadows FALSE } ] } Receiver { translation -0.06 0 0.2913625 name "hall1"
+                  geometry Mesh { url [ "../../cad/derivados/stl/0-6203-2RS.stl" ] } castShadows FALSE } ] }
+# 2GT_20Teet_635Bore-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_2GT_20Teet_635Bore_registro_1 Pose { translation -0.000805399886583184 0.056128010688209 0.14886636883608
+                rotation 0.834016408040167 -0.551739640700012 -3.46401538163208e-16 3.14159265358979 children [ Pose { rotation IS spin_2GT_20Teet_635Bore_registro_1
+                  children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_20Teet_635Bore.stl" ] } castShadows FALSE } Pose { translation 0.00800000037997961 0 0.00899999961256981 children [ Shape {
+                    appearance PBRAppearance { baseColor 1 0.85 0 roughness 0.5 metalness 0 }
+                    geometry Box { size 0.002 0.004 0.0189999992251396 } } ] } ] } ] }
+# 2GT_20Teet_635Bore-registro-2 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_2GT_20Teet_635Bore_registro_2 Pose { translation 0.000844991304242612 -0.0569937364075717 0.1247375
+                rotation -0.697222977179106 0.71685432278358 1.09201224869775e-16 3.14159265358979 children [ Pose { rotation IS spin_2GT_20Teet_635Bore_registro_2
+                  children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_20Teet_635Bore.stl" ] } castShadows FALSE } Pose { translation 0.00800000037997961 0 0.00899999961256981 children [ Shape {
+                    appearance PBRAppearance { baseColor 1 0.85 0 roughness 0.5 metalness 0 }
+                    geometry Box { size 0.002 0.004 0.0189999992251396 } } ] } ] } ] }
+# 2GT_80Teet_10Bore-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_2GT_80Teet_10Bore_registro_1 Pose { translation -3.16153353496773e-16 -5.33671414351677e-16 0.106275877516013
+                rotation 8.65861352912371e-17 -3.34503985498841e-16 1 3.0939710373574 children [ Pose { rotation IS spin_2GT_80Teet_10Bore_registro_1
+                  children [ Shape { appearance PBRAppearance { baseColor 0.45 0.48 0.52 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_80Teet_10Bore.stl" ] } castShadows FALSE } Pose { translation 0.0275500006973743 0 0.0103500001132488 children [ Shape {
+                    appearance PBRAppearance { baseColor 1 0.85 0 roughness 0.5 metalness 0 }
+                    geometry Box { size 0.002 0.004 0.0217000002264977 } } ] } ] } ] } Receiver { translation -0.06 0 0.2913625 name "hall1"
       type "radio" channel 1
       children [ Shape { appearance PBRAppearance { baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }
         geometry Box { size 0.008 0.008 0.004 } } ] } HingeJoint {
@@ -73,7 +101,7 @@ PROTO SCARA [
               translation 0 0 0.2913625 rotation 0 0 1 0 name "arm"
               children [ # A-Brazo-1 | accepted_mesh | structural_group_from_assembly
               DEF CAD_A_Brazo_1 Pose { translation -0.0300000000000001 5.61023449918706e-17 0
-                rotation 0.577350269189626 0.577350269189626 0.577350269189625 2.09439510239319 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 }
+                rotation 0.577350269189626 0.577350269189626 0.577350269189625 2.09439510239319 children [ Shape { appearance PBRAppearance { baseColor 0.72 0.30 0.23 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/stl/A-Brazo.stl" ] } castShadows FALSE } ] }
 # A-BridaEje-1 | accepted_mesh | structural_group_from_assembly
               DEF CAD_A_BridaEje_1 Pose { translation 3.79470760369925e-19 -1.51788304147971e-18 -0.025
@@ -109,7 +137,7 @@ PROTO SCARA [
                   geometry Mesh { url [ "../../cad/derivados/stl/2GT_80Teet_16Bore.stl" ] } castShadows FALSE } ] } Emitter { translation 0.0424264068711928 -0.0424264068711929 0 name "iman1_inicio"
       type "radio" range 0.00523432648384032 maxRange 0.00523432648384032 channel 1
       children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
-        geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.0424264068711929 0.0424264068711929 0 name "iman1_fin"
+        geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.0424264068711929 0.0424264068711928 0 name "iman1_fin"
       type "radio" range 0.00523432648384032 maxRange 0.00523432648384032 channel 1
       children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
         geometry Cylinder { radius 0.004 height 0.004 } } ] }
@@ -127,7 +155,7 @@ PROTO SCARA [
               translation 0.250000000000002 0 -0.078 rotation 0 0 1 1.5707963267949 name "forearm"
               children [ # B-Antebrazo-1 | accepted_mesh | structural_group_from_assembly
               DEF CAD_B_Antebrazo_1 Pose { translation 0.22 6.07153216591882e-17 -1.66533453693773e-16
-                rotation -0.577350269189626 -0.577350269189626 0.577350269189626 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                rotation -0.577350269189626 -0.577350269189626 0.577350269189626 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/stl/B-Antebrazo.stl" ] } castShadows FALSE } ] }
 # B-CarretelInf-1 | accepted_mesh | provisional_joint_side
               DEF CAD_B_CarretelInf_1 Pose { translation -1.27495350073067e-15 -2.11673758621706e-16 0.0249999999999997
@@ -139,11 +167,11 @@ PROTO SCARA [
                   geometry Mesh { url [ "../../cad/derivados/stl/NEMA17.stl" ] } castShadows FALSE } ] }
 # R-Bancada-1 | accepted_mesh | structural_group_from_assembly
               DEF CAD_R_Bancada_1 Pose { translation 0.230000000000003 7.45931094670027e-17 7.43849426498855e-15
-                rotation -0.577350269189629 -0.577350269189629 0.57735026918962 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                rotation -0.577350269189629 -0.577350269189629 0.57735026918962 2.0943951023932 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/stl/R-Bancada.stl" ] } castShadows FALSE } ] }
 # R-ContraBancada-1 | accepted_mesh | structural_group_from_assembly
               DEF CAD_R_ContraBancada_1 Pose { translation 0.250000000000003 2.25514051876985e-17 -0.0237999999999922
-                rotation -8.17990264502557e-15 -6.93576657749568e-15 1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                rotation -8.17990264502557e-15 -6.93576657749568e-15 1 1.5707963267949 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/stl/R-ContraBancada.stl" ] } castShadows FALSE } ] }
 # R-CarretelInf-1 | accepted_mesh | provisional_joint_side
               DEF CAD_R_CarretelInf_1 Pose { translation 0.250000000000003 -2.18748630320675e-15 0.0250000000000075
@@ -155,7 +183,7 @@ PROTO SCARA [
                   geometry Mesh { url [ "../../cad/derivados/stl/B-SoporteEjeFijo.stl" ] } castShadows FALSE } ] }
 # B-SoporteM3-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_B_SoporteM3_registro_1 Pose { translation 0.0529999999999999 4.5102810375397e-17 -0.025
-                rotation 2.35922392732846e-16 1 -5.06842091447225e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                rotation 2.35922392732846e-16 1 -5.06842091447225e-16 3.14159265358979 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 transparency IS housingTransparency }
                   geometry Mesh { url [ "../../cad/derivados/stl/B-SoporteM3.stl" ] } castShadows FALSE } ] }
 # Z-6907-2RS-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_Z_6907_2RS_registro_1 Pose { translation 0.249999999999997 2.94902990916057e-17 -0.0200000000000002
@@ -168,7 +196,14 @@ PROTO SCARA [
 # 2GT_60Teet_8Bore-registro-1 | accepted_mesh | registered_mount_visual_only
               DEF CAD_2GT_60Teet_8Bore_registro_1 Pose { translation -2.38730403890997e-15 -2.17701047215633e-16 0.0686220904676403
                 rotation 1.76449930510342e-17 6.98084009839835e-16 1 1.55004996500151 children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
-                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_60Teet_8Bore.stl" ] } castShadows FALSE } ] } Emitter { translation 0.0282842712474619 -0.0282842712474619 0 name "iman2_inicio"
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_60Teet_8Bore.stl" ] } castShadows FALSE } ] }
+# 2GT_20Teet_5Bore-registro-1 | accepted_mesh | registered_mount_visual_only
+              DEF CAD_2GT_20Teet_5Bore_registro_1 Pose { translation 0.0529999999999999 5.55111512312578e-17 -0.0130000000000001
+                rotation -4.22471966810855e-16 1.22186808975634e-15 1 1.09448307885271 children [ Pose { rotation IS spin_2GT_20Teet_5Bore_registro_1
+                  children [ Shape { appearance PBRAppearance { baseColor 0.22 0.48 0.7 roughness 0.55 metalness 0.15 }
+                  geometry Mesh { url [ "../../cad/derivados/stl/2GT_20Teet_5Bore.stl" ] } castShadows FALSE } Pose { translation 0.00800000037997961 0 0.00899999961256981 children [ Shape {
+                    appearance PBRAppearance { baseColor 1 0.85 0 roughness 0.5 metalness 0 }
+                    geometry Box { size 0.002 0.004 0.0189999992251396 } } ] } ] } ] } Emitter { translation 0.0282842712474619 -0.0282842712474619 0 name "iman2_inicio"
       type "radio" range 0.00348955098922688 maxRange 0.00348955098922688 channel 2
       children [ Shape { appearance PBRAppearance { baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }
         geometry Cylinder { radius 0.004 height 0.004 } } ] } Emitter { translation 0.0282842712474619 0.0282842712474619 0 name "iman2_fin"
@@ -313,7 +348,10 @@ PROTO SCARA [
             children [ Box { size 0.0549999997019768 0.0549504421651363 0.00999999977648258 } ] }
 # 2GT_60Teet_8Bore-registro-1 | accepted_mesh
           Pose { translation 2.54369343628119e-07 1.22591543032907e-05 0.0787720909206356 rotation 1.76449930510342e-17 6.98084009839835e-16 1 1.55004996500151
-            children [ Box { size 0.0419754758477211 0.0419877357780933 0.0203000009059906 } ] } ] }
+            children [ Box { size 0.0419754758477211 0.0419877357780933 0.0203000009059906 } ] }
+# 2GT_20Teet_5Bore-registro-1 | accepted_mesh
+          Pose { translation 0.0530099401764456 -5.12847307214784e-06 -0.00400000038743026 rotation -4.22471966810855e-16 1.22186808975634e-15 1 1.09448307885271
+            children [ Box { size 0.0160000007599592 0.015977630391717 0.0179999992251396 } ] } ] }
               physics Physics { density -1 mass 0.5
       centerOfMass [ 0.12453800669917 3.78169717762944e-16 -0.0119999997839291 ]
       inertiaMatrix [ 0.000771000030495299 0.00472484189398955 0.00462884191713845, 0 0 0 ] } } } ]
@@ -376,6 +414,15 @@ PROTO SCARA [
             children [ Box { size 0.0399751383811235 0.0399875678122044 0.0120000001043081 } ] }
 # 0-6203-2RS-registro-2 | accepted_mesh
           Pose { translation -1.84272774685568e-07 1.24289964603047e-05 0.161237500052154 rotation 3.54489237128632e-16 -2.04262108255126e-16 1 1.58562127867126
-            children [ Box { size 0.0399751383811235 0.0399875678122044 0.0120000001043081 } ] } ] }
+            children [ Box { size 0.0399751383811235 0.0399875678122044 0.0120000001043081 } ] }
+# 2GT_20Teet_635Bore-registro-1 | accepted_mesh
+          Pose { translation -0.000795105939872112 0.0561323859601929 0.139866369223511 rotation 0.834016408040167 -0.551739640700012 -3.46401538163208e-16 3.14159265358979
+            children [ Box { size 0.0160000007599592 0.015977630391717 0.0179999992251396 } ] }
+# 2GT_20Teet_635Bore-registro-2 | accepted_mesh
+          Pose { translation 0.000856172177708652 -0.0569940469109694 0.11573750038743 rotation -0.697222977179106 0.71685432278358 1.09201224869775e-16 3.14159265358979
+            children [ Box { size 0.0160000007599592 0.015977630391717 0.0179999992251396 } ] }
+# 2GT_80Teet_10Bore-registro-1 | accepted_mesh
+          Pose { translation -3.14526845719839e-16 -5.40634382712598e-16 0.116625877629262 rotation 8.65861352912371e-17 -3.34503985498841e-16 1 3.0939710373574
+            children [ Box { size 0.0551000013947487 0.0550503544509411 0.0207000002264977 } ] } ] }
   }
 }

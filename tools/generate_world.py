@@ -16,6 +16,12 @@ from generate_cad_preview import axis_angle, wire_box
 from integrate_cad import BODY_DEFS, derive
 
 
+# Carcasas que tapan las poleas: el campo housingTransparency del PROTO las
+# vuelve transparentes para verlas girar (solo visual).
+HOUSINGS = {'0-Torre-1', '0-PlatinaSuperior-registro-1', 'A-Brazo-1', 'B-Antebrazo-1',
+            'B-SoporteM3-registro-1', 'R-Bancada-1', 'R-ContraBancada-1'}
+
+
 def numbers(values):
     return " ".join(f"{v:.15g}" for v in values)
 
@@ -98,6 +104,8 @@ def build():
     if any(abs(value-c['geometry'][key]) > 1e-9 for key,value in cad['geometry'].items()):
         raise ValueError("Geometría desactualizada: ejecutar tools/integrate_cad.py --update-config")
     g, q, bodies = c['geometry'], c['initial_positions'], c['body_properties']
+    rotating = set(json.loads((ROOT/'config/cad_integration.json').read_text()).get('rotating_occurrences', []))
+    spin_fields = []
     colors = dict(base='0.45 0.48 0.52', arm='0.72 0.30 0.23', forearm='0.22 0.48 0.7',
                   wrist='0.68 0.72 0.76', tool='0.22 0.62 0.48')
 
@@ -109,12 +117,29 @@ def build():
             matrix = entry['body_from_piece']
             color = '0.9 0.5 0.12' if entry['disposition'] == 'accepted_mesh_cache_differs' else colors[group]
             shapes = []
+            clear = ' transparency IS housingTransparency' if entry['instance_name'] in HOUSINGS else ''
             for mesh in entry['meshes']:
                 url = os.path.relpath(ROOT/mesh['path'], ROOT/'webots/protos').replace(os.sep, '/')
-                shapes.append(f"""Shape {{ appearance PBRAppearance {{ baseColor {color} roughness 0.55 metalness 0.15 }}
+                shapes.append(f"""Shape {{ appearance PBRAppearance {{ baseColor {color} roughness 0.55 metalness 0.15{clear} }}
                   geometry Mesh {{ url [ {json.dumps(url)} ] }} castShadows FALSE }}""")
             if not shapes:
                 shapes.append(wire_box(entry['bbox_local_m']))
+            if entry['instance_name'] in rotating:
+                # Polea que gira sobre su eje, solo visual: la planta le pone el
+                # ángulo (PULLEYS en scara_uci.cpp) por un campo del PROTO, porque
+                # los internos son de solo lectura. El eje apunta a +Z del cuerpo,
+                # así un ángulo positivo es el giro positivo de su motor.
+                axis = 1 if entry['body_from_piece'][2][2] > 0 else -1
+                field = 'spin_' + entry['def_name'].removeprefix('CAD_')
+                spin_fields.append(f"field SFRotation {field} 0 0 {axis} 0")
+                # Las mallas de las poleas son lisas: sin una marca, el giro no se
+                # ve. Franja en la llanta; no es geometría del CAD.
+                box = entry['bbox_local_m']
+                mark = f"""Pose {{ translation {numbers([box[3], 0, (box[2]+box[5])/2])} children [ Shape {{
+                    appearance PBRAppearance {{ baseColor 1 0.85 0 roughness 0.5 metalness 0 }}
+                    geometry Box {{ size {numbers([0.002, 0.004, box[5]-box[2]+0.001])} }} }} ] }}"""
+                shapes = [f"""Pose {{ rotation IS {field}
+                  children [ {' '.join(shapes)} {mark} ] }}"""]
             poses.append(f"""# {entry['instance_name']} | {entry['disposition']} | {entry['attachment_status']}
               DEF {entry['def_name']} Pose {{ translation {numbers([matrix[i][3] for i in range(3)])}
                 rotation {numbers(axis_angle(matrix))} children [ {' '.join(shapes)} ] }}""")
@@ -161,6 +186,7 @@ def build():
               boundingObject {collision(cad,group)}
               physics {physics(bodies[axis-1])} }}"""
     tool_mass, tool_center, tool_inertia = box_with_payload(bodies[3])
+    base = visual('base')  # antes del encabezado: completa spin_fields
     proto = f"""#VRML_SIM R2025a utf8
 # Generado por tools/generate_world.py. Visuales CAD parciales; física y referencias provisionales.
 PROTO SCARA [
@@ -177,11 +203,15 @@ PROTO SCARA [
   field SFFloat j2MaxTorque {c['max_effort'][1]}
   field SFFloat j3MaxTorque {c['max_effort'][2]}
   field SFFloat j4MaxForce {c['max_effort'][3]}
+  # Solo visual: transparencia de las carcasas que tapan las poleas (0 a 1) y
+  # giro de las poleas de motor y del eje interior, que lo pone la planta.
+  field SFFloat housingTransparency 0
+  {chr(10).join('  ' + f for f in spin_fields).lstrip()}
 ] {{
   DEF BASE Robot {{ translation IS translation rotation IS rotation
     name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"
     supervisor TRUE controller IS controller controllerArgs IS controllerArgs selfCollision FALSE
-    children [ {visual('base')} {hall_sensor(0, [0, 0], g['shoulder_z'])} {joint} ]
+    children [ {base} {hall_sensor(0, [0, 0], g['shoulder_z'])} {joint} ]
     boundingObject {collision(cad,'base')}
   }}
 }}

@@ -42,6 +42,32 @@ class CADIntegrationTests(unittest.TestCase):
             self.assertTrue(part['registration_evidence'])
             self.assertIsNone(part['placement_correction'])
 
+    def test_motor_pulleys_sit_on_their_motor_and_the_plant_spins_them(self):
+        cad = derive()
+        parts = {p['instance_name']: p for p in cad['instances']}
+        # El eje de poleas y motores pasa por su origen; la altura, por el
+        # centro de su caja (el origen está en una cara).
+        def center(name):
+            box = parts[name]['bbox_local_m']
+            return transform_point(parts[name]['canonical_object_pose'], [0, 0, (box[2]+box[5])/2])
+        # Polea de motor: en el eje de su motor, a la altura de la polea que mueve.
+        for pulley, motor, driven in (('2GT_20Teet_635Bore-registro-1', 'NEMA23-registro-2', '2GT_80Teet_16Bore-registro-1'),
+                                      ('2GT_20Teet_635Bore-registro-2', 'NEMA23-registro-1', '2GT_80Teet_10Bore-registro-1'),
+                                      ('2GT_20Teet_5Bore-registro-1', 'NEMA17-1', '2GT_80Teet_40Bore-registro-R')):
+            self.assertEqual(parts[pulley]['group'], parts[motor]['group'])
+            self.assertLess(math.dist(center(pulley)[:2], center(motor)[:2]), 1e-3)
+            self.assertLess(abs(center(pulley)[2] - center(driven)[2]), .005)
+        # Cada polea que gira tiene su campo en el PROTO y su ángulo en la planta.
+        root = Path(__file__).resolve().parents[1]
+        rotating = json.loads((root/'config/cad_integration.json').read_text())['rotating_occurrences']
+        proto = (root/'webots/protos/SCARA.proto').read_text()
+        plant = (root/'webots/controllers/scara_uci/scara_uci.cpp').read_text()
+        for name in rotating:
+            field = 'spin_' + parts[name]['def_name'].removeprefix('CAD_')
+            self.assertIn('field SFRotation ' + field + ' ', proto)
+            self.assertIn('rotation IS ' + field + '\n', proto)
+            self.assertIn('"' + field + '"', plant)
+
     def test_wrist_cap_and_bearings_use_the_coherent_housing_assembly(self):
         cad = derive()
         parts = {p['instance_name']: p for p in cad['instances']}
