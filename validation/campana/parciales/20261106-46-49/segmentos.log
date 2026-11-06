@@ -1,0 +1,37 @@
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9102 --sim-port 0 --desvio 0
+INFO: _observador_segmentos: Starting controller: python3 -u _observador_segmentos.py /var/folders/jb/z9g4zrkd4w770rfrl3brsj800000gn/T/tmpqfbxifjh/fisica.json
+UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
+UCI: conectada a la URC en 127.0.0.1:9102
+UCI: drivers sin corriente
+UCI: drivers con corriente
+0 en reposo y referenciada: estimada [0, 0, 0, 12000]
+1 PTP: de [0, 0, 0, 12000] a [3000, -6000, 2000, 8000]: 67 segmentos, 1.34 s planificados
+   J1: arranca a los 0.020 s y llega a los 1.270 s
+   J2: arranca a los 0.010 s y llega a los 1.280 s
+   J3: arranca a los 0.000 s y llega a los 1.260 s
+   J4: arranca a los 0.010 s y llega a los 1.270 s
+   duración física 1.280 s; dispersión de arranques 0.020 s, de llegadas 0.020 s; mayor diferencia de avance entre articulaciones en una muestra: 0.3 % del camino
+   velocidad física máxima J1–J4 [3066, 6119, 2084, 3991] (límites [10027, 20054, 20054, 4500]); M1–M4 [3066, 3058, 2084, 3991] (límites [9000, 9000, 18000, 4000])
+   física final [2998.1, -5996.2, 2002.5, 8000.2]
+2 PTP con 200 ms sin enviar segmentos: de [2998, -5996, 2003, 8000] a [-3000, -3000, -2000, 10000]: 66 segmentos, 1.32 s planificados
+   J1: arranca a los 0.000 s y llega a los 1.260 s
+   J2: arranca a los 0.000 s y llega a los 1.240 s
+   J3: arranca a los 0.000 s y llega a los 1.260 s
+   J4: arranca a los 0.040 s y llega a los 1.230 s
+   duración física 1.260 s; dispersión de arranques 0.040 s, de llegadas 0.030 s; mayor diferencia de avance entre articulaciones en una muestra: 0.4 % del camino
+   velocidad física máxima J1–J4 [8913, 4482, 5939, 2938] (límites [10027, 20054, 20054, 4500]); M1–M4 [8913, 4448, 5939, 2938] (límites [9000, 9000, 18000, 4000])
+   física final [-2998.1, -3003.7, -2002.5, 10000.2]
+   durante la demora la cola bajó a 4 segmentos de 16, sin vaciarse; el firmware estuvo 1.30 s en RUN (planificado 1.32 s), sin detenerse (0.00 s en IDLE)
+3 PTP con 600 ms sin enviar segmentos: de [-2998, -3004, -2003, 10000] a [3000, -6000, 2000, 1000]: 130 segmentos, 2.60 s planificados
+   J1: arranca a los 0.020 s y llega a los 2.830 s
+   J2: arranca a los 0.030 s y llega a los 2.810 s
+   J3: arranca a los 0.000 s y llega a los 2.820 s
+   J4: arranca a los 0.010 s y llega a los 2.830 s
+   duración física 2.830 s; dispersión de arranques 0.030 s, de llegadas 0.020 s; mayor diferencia de avance entre articulaciones en una muestra: 0.8 % del camino
+   velocidad física máxima J1–J4 [3160, 1788, 1850, 4097] (límites [10027, 20054, 20054, 4500]); M1–M4 [3160, 1514, 1850, 4097] (límites [9000, 9000, 18000, 4000])
+   física final [2998.1, -5996.2, 2002.5, 1000.2]
+   la cola se vació: el firmware quedó quieto 0.30 s en IDLE en medio del tramo y estuvo 2.89 s entre el primer y el último RUN (planificado 2.60 s). Al volver los segmentos arrancó de golpe a velocidad de crucero.
+4 STOP a 1 s de un PTP de J1 de 2998 a -9000: J1 iba a 90.0 °/s; empezó a frenar 0.05 s después de enviar STOP y se detuvo en 0.57 s y 27.82° (v/a y v²/2a con 140 °/s²: 0.64 s y 28.92°)
+   estimada [-5282, -3926, 2003, 1000], física [-5281.9, -3926.2, 2002.5, 1000.2], modo IDLE, cola libre 16, referenciada True, tramo: frenado por el operador
+ENSAYO OK

@@ -1,0 +1,8 @@
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9120 --sim-port 9121
+UCI: arranca a 4.82°, 5.81°, -1.48° de la pose de reposo
+UCI: conectada a la URC en 127.0.0.1:9120
+SIM: conectada a la URC en 127.0.0.1:9121
+UCI: drivers sin corriente
+UCI: drivers con corriente
+0 arranque con desvío: simulado [482, 581, -148, 11999], sin referencia

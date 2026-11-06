@@ -1,0 +1,11 @@
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9110 --sim-port 9111 --desvio 0
+UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
+UCI: conectada a la URC en 127.0.0.1:9110
+SIM: conectada a la URC en 127.0.0.1:9111
+UCI: drivers sin corriente
+UCI: drivers con corriente
+0 homing y reposo en 62 s: estimada [0, 0, 0, 12000], simulado [0, 0, 0, 11999], diferencia [0.0, 0.0, 0.0, -0.25] pasos completos; pasos perdidos [0, 0, 0, 0]; EV LOST []
+1 con 5 kg y la corriente nominal, J4 sube a 10 mm: diferencia [0.0, 0.0, 0.0, 0.5] pasos completos, pasos perdidos [0, 0, 0, 0]
+  y vuelve al reposo, cruzando el Hall de abajo: pasos perdidos [0, 0, 0, 0], EV LOST []
+2 F1, M4 al 50 % con 5 kg, de 60 a 10 mm: J4 estimado 10.00 mm, simulado 120.00 mm; diferencia 2750.00 pasos completos, la planta perdió 1252
