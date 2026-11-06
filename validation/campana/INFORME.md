@@ -6,19 +6,19 @@ Evidencia vigente del sistema `scara/1`: la URC, el firmware compartido dentro d
 
 ## Versión ensayada
 
-Campaña del 01/11/2026, registrada en [`campana.json`](campana.json):
+Campaña del 06/11/2026, registrada en [`campana.json`](campana.json):
 
 | Qué | Valor |
 | --- | --- |
-| Commit | `6ddc4caca4193301d6d8009fcc5874b2e51e450f`, del 01/11/2026 a las 15:49; campaña de 15:49 a 16:02 |
-| Controlador compilado (`scara_uci.exe`, `g++` 14.2 de Webots) | SHA-256 `13a399d716941bb90bb36a5707bddc443048f324b88a856ba3a328f9b852946d` |
+| Commit | `39df64ddb5067175cfa6da513091dcddd7b8ccb5`, del 06/11/2026 a las 19:11; campaña de 19:27 a 19:45 |
+| Controlador compilado (`scara_uci`, Apple Clang / clang++) | SHA-256 `2edea2595ace93d48c00fb6cc4624550fe2f63bf78d4b2267f6618b6d36217b8` |
 | Mundo `scara_uci.wbt` | SHA-256 `8df2160e597d3b67722ab0cea0661bab102327acfa59e88abb98903013b0b464` |
-| `SCARA.proto` | SHA-256 `a6415ba38b27546c34cad6b7133b8d61f9a34b79b161ac73cc73d81d3cca7203` |
+| `SCARA.proto` | SHA-256 `fafd096e25ae51e6834a73587e76ebb831a36bc5835f62456839292a299cf837` |
 | Trayectorias de demostración | SHA-256 de cada archivo en `campana.json` |
-| Entorno | Windows 11 Pro, Webots R2025a, Python 3.12.7; Webots minimizado, sin vista, a tiempo real |
+| Entorno | macOS 27.2 (Darwin 24.3.0 arm64, Apple Silicon), Webots R2025a, Python 3.15.0; Webots sin renderizado / sin vista, a tiempo real |
 | Configuración | Microstepping 1/8 (D9), planta N2 (D64), los límites de D76 (J1 a 90 °/s, J3 a 180 °/s, J4 a 40 mm/s) |
 
-El ejecutor compila el controlador antes de correr, así que el binario ensayado sale del commit registrado, y solo registra una campaña completa con el árbol sin cambios (D73). El commit es el de la rama del PR, que se mergea sin rebase.
+El ejecutor compila el controlador antes de correr, así que el binario ensayado sale del commit registrado, y solo registra una campaña completa con el árbol sin cambios (D73). Se conserva la distinción entre el commit de la versión ensayada (`39df64d`) y el commit posterior que guarda esta evidencia.
 
 ## Cómo repetirla
 
@@ -28,7 +28,7 @@ Desde la raíz del repo, con el árbol sin cambios sin commitear:
 python validation/campana/campana.py
 ```
 
-Dura unos 15 minutos. Corre, uno detrás de otro, los ocho ensayos en Webots, y deja `campana.json` y los registros en [`registros/`](registros/). Con nombres de ensayos (`python validation/campana/campana.py homing`) corre solo esos y deja sus registros en un temporal. Los puertos van del 9100 al 9121: puede correr con una URC y un Webots abiertos en 9000 y 9001.
+Dura unos 18–20 minutos. Corre, uno detrás de otro, los diez ensayos en Webots, y deja `campana.json` y los registros en [`registros/`](registros/). Con nombres de ensayos (`python validation/campana/campana.py homing`) corre solo esos y deja sus registros en un temporal. Los puertos van del 9100 al 9133: puede correr con una URC y un Webots abiertos en 9000 y 9001.
 
 ## Escenarios
 
@@ -55,7 +55,7 @@ Cada ensayo verifica las tolerancias con `assert` y se corta en la primera que n
 | P2 | Transmisión N1 | Referenciado en el reposo | Jog articular de a una articulación; M1 cambia J1 y J2 y no el rumbo; J3 en escalones de un paso | ≤ 1 paso; escalón de 0,05625° | **OK** | [transmisión](registros/transmision.log) |
 | P3 | Segmentos y tramo PTP | Referenciado en el reposo | Llegada conjunta en el tiempo planificado; la cola absorbe 200 ms; `STOP` con rampa | Las del [informe de segmentos](../segmentos/INFORME.md) | **OK** | [segmentos](registros/segmentos.log) |
 
-El detalle de cada ensayo reusado, lo que mide y por qué, está en el informe de su issue: [protocolo](../../docs/UCI_WEBOTS.md#ensayo-del-protocolo-completo-issue-6) (#6), [transmisión](../transmision/INFORME.md) (#7), [segmentos](../segmentos/INFORME.md) (#9), [homing](../homing/INFORME.md) (#8), [instrumentación y F2–F5](../instrumentacion/INFORME.md) (#14), [pérdida de pasos y F1](../perdida_pasos/INFORME.md) (#15) y [reproducción](../reproduccion/INFORME.md) (#13). Sus registros de entonces quedan como estaban; los de esta campaña son los de [`registros/`](registros/).
+El detalle de cada ensayo reusado, lo que mide y por qué, está en el informe de su issue: [protocolo](../../docs/UCI_WEBOTS.md#ensayo-del-protocolo-completo-issue-6) (#6), [transmisión](../transmision/INFORME.md) (#7), [segmentos](../segmentos/INFORME.md) (#9), [homing](../homing/INFORME.md) (#8), [instrumentación y F2–F5](../instrumentacion/INFORME.md) (#14), [pérdida de pasos y F1](../perdida_pasos/INFORME.md) (#15), [reproducción](../reproduccion/INFORME.md) (#13), [físicas C1–C3](../fisicas/INFORME.md) (#46–#48) y [movido a mano C4](../movido_mano/INFORME.md) (#49). Sus registros de entonces quedan como estaban; los de esta campaña son los de [`registros/`](registros/).
 
 ## Lo que agrega esta campaña
 
@@ -100,12 +100,12 @@ Sin Webots, `python -m unittest discover` corre:
 - **La planta:** el modelo N2 de los motores y los flancos de los Hall contra la geometría del proto.
 - **Esta campaña:** [`tests/test_campana.py`](../../tests/test_campana.py) verifica que cada escenario tiene condición inicial, resultado, tolerancia y un ensayo que existe, y que el último registro los trae a todos aprobados, con la versión identificada.
 
-Resultado en el commit ensayado: **196 pruebas en verde**, en 122 s; se omiten 3 de propiedades CAD, que necesitan el Python con OCP.
+Resultado en el commit ensayado: **218 pruebas descubiertas: 210 en verde, 8 omitidas**, en ~79 s (se omiten 3 de propiedades CAD que requieren Python con OCP, 2 de exportar maestro que requieren dependencias de documentación, 2 de serie con socat y 1 de compilación del UNO sin arduino-cli).
 
 ## Límites
 
-- **Solo Windows.** macOS queda pendiente de verificar (D19).
-- **Sin mirar la ventana de Webots:** los ensayos corren minimizados, por la URC y el canal de instrumentación. Lo visual queda para la QA humana de la R6 (recorrido en el PR del issue #18; los pasos del banco, corregidos, en [instrumentación](../instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana)).
+- **Entorno ensayado:** la campaña completa actual está validada y registrada en **macOS 27.2 (arm64, Apple Silicon) con Webots R2025a**, superando la limitación histórica de D19 donde macOS quedaba pendiente de verificar. La corrida previa histórica del 01/11/2026 se había ejecutado en Windows 11.
+- **Sin mirar la ventana de Webots:** los ensayos corren en modo batch sin renderizado ni vista, por la URC y el canal de instrumentación. Lo visual queda para la QA humana de la R6 (recorrido en el PR del issue #18; los pasos del banco, corregidos, en [instrumentación](../instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana)).
 - **Parámetros provisionales:** límites articulares, envolventes de colisión, ubicación de los Hall (D10) y los motores de N2, que son de la familia más cercana o supuestos declarados ([ADR 0001](../../docs/adr/0001-simulacion-del-diseno-sin-hardware.md)). La campaña prueba el diseño simulado, no un robot construido.
 - **N2 sin términos cruzados ni modelo eléctrico** ([ADR 0006](../../docs/adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)).
 - **El jog del teach (T1) va por órdenes `JOG` de `scara/1`**, no por el jog de la URC, que cambia con el jog cartesiano (#11). El jog de la URC lo prueban sus endpoints HTTP.

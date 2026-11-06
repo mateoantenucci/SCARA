@@ -24,7 +24,7 @@ J1 mueve el brazo, J2 el antebrazo, J3 gira la muñeca y J4 desplaza el conjunto
 
 - Python 3, Webots y un navegador. Para usarlo no hace falta OCP, SolidWorks ni herramientas CAD.
 - Para compilar el controlador alcanza con el `g++` que trae Webots: [compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
-- La campaña de validación se corrió en **Windows 11 con Webots R2025a** (D73). macOS queda pendiente (D19).
+- La campaña de validación vigente (con escenarios C1–C4) se corrió en **macOS con Webots R2025a** (D19, D73), tras una primera campaña histórica en Windows 11.
 
 ## Copia del proyecto
 
@@ -54,7 +54,6 @@ La [campaña de validación](validation/campana/INFORME.md) ensaya en Webots el 
 Faltan, entre otras cosas (maestro, secciones 9 y 10):
 
 - Probar el firmware con la placa real; solo se probó el camino serie con un puerto virtual y socat (D49).
-- Validar en macOS (D19).
 - Sustituir parámetros provisionales por datos de materiales, componentes y motores con hoja de datos.
 - Las propuestas P1 (microstepping) y P2 (sensores Hall) esperan la revisión del profesor.
 

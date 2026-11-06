@@ -1,5 +1,6 @@
+WARNING: Could not listen to extern controllers and robot windows on port 1234. Port 1234 is already in use. Using port 1235 instead. This could be caused by another running instance of Webots. You should use the '--port' option to start several instances of Webots.
 UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
-INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9104 --sim-port 9105 --desvio 0
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/scara-51-watchdog/webots/controllers/scara_uci/scara_uci --port 9104 --sim-port 9105 --desvio 0
 UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
 UCI: conectada a la URC en 127.0.0.1:9104
 SIM: conectada a la URC en 127.0.0.1:9105
@@ -10,13 +11,13 @@ UCI: drivers con corriente
 2 F2 con J4 en 60.00 mm: M4 sin corriente (0111); J4 simulado cae a 120.00 mm y el estimado sigue en 60.00 mm (diferencia 60.00 mm)
    F2 apagada: el motor retiene J4 donde quedó (119.99 mm); la posición estimada ya no vale
 3 F3, Hall de J4 trabado activo: el homing aborta (abortado: ERR 12 trabado: homing abortado: el Hall no se apagó, está trabado activo); referencia 0
-4 F4 en pleno jog de J1: el último S tiene 2.5 s; J1 simulado quieto (506 → 506): frenó solo
+4 F4 en pleno jog de J1: el último S tiene 2.5 s; J1 simulado quieto (568 → 568): frenó solo
    F4 apagada: vuelve el estado S, con el robot en IDLE (el ERR 4 del watchdog salió con el enlace cortado y se perdió)
 UCI: drivers sin corriente
-5 F5: BOOT inesperado: la UCI se reinició y perdió la referencia (F5); referenciado False; simulado [506, 0, 0, 11999] → [505, 2, 0, 12000]
+5 F5: BOOT inesperado: la UCI se reinició y perdió la referencia (F5); referenciado False; simulado [568, 0, 0, 11999] → [569, -2, 0, 12000]
 INFO: scara_uci: Terminating.
 SIM: recarga del mundo pedida por la URC
-INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9104 --sim-port 9105 --desvio 0
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/scara-51-watchdog/webots/controllers/scara_uci/scara_uci --port 9104 --sim-port 9105 --desvio 0
 UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
 UCI: conectada a la URC en 127.0.0.1:9104
 SIM: conectada a la URC en 127.0.0.1:9105

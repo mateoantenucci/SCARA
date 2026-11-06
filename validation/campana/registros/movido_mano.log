@@ -1,5 +1,6 @@
+WARNING: Could not listen to extern controllers and robot windows on port 1234. Port 1234 is already in use. Using port 1235 instead. This could be caused by another running instance of Webots. You should use the '--port' option to start several instances of Webots.
 UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
-INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9132 --sim-port 9133 --desvio 0
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/scara-51-watchdog/webots/controllers/scara_uci/scara_uci --port 9132 --sim-port 9133 --desvio 0
 UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
 UCI: conectada a la URC en 127.0.0.1:9132
 SIM: conectada a la URC en 127.0.0.1:9133

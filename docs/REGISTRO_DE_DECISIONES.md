@@ -308,7 +308,7 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 **D19 · Compilación en Windows.**
 - **Decisión:** se valida en la bala trazadora. Si no se logra, se documenta que solo se validó en Mac.
 - **Estado:** Aceptada.
-- **Resultado (30/10/2026):** compila y corre en Windows 11 con el `g++` 14.2 que trae Webots R2025a en su MSYS2, sin instalar nada más. Hay que usar el `bash` de Webots con `mingw64/bin/cpp` en el PATH, donde Webots guarda las DLL de C++. Detalle en [UCI en Webots](UCI_WEBOTS.md#resultado-en-windows-d19). macOS queda pendiente de verificar.
+- **Resultado (30/10/2026, actualizado 06/11/2026):** compila y corre en Windows 11 con el `g++` 14.2 que trae Webots R2025a en su MSYS2, sin instalar nada más. Hay que usar el `bash` de Webots con `mingw64/bin/cpp` en el PATH, donde Webots guarda las DLL de C++. Detalle en [UCI en Webots](UCI_WEBOTS.md#resultado-en-windows-d19). El 06/11/2026 se resolvió y validó en macOS con Apple Clang y Webots R2025a en la campaña completa (D73).
 
 ## Bala trazadora (issue #5)
 

@@ -1,15 +1,16 @@
+WARNING: Could not listen to extern controllers and robot windows on port 1234. Port 1234 is already in use. Using port 1235 instead. This could be caused by another running instance of Webots. You should use the '--port' option to start several instances of Webots.
 UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
-INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9101 --sim-port 0 --desvio 0
-INFO: _observador_transmision: Starting controller: python3 -u _observador_transmision.py "/Users/lucianogrosso/Library/Application Support/orca/acp-temp/antigravity/run-4Y27Id/tmp4csxlj42/fisica.json"
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/scara-51-watchdog/webots/controllers/scara_uci/scara_uci --port 9101 --sim-port 0 --desvio 0
+INFO: _observador_transmision: Starting controller: python3 -u _observador_transmision.py "/Users/lucianogrosso/Library/Application Support/orca/acp-temp/antigravity/run-pHZbu2/tmpxm0nzijo/fisica.json"
 UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
 UCI: conectada a la URC en 127.0.0.1:9101
 UCI: drivers sin corriente
 UCI: drivers con corriente
 0 en reposo y referenciada: estimada [0, 0, 0, 12000] física [-0.0, 0.0, -0.0, 11999.0] rumbo -0.0
-1 jog articular de J1: estimada [698, 0, 0, 12000], física [697.5, 0.0, -0.0, 11999.0], cambio físico [697.5, -0.0, 0.0, 0.0]
-2 jog articular de J2: estimada [698, 726, 0, 12000], física [697.5, 725.6, -0.0, 11999.0], cambio físico [-0.0, 725.6, 0.0, -0.0]
-3 jog articular de J3: estimada [698, 726, 698, 12000], física [697.5, 725.6, 697.5, 11999.0], cambio físico [-0.0, -0.0, 697.5, 0.0]
-4 jog articular de J4: estimada [698, 726, 698, 11324], física [697.5, 725.6, 697.5, 11324.2], cambio físico [0.0, 0.0, -0.0, -674.8]
-5 jog por motor de M1: estimada [1344, 79, 698, 11324] física [1344.4, 78.8, 697.5, 11324.2] cambio físico [646.9, -646.9, 0.0, 0.0] rumbo antes 2120.6 después 2120.6
-6 resolución: jog de J3 a 0,1 °/s durante 6 s; 113 muestras de la física, 1 en transición; escalones vistos (en pasos de 5.625 centésimas de grado): [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; al frenar, 10.000 pasos
+1 jog articular de J1: estimada [748, 0, 0, 12000], física [748.1, 0.0, -0.0, 11999.0], cambio físico [748.1, -0.0, -0.0, 0.0]
+2 jog articular de J2: estimada [748, 748, 0, 12000], física [748.1, 748.1, -0.0, 11999.0], cambio físico [-0.0, 748.1, -0.0, -0.0]
+3 jog articular de J3: estimada [748, 748, 748, 12000], física [748.1, 748.1, 748.1, 11999.0], cambio físico [0.0, -0.0, 748.1, 0.0]
+4 jog articular de J4: estimada [748, 748, 748, 11250], física [748.1, 748.1, 748.1, 11250.2], cambio físico [0.0, 0.0, -0.0, -748.8]
+5 jog por motor de M1: estimada [1496, 0, 748, 11250] física [1496.2, 0.0, 748.1, 11250.2] cambio físico [748.1, -748.1, 0.0, 0.0] rumbo antes 2244.4 después 2244.4
+6 resolución: jog de J3 a 0,1 °/s durante 6 s; 113 muestras de la física, 0 en transición; escalones vistos (en pasos de 5.625 centésimas de grado): [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]; al frenar, 10.000 pasos
 ENSAYO OK

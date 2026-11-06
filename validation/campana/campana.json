@@ -1,21 +1,21 @@
 {
   "campana": "scara/1 en Webots (issue #18)",
-  "inicio": "2026-11-01T15:49:44-03:00",
-  "fin": "2026-11-01T16:02:49-03:00",
+  "inicio": "2026-11-06T19:27:40-03:00",
+  "fin": "2026-11-06T19:45:59-03:00",
   "version": {
-    "commit": "6ddc4caca4193301d6d8009fcc5874b2e51e450f",
-    "fecha_commit": "2026-11-01T15:49:32-03:00",
+    "commit": "39df64ddb5067175cfa6da513091dcddd7b8ccb5",
+    "fecha_commit": "2026-11-06T19:11:22-03:00",
     "sha256": {
-      "webots/controllers/scara_uci/scara_uci.exe": "13a399d716941bb90bb36a5707bddc443048f324b88a856ba3a328f9b852946d",
+      "webots/controllers/scara_uci/scara_uci": "2edea2595ace93d48c00fb6cc4624550fe2f63bf78d4b2267f6618b6d36217b8",
       "webots/worlds/scara_uci.wbt": "8df2160e597d3b67722ab0cea0661bab102327acfa59e88abb98903013b0b464",
-      "webots/protos/SCARA.proto": "a6415ba38b27546c34cad6b7133b8d61f9a34b79b161ac73cc73d81d3cca7203",
-      "trayectorias/demo-barrido-ptp.json": "82e8815d6ee2ba5bf2ceaff952dbd41bfbebef3c445afa506f5f47fc0d322ddf",
-      "trayectorias/demo-cuadrado-lin.json": "8fd1076608a0cfa9d1bdf4645d7199ecfeed84392f28ba9e20bf30786e700484",
-      "trayectorias/demo-pick-and-place.json": "e37905e68c1e268c4dc415f9215c6a3b74c2f2719843fc36890eb3ad5f7f1cd8"
+      "webots/protos/SCARA.proto": "fafd096e25ae51e6834a73587e76ebb831a36bc5835f62456839292a299cf837",
+      "trayectorias/demo-barrido-ptp.json": "44472d1621cf121be5a358998c48a1c9d0026a86e783e01436d9921b0a913bf1",
+      "trayectorias/demo-cuadrado-lin.json": "0eb08ed44c2e339191c943a5d015ccc1660d81044e548c578491996713313506",
+      "trayectorias/demo-pick-and-place.json": "4f7a2eb281b42146aee815e120209e323b6cef02e72185af6ef1e949a05ce1e3"
     },
     "webots": "R2025a",
-    "python": "3.12.7",
-    "sistema": "Windows-11-10.0.26300-SP0"
+    "python": "3.15.0",
+    "sistema": "macOS-27.2-arm64-arm-64bit-Mach-O"
   },
   "ensayos": {
     "protocolo": {
@@ -23,59 +23,133 @@
       "registro": "validation/campana/registros/protocolo.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 15
+      "duracion_s": 17
     },
     "transmision": {
       "script": "validation/transmision/ensayo_webots.py",
       "registro": "validation/campana/registros/transmision.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 18
+      "duracion_s": 19
     },
     "segmentos": {
       "script": "validation/segmentos/ensayo_webots.py",
       "registro": "validation/campana/registros/segmentos.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 13
+      "duracion_s": 12
     },
     "homing": {
       "script": "validation/homing/ensayo_webots.py",
       "registro": "validation/campana/registros/homing.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 204
+      "duracion_s": 178
     },
     "instrumentacion": {
       "script": "validation/instrumentacion/ensayo_webots.py",
       "registro": "validation/campana/registros/instrumentacion.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 29
+      "duracion_s": 28
     },
     "perdida_pasos": {
       "script": "validation/perdida_pasos/ensayo_webots.py",
       "registro": "validation/campana/registros/perdida_pasos.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 171
+      "duracion_s": 148
     },
     "reproduccion": {
       "script": "validation/reproduccion/ensayo_webots.py",
       "registro": "validation/campana/registros/reproduccion.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 128
+      "duracion_s": 109
     },
     "campana": {
       "script": "validation/campana/ensayo_webots.py",
       "registro": "validation/campana/registros/campana.log",
       "resultado": "OK",
       "salida": 0,
-      "duracion_s": 205
+      "duracion_s": 178
+    },
+    "fisicas": {
+      "script": "validation/fisicas/ensayo_webots.py",
+      "registro": "validation/campana/registros/fisicas.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 330
+    },
+    "movido_mano": {
+      "script": "validation/movido_mano/ensayo_webots.py",
+      "registro": "validation/campana/registros/movido_mano.log",
+      "resultado": "OK",
+      "salida": 0,
+      "duracion_s": 81
     }
   },
   "escenarios": [
+    {
+      "id": "C1",
+      "nombre": "Maceta a medio recorrido",
+      "inicial": "Referenciado, demo-barrido-ptp versión 2, maceta fija en medio del barrido largo de J1",
+      "esperado": "A 25 y 100 %, contacto bloquea el brazo y pierde pasos; al retirar no salta, sigue corrido, EV LOST al cruzar Hall y homing recupera",
+      "tolerancia": "Liberación y continuidad a menos de dos pasos completos por motor (J2 incluye acople); homing física contra estimada a menos de un paso completo; picos contra límite D76/5 kg",
+      "ensayos": [
+        "fisicas"
+      ],
+      "pasos": "C1: ambas velocidades, comparación y recuperación",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/fisicas.log"
+      ]
+    },
+    {
+      "id": "C2",
+      "nombre": "J4 contra la mesa",
+      "inicial": "Referenciado con J4 en 10 mm y mesa fija bajo el pistón (X=500, Y=0, altura=40 mm)",
+      "esperado": "Al bajar J4 hacia 110 mm, el soporte choca contra la mesa a ~54,7 mm, M4 pierde pasos y el pico axial supera el límite provisional D76 (~73,7 N > 52,78 N); al sacar la mesa no salta y el homing recupera",
+      "tolerancia": "Liberación y continuidad a menos de dos pasos completos en J4 (≤ 0,08 mm); homing a ≤ 1 paso completo",
+      "ensayos": [
+        "fisicas"
+      ],
+      "pasos": "C2: bloqueo axial en mesa, pico de esfuerzo, retiro y recuperación",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/fisicas.log"
+      ]
+    },
+    {
+      "id": "C3",
+      "nombre": "Empujón en la punta",
+      "inicial": "Referenciado y quieto en [0°, 0°, 0°, 60 mm] con los cuatro drivers con corriente",
+      "esperado": "Un empujón horizontal de 5 N (0,5 s) cede dentro del ciclo eléctrico y vuelve sin perder pasos; uno de 12 N (0,5 s) supera el par de retención, pierde múltiplos de 4 pasos y deja la pose corrida sin ERR ni EV LOST hasta recuperar con homing",
+      "tolerancia": "Con 5 N, 0 pasos perdidos y desvío final ≤ 1 paso completo; con 12 N, pasos perdidos múltiplos de 4, continuidad del corrimiento a ≤ 2 pasos completos y recuperación con homing a ≤ 1 paso completo",
+      "ensayos": [
+        "fisicas"
+      ],
+      "pasos": "C3: empujón suave (5 N), empujón fuerte (12 N), continuidad y homing",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/fisicas.log"
+      ]
+    },
+    {
+      "id": "C4",
+      "nombre": "Movido a mano sin corriente",
+      "inicial": "Referenciado en el reposo; DISABLE, J1 colocado a mano a 10° y ENABLE",
+      "esperado": "MANO solo se aplica sin corriente. DISABLE pierde la referencia y la URC bloquea play. Homing recupera la posición; una referencia manual fuera del reposo deja la trayectoria corrida 10° en J1, sin ERR ni EV LOST",
+      "tolerancia": "Física menos estimada: ≤ 0,45° en J1/J3, ≤ 0,90° en J2 y ≤ 0,04 mm en J4. Con referencia manual incorrecta, J1 10° ± 0,45°; los demás dentro de la misma cota",
+      "ensayos": [
+        "movido_mano"
+      ],
+      "pasos": "C4.1 a C4.3",
+      "resultado": "OK",
+      "registros": [
+        "validation/campana/registros/movido_mano.log"
+      ]
+    },
     {
       "id": "H1",
       "nombre": "Homing desde el reposo",
