@@ -67,6 +67,20 @@ ESCENARIOS = [
      "tolerancia": "Liberación y continuidad a menos de dos pasos completos por motor (J2 incluye acople); "
                    "homing física contra estimada a menos de un paso completo; picos contra límite D76/5 kg",
      "ensayos": ["fisicas"], "pasos": "C1: ambas velocidades, comparación y recuperación"},
+    {"id": "C2", "nombre": "J4 contra la mesa",
+     "inicial": "Referenciado con J4 en 10 mm y mesa fija bajo el pistón (X=500, Y=0, altura=40 mm)",
+     "esperado": "Al bajar J4 hacia 110 mm, el soporte choca contra la mesa a ~54,7 mm, M4 pierde pasos y el pico "
+                 "axial supera el límite provisional D76 (~73,7 N > 52,78 N); al sacar la mesa no salta y el homing recupera",
+     "tolerancia": "Liberación y continuidad a menos de dos pasos completos en J4 (≤ 0,08 mm); homing a ≤ 1 paso completo",
+     "ensayos": ["fisicas"], "pasos": "C2: bloqueo axial en mesa, pico de esfuerzo, retiro y recuperación"},
+    {"id": "C3", "nombre": "Empujón en la punta",
+     "inicial": "Referenciado y quieto en [0°, 0°, 0°, 60 mm] con los cuatro drivers con corriente",
+     "esperado": "Un empujón horizontal de 5 N (0,5 s) cede dentro del ciclo eléctrico y vuelve sin perder pasos; "
+                 "uno de 12 N (0,5 s) supera el par de retención, pierde múltiplos de 4 pasos y deja la pose corrida "
+                 "sin ERR ni EV LOST hasta recuperar con homing",
+     "tolerancia": "Con 5 N, 0 pasos perdidos y desvío final ≤ 1 paso completo; con 12 N, pasos perdidos múltiplos de 4, "
+                   "continuidad del corrimiento a ≤ 2 pasos completos y recuperación con homing a ≤ 1 paso completo",
+     "ensayos": ["fisicas"], "pasos": "C3: empujón suave (5 N), empujón fuerte (12 N), continuidad y homing"},
     {"id": "C4", "nombre": "Movido a mano sin corriente",
      "inicial": "Referenciado en el reposo; DISABLE, J1 colocado a mano a 10° y ENABLE",
      "esperado": "MANO solo se aplica sin corriente. DISABLE pierde la referencia y la URC bloquea play. "
@@ -214,6 +228,13 @@ def version():
     }
 
 
+def cleanup_temp():
+    for leftover in [*(ROOT / "webots" / "worlds").glob("_ensayo_*.wbt"),
+                     *(ROOT / "webots" / "worlds").glob("._ensayo_*.wbproj"),
+                     *(ROOT / "webots" / "controllers").glob("_observador_*")]:
+        shutil.rmtree(leftover) if leftover.is_dir() else leftover.unlink(missing_ok=True)
+
+
 def kill_tree(child):
     """Corta el ensayo con el Webots que lanzó, que si no queda con los puertos, y borra su mundo temporal."""
     if os.name == "nt":
@@ -221,9 +242,7 @@ def kill_tree(child):
     else:
         os.killpg(child.pid, signal.SIGKILL)
     child.wait()
-    for leftover in [*(ROOT / "webots" / "worlds").glob("_ensayo_*.wbt"),
-                     *(ROOT / "webots" / "controllers").glob("_observador_*")]:
-        shutil.rmtree(leftover) if leftover.is_dir() else leftover.unlink()
+    cleanup_temp()
 
 
 def run(name, logs):
@@ -239,6 +258,7 @@ def run(name, logs):
     except subprocess.TimeoutExpired:
         kill_tree(child)
         code = "tiempo agotado"
+    cleanup_temp()
     text = log.read_text(encoding="utf-8", errors="replace") if log.exists() else ""
     ok = code == 0 and "ENSAYO OK" in text
     print(f"{name}: {'OK' if ok else 'FALLA'} en {time.monotonic() - began:.0f} s", flush=True)

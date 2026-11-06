@@ -176,6 +176,10 @@ _Evitar_: Desfase, error de encoder (no hay encoders).
 **Obstáculo de ensayo**:
 Objeto fijo que se coloca deliberadamente en el recorrido del robot para estudiar un contacto y sus consecuencias. No forma parte del entorno que conoce el robot.
 
+**Empujón**:
+Fuerza horizontal breve aplicada desde el banco de ensayo sobre el punto de herramienta con los motores energizados, para estudiar la retención dentro del ciclo eléctrico y la pérdida de pasos cuando se supera el par de retención.
+_Evitar_: Confundirlo con mover a mano (que requiere los drivers sin corriente).
+
 **Mover a mano**:
 Colocar una articulación con los drivers sin corriente. Cambia su posición física sin producir los pasos que permitirían estimar ese movimiento.
 _Evitar_: Jog o referencia manual.

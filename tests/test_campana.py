@@ -34,8 +34,8 @@ class ScenarioTests(unittest.TestCase):
 
     def test_the_spec_scenarios_are_all_there(self):
         ids = {e["id"] for e in campana.ESCENARIOS}
-        # Seam 3: homing desde el reposo, teach & play LIN y PTP, fallas F1–F5.
-        self.assertLessEqual({"H1", "H2", "T1", "T2", "T3", "F1", "F2", "F3a", "F3b", "F4", "F5"}, ids)
+        # Seam 3: homing desde el reposo, teach & play LIN y PTP, fallas F1–F5 y contacto C1–C4.
+        self.assertLessEqual({"C1", "C2", "C3", "C4", "H1", "H2", "T1", "T2", "T3", "F1", "F2", "F3a", "F3b", "F4", "F5"}, ids)
 
     def test_ensayos_use_distinct_ports_away_from_the_operator(self):
         ports = [port for _, used, _ in campana.ENSAYOS.values() for port in used]

@@ -8,10 +8,12 @@ scara-sim/1, un protocolo de texto aparte de scara/1:
                         (20 por segundo)
     URC → controlador   F1 m porcentaje · F2 0|1 · F3 j activo|inactivo|libre
                         F4 0|1 · F5 · CARGA gramos · RECARGA
-                        OBSTACULO maceta X Y | OBSTACULO ninguno
+                        OBSTACULO maceta X Y | OBSTACULO mesa X Y altura | OBSTACULO ninguno
+                        EMPUJON fuerza_cN direccion_grados duracion_ms
                         MANO articulacion posicion
     controlador → URC   SIM OBSTACULO tipo X Y altura
                         SIM CONTACTO tipo cuerpo e1 e2 e3 e4 p1 p2 p3 p4 l1 l2 l3 l4
+                        SIM EMPUJON fuerza_cN direccion_grados duracion_ms
                         SIM MANO j posicion (aplicada) · SIM ERR motivo (rechazada)
 
 X, Y y altura van en mm. e, p y l son esfuerzo actual, pico y límite
@@ -40,7 +42,6 @@ anota lo que cambió y avisa si una orden no se aplicó en CONFIRM (D79).
 from collections import deque
 import math
 import select
-import math
 import socket
 import threading
 import time
@@ -146,7 +147,7 @@ class Instrumentation:
         for key, (value, deadline) in list(self.pending.items()):
             if now > deadline:
                 del self.pending[key]
-                if key == "mano":
+                if key in ("mano", "empujon"):
                     self.events.add("aviso", "Banco", f"Sin confirmación de {_name(key)}: {_value(key, value)}")
                     continue
                 current = "sin estado" if self.state is None else _value(key, _values(self.state).get(key, self.experiment.get("obstacle")))
@@ -174,24 +175,35 @@ class Instrumentation:
                     del self.pending["mano"]
                 self.events.add("ok", "Banco", describe(f"MANO {joint} {value}"))
                 return
+            if len(fields) == 5 and fields[:2] == ["SIM", "EMPUJON"]:
+                force_cn, direction, duration_ms = int(fields[2]), int(fields[3]), int(fields[4])
+                if not 1 <= force_cn <= 5000 or not -180 <= direction <= 180 or not 50 <= duration_ms <= 2000:
+                    raise ValueError("confirmación EMPUJON inválida")
+                wanted = self.pending.get("empujon")
+                if wanted is not None and wanted[0] == (force_cn, direction, duration_ms):
+                    del self.pending["empujon"]
+                self.experiment["push"] = {"fuerza_n": round(force_cn / 100, 2), "direccion": direction,
+                                           "duracion_ms": duration_ms}
+                self.events.add("ok", "Banco", describe(f"EMPUJON {force_cn} {direction} {duration_ms}"))
+                return
             if fields[:2] == ["SIM", "ERR"]:
                 self.rejected.append(line)
                 self.events.add("aviso", "Banco", f"Orden rechazada por el simulador: {' '.join(fields[2:])}")
                 return
             if fields[:2] == ["SIM", "OBSTACULO"] and len(fields) == 6:
                 kind = fields[2]
-                if kind not in ("ninguno", "maceta"):
+                if kind not in ("ninguno", "maceta", "mesa"):
                     raise ValueError("obstáculo desconocido")
                 values = [int(v) for v in fields[3:]]
                 obstacle = {"tipo": kind, "x": values[0], "y": values[1], "altura": values[2]}
                 self.experiment["obstacle"] = obstacle
                 if "obstaculo" in self.pending and self.pending["obstaculo"][0] == obstacle:
                     del self.pending["obstaculo"]
-                    self.events.add("ok", "Banco", f"Obstáculo de ensayo: {kind}, X {values[0]} mm, Y {values[1]} mm")
+                    self.events.add("ok", "Banco", f"Obstáculo de ensayo: {_value('obstaculo', obstacle)}")
                 return
             if fields[:2] == ["SIM", "CONTACTO"] and len(fields) == 16:
                 values = [float(v) for v in fields[4:]]
-                if (fields[2] not in ("ninguno", "maceta")
+                if (fields[2] not in ("ninguno", "maceta", "mesa")
                         or fields[3] not in ("ninguno", "ARM", "FOREARM", "WRIST", "TOOL")
                         or not all(math.isfinite(v) for v in values)
                         or any(v < 0 for v in values[4:8]) or any(v <= 0 for v in values[8:])):
@@ -297,14 +309,36 @@ def order_line(request):
         return "RECARGA"
     if "obstaculo" in request:
         obstacle = request["obstaculo"]
-        if not isinstance(obstacle, dict) or obstacle.get("tipo") not in ("ninguno", "maceta"):
-            raise ValueError("obstaculo lleva tipo ninguno o maceta")
+        if not isinstance(obstacle, dict) or obstacle.get("tipo") not in ("ninguno", "maceta", "mesa"):
+            raise ValueError("obstaculo lleva tipo ninguno, maceta o mesa")
         if obstacle["tipo"] == "ninguno":
             return "OBSTACULO ninguno"
         x, y = obstacle.get("x"), obstacle.get("y")
         if any(type(v) is not int or not -1000 <= v <= 1000 for v in (x, y)):
             raise ValueError("X e Y van en mm enteros de −1000 a 1000")
-        return f"OBSTACULO maceta {x} {y}"
+        if obstacle["tipo"] == "maceta":
+            return f"OBSTACULO maceta {x} {y}"
+        height = obstacle.get("altura")
+        if type(height) is not int or not -20 <= height <= 90:
+            raise ValueError("La altura de la mesa va en mm enteros de −20 a 90")
+        return f"OBSTACULO mesa {x} {y} {height}"
+    if "empujon" in request:
+        push = request["empujon"]
+        if not isinstance(push, dict):
+            raise ValueError("empujon requiere fuerza_n y direccion")
+        force = push.get("fuerza_n")
+        direction = push.get("direccion")
+        duration = push.get("duracion_ms", 500)
+        if isinstance(force, bool) or not isinstance(force, (int, float)) or not math.isfinite(force):
+            raise ValueError("La fuerza del empujón tiene que ser un número")
+        force_cn = round(float(force) * 100)
+        if not 1 <= force_cn <= 5000:
+            raise ValueError("La fuerza del empujón va de 0.01 a 50 N")
+        if type(direction) is not int or not -180 <= direction <= 180:
+            raise ValueError("La dirección del empujón va en grados enteros de −180 a 180")
+        if type(duration) is not int or not 50 <= duration <= 2000:
+            raise ValueError("La duración del empujón va en ms enteros de 50 a 2000")
+        return f"EMPUJON {force_cn} {direction} {duration}"
     if "mano" in request:
         move = request["mano"]
         if not isinstance(move, dict):
@@ -316,7 +350,7 @@ def order_line(request):
         if not low <= value <= high:
             raise ValueError(f"La posición de J{joint} va de {low} a {high} centésimas")
         return f"MANO {joint} {value}"
-    raise ValueError("Se espera falla, carga, recarga o mano")
+    raise ValueError("Se espera falla, carga, recarga, obstaculo, empujon o mano")
 
 
 # Lo que el banco puede confirmar, por clave: la carga, la corriente de cada
@@ -336,7 +370,8 @@ def _values(state):
 
 def _name(key):
     kind, _, index = key.partition(" ")
-    return {"mano": "Mover a mano", "obstaculo": "Obstáculo de ensayo", "carga": "Carga en la herramienta", "F1": f"F1 · corriente del driver de M{index}",
+    return {"mano": "Mover a mano", "empujon": "Empujón", "obstaculo": "Obstáculo de ensayo",
+            "carga": "Carga en la herramienta", "F1": f"F1 · corriente del driver de M{index}",
             "F2": "F2 · driver de M4 sin corriente", "F3": f"F3 · Hall de J{index}",
             "F4": "F4 · enlace scara/1 cortado"}[kind]
 
@@ -346,8 +381,14 @@ def _value(key, value):
     if kind == "mano":
         joint, position = value
         return f"J{joint} a {position / 100:g} {'mm' if joint == 4 else '°'}"
+    if kind == "empujon":
+        force_cn, direction, duration_ms = value
+        return f"{force_cn / 100:g} N a {direction}° durante {duration_ms / 1000:g} s"
     if kind == "obstaculo":
-        return str(value)
+        if not isinstance(value, dict) or value.get("tipo") == "ninguno":
+            return "ninguno"
+        extra = f", altura {value['altura']} mm" if value.get("tipo") == "mesa" else ""
+        return f"{value['tipo']}, X {value['x']} mm, Y {value['y']} mm{extra}"
     if kind == "carga":
         return f"{value} g"
     if kind == "F1":
@@ -362,10 +403,14 @@ def _expected(line):
     words = line.split()
     if words[0] == "MANO":
         return "mano", (int(words[1]), int(words[2]))
+    if words[0] == "EMPUJON":
+        return "empujon", (int(words[1]), int(words[2]), int(words[3]))
     if words[0] == "OBSTACULO":
-        return "obstaculo", {"tipo": words[1], "x": int(words[2]) if len(words) > 2 else 0,
-                              "y": int(words[3]) if len(words) > 3 else 0,
-                              "altura": 150 if words[1] == "maceta" else 0}
+        kind = words[1]
+        height = 150 if kind == "maceta" else int(words[4]) if kind == "mesa" else 0
+        return "obstaculo", {"tipo": kind, "x": int(words[2]) if len(words) > 2 else 0,
+                             "y": int(words[3]) if len(words) > 3 else 0,
+                             "altura": height}
     if words[0] == "F1":
         return f"F1 {words[1]}", int(words[2])
     if words[0] in ("F2", "F4"):
@@ -382,6 +427,9 @@ def describe(line):
     if line.startswith("MANO "):
         _, joint, value = line.split()
         return f"Movido a mano: J{joint} a {int(value) / 100:g} {'mm' if joint == '4' else '°'} (sin corriente)"
+    if line.startswith("EMPUJON "):
+        _, force_cn, direction, duration_ms = line.split()
+        return f"Empujón: {int(force_cn) / 100:g} N a {int(direction)}° durante {int(duration_ms) / 1000:g} s"
     expected = _expected(line)
     if expected is not None:
         return f"{_name(expected[0])}: {_value(*expected)}"

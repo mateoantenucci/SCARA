@@ -182,6 +182,36 @@ void externalLoad() {
         "el esfuerzo retirado no recupera pasos", stepper.lost(), lost);
 }
 
+// Un empujón horizontal breve en la punta (C3): por debajo del par de
+// retención cede dentro del ciclo eléctrico y vuelve al equilibrio al soltar;
+// por encima salta ciclos completos y conserva el corrimiento sin aviso.
+void pushImpulse() {
+  plant::Load load = plant::loadOf(0, NOMINAL_TOOL);
+  const double effortGentle[4] = {-0.50 * 5.0, -0.25 * 5.0, 0, 0};
+  const double reactionGentle = plant::motorReaction(0, effortGentle);
+  plant::Stepper gentle(plant::MOTORS[0], scara::STEPS_PER_REV);
+  double maxDeflection = 0;
+  for (int tick = 0; tick < 500; ++tick) {
+    gentle.advance(0, DT, load, 1, reactionGentle);
+    maxDeflection = std::fmax(maxDeflection, std::fabs(gentle.position()));
+  }
+  for (int tick = 0; tick < 2000; ++tick) gentle.advance(0, DT, load, 1, 0);
+  check(maxDeflection > 1 && maxDeflection < 2 * scara::MICROSTEPS,
+        "empujón suave cede dentro del ciclo", maxDeflection, 2 * scara::MICROSTEPS);
+  check(gentle.lost() == 0 && std::fabs(gentle.position()) < 0.5,
+        "empujón suave vuelve al equilibrio sin perder pasos", gentle.position(), gentle.lost());
+
+  const double effortStrong[4] = {-0.50 * 12.0, -0.25 * 12.0, 0, 0};
+  const double reactionStrong = plant::motorReaction(0, effortStrong);
+  plant::Stepper strong(plant::MOTORS[0], scara::STEPS_PER_REV);
+  for (int tick = 0; tick < 500; ++tick) strong.advance(0, DT, load, 1, reactionStrong);
+  for (int tick = 0; tick < 2000; ++tick) strong.advance(0, DT, load, 1, 0);
+  check(strong.lost() != 0 && strong.lost() % CYCLE == 0,
+        "empujón fuerte pierde múltiplos de 4 pasos", strong.lost(), CYCLE);
+  check(std::fabs(strong.position() + strong.lost()) < 1,
+        "empujón fuerte deja corrimiento permanente", strong.position(), -strong.lost());
+}
+
 // El contacto inmoviliza el cuerpo y su rotor, pero el estator sigue. Al
 // quitar el obstáculo solo queda la elasticidad de medio ciclo eléctrico;
 // los pulsos siguientes parten desde la posición corrida, sin alcanzarla.
@@ -264,6 +294,7 @@ int main(int argc, char** argv) {
   lostByAcceleration();
   againstAStop();
   externalLoad();
+  pushImpulse();
   contactRelease();
   actuatorCapacity();
   contactSupportsWeight();

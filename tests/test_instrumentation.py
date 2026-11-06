@@ -67,7 +67,14 @@ class InstrumentationTests(unittest.TestCase):
         client.send("SIM OBSTACULO maceta 375 217 150")
         wait_for(lambda: self.bench.snapshot().get("obstacle"))
         self.assertEqual(self.bench.snapshot()["pending"], [])
-        client.send("SIM CONTACTO maceta TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
+        self.bench.order({"obstaculo": {"tipo": "mesa", "x": 500, "y": 0, "altura": 40}})
+        self.assertEqual(client.receive(), "OBSTACULO mesa 500 0 40")
+        self.assertTrue(self.bench.snapshot()["pending"])
+        client.send("SIM OBSTACULO mesa 500 0 40")
+        wait_for(lambda: (o := self.bench.snapshot().get("obstacle")) and o.get("tipo") == "mesa")
+        self.assertEqual(self.bench.snapshot()["obstacle"], {"tipo": "mesa", "x": 500, "y": 0, "altura": 40})
+        self.assertEqual(self.bench.snapshot()["pending"], [])
+        client.send("SIM CONTACTO mesa TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
         state = wait_for(lambda: (s := self.bench.snapshot()).get("contact") and s)
         self.assertEqual(state["contact"], "TOOL")
         self.assertEqual(state["peak_effort"], [2, 1, 0.1, 73])
@@ -76,6 +83,25 @@ class InstrumentationTests(unittest.TestCase):
         client.send("SIM OBSTACULO ninguno 0 0 0")
         wait_for(lambda: self.bench.snapshot()["obstacle"]["tipo"] == "ninguno")
         self.assertEqual(self.bench.snapshot()["pending"], [])
+
+    def test_push_order_and_confirmation(self):
+        client = self.connect()
+        self.bench.order({"empujon": {"fuerza_n": 12, "direccion": 90}})
+        self.assertEqual(client.receive(), "EMPUJON 1200 90 500")
+        self.assertEqual(self.bench.snapshot()["pending"], [{"key": "empujon", "value": (1200, 90, 500)}])
+        client.send("SIM EMPUJON 1200 90 500")
+        state = wait_for(lambda: (s := self.bench.snapshot()).get("push") and not s["pending"] and s)
+        self.assertEqual(state["push"], {"fuerza_n": 12.0, "direccion": 90, "duracion_ms": 500})
+        for invalid in (None, {}, {"fuerza_n": 0, "direccion": 0}, {"fuerza_n": 51, "direccion": 0},
+                        {"fuerza_n": True, "direccion": 0}, {"fuerza_n": 10, "direccion": 181},
+                        {"fuerza_n": 10, "direccion": 0, "duracion_ms": 49}):
+            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+                self.bench.order({"empujon": invalid})
+        for invalid_obs in ({"tipo": "mesa", "x": 500, "y": 0},
+                            {"tipo": "mesa", "x": 500, "y": 0, "altura": 91},
+                            {"tipo": "mesa", "x": 500, "y": 0, "altura": -21}):
+            with self.subTest(invalid_obs=invalid_obs), self.assertRaises(ValueError):
+                self.bench.order({"obstaculo": invalid_obs})
 
     def test_invalid_contact_instrumentation_does_not_replace_the_last_state(self):
         client = self.connect()

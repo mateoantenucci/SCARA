@@ -365,9 +365,11 @@ El v1 se conserva sin cambios; el v2 es Markdown en el repo, exportado a PDF, co
 
 ### Contacto y movimiento sin corriente
 
-**¿Por qué el robot no frena al tocar una maceta?** No tiene sensor de contacto ni encoder. El banco muestra información exclusiva de la simulación y no la usa para planificar ni frenar. El rotor pierde pasos al bloquearse y conserva ese corrimiento al sacar el objeto; un Hall puede informar `EV LOST` después. La reacción se aproxima con el esfuerzo del accionamiento de Webots durante el contacto, no con una medida directa del impacto (D89, ADR 0006).
+**¿Por qué el robot no frena al tocar una maceta o la mesa?** No tiene sensor de contacto ni encoder. El banco muestra información exclusiva de la simulación y no la usa para planificar ni frenar. El rotor pierde pasos al bloquearse y conserva ese corrimiento al sacar el objeto; un Hall puede informar `EV LOST` después. La reacción se aproxima con el esfuerzo del accionamiento de Webots durante el contacto, no con una medida directa del impacto (D89, ADR 0006).
 
-**¿Qué significa superar el límite de esfuerzo del banco?** Se superó el máximo de uso normal adoptado con las aceleraciones de D76 y 5 kg. Es un parámetro provisional; sin materiales y resistencias respaldados no permite afirmar que una pieza se rompe. Por el ACME, M4 puede aplicar unos 74 N, aunque el valor nominal original del PROTO fuera 8 N (D90).
+**¿Qué significa superar el límite de esfuerzo del banco?** Se superó el máximo de uso normal adoptado con las aceleraciones de D76 y 5 kg. Es un parámetro provisional; sin materiales y resistencias respaldados no permite afirmar que una pieza se rompe. Por el ACME, M4 puede aplicar unos 74 N hacia abajo contra la mesa, aunque el valor nominal original del PROTO fuera 8 N (D90).
+
+**¿Qué pasa si alguien empuja la punta con los motores prendidos?** Si el empujón no supera el par de retención (por ejemplo 5 N laterales en el reposo), los rotores ceden una fracción de paso dentro del ciclo eléctrico y vuelven solos al soltar, sin perder pasos. Si supera la retención (por ejemplo 12 N), los motores saltan ciclos completos de 4 pasos y el brazo queda corrido sin que el firmware emita `ERR` ni `EV LOST` hasta cruzar un Hall o hacer homing (D92).
 
 **¿Por qué habilitar después de mover el brazo apagado no recupera la referencia?** Los drivers retienen donde quedó físicamente el brazo; el firmware no vio ese movimiento y `DISABLE` ya invalidó su referencia. Homing encuentra los Hall. Una referencia manual fuera de las marcas declara una posición falsa y la trayectoria queda corrida sin aviso (D91).
 

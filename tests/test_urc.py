@@ -33,30 +33,33 @@ class FakeUci:
     def send(self, line):
         self.sock.sendall(line.encode() + b"\n")
 
-    def receive(self, ignore=("PING",)):
-        while True:
-            while b"\n" not in self.buffer:
-                chunk = self.sock.recv(1024)
-                if not chunk:
-                    raise ConnectionError("La URC cerró la conexión")
-                self.buffer += chunk
-            line, self.buffer = self.buffer.split(b"\n", 1)
-            text = line.decode()
-            if text not in ignore:
-                return text
+    def receive(self, ignore=("PING",), timeout=3):
+        deadline = time.monotonic() + timeout
+        try:
+            while True:
+                while b"\n" not in self.buffer:
+                    left = deadline - time.monotonic()
+                    if left <= 0:
+                        raise socket.timeout("timed out")
+                    self.sock.settimeout(left)
+                    chunk = self.sock.recv(1024)
+                    if not chunk:
+                        raise ConnectionError("La URC cerró la conexión")
+                    self.buffer += chunk
+                line, self.buffer = self.buffer.split(b"\n", 1)
+                text = line.decode()
+                if text not in ignore:
+                    return text
+        finally:
+            self.sock.settimeout(3)
 
     def silent(self, seconds=0.2, ignore=("PING",)):
         """Nada más que lo ignorado durante `seconds`."""
-        deadline = time.monotonic() + seconds
         try:
-            while (left := deadline - time.monotonic()) > 0:
-                self.sock.settimeout(left)
-                text = self.receive(ignore)
-                raise AssertionError(f"La URC envió {text!r}")
+            text = self.receive(ignore, timeout=seconds)
+            raise AssertionError(f"La URC envió {text!r}")
         except socket.timeout:
             return True
-        finally:
-            self.sock.settimeout(3)
 
     def close(self):
         self.sock.close()
@@ -300,13 +303,10 @@ class SegmentJogTests(JogTestCase):
                 if count is not None:
                     self.fail(f"Llegaron {len(received)} de {count} segmentos")
                 break
-            self.uci.sock.settimeout(left)
             try:
-                fields = self.uci.receive(ignore=()).split()
+                fields = self.uci.receive(ignore=(), timeout=left).split()
             except socket.timeout:
                 continue
-            finally:
-                self.uci.sock.settimeout(3)
             if fields == ["PING"]:
                 continue
             self.assertEqual(fields[:3], ["SEG", fields[1], "20"], fields)

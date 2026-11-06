@@ -1,8 +1,12 @@
-"""C1: maceta de ensayo, contacto y pérdida permanente (spec #45, issue #46).
+"""C1, C2 y C3: ensayos físicos de contacto y perturbación (spec #45, issues #46, #47 y #48).
 
-Usa los dos primeros puntos de demo-barrido-ptp.json (versión 2), a 25 y
-100 %. El obstáculo solo entra por scara-sim/1. El firmware y el planificador
-son los mismos que en la campaña sin obstáculos.
+- C1 (#46): maceta fija en medio del barrido largo de J1 (demo-barrido-ptp.json
+  a 25 y 100 % de velocidad y aceleración).
+- C2 (#47): mesa fija bajo el pistón (X=500, Y=0, altura=40 mm) que bloquea el
+  descenso de J4, hace perder pasos a M4 y registra la fuerza axial real (~73,7 N).
+- C3 (#48): empujón horizontal en la punta con motores energizados: por debajo
+  del par de retención (5 N) cede y vuelve sin perder pasos; por encima (12 N)
+  salta ciclos eléctricos y queda corrido sin aviso hasta hacer homing.
 """
 import json
 from dataclasses import replace
@@ -159,6 +163,105 @@ try:
         log("C1 homing recupera", home())
         results.append(result)
     log("C1 comparación 25 % / 100 %", json.dumps(results, ensure_ascii=False))
+
+    # --- C2: J4 contra la mesa (issue #47) ---
+    log("C2 inicio")
+    move([0, 0, 0, 1000], speed=0.5)
+    obstacle("mesa", x=500, y=0, altura=40)
+    session.move_ptp([0, 0, 0, 11000], speed=0.5)
+    touch_c2 = wait(lambda: (s := bench.snapshot()).get("contact") == "TOOL" and s, "contacto de J4 con mesa", 60)
+    wait(lambda: bench.snapshot()["lost_steps"][3] != 0, "pérdida de pasos en M4 contra la mesa", 60)
+    wait(still, "fin del descenso de J4 contra la mesa", 60)
+    before_c2 = bench.snapshot()
+    assert before_c2["simulated"][3] < 6000, before_c2
+    assert before_c2["lost_steps"][3] < 0 and before_c2["lost_steps"][3] % 4 == 0, before_c2
+    assert before_c2["peak_effort"][3] > before_c2["effort_limit"][3], before_c2
+    lost_c2 = list(before_c2["lost_steps"])
+    obstacle("ninguno")
+    time.sleep(1)
+    after_c2 = bench.snapshot()
+    release_c2 = [a - b for a, b in zip(after_c2["simulated"], before_c2["simulated"])]
+    assert all(abs(d) <= 2 * limit for d, limit in zip(release_c2, STILL)), release_c2
+    assert after_c2["lost_steps"] == lost_c2, (lost_c2, after_c2["lost_steps"])
+    offset_c2 = after_c2["simulated"][3] - 11000
+    move([0, 0, 0, 9000], speed=0.5)
+    next_offset_c2 = bench.snapshot()["simulated"][3] - 9000
+    assert abs(next_offset_c2 - offset_c2) <= 2 * STILL[3], (offset_c2, next_offset_c2)
+    c2_result = {
+        "contact": touch_c2["contact"],
+        "obstacle_mm": {"tipo": "mesa", "x": 500, "y": 0, "altura": 40},
+        "estimated_after_block": [0, 0, 0, 11000],
+        "physical_after_block": before_c2["simulated"],
+        "lost_steps": lost_c2,
+        "peak_effort": before_c2["peak_effort"],
+        "effort_limit": before_c2["effort_limit"],
+        "release_motion": release_c2,
+        "offset_after_up_mm": round(next_offset_c2 / 100, 2),
+    }
+    log("C2", json.dumps(c2_result, ensure_ascii=False))
+    log("C2 homing recupera", home())
+
+    # --- C3: Empujón en la punta (issue #48) ---
+    def wait_physical_still(timeout=15):
+        prev = bench.snapshot()["simulated"]
+        def settled():
+            nonlocal prev
+            time.sleep(0.25)
+            curr = bench.snapshot()["simulated"]
+            ok = all(abs(a - b) <= 2 for a, b in zip(curr, prev))
+            prev = curr
+            return curr if ok else None
+        return wait(settled, "planta físicamente quieta", timeout)
+
+    log("C3 inicio")
+    move([0, 0, 0, 6000], speed=0.5)
+    bench.order({"empujon": {"fuerza_n": 5, "direccion": 90, "duracion_ms": 500}})
+    wait(lambda: (p := bench.snapshot().get("push")) and p["fuerza_n"] == 5.0
+         and not any(item["key"] == "empujon" for item in bench.snapshot()["pending"]),
+         "confirmación empujón 5 N", 10)
+    time.sleep(1.2)
+    wait_physical_still()
+    gentle_c3 = bench.snapshot()
+    assert gentle_c3["lost_steps"] == [0, 0, 0, 0], gentle_c3
+    assert all(abs(a - b) <= limit for a, b, limit in zip(gentle_c3["simulated"], [0, 0, 0, 6000], STILL)), gentle_c3
+    assert not session.snapshot()["doubtful"], session.snapshot()
+
+    bench.order({"empujon": {"fuerza_n": 12, "direccion": 90, "duracion_ms": 500}})
+    wait(lambda: (p := bench.snapshot().get("push")) and p["fuerza_n"] == 12.0
+         and any(bench.snapshot()["lost_steps"][:2]),
+         "empujón 12 N vence retención", 10)
+    time.sleep(1.5)
+    wait_physical_still()
+    strong_c3 = bench.snapshot()
+    assert any(strong_c3["lost_steps"][:2]), strong_c3
+    assert all(steps % 4 == 0 for steps in strong_c3["lost_steps"]), strong_c3
+    drift_c3 = [s - e for s, e in zip(strong_c3["simulated"], [0, 0, 0, 6000])]
+    assert any(abs(d) > 100 for d in drift_c3[:2]), strong_c3
+    assert session.snapshot()["status"]["position"] == [0, 0, 0, 6000], session.snapshot()
+    assert not session.snapshot()["doubtful"], session.snapshot()
+    move([1000, -1000, 0, 6000], speed=0.5)
+    wait_physical_still()
+    drift_after_move = [s - e for s, e in zip(bench.snapshot()["simulated"], [1000, -1000, 0, 6000])]
+    assert all(abs(a - b) <= 2 * limit for a, b, limit in zip(drift_after_move, drift_c3, STILL)), (drift_c3, drift_after_move)
+    assert not session.snapshot()["doubtful"], session.snapshot()
+    c3_result = {
+        "gentle_5N": {
+            "simulated": gentle_c3["simulated"],
+            "lost_steps": gentle_c3["lost_steps"],
+            "peak_effort": gentle_c3.get("peak_effort"),
+        },
+        "strong_12N": {
+            "estimated": [0, 0, 0, 6000],
+            "physical": strong_c3["simulated"],
+            "drift": drift_c3,
+            "lost_steps": strong_c3["lost_steps"],
+            "peak_effort": strong_c3.get("peak_effort"),
+            "drift_after_ptp": drift_after_move,
+            "doubtful": session.snapshot()["doubtful"],
+        },
+    }
+    log("C3", json.dumps(c3_result, ensure_ascii=False))
+    log("C3 homing recupera", home())
     log("ENSAYO OK")
 finally:
     session.close()
@@ -170,4 +273,5 @@ finally:
         webots.kill()
         webots.wait()
     WORLD.unlink(missing_ok=True)
+    (WORLD.parent / f".{WORLD.stem}.wbproj").unlink(missing_ok=True)
     LOG.close()

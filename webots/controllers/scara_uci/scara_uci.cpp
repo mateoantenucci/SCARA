@@ -306,6 +306,7 @@ public:
     obstacleKind_ = "ninguno";
     contactBody_ = "NONE";
     contacting_ = false;
+    pushForce_ = pushDirection_ = pushRemaining_ = 0.0;
     // La carga de la herramienta (toolMass, en kg) la cambia el banco de ensayo.
     tool_ = self ? self->getField("toolMass") : 0;
     std::mt19937 random(static_cast<unsigned>(std::random_device()()));
@@ -326,7 +327,9 @@ public:
       // El PROTO deja de limitar antes que el motor y su transmisión.
       std::snprintf(name, sizeof name, i == 3 ? "j%dMaxForce" : "j%dMaxTorque", i + 1);
       webots::Field* maximum = self ? self->getField(name) : 0;
-      if (maximum) maximum->setSFFloat(plant::jointCapacity(i, torque));
+      double maxEffort = i == 3 ? torque[3] * 2 * plant::PI / (plant::LEAD * plant::SCREW_BACK_EFFICIENCY)
+                                : plant::jointCapacity(i, torque);
+      if (maximum) maximum->setSFFloat(maxEffort);
       if (motors_[i]) {
         int sampling = static_cast<int>(robot.getBasicTimeStep());
         if (i == 3) motors_[i]->enableForceFeedback(sampling);
@@ -466,6 +469,29 @@ public:
       bodies_[0]->addTorque(torque, true);
     }
     measuredEffort_[0] += actuatorEffort[1];
+    double pushEffort[4] = {0.0, 0.0, 0.0, 0.0};
+    if (pushRemaining_ > 0.0 && dt > 0.0) {
+      double angle = pushDirection_ * plant::PI / 180.0;
+      double fx = pushForce_ * std::cos(angle);
+      double fy = pushForce_ * std::sin(angle);
+      if (bodies_[3]) {
+        const double force[3] = {fx, fy, 0.0};
+        bodies_[3]->addForce(force, false);
+      }
+      double q1 = position[0], q12 = position[0] + position[1];
+      double dx1 = -plant::L1 * std::sin(q1) - plant::L2 * std::sin(q12);
+      double dy1 = plant::L1 * std::cos(q1) + plant::L2 * std::cos(q12);
+      double dx2 = -plant::L2 * std::sin(q12);
+      double dy2 = plant::L2 * std::cos(q12);
+      // Esfuerzo articular equivalente al empujón (opuesto a la acción externa,
+      // igual convención de signo que el accionamiento frente a una carga).
+      pushEffort[0] = -(dx1 * fx + dy1 * fy);
+      pushEffort[1] = -(dx2 * fx + dy2 * fy);
+      measuredEffort_[0] += pushEffort[0];
+      measuredEffort_[1] += pushEffort[1];
+      pushRemaining_ = std::max(0.0, pushRemaining_ - dt);
+      if (pushRemaining_ == 0.0) pushForce_ = 0.0;
+    }
     for (int i = 0; i < scara::MOTOR_COUNT; ++i)
       peakEffort_[i] = std::max(peakEffort_[i], std::fabs(measuredEffort_[i]));
     for (int i = 0; dt > 0 && i < scara::MOTOR_COUNT; ++i) {
@@ -487,7 +513,8 @@ public:
           rotors_[i].advanceContact(steps_[i], dt, load, current_[i], pulses, speed,
                                     plant::motorReaction(i, measuredEffort_));
         else
-          rotors_[i].advance(steps_[i], dt, load, current_[i]);
+          rotors_[i].advance(steps_[i], dt, load, current_[i],
+                             plant::motorReaction(i, pushEffort));
       }
     }
     for (int i = 0; i < scara::MOTOR_COUNT; ++i) {
@@ -497,7 +524,17 @@ public:
       // su tope (J4 abajo), ODE le aplica de más en el primer paso que el motor
       // lo saca de ahí, y lo haría saltar milímetros.
       if (!free && ramp_[i] < RAMP_TICKS) ++ramp_[i];
-      double effort = free ? 0.0 : plant::jointCapacity(i, capacity) * ramp_[i] / RAMP_TICKS;
+      double cap = plant::jointCapacity(i, capacity);
+      if (i == 3) {
+        double target = start_[i] + joint(i);
+        // Si el motor sostiene la carga o sube contra la gravedad sin apoyo
+        // externo, el husillo retiene hasta su capacidad de autorretención.
+        // Al empujar hacia abajo o contra un obstáculo rige el avance directo.
+        if (!contacting_ && target <= position[i] + 1e-4) {
+          cap = capacity[3] * 2 * plant::PI / (plant::LEAD * plant::SCREW_BACK_EFFICIENCY);
+        }
+      }
+      double effort = free ? 0.0 : cap * ramp_[i] / RAMP_TICKS;
       if (motors_[i]->getType() == webots::Motor::LINEAR) {
         motors_[i]->setAvailableForce(effort);
       } else {
@@ -541,6 +578,12 @@ public:
     contacting_ = false;
     contactBody_ = "NONE";
     if (obstacle_) obstacle_->enableContactPointsTracking(sampling_);
+  }
+  void setPush(double forceN, double directionDeg, double durationS) {
+    pushForce_ = forceN;
+    pushDirection_ = directionDeg;
+    pushRemaining_ = durationS;
+    resetEffortPeaks();
   }
   bool contact() const { return contacting_; }
   const char* contactBody() const { return contactBody_; }
@@ -659,6 +702,7 @@ private:
   const char* obstacleKind_;
   const char* contactBody_;
   bool contacting_;
+  double pushForce_, pushDirection_, pushRemaining_;
   plant::Stepper rotors_[scara::MOTOR_COUNT];
   double current_[scara::MOTOR_COUNT];  // fracción de la corriente nominal de cada driver (F1)
   int ramp_[scara::MOTOR_COUNT];        // pasos de Webots desde que el motor recuperó la corriente
@@ -737,7 +781,7 @@ class Bench {
 public:
   Bench(webots::Supervisor& robot, Plant& plant, WebotsHal& hal, TcpClient& link, bool enabled)
       : robot_(robot), plant_(plant), hal_(hal), link_(link), enabled_(enabled), greeted_(false), reboot_(false),
-        lastState_(-1.0), obstacle_(nullptr), obstacleX_(0), obstacleY_(0) {
+        lastState_(-1.0), obstacle_(nullptr), obstacleX_(0), obstacleY_(0), obstacleHeight_(0) {
     webots::Node* self = robot.getSelf();
     load_ = self ? self->getField("toolMass") : 0;
   }
@@ -779,7 +823,7 @@ private:
   // ocupa la línea entera ("F2 1x" no es "F2 1").
   void handle(const std::string& line) {
     char argument[16] = "";
-    int joint = 0, used = -1;
+    int joint = 0, extra = 0, used = -1;
     long value = 0;
     const int length = static_cast<int>(line.size());
     auto whole = [&](int fields, int expected) {
@@ -813,6 +857,11 @@ private:
       } else {
         link_.write(plant_.powered() ? "SIM ERR corriente\n" : "SIM ERR posicion\n");
       }
+    } else if (whole(std::sscanf(line.c_str(), "EMPUJON %d %ld %d%n", &joint, &value, &extra, &used), 3) &&
+               joint >= 1 && joint <= 5000 && value >= -180 && value <= 180 && extra >= 50 && extra <= 2000) {
+      plant_.setPush(joint / 100.0, static_cast<double>(value), extra / 1000.0);
+      std::string applied = "SIM " + line + "\n";
+      link_.write(applied.c_str());
     } else if (line == "OBSTACULO ninguno") {
       removeObstacle();
     } else if (whole(std::sscanf(line.c_str(), "OBSTACULO maceta %d %ld%n", &joint, &value, &used), 2) &&
@@ -820,6 +869,7 @@ private:
       removeObstacle();
       obstacleX_ = joint;
       obstacleY_ = static_cast<int>(value);
+      obstacleHeight_ = 150;
       char solid[768];
       std::snprintf(solid, sizeof solid,
           "DEF ENSAYO_OBSTACULO Solid { translation %.6f %.6f 0.075 "
@@ -829,6 +879,25 @@ private:
       robot_.getRoot()->getField("children")->importMFNodeFromString(-1, solid);
       obstacle_ = robot_.getFromDef("ENSAYO_OBSTACULO");
       plant_.setObstacle(obstacle_, "maceta");
+      plant_.resetEffortPeaks();
+    } else if (whole(std::sscanf(line.c_str(), "OBSTACULO mesa %d %ld %d%n", &joint, &value, &extra, &used), 3) &&
+               joint >= -1000 && joint <= 1000 && value >= -1000 && value <= 1000 && extra >= -20 && extra <= 90) {
+      removeObstacle();
+      obstacleX_ = joint;
+      obstacleY_ = static_cast<int>(value);
+      obstacleHeight_ = extra;
+      double top = extra / 1000.0;
+      double height = top + 0.20;
+      double z = top - height / 2.0;
+      char solid[768];
+      std::snprintf(solid, sizeof solid,
+          "DEF ENSAYO_OBSTACULO Solid { translation %.6f %.6f %.6f "
+          "name \"mesa\" children [ Shape { appearance PBRAppearance { baseColor 0.55 0.45 0.32 roughness 0.9 } "
+          "geometry Box { size 0.16 0.16 %.6f } } ] "
+          "boundingObject Box { size 0.16 0.16 %.6f } }", joint / 1000.0, value / 1000.0, z, height, height);
+      robot_.getRoot()->getField("children")->importMFNodeFromString(-1, solid);
+      obstacle_ = robot_.getFromDef("ENSAYO_OBSTACULO");
+      plant_.setObstacle(obstacle_, "mesa");
       plant_.resetEffortPeaks();
     } else if (line == "RECARGA") {
       std::printf("SIM: recarga del mundo pedida por la URC\n");
@@ -843,7 +912,7 @@ private:
     plant_.setObstacle(nullptr, "ninguno");
     if (obstacle_) obstacle_->remove();
     obstacle_ = nullptr;
-    obstacleX_ = obstacleY_ = 0;
+    obstacleX_ = obstacleY_ = obstacleHeight_ = 0;
   }
 
   long percent(int motor) const { return std::lround(plant_.current(motor) * 100.0); }
@@ -865,7 +934,7 @@ private:
                   plant_.lost(1), plant_.lost(2), plant_.lost(3));
     link_.write(out);
     std::snprintf(out, sizeof out, "SIM OBSTACULO %s %d %d %d\n", plant_.obstacleKind(),
-                  obstacleX_, obstacleY_, obstacle_ ? 150 : 0);
+                  obstacleX_, obstacleY_, obstacle_ ? obstacleHeight_ : 0);
     link_.write(out);
     char contact[384];
     std::snprintf(contact, sizeof contact,
@@ -887,7 +956,7 @@ private:
   bool reboot_;
   double lastState_;
   webots::Node* obstacle_;
-  int obstacleX_, obstacleY_;
+  int obstacleX_, obstacleY_, obstacleHeight_;
   std::string line_;
 };
 

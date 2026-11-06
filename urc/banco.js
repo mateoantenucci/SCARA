@@ -54,11 +54,20 @@
     <h3>Obstáculo de ensayo</h3>
     <p class="note">El banco muestra el contacto; el robot continúa y puede perder pasos.</p>
     <div class="row fields">
+      <label class="field">Tipo <select id="banco-obstacle-type"><option value="maceta">maceta</option><option value="mesa">mesa</option></select></label>
       <label class="field">X (mm) <input id="banco-obstacle-x" type="number" min="-1000" max="1000" step="1" value="375"></label>
       <label class="field">Y (mm) <input id="banco-obstacle-y" type="number" min="-1000" max="1000" step="1" value="-217"></label>
-      <button id="banco-obstacle-set">Poner maceta</button>
+      <label class="field">Altura mesa (mm) <input id="banco-obstacle-height" type="number" min="-20" max="90" step="1" value="40" style="width: 5em"></label>
+      <button id="banco-obstacle-set">Poner obstáculo</button>
       <button id="banco-obstacle-remove">Sacar obstáculo</button>
       <span class="small" id="banco-obstacle-state"></span>
+    </div>
+    <h3>Empujón en la punta</h3>
+    <div class="row fields">
+      <label class="field">Fuerza (N) <input id="banco-push-force" type="number" min="0.5" max="50" step="0.5" value="12" style="width: 5em"></label>
+      <label class="field">Dirección (°) <input id="banco-push-dir" type="number" min="-180" max="180" step="5" value="90" style="width: 5em"></label>
+      <button id="banco-push-set">Aplicar empujón…</button>
+      <span class="small" id="banco-push-state"></span>
     </div>
     <h3>Motores en el simulador</h3>
     <div class="scroll"><table>
@@ -70,7 +79,8 @@
     <p class="note" id="banco-hall" style="margin-top: 8px"></p>
     <details class="help">
       <summary>Cómo funciona</summary>
-      <p>La maceta es un cilindro fijo de ⌀120 × 150 mm; X e Y se miden desde la torre. El banco la pone en Webots. Capturar, planificar y comprobar choques siguen usando el robot conocido por la URC: el obstáculo de ensayo solo existe en la planta. Un contacto no frena automáticamente el robot.</p>
+      <p>La maceta es un cilindro fijo de ⌀120 × 150 mm y la mesa un bloque fijo de 160 × 160 mm con tapa a la altura indicada; X e Y se miden desde la torre. El banco los pone en Webots. Capturar, planificar y comprobar choques siguen usando el robot conocido por la URC: el obstáculo de ensayo solo existe en la planta. Un contacto no frena automáticamente el robot.</p>
+      <p>El empujón aplica una fuerza horizontal breve (0,5 s) en la punta con los motores energizados: por debajo del par de retención el rotor cede dentro del ciclo eléctrico y vuelve; si lo supera, salta ciclos completos y queda corrido sin aviso hasta pasar por un Hall o hacer homing.</p>
       <p>Los picos son esfuerzos articulares (J1–J3 en N·m; J4 en N), desde que se puso el obstáculo. Los límites provisionales vienen de las aceleraciones de D76 con 5 kg: superar ese uso normal no demuestra rotura. Los pasos perdidos permanecen después de sacar el obstáculo; el Hall puede avisarlos más adelante.</p>
       <p>Llega por el canal de instrumentación, que el robot real no tiene. La URC no usa estos datos para capturar ni planificar: siempre usa la posición estimada por pasos. La posición simulada está junto a la estimada, a la derecha.</p>
       <p>F1: con menos corriente el motor tiene menos par; con carga o al arrancar, pierde pasos. Cada orden se confirma cuando el simulador la muestra aplicada: al lado del control dice lo vigente y «aplicando…» mientras tanto.</p>
@@ -143,6 +153,7 @@
   // Otro motor: el porcentaje muestra el suyo, salvo que se haya editado.
   f1.addEventListener("change", render);
   hand.addEventListener("change", render);
+  $("banco-obstacle-type").addEventListener("change", render);
   $("banco-hand-set").addEventListener("click", async () => {
     const joint = Number(hand.value), position = Number($("banco-hand-position").value);
     if (!Number.isFinite(position) || $("banco-hand-position").value === "") {
@@ -154,11 +165,27 @@
       order("mano", { mano: { articulacion: joint, posicion: Math.round(position * 100) } });
     }
   });
-  $("banco-obstacle-set").addEventListener("click", () => order("obstaculo", { obstaculo: {
-    tipo: "maceta", x: Number($("banco-obstacle-x").value), y: Number($("banco-obstacle-y").value),
-  } }));
+  $("banco-obstacle-set").addEventListener("click", () => {
+    const tipo = $("banco-obstacle-type").value;
+    const obstaculo = {
+      tipo, x: Number($("banco-obstacle-x").value), y: Number($("banco-obstacle-y").value),
+    };
+    if (tipo === "mesa") obstaculo.altura = Number($("banco-obstacle-height").value);
+    order("obstaculo", { obstaculo });
+  });
   $("banco-obstacle-remove").addEventListener("click", () =>
     order("obstaculo", { obstaculo: { tipo: "ninguno" } }));
+  $("banco-push-set").addEventListener("click", async () => {
+    const fuerza_n = Number($("banco-push-force").value), direccion = Number($("banco-push-dir").value);
+    if (!Number.isFinite(fuerza_n) || !Number.isFinite(direccion)) {
+      feedback(new Error("Indicá fuerza y dirección del empujón"));
+      return;
+    }
+    if (await ask(`Se aplicará un empujón horizontal de ${fuerza_n} N a ${direccion}° en la punta durante 0,5 s.`,
+      { title: "¿Aplicar empujón en la punta?", confirm: "Empujar" })) {
+      order("empujon", { empujon: { fuerza_n, direccion } });
+    }
+  });
 
   $("banco-f5").addEventListener("click", async () => {
     if (await ask("El firmware vuelve a arrancar sin corriente y sin referencia (F5).",
@@ -226,9 +253,13 @@
       texts.forEach((text, i) => { if (cells[i + 1].textContent !== text) cells[i + 1].textContent = text; });
       cells[3].style.color = bench.lost_steps[joint] ? "var(--error)" : "";
     });
+    $("banco-obstacle-height").disabled = $("banco-obstacle-type").value !== "mesa";
     const obstacle = bench.obstacle;
     $("banco-obstacle-state").textContent = pending("obstaculo") ? "aplicando…" : obstacle
-      ? `vigente: ${obstacle.tipo}${obstacle.tipo !== "ninguno" ? `, X ${obstacle.x}, Y ${obstacle.y} mm` : ""}` : "sin datos";
+      ? `vigente: ${obstacle.tipo}${obstacle.tipo !== "ninguno" ? `, X ${obstacle.x}, Y ${obstacle.y}${obstacle.tipo === "mesa" ? `, altura ${obstacle.altura}` : ""} mm` : ""}` : "sin datos";
+    const push = bench.push;
+    $("banco-push-state").textContent = pending("empujon") ? "aplicando…" : push
+      ? `último: ${push.fuerza_n} N a ${push.direccion}° (${push.duracion_ms} ms)` : "sin empujón aplicado";
     $("banco-contact").textContent = bench.contact ? `Contacto: ${bench.contact} con ${obstacle?.tipo || "entorno"}` : "Sin contacto";
     $("banco-contact").className = bench.contact ? "note warn" : "note";
     $("banco-effort").textContent = bench.peak_effort ? "Pico / límite provisional: " + bench.peak_effort.map((peak, i) =>
