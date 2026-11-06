@@ -1,0 +1,36 @@
+UNSUPPORTED (log once): POSSIBLE ISSUE: unit 0 GLD_TEXTURE_INDEX_2D is unloadable and bound to sampler type (Float) - using zero texture because texture unloadable
+INFO: scara_uci: Starting controller: /Users/lucianogrosso/orca/workspaces/SCARA/main/webots/controllers/scara_uci/scara_uci --port 9130 --sim-port 9131 --desvio 0
+UCI: arranca a 0.00°, 0.00°, 0.00° de la pose de reposo
+UCI: conectada a la URC en 127.0.0.1:9130
+SIM: conectada a la URC en 127.0.0.1:9131
+UCI: drivers sin corriente
+UCI: drivers con corriente
+HOME inicio {'mode': 'IDLE', 'homed': 0, 'position': [0, 0, 0, 0], 'hall': 8, 'free': 16, 'last': 0, 'age_s': 0.011} [0, 0, 0, 11999]
+esperando homing UCI {'mode': 'HOMING', 'homed': 0, 'position': [0, 0, 0, -6948], 'hall': 0, 'free': 16, 'last': 0, 'age_s': 0.024} física [0, 0, 0, 5042]
+esperando homing UCI {'mode': 'HOMING', 'homed': 8, 'position': [-2216, 0, 0, 300], 'hall': 8, 'free': 16, 'last': 0, 'age_s': 0.005} física [-2207, 0, 0, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 8, 'position': [-12909, 0, 0, 300], 'hall': 8, 'free': 16, 'last': 0, 'age_s': 0.041} física [-12910, 0, 0, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 9, 'position': [-12999, -12842, 0, 300], 'hall': 8, 'free': 16, 'last': 0, 'age_s': 0.01} física [-12999, -12844, 0, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 11, 'position': [-12999, -12999, -9726, 300], 'hall': 8, 'free': 16, 'last': 0, 'age_s': 0.014} física [-12999, -12999, -9710, 300]
+C1 inicio 0.25 [-9000, -6000, 0, 4000] [9000, -6000, 0, 4000] {'x': 375, 'y': -217}
+C1 {"speed_pct": 25, "acceleration_pct": 25, "contact": "TOOL", "obstacle_mm": {"x": 375, "y": -217}, "estimated": [9000, -6002, 0, 4000], "physical": [9001, -9782, -540, 4000], "lost_steps": [0, -84, -12, 0], "peak_effort": [4.256619, 2.136575, 0.824605, 2.011719], "effort_limit": [1.94254, 0.9392, 0.052129, 52.782882], "release_motion": [-1, 0, 0, 0]}
+C1 EV LOST [{'joint': 2, 'steps': -84}]
+HOME inicio {'mode': 'IDLE', 'homed': 15, 'position': [7999, -9219, 0, 4000], 'hall': 2, 'free': 16, 'last': 1072, 'age_s': 0.018} [7999, -13003, -540, 4000]
+esperando homing UCI {'mode': 'HOMING', 'homed': 8, 'position': [3983, -9219, 0, 300], 'hall': 8, 'free': 16, 'last': 1072, 'age_s': 0.005} física [3979, -12999, -540, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 8, 'position': [-10564, -9219, 0, 300], 'hall': 8, 'free': 16, 'last': 1072, 'age_s': 0.019} física [-10559, -13000, -540, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 11, 'position': [-12999, -12999, -2104, 300], 'hall': 8, 'free': 16, 'last': 1072, 'age_s': 0.021} física [-12999, -12999, -2630, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 11, 'position': [-12999, -12999, -13793, 300], 'hall': 8, 'free': 16, 'last': 1072, 'age_s': 0.004} física [-12999, -12999, -14333, 300]
+C1 homing recupera [0, 0, 0, -1]
+C1 inicio 1.0 [-9000, -6000, 0, 4000] [9000, -6000, 0, 4000] {'x': 375, 'y': -217}
+C1 {"speed_pct": 100, "acceleration_pct": 100, "contact": "TOOL", "obstacle_mm": {"x": 375, "y": -217}, "estimated": [9000, -6002, 0, 4000], "physical": [8102, -9601, 0, 4000], "lost_steps": [-20, -100, 0, 0], "peak_effort": [4.256187, 2.138011, 0.824606, 2.589236], "effort_limit": [1.94254, 0.9392, 0.052129, 52.782882], "release_motion": [-2, -1, 0, 0]}
+C1 EV LOST [{'joint': 2, 'steps': -80}]
+HOME inicio {'mode': 'IDLE', 'homed': 15, 'position': [7999, -9399, 0, 4000], 'hall': 2, 'free': 16, 'last': 1821, 'age_s': 0.013} [7099, -13001, 0, 4000]
+esperando homing UCI {'mode': 'HOMING', 'homed': 8, 'position': [4061, -9399, 0, 300], 'hall': 8, 'free': 16, 'last': 1821, 'age_s': 0.008} física [3193, -12999, 0, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 8, 'position': [-9743, -9399, 0, 300], 'hall': 8, 'free': 16, 'last': 1821, 'age_s': 0.041} física [-10633, -12999, 0, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 11, 'position': [-12999, -12999, -2104, 300], 'hall': 8, 'free': 16, 'last': 1821, 'age_s': 0.039} física [-12999, -12999, -2141, 300]
+esperando homing UCI {'mode': 'HOMING', 'homed': 11, 'position': [-12999, -12999, -14310, 300], 'hall': 8, 'free': 16, 'last': 1821, 'age_s': 0.036} física [-12999, -12999, -14310, 300]
+C1 homing recupera [0, 0, 0, -1]
+C1 comparación 25 % / 100 % [{"speed_pct": 25, "acceleration_pct": 25, "contact": "TOOL", "obstacle_mm": {"x": 375, "y": -217}, "estimated": [9000, -6002, 0, 4000], "physical": [9001, -9782, -540, 4000], "lost_steps": [0, -84, -12, 0], "peak_effort": [4.256619, 2.136575, 0.824605, 2.011719], "effort_limit": [1.94254, 0.9392, 0.052129, 52.782882], "release_motion": [-1, 0, 0, 0]}, {"speed_pct": 100, "acceleration_pct": 100, "contact": "TOOL", "obstacle_mm": {"x": 375, "y": -217}, "estimated": [9000, -6002, 0, 4000], "physical": [8102, -9601, 0, 4000], "lost_steps": [-20, -100, 0, 0], "peak_effort": [4.256187, 2.138011, 0.824606, 2.589236], "effort_limit": [1.94254, 0.9392, 0.052129, 52.782882], "release_motion": [-2, -1, 0, 0]}]
+ENSAYO OK
+UCI: enlace perdido (la URC cerró la conexión)
+UCI: esperando a la URC en 127.0.0.1:9130; reintento cada 1000 ms
+INFO: scara_uci: Terminating.

@@ -44,7 +44,6 @@ ARTIFACTS = [CONTROLLER, ROOT / "webots" / "worlds" / "scara_uci.wbt", ROOT / "w
 
 # Ensayo: script, puertos que usa y cuánto puede tardar (s).
 ENSAYOS = {
-    "fisicas": ("validation/fisicas/ensayo_webots.py", (9130, 9131), 1200),
     "protocolo": ("validation/protocolo/ensayo_webots.py", (9100,), 300),
     "transmision": ("validation/transmision/ensayo_webots.py", (9101,), 300),
     "segmentos": ("validation/segmentos/ensayo_webots.py", (9102,), 300),
@@ -53,6 +52,7 @@ ENSAYOS = {
     "perdida_pasos": ("validation/perdida_pasos/ensayo_webots.py", (9110, 9111), 900),
     "reproduccion": ("validation/reproduccion/ensayo_webots.py", (9114, 9115), 600),
     "campana": ("validation/campana/ensayo_webots.py", (9120, 9121), 900),
+    "fisicas": ("validation/fisicas/ensayo_webots.py", (9130, 9131), 1200),
     "movido_mano": ("validation/movido_mano/ensayo_webots.py", (9132, 9133), 600),
 }
 
@@ -64,7 +64,7 @@ ESCENARIOS = [
      "inicial": "Referenciado, demo-barrido-ptp versión 2, maceta fija en medio del barrido largo de J1",
      "esperado": "A 25 y 100 %, contacto bloquea el brazo y pierde pasos; al retirar no salta, "
                  "sigue corrido, EV LOST al cruzar Hall y homing recupera",
-     "tolerancia": "Liberación y continuidad de J1 a menos de dos pasos completos (0,9°); "
+     "tolerancia": "Liberación y continuidad a menos de dos pasos completos por motor (J2 incluye acople); "
                    "homing física contra estimada a menos de un paso completo; picos contra límite D76/5 kg",
      "ensayos": ["fisicas"], "pasos": "C1: ambas velocidades, comparación y recuperación"},
     {"id": "C4", "nombre": "Movido a mano sin corriente",

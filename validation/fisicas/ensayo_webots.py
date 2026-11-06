@@ -119,7 +119,8 @@ try:
         # El estator completa su tramo con el obstáculo aún puesto.
         wait(lambda: still(), "fin del tramo contra maceta", 90)
         before = bench.snapshot()
-        assert abs(before["simulated"][0] - target[0]) > 100, before
+        drift = [s - e for s, e in zip(before["simulated"], target)]
+        assert any(abs(d) > 100 for d in drift[:3]), before
         lost = list(before["lost_steps"])
         obstacle("ninguno")
         # Sin pulsos nuevos no puede recuperar el tramo que perdió.
@@ -145,8 +146,13 @@ try:
         with session.lock:
             session.limits = nominal_limits
         # Buscar un Hall sin homing para observar EV LOST con referencia dudosa.
-        session.order("JOG 1 - 1000")
-        wait(lambda: session.snapshot()["doubtful"], "EV LOST al cruzar Hall", 90)
+        axis = max(range(3), key=lambda j: abs(drift[j]) / STILL[j]) + 1
+        # El contacto puede bloquear M2/M3 mientras J1 termina su barrido.
+        # Se cruza el Hall del eje corrido; el robot sigue sin saber del objeto.
+        direction = "-" if bench.snapshot()["simulated"][axis - 1] < 0 else "+"
+        session.order(f"JOG {axis} {direction} 1000")
+        wait(lambda: any(e["joint"] == axis for e in session.snapshot()["doubtful"]),
+             f"EV LOST al cruzar Hall J{axis}", 90)
         session.order("JOG STOP")
         wait(still, "jog detenido")
         log("C1 EV LOST", session.snapshot()["doubtful"])

@@ -10,4 +10,16 @@ Los límites provisionales son cotas calculadas con N2, las aceleraciones máxim
 
 El escenario usa los primeros dos puntos de `demo-barrido-ptp.json`, en formato versión 2, y coloca la maceta en la posición del punto de herramienta a medio barrido. Repite al 25 y al 100 % de velocidad y aceleración (el ensayo reduce explícitamente ambas, porque el porcentaje de velocidad de la URC conserva la aceleración nominal), registra pico/límite y pasos perdidos, retira la maceta sin pulsos nuevos y continúa con un tramo de 10° de J1. Comprueba que no recupera el recorrido perdido, busca un Hall para recibir `EV LOST` y termina con homing. La tolerancia de liberación y continuidad es menos de dos pasos completos por motor (J2 admite el acople); después de homing, menos de un paso completo con el robot quieto. La tolerancia se contrasta durante la corrida y queda identificada junto a su registro.
 
-Para repetir: `python3 validation/campana/campana.py fisicas`. La campaña completa guarda versión, huellas y registro en `validation/campana/`. La evidencia integrada de C1 está pendiente de finalizar; no se presenta esta descripción como una corrida aprobada.
+Para repetir: `python3 validation/campana/campana.py fisicas`. La campaña completa guarda versión, huellas y registro en `validation/campana/`. La corrida individual del 06/11/2026 terminó con ENSAYO OK; la campaña completa vuelve a ejecutarla junto con la regresión y registra su versión.
+
+
+## Resultado individual del 06/11/2026
+
+| Límites D76 | Pasos perdidos M1, M2, M3, M4 | Picos J1, J2, J3 (N·m), J4 (N) | Movimiento al retirar (centésimas) |
+| --- | --- | --- | --- |
+| 25 % velocidad y aceleración | 0, −84, −12, 0 | 4,257; 2,137; 0,825; 2,012 | −1, 0, 0, 0 |
+| 100 % | −20, −100, 0, 0 | 4,256; 2,138; 0,825; 2,589 | −2, −1, 0, 0 |
+
+El contacto afectó a TOOL. A velocidad baja cedieron M2 y M3 mientras J1 completó su giro; a velocidad plena también perdió M1. Los picos horizontales llegan a la capacidad de los accionamientos porque el contacto permanece mientras siguen llegando pulsos: reducir la velocidad no evita ese esfuerzo sostenido. Se superó el límite provisional de uso normal, sin inferir rotura.
+
+El Hall de J2 informó −84 pasos en la corrida lenta y −80 en la rápida. El segundo valor es la diferencia entre M2 (−100) y M1 (−20), porque el Hall de J2 mide el ángulo relativo y el otro motor todavía no cruzó su Hall (D67). El homing dejó las cuatro articulaciones dentro de un paso completo de la estimada en las dos corridas. Registro: [fisicas.log](../campana/registros/fisicas.log).
