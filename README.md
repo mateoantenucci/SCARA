@@ -42,7 +42,7 @@ Trabajar en una rama propia y proponer los cambios con un pull request. No subir
 1. Compilá el controlador `scara_uci` una vez, y de nuevo cada vez que cambie el firmware: [compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
 2. Desde la raíz del proyecto, levantá la URC: `python3 -m urc.app` (Windows: `python -m urc.app`). Dejá esa terminal abierta.
 3. Abrí [la página de la URC](http://127.0.0.1:8766) en el navegador.
-4. En Webots, elegí **File → Open World**, abrí [webots/worlds/scara_uci.wbt](webots/worlds/scara_uci.wbt) y pulsá **reproducción en tiempo real** (botón Play `>` a 1×, nunca «Run» `>>` ni «Fast» `>>>`: el watchdog del firmware y los pings de la URC requieren tiempo real, ver [UCI en Webots](docs/UCI_WEBOTS.md#cómo-funciona)). El controlador se conecta a la URC por TCP 9000.
+4. En Webots, elegí **File → Open World**, abrí [webots/worlds/scara_uci.wbt](webots/worlds/scara_uci.wbt) y ejecutá en **tiempo real** (botón Real-time a 1×, evitando el modo Fast mientras la URC esté conectada: el watchdog del firmware y los pings de la URC requieren sincronización en tiempo real, ver [UCI en Webots](docs/UCI_WEBOTS.md#cómo-funciona)). El controlador se conecta a la URC por TCP 9000.
 5. Seguí [Usarlo](docs/UCI_WEBOTS.md#usarlo): habilitar motores, homing, jog, trayectorias, fallas y carga por el banco de ensayo.
 
 Las tres trayectorias de demostración están en `trayectorias/`, la carpeta por defecto de la URC. Para el robot real, el mismo firmware compila para el UNO: [UCI en el Arduino UNO](docs/ARDUINO_UNO.md).

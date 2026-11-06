@@ -1,71 +1,138 @@
 ======================================================================
-REPRODUCCIÓN Y EVIDENCIA EXPERIMENTAL #51
-Watchdog de scara/1 vs Velocidad de Simulación en Webots
-Fecha: 2026-11-06 18:44:17
+REPRODUCCIÓN Y ANÁLISIS EXPERIMENTAL #51
+Homing y Watchdog vs Velocidad de Simulación en Webots
+Fecha: 2026-11-06 19:01:31
+Plataforma: darwin
 ======================================================================
 
+>>> SERIE 1: Modo Real-time 1× (--mode=realtime, basicTimeStep 2)
+
 ======================================================================
-ESCENARIO: 1. Real-time 1× (control)
-  Parámetros Webots: --mode=realtime, basicTimeStep=2
+INTENTO: Real-time 1× (intento 1/3)
+  Parámetros: --mode=realtime, basicTimeStep=2
 ======================================================================
-   scara_uci conectado. Velocidad simulación observada: 0.95×
+   scara_uci conectado en puerto 9230.
    Motores habilitados (modo IDLE, Hall 1000)
    Lanzando HOME...
-   Progreso homing: ejes referenciados [4] (velocidad: 1.00×)
-   Progreso homing: ejes referenciados [4, 1] (velocidad: 1.00×)
-   Progreso homing: ejes referenciados [4, 1, 2] (velocidad: 0.99×)
-   Progreso homing: ejes referenciados [4, 1, 2, 3] (velocidad: 1.00×)
+   Progreso homing: ejes referenciados [4]
+   Progreso homing: ejes referenciados [4, 1]
+   Progreso homing: ejes referenciados [4, 1, 2]
+   Progreso homing: ejes referenciados [4, 1, 2, 3]
    -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   Velocidad medida durante homing: 0.99×
    RESULTADO: Homing terminado exitosamente.
 
 ======================================================================
-ESCENARIO: 2. Fast >4× (basicTimeStep 8)
-  Parámetros Webots: --mode=fast, basicTimeStep=8
+INTENTO: Real-time 1× (intento 2/3)
+  Parámetros: --mode=realtime, basicTimeStep=2
 ======================================================================
-   scara_uci conectado. Velocidad simulación observada: 13.61×
+   scara_uci conectado en puerto 9230.
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4]
+   Progreso homing: ejes referenciados [4, 1]
+   Progreso homing: ejes referenciados [4, 1, 2]
+   Progreso homing: ejes referenciados [4, 1, 2, 3]
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   Velocidad medida durante homing: 0.95×
+   RESULTADO: Homing terminado exitosamente.
+
+======================================================================
+INTENTO: Real-time 1× (intento 3/3)
+  Parámetros: --mode=realtime, basicTimeStep=2
+======================================================================
+   scara_uci conectado en puerto 9230.
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4]
+   Progreso homing: ejes referenciados [4, 1]
+   Progreso homing: ejes referenciados [4, 1, 2]
+   Progreso homing: ejes referenciados [4, 1, 2, 3]
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   Velocidad medida durante homing: 0.96×
+   RESULTADO: Homing terminado exitosamente.
+
+>>> SERIE 2: Modo Fast (--mode=fast, basicTimeStep 2)
+
+======================================================================
+INTENTO: Fast estándar (intento 1/3)
+  Parámetros: --mode=fast, basicTimeStep=2
+======================================================================
+   scara_uci conectado en puerto 9230.
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4]
+   Progreso homing: ejes referenciados [4, 1]
+   Progreso homing: ejes referenciados [4, 1, 2]
+   Progreso homing: ejes referenciados [4, 1, 2, 3]
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   Velocidad medida durante homing: 2.70×
+   RESULTADO: Homing terminado exitosamente.
+
+======================================================================
+INTENTO: Fast estándar (intento 2/3)
+  Parámetros: --mode=fast, basicTimeStep=2
+======================================================================
+   scara_uci conectado en puerto 9230.
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4]
+   Progreso homing: ejes referenciados [4, 1]
+   Progreso homing: ejes referenciados [4, 1, 2]
+   Progreso homing: ejes referenciados [4, 1, 2, 3]
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   Velocidad medida durante homing: 2.38×
+   RESULTADO: Homing terminado exitosamente.
+
+======================================================================
+INTENTO: Fast estándar (intento 3/3)
+  Parámetros: --mode=fast, basicTimeStep=2
+======================================================================
+   scara_uci conectado en puerto 9230.
+   Motores habilitados (modo IDLE, Hall 1000)
+   Lanzando HOME...
+   Progreso homing: ejes referenciados [4]
+   Progreso homing: ejes referenciados [4, 1]
+   Progreso homing: ejes referenciados [4, 1, 2]
+   Progreso homing: ejes referenciados [4, 1, 2, 3]
+   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
+   Velocidad medida durante homing: 2.70×
+   RESULTADO: Homing terminado exitosamente.
+
+>>> SERIE AUXILIAR: Verificación analítica de cota >= 4× (--mode=fast, basicTimeStep 8)
+
+======================================================================
+INTENTO: AUXILIAR: Fast con basicTimeStep 8
+  Parámetros: --mode=fast, basicTimeStep=8
+======================================================================
+   scara_uci conectado en puerto 9230.
    Motores habilitados (modo IDLE, Hall 1000)
    Lanzando HOME...
    -> ERROR DETECTADO: ERR 4 watchdog: más de 1 s sin mensajes de la URC: el robot frenó solo
+   Velocidad medida durante homing: 12.77×
    RESULTADO: Abortó con ERR 4 watchdog tras referenciar ejes []
 
-======================================================================
-ESCENARIO: 3. Real-time 1× con silencio URC de 450 ms
-  Parámetros Webots: --mode=realtime, basicTimeStep=2
-  Fluctuación URC: 450 ms tras referenciar J1
-======================================================================
-   scara_uci conectado. Velocidad simulación observada: 0.88×
-   Motores habilitados (modo IDLE, Hall 1000)
-   Lanzando HOME...
-   Progreso homing: ejes referenciados [4] (velocidad: 0.96×)
-   [JITTER] Silenciando envíos durante 450 ms reales tras EV HOMED 1
-   Progreso homing: ejes referenciados [4, 1] (velocidad: 0.94×)
-   Progreso homing: ejes referenciados [4, 1, 2] (velocidad: 1.00×)
-   Progreso homing: ejes referenciados [4, 1, 2, 3] (velocidad: 0.99×)
-   -> Homing completado exitosamente (ejes: [4, 1, 2, 3])
-   RESULTADO: Homing terminado exitosamente.
+==============================================================================
+TABLA DE RESULTADOS POR INTENTO (#51):
+==============================================================================
+Intento                              | Velocidad    | Resultado          | Ejes logrados
+------------------------------------------------------------------------------
+Real-time 1× (intento 1/3)           | 0.99×        | SUCCESS_HOMED      | [4, 1, 2, 3]
+Real-time 1× (intento 2/3)           | 0.95×        | SUCCESS_HOMED      | [4, 1, 2, 3]
+Real-time 1× (intento 3/3)           | 0.96×        | SUCCESS_HOMED      | [4, 1, 2, 3]
+Fast estándar (intento 1/3)          | 2.70×        | SUCCESS_HOMED      | [4, 1, 2, 3]
+Fast estándar (intento 2/3)          | 2.38×        | SUCCESS_HOMED      | [4, 1, 2, 3]
+Fast estándar (intento 3/3)          | 2.70×        | SUCCESS_HOMED      | [4, 1, 2, 3]
+AUXILIAR: Fast con basicTimeStep 8   | 12.77×       | ABORTED_WATCHDOG   | []
+------------------------------------------------------------------------------
 
-======================================================================
-ESCENARIO: 4. Fast ~2.3× con silencio URC de 450 ms
-  Parámetros Webots: --mode=fast, basicTimeStep=2
-  Fluctuación URC: 450 ms tras referenciar J1
-======================================================================
-   scara_uci conectado. Velocidad simulación observada: 0.66×
-   Motores habilitados (modo IDLE, Hall 1000)
-   Lanzando HOME...
-   Progreso homing: ejes referenciados [4] (velocidad: 1.85×)
-   [JITTER] Silenciando envíos durante 450 ms reales tras EV HOMED 1
-   Progreso homing: ejes referenciados [4, 1] (velocidad: 2.17×)
-   -> ERROR DETECTADO: ERR 4 watchdog: más de 1 s sin mensajes de la URC: el robot frenó solo
-   RESULTADO: Abortó con ERR 4 watchdog tras referenciar ejes [4, 1]
+CONTEOS Y CONCLUSIONES EXPERIMENTALES:
+  1. Real-time 1× (basicTimeStep 2): 3/3 completados con éxito.
+  2. Fast estándar (basicTimeStep 2): 3/3 completados, 0/3 abortos watchdog.
+     Velocidad promedio alcanzada en Fast (este host): 2.59×.
+     LIMITACIÓN: En este host Apple Silicon, --mode=fast con basicTimeStep=2 no alcanza
+     los >3.0× observados en la sesión del ticket (alcanza ~2.4-2.7×).
+  3. Auxiliar (basicTimeStep 8): 1/1 abortos por watchdog.
+     Velocidad alcanzada en auxiliar: 12.77× (supera la cota analítica de 4×).
 
-======================================================================
-TABLA COMPARATIVA FINAL DE RESULTADOS #51:
-======================================================================
-Escenario                                  | Velocidad  | Resultado          | Ejes logrados
---------------------------------------------------------------------------------
-1. Real-time 1× (control)                  | 0.98×       | OK                 | [4, 1, 2, 3]
-2. Fast >4× (basicTimeStep 8)              | 9.86×       | ERR 4 watchdog     | []
-3. Real-time 1× con silencio URC de 450 ms | 0.95×       | OK                 | [4, 1, 2, 3]
-4. Fast ~2.3× con silencio URC de 450 ms   | 1.72×       | ERR 4 watchdog     | [4, 1]
---------------------------------------------------------------------------------
-EVIDENCIA CONFIRMADA Y ASISTIDA POR ASERCIONES.
+ENSAYO Y REGISTRO FINALIZADOS SATISFACTORIAMENTE.
