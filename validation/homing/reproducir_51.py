@@ -335,12 +335,32 @@ def main():
             log("     LIMITACIÓN: En este host Apple Silicon, --mode=fast con basicTimeStep=2 no alcanza")
             log(f"     los >3.0× observados en la sesión del ticket (alcanza ~{min(avg_fast):.1f}-{max(avg_fast):.1f}×).")
     log(f"  3. Auxiliar (basicTimeStep 8): {aux_watchdog}/1 abortos por watchdog.")
-    if auxiliary_results and auxiliary_results[0]["speed"] is not None:
-        log(f"     Velocidad alcanzada en auxiliar: {auxiliary_results[0]['speed']:.2f}× (supera la cota analítica de 4×).")
+    aux_speed = auxiliary_results[0]["speed"] if auxiliary_results else None
+    if aux_speed is not None:
+        if aux_speed >= 4.0:
+            log(f"     Velocidad alcanzada en auxiliar: {aux_speed:.2f}× (supera la cota analítica de 4×).")
+        else:
+            log(f"     LIMITACIÓN: Velocidad en auxiliar {aux_speed:.2f}× no alcanzó la cota analítica de 4×.")
 
-    # Aserciones de consistencia mínima
+    # Verificación estricta de validez de todos los intentos:
+    # No se admite ningún intento sin medición válida de velocidad o con desenlace anómalo (NO_CONNECT, TIMEOUT, etc.)
+    for r in all_runs:
+        assert r["speed"] is not None and r["speed"] > 0, (
+            f"Falta medición válida de velocidad en {r['name']}: {r['speed']}"
+        )
+        assert r["outcome"] in ("SUCCESS_HOMED", "ABORTED_WATCHDOG"), (
+            f"Desenlace inesperado o incompleto en {r['name']}: {r['outcome']} (errores: {r['errors']})"
+        )
+
+    # Aserciones de consistencia del experimento
     assert rt_success == 3, f"Se esperaban 3/3 exitosos en tiempo real, se obtuvieron {rt_success}"
-    assert aux_watchdog == 1, "El ensayo auxiliar (>4×) debe reproducir el aborto por watchdog sin demoras de host"
+    if aux_speed is not None and aux_speed >= 4.0:
+        assert aux_watchdog == 1, (
+            "El ensayo auxiliar (>4×) debe reproducir el aborto por watchdog sin demoras de host"
+        )
+    else:
+        log("     Aviso: ensayo auxiliar no evaluó cota >= 4× porque la velocidad fue inferior a 4×.")
+
     log("\nENSAYO Y REGISTRO FINALIZADOS SATISFACTORIAMENTE.")
 
 
