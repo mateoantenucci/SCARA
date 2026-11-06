@@ -33,7 +33,8 @@ from urc.instrumentation import Instrumentation  # noqa: E402
 from urc.session import Session  # noqa: E402
 
 PORT, SIM_PORT = 9104, 9105
-WEBOTS = os.environ.get("WEBOTS", r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
+WEBOTS = os.environ.get("WEBOTS", "/Applications/Webots.app/Contents/MacOS/webots" if sys.platform == "darwin"
+                        else r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
 WORLD = ROOT / "webots" / "worlds" / "_ensayo_instrumentacion.wbt"
 LOG = open(sys.argv[1], "w", encoding="utf-8", newline="\n")
 STEP = 5.625      # centésimas de grado por paso de J1–J3 con 1/8
@@ -62,7 +63,7 @@ world = world.replace('controller "scara_uci"', 'controller "scara_uci"\n  contr
                       '"{}", "--desvio", "0"]'.format(PORT, SIM_PORT))
 WORLD.write_text(world, encoding="utf-8")
 session, bench = Session(port=PORT), Instrumentation(port=SIM_PORT)
-webots = subprocess.Popen([WEBOTS, "--batch", "--minimize", "--no-rendering", "--mode=realtime",
+webots = subprocess.Popen([WEBOTS, "--batch", *([] if sys.platform == "darwin" else ["--minimize"]), "--no-rendering", "--mode=realtime",
                            "--stdout", "--stderr", str(WORLD)], stdout=LOG, stderr=LOG)
 try:
     # 0. El canal se conecta solo y trae la verdad del simulador.

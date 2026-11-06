@@ -94,7 +94,8 @@ public:
   // Avanza `dt` segundos, en los que el estator pasó de su posición anterior
   // a `stator` pulsos. Los pulsos se reparten parejos en el intervalo, como
   // los emite el firmware. `current`: fracción de la corriente nominal.
-  void advance(long stator, double dt, const Load& load, double current) {
+  // externalTorque: reacción del entorno reflejada al eje del motor, N·m.
+  void advance(long stator, double dt, const Load& load, double current, double externalTorque = 0.0) {
     const double inertia = spec_.rotorInertia + load.inertia;
     const double h = dt / SUBSTEPS;
     const long from = stator_;
@@ -112,7 +113,7 @@ public:
       double torque = available * std::sin(PI / 2 * lag / FULL_STEP) + damping * (fieldSpeed_ - speed_);
       if (torque > available) torque = available;
       if (torque < -available) torque = -available;
-      speed_ += (torque + external(load)) / inertia * h;
+      speed_ += (torque + external(load) + externalTorque) / inertia * h;
       angle_ += speed_ * h;
       // A más de medio ciclo eléctrico, el rotor cae al equilibrio siguiente.
       const double half = STEPS_PER_CYCLE / 2 * FULL_STEP;
@@ -133,6 +134,13 @@ public:
   void stopAt(double pulses) {
     angle_ = pulses * pulse_;
     speed_ = 0;
+  }
+
+  // La correa o el tornillo unen el rotor al cuerpo que el contacto frenó.
+  // Conserva la velocidad física al deslizar, y nunca borra pasos perdidos.
+  void constrain(double pulses, double speed) {
+    angle_ = pulses * pulse_;
+    speed_ = speed;
   }
 
   // Pulsos que el rotor no siguió, múltiplo de 4 pasos completos: su
@@ -240,6 +248,20 @@ inline Load loadOf(int motor, double tool) {
     }
   }
   return load;
+}
+
+// Trabajo virtual con J2 relativo: Q1 = 4(τ1 + τ2), Q2 = 4τ2.
+// La reacción de Webots es la opuesta al esfuerzo que aplica su motor.
+inline double motorReaction(int motor, const double jointEffort[4]) {
+  if (motor == 3) return -jointEffort[3] * LEAD / (2 * PI * SCREW_EFFICIENCY);
+  double effort = motor == 0 ? jointEffort[0] - jointEffort[1] : jointEffort[motor];
+  return -effort / (PULLEY_RATIO * BELT_EFFICIENCY);
+}
+
+inline double jointCapacity(int joint, const double motorTorque[4]) {
+  if (joint == 3) return motorTorque[3] * 2 * PI / LEAD * SCREW_EFFICIENCY;
+  double torque = motorTorque[joint] + (joint == 0 ? motorTorque[1] : 0.0);
+  return torque * PULLEY_RATIO * BELT_EFFICIENCY;
 }
 
 }  // namespace plant

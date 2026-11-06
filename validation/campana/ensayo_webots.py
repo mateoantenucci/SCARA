@@ -37,7 +37,8 @@ from urc.session import Session  # noqa: E402
 from urc.trajectories import DEFAULT_FOLDER, TrajectoryManager  # noqa: E402
 
 PORT, SIM_PORT = 9120, 9121
-WEBOTS = os.environ.get("WEBOTS", r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
+WEBOTS = os.environ.get("WEBOTS", "/Applications/Webots.app/Contents/MacOS/webots" if sys.platform == "darwin"
+                        else r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
 WORLD = ROOT / "webots" / "worlds" / "_ensayo_campana.wbt"
 LOG = open(sys.argv[1], "w", encoding="utf-8", newline="\n")
 REST = [0, 0, 0, 12000]
@@ -113,7 +114,7 @@ folder = tempfile.TemporaryDirectory(ignore_cleanup_errors=True)
 session, bench = Session(port=PORT), Instrumentation(port=SIM_PORT)
 taught = TrajectoryManager(session, folder.name)
 demos = TrajectoryManager(session, DEFAULT_FOLDER)
-webots = subprocess.Popen([WEBOTS, "--batch", "--minimize", "--no-rendering", "--mode=realtime",
+webots = subprocess.Popen([WEBOTS, "--batch", *([] if sys.platform == "darwin" else ["--minimize"]), "--no-rendering", "--mode=realtime",
                            "--stdout", "--stderr", str(WORLD)], stdout=LOG, stderr=LOG)
 player = None
 try:

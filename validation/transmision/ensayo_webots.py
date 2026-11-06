@@ -29,7 +29,8 @@ sys.path.insert(0, str(ROOT))
 from urc.session import Session  # noqa: E402
 
 PORT = 9101
-WEBOTS = os.environ.get("WEBOTS", r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
+WEBOTS = os.environ.get("WEBOTS", "/Applications/Webots.app/Contents/MacOS/webots" if sys.platform == "darwin"
+                        else r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
 WORLD = ROOT / "webots" / "worlds" / "_ensayo_transmision.wbt"
 OBSERVER = ROOT / "webots" / "controllers" / "_observador_transmision"
 LOG = open(sys.argv[1], "w", encoding="utf-8")
@@ -150,7 +151,7 @@ world += ('Robot {\n  name "observador"\n  controller "_observador_transmision"\
           f'  controllerArgs ["{sample_file.as_posix()}"]\n  supervisor TRUE\n}}\n')
 WORLD.write_text(world, encoding="utf-8")
 session = Session(port=PORT)
-webots = subprocess.Popen([WEBOTS, "--batch", "--minimize", "--no-rendering", "--mode=realtime",
+webots = subprocess.Popen([WEBOTS, "--batch", *([] if sys.platform == "darwin" else ["--minimize"]), "--no-rendering", "--mode=realtime",
                            "--stdout", "--stderr", str(WORLD)], stdout=LOG, stderr=LOG)
 try:
     wait(session, lambda s: s["status"] is not None)

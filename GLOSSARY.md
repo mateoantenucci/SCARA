@@ -172,3 +172,10 @@ _Evitar_: Codo arriba / codo abajo (es terminología de brazos verticales, aunqu
 **Pérdida de pasos**:
 Diferencia entre los pasos que el firmware ordenó a un motor y los que el motor efectivamente dio, por falta de par.
 _Evitar_: Desfase, error de encoder (no hay encoders).
+
+**Obstáculo de ensayo**:
+Objeto fijo que se coloca deliberadamente en el recorrido del robot para estudiar un contacto y sus consecuencias. No forma parte del entorno que conoce el robot.
+
+**Mover a mano**:
+Colocar una articulación con los drivers sin corriente. Cambia su posición física sin producir los pasos que permitirían estimar ese movimiento.
+_Evitar_: Jog o referencia manual.

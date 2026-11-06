@@ -211,7 +211,14 @@ PROTO SCARA [
   DEF BASE Robot {{ translation IS translation rotation IS rotation
     name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"
     supervisor TRUE controller IS controller controllerArgs IS controllerArgs selfCollision FALSE
-    children [ {base} {hall_sensor(0, [0, 0], g['shoulder_z'])} {joint} ]
+    children [ {base} {hall_sensor(0, [0, 0], g['shoulder_z'])}
+      # Un Solid físico bajo la base estática queda soldado al entorno por
+      # Webots. Da a J1 un cuerpo padre para medir su esfuerzo sin liberar la base.
+      DEF J1_MOUNT Solid {{ name "soporte_j1_fijo"
+        children [ {joint} ]
+        # Masa e inercia numéricas del soporte inmóvil; no agregan geometría.
+        physics Physics {{ density -1 mass 1 centerOfMass [ 0 0 0 ]
+          inertiaMatrix [ 0.01 0.01 0.01, 0 0 0 ] }} }} ]
     boundingObject {collision(cad,'base')}
   }}
 }}

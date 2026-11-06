@@ -40,7 +40,8 @@ from urc.instrumentation import Instrumentation  # noqa: E402
 from urc.session import Session  # noqa: E402
 
 PORT, SIM_PORT = 9116, 9117
-WEBOTS = os.environ.get("WEBOTS", r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
+WEBOTS = os.environ.get("WEBOTS", "/Applications/Webots.app/Contents/MacOS/webots" if sys.platform == "darwin"
+                        else r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
 WORLD = ROOT / "webots" / "worlds" / "_ensayo_jog.wbt"
 OBSERVER = ROOT / "webots" / "controllers" / "_observador_jog"
 LOG = open(sys.argv[1], "w", encoding="utf-8", newline="\n")
@@ -188,7 +189,7 @@ world += ('Robot {\n  name "observador"\n  controller "_observador_jog"\n'
 WORLD.write_text(world, encoding="utf-8", newline="\n")
 session, bench = Session(port=PORT), Instrumentation(port=SIM_PORT)
 config, checker = session.config, session.checker
-webots = subprocess.Popen([WEBOTS, "--batch", "--minimize", "--no-rendering", "--mode=realtime",
+webots = subprocess.Popen([WEBOTS, "--batch", *([] if sys.platform == "darwin" else ["--minimize"]), "--no-rendering", "--mode=realtime",
                            "--stdout", "--stderr", str(WORLD)], stdout=LOG, stderr=LOG)
 recorder = None
 try:

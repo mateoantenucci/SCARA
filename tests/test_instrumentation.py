@@ -10,6 +10,7 @@ import http.client
 import json
 from pathlib import Path
 import threading
+import tempfile
 import unittest
 from http.server import ThreadingHTTPServer
 
@@ -17,6 +18,7 @@ from tests.test_urc import FakeUci, wait_for
 from urc.app import handler_for
 from urc.instrumentation import Instrumentation
 from urc.session import Session
+from urc.trajectories import TrajectoryManager
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -57,6 +59,36 @@ class InstrumentationTests(unittest.TestCase):
         self.assertEqual(state["current_pct"], [100, 100, 100, 40])
         self.assertEqual(state["lost_steps"], [0, 0, 0, -12])
 
+    def test_obstacle_and_contact_are_confirmed_by_the_simulator(self):
+        client = self.connect()
+        self.bench.order({"obstaculo": {"tipo": "maceta", "x": 375, "y": 217}})
+        self.assertEqual(client.receive(), "OBSTACULO maceta 375 217")
+        self.assertTrue(self.bench.snapshot()["pending"])
+        client.send("SIM OBSTACULO maceta 375 217 150")
+        wait_for(lambda: self.bench.snapshot().get("obstacle"))
+        self.assertEqual(self.bench.snapshot()["pending"], [])
+        client.send("SIM CONTACTO maceta TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
+        state = wait_for(lambda: (s := self.bench.snapshot()).get("contact") and s)
+        self.assertEqual(state["contact"], "TOOL")
+        self.assertEqual(state["peak_effort"], [2, 1, 0.1, 73])
+        self.bench.order({"obstaculo": {"tipo": "ninguno"}})
+        self.assertEqual(client.receive(), "OBSTACULO ninguno")
+        client.send("SIM OBSTACULO ninguno 0 0 0")
+        wait_for(lambda: self.bench.snapshot()["obstacle"]["tipo"] == "ninguno")
+        self.assertEqual(self.bench.snapshot()["pending"], [])
+
+    def test_invalid_contact_telemetry_does_not_replace_the_last_state(self):
+        client = self.connect()
+        client.send("SIM CONTACTO maceta TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
+        wait_for(lambda: self.bench.snapshot().get("contact"))
+        for line in (
+                "SIM CONTACTO maceta WRONG 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78",
+                "SIM CONTACTO maceta TOOL 1 0 0 nan 2 1 0.1 73 1.94 0.94 0.052 52.78",
+                "SIM CONTACTO maceta TOOL 1 0 0 70 -2 1 0.1 73 1.94 0.94 0.052 52.78"):
+            client.send(line)
+        wait_for(lambda: len(self.bench.snapshot()["rejected"]) >= 3)
+        self.assertEqual(self.bench.snapshot()["peak_effort"], [2, 1, 0.1, 73])
+
     def test_orders_reach_the_controller(self):
         client = self.connect()
         for request, line in (({"falla": "F1", "motor": 4, "corriente": 40}, "F1 4 40"),
@@ -73,6 +105,36 @@ class InstrumentationTests(unittest.TestCase):
             with self.subTest(request=request):
                 self.bench.order(request)
                 self.assertEqual(client.receive(), line)
+
+    def test_hand_placement_requires_all_drivers_unpowered_and_waits_for_confirmation(self):
+        client = self.connect()
+        request = {"mano": {"articulacion": 1, "posicion": 1000}}
+        with self.assertRaisesRegex(ValueError, "sin corriente"):
+            self.bench.order(request)
+        client.send("SIM 0 0 0 12000 8 7 1 ---- 0 0 100 100 100 100 0 0 0 0")
+        wait_for(lambda: self.bench.snapshot()["power"] == 7)
+        with self.assertRaisesRegex(ValueError, "sin corriente"):
+            self.bench.order(request)
+        client.send("SIM 0 0 0 12000 8 0 0 ---- 0 0 100 100 100 100 0 0 0 0")
+        wait_for(lambda: self.bench.snapshot()["power"] == 0)
+        self.bench.order(request)
+        self.assertEqual(client.receive(), "MANO 1 1000")
+        self.assertEqual(self.bench.snapshot()["pending"], [{"key": "mano", "value": (1, 1000)}])
+        client.send("SIM MANO 1 1000")
+        wait_for(lambda: not self.bench.snapshot()["pending"])
+        # Un ACK no inventa una medición: la física sigue viniendo de SIM.
+        self.assertEqual(self.bench.snapshot()["simulated"], [0, 0, 0, 12000])
+
+    def test_hand_placement_validates_joint_position_and_does_not_send_invalid_orders(self):
+        client = self.connect()
+        for move in (None, {}, {"articulacion": True, "posicion": 0},
+                     {"articulacion": 5, "posicion": 0}, {"articulacion": 1, "posicion": 13501},
+                     {"articulacion": 1, "posicion": -13501}, {"articulacion": 3, "posicion": 15001},
+                     {"articulacion": 4, "posicion": -1}, {"articulacion": 4, "posicion": 12001},
+                     {"articulacion": 1, "posicion": 0.5}, {"articulacion": 1, "posicion": True}):
+            with self.subTest(move=move), self.assertRaises(ValueError):
+                self.bench.order({"mano": move})
+        self.assertTrue(client.silent(seconds=0.05))
 
     def test_rejects_bad_orders_and_lines(self):
         client = self.connect()
@@ -94,7 +156,7 @@ class IsolationTests(unittest.TestCase):
     """Capturar y planificar nunca usan datos del canal de instrumentación (ADR 0004)."""
 
     def test_no_robot_module_imports_the_channel(self):
-        for name in ("session.py", "planner.py", "validation.py", "protocol.py"):
+        for name in ("session.py", "planner.py", "validation.py", "protocol.py", "trajectories.py", "playback.py", "jog.py"):
             tree = ast.parse((ROOT / "urc" / name).read_text(encoding="utf-8"))
             imported = {alias.name for node in ast.walk(tree) if isinstance(node, (ast.Import, ast.ImportFrom))
                         for alias in node.names} | {node.module for node in ast.walk(tree)
@@ -116,6 +178,13 @@ class IsolationTests(unittest.TestCase):
         sim.send("SIM HELLO scara-sim/1")
         sim.send("SIM 1000 0 0 6000 0 7 1 ---- 0 150 100 100 100 100 0 0 0 0")
         wait_for(lambda: session.snapshot()["referenced"] and bench.snapshot()["simulated"])
+        sim.send("SIM OBSTACULO maceta 375 217 150")
+        sim.send("SIM CONTACTO maceta TOOL 1 0 0 70 2 1 0.1 73 1.94 0.94 0.052 52.78")
+        wait_for(lambda: bench.snapshot().get("contact") == "TOOL")
+        with tempfile.TemporaryDirectory() as folder:
+            manager = TrajectoryManager(session, folder)
+            captured = manager.capture({})
+            self.assertEqual(captured["points"][0]["joints"], [0, 0, 0, 12000])
         plan = session.move_ptp((900, 0, 0, 12000), dry_run=True)
         self.assertEqual(plan["start"], [0, 0, 0, 12000])
         self.assertFalse(any(isinstance(value, Instrumentation) for value in vars(session).values()))

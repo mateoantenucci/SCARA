@@ -23,6 +23,13 @@
       <button id="banco-load-set">Aplicar</button>
       <span class="small" id="banco-load-state"></span>
     </div>
+    <h3>Movido a mano sin corriente</h3>
+    <div class="row fields">
+      <label class="field">Mover a mano <select id="banco-hand-joint"></select></label>
+      <label class="field">Posición (<span id="banco-hand-unit">°</span>) <input type="number" id="banco-hand-position" value="10" step="0.1" style="width: 6em"></label>
+      <button id="banco-hand-set">Mover a mano…</button>
+      <span class="small" id="banco-hand-state"></span>
+    </div>
     <h3>Fallas</h3>
     <div class="row fields">
       <label class="field">F1 · Corriente del driver de <select id="banco-f1-motor"></select></label>
@@ -44,20 +51,36 @@
       <button id="banco-reload" class="danger">Recargar el mundo…</button>
     </div>
     <div id="banco-feedback" class="feedback" role="status" aria-live="polite"></div>
+    <h3>Obstáculo de ensayo</h3>
+    <p class="note">El banco muestra el contacto; el robot continúa y puede perder pasos.</p>
+    <div class="row fields">
+      <label class="field">X (mm) <input id="banco-obstacle-x" type="number" min="-1000" max="1000" step="1" value="375"></label>
+      <label class="field">Y (mm) <input id="banco-obstacle-y" type="number" min="-1000" max="1000" step="1" value="217"></label>
+      <button id="banco-obstacle-set">Poner maceta</button>
+      <button id="banco-obstacle-remove">Sacar obstáculo</button>
+      <span class="small" id="banco-obstacle-state"></span>
+    </div>
     <h3>Motores en el simulador</h3>
     <div class="scroll"><table>
       <thead><tr><th>Motor</th><th>Con corriente</th><th>Corriente del driver</th><th>Pasos perdidos</th></tr></thead>
       <tbody id="banco-motors"></tbody>
     </table></div>
+    <p class="note" id="banco-contact" role="status" aria-live="polite"></p>
+    <p class="note" id="banco-effort"></p>
     <p class="note" id="banco-hall" style="margin-top: 8px"></p>
     <details class="help">
       <summary>Cómo funciona</summary>
+      <p>La maceta es un cilindro fijo de ⌀120 × 150 mm; X e Y se miden desde la torre. El banco la pone en Webots. Capturar, planificar y comprobar choques siguen usando el robot conocido por la URC: el obstáculo de ensayo solo existe en la planta. Un contacto no frena automáticamente el robot.</p>
+      <p>Los picos son esfuerzos articulares (J1–J3 en N·m; J4 en N), desde que se puso el obstáculo. Los límites provisionales vienen de las aceleraciones de D76 con 5 kg: superar ese uso normal no demuestra rotura. Los pasos perdidos permanecen después de sacar el obstáculo; el Hall puede avisarlos más adelante.</p>
       <p>Llega por el canal de instrumentación, que el robot real no tiene. La URC no usa estos datos para capturar ni planificar: siempre usa la posición estimada por pasos. La posición simulada está junto a la estimada, a la derecha.</p>
       <p>F1: con menos corriente el motor tiene menos par; con carga o al arrancar, pierde pasos. Cada orden se confirma cuando el simulador la muestra aplicada: al lado del control dice lo vigente y «aplicando…» mientras tanto.</p>
+      <p>Mover a mano coloca una articulación en la posición indicada, solo con todos los drivers sin corriente (DISABLE). La estimada no cambia; al habilitar se retiene la posición física, pero sigue sin referencia. Hacé homing o llevá el robot a las marcas antes de la referencia manual: declararla fuera del reposo deja la trayectoria corrida sin aviso.</p>
     </details>`;
 
   const $ = (id) => document.getElementById(id);
   const f1 = $("banco-f1-motor");
+  const hand = $("banco-hand-joint");
+  NAMES.forEach((name, index) => hand.add(new Option(name, String(index + 1))));
   NAMES.forEach((_, index) => f1.add(new Option(`M${index + 1}`, String(index + 1))));
   const f3 = $("banco-f3");
   NAMES.forEach((name, index) => {
@@ -119,6 +142,24 @@
   });
   // Otro motor: el porcentaje muestra el suyo, salvo que se haya editado.
   f1.addEventListener("change", render);
+  hand.addEventListener("change", render);
+  $("banco-hand-set").addEventListener("click", async () => {
+    const joint = Number(hand.value), position = Number($("banco-hand-position").value);
+    if (!Number.isFinite(position) || $("banco-hand-position").value === "") {
+      feedback(new Error("Indicá la posición para mover a mano"));
+      return;
+    }
+    if (await ask(`J${joint} se colocará en ${position} ${joint === 4 ? "mm" : "°"}, sin modificar la posición estimada por pasos.`,
+      { title: "¿Mover a mano sin corriente?", confirm: "Mover a mano" })) {
+      order("mano", { mano: { articulacion: joint, posicion: Math.round(position * 100) } });
+    }
+  });
+  $("banco-obstacle-set").addEventListener("click", () => order("obstaculo", { obstaculo: {
+    tipo: "maceta", x: Number($("banco-obstacle-x").value), y: Number($("banco-obstacle-y").value),
+  } }));
+  $("banco-obstacle-remove").addEventListener("click", () =>
+    order("obstaculo", { obstaculo: { tipo: "ninguno" } }));
+
   $("banco-f5").addEventListener("click", async () => {
     if (await ask("El firmware vuelve a arrancar sin corriente y sin referencia (F5).",
       { title: "¿Reiniciar la UCI?", confirm: "Reiniciar", danger: true })) order(null, { falla: "F5" });
@@ -147,6 +188,13 @@
     const bench = benchState;
     panel.hidden = !bench;
     if (!bench || !bench.simulated) return;
+    const joint = Number(hand.value);
+    $("banco-hand-unit").textContent = joint === 4 ? "mm" : "°";
+    const bounds = bench.manual_limits[joint - 1];
+    $("banco-hand-position").min = bounds[0] / 100;
+    $("banco-hand-position").max = bounds[1] / 100;
+    $("banco-hand-set").disabled = bench.power !== 0 || pending("mano");
+    $("banco-hand-state").textContent = pending("mano") ? "aplicando…" : bench.power ? "Requiere DISABLE: todos los drivers sin corriente" : "Sin corriente · posición física y estimada a la derecha";
     const { load, faults } = benchSummary(bench);
     const now = `Vigente en el simulador: carga ${load} · ${faults.length ? faults.join(" · ") : "sin fallas"}`;
     if ($("banco-now").textContent !== now) $("banco-now").textContent = now;
@@ -178,6 +226,13 @@
       texts.forEach((text, i) => { if (cells[i + 1].textContent !== text) cells[i + 1].textContent = text; });
       cells[3].style.color = bench.lost_steps[joint] ? "var(--error)" : "";
     });
+    const obstacle = bench.obstacle;
+    $("banco-obstacle-state").textContent = pending("obstaculo") ? "aplicando…" : obstacle
+      ? `vigente: ${obstacle.tipo}${obstacle.tipo !== "ninguno" ? `, X ${obstacle.x}, Y ${obstacle.y} mm` : ""}` : "sin datos";
+    $("banco-contact").textContent = bench.contact ? `Contacto: ${bench.contact} con ${obstacle?.tipo || "entorno"}` : "Sin contacto";
+    $("banco-contact").className = bench.contact ? "note warn" : "note";
+    $("banco-effort").textContent = bench.peak_effort ? "Pico / límite provisional: " + bench.peak_effort.map((peak, i) =>
+      `J${i + 1}: ${peak.toFixed(2)} / ${bench.effort_limit[i].toFixed(2)} ${i === 3 ? "N" : "N·m"}`).join(" · ") : "";
     const hall = `Hall que ve el firmware: ${bench.hall.toString(2).padStart(4, "0")} (bit 0 = J1)`;
     if ($("banco-hall").textContent !== hall) $("banco-hall").textContent = hall;
   }

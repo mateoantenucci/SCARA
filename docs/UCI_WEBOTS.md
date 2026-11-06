@@ -88,7 +88,7 @@ Probado el 30/10/2026 en Windows 11 Pro con Webots R2025a y el `g++` 14.2.0 (MSY
 - Al cortar la URC, Webots anuncia el enlace perdido y reintenta; al volver la URC se reconecta sin `BOOT` y conserva la referencia.
 - Las pruebas del firmware corren con el mismo `g++`.
 
-macOS queda pendiente de verificar en la Mac del grupo.
+En macOS, los ensayos eligen `/Applications/Webots.app/Contents/MacOS/webots` por defecto y conservan la ventana sin minimizar: en Webots R2025a con macOS 27.2, `--minimize` junto con `--no-rendering` deja la aplicación sin iniciar sus controladores. El 06/11/2026 se verificó el arranque y pasó el ensayo completo de transmisión (jog articular, acople M1/M2 y resolución). La campaña completa registra por separado sus resultados.
 
 ## Ensayo del protocolo completo (issue #6)
 

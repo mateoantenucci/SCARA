@@ -935,3 +935,23 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
 - **Lo que no cambia:** una recta no cruza de un codo al otro (la singularidad del brazo estirado), ni pasa por el agujero que el brazo no alcanza junto a la torre, ni sigue un camino que cerca del brazo estirado le pide a J2 más velocidad de la que tiene. Eso es geometría, no cómo se guarda el punto.
 - **Descartado:** dejar que la cinemática inversa elija el codo más cercano en articulaciones (podría cambiarlo en un LIN sin necesidad); resolver cada punto desde la pose del robot al reproducir (la trayectoria dependería de dónde arranca, y el loop podría no cerrar); convertir solo los LIN que fallan en PTP (la recta es lo que pidió el operador).
 - **Estado:** Aceptada. Reemplaza el codo de D13, D34 y D62; cambia la demo del LIN imposible de la defensa.
+
+
+## Pruebas físicas del entorno (spec #45)
+
+**D89 · El contacto carga al rotor y el banco solo observa.**
+- **Decisión:** el contacto en Webots se transmite al modelo N2 del rotor como esfuerzo externo, con el acople M1/M2 y la transmisión. El rotor bloqueado queda ligado a la posición física simulada; se conservan los ciclos eléctricos perdidos al quitar el obstáculo. La capacidad de empuje proviene del par disponible de los motores por las poleas y el ACME, sin usar los esfuerzos nominales del PROTO como límite del contacto.
+- **Por qué:** dejar avanzar el rotor mientras la articulación queda contra un objeto hace que el brazo persiga después una posición que nunca alcanzó. Un paso a paso sin encoder pierde pasos y sigue desde donde quedó.
+- **Consecuencias:** la maceta es un sólido estático de ⌀120 × 150 mm, sin Physics. Solo la planta y el banco conocen el obstáculo de ensayo: ni capturar, ni planificar, ni comprobar choques lo consultan. El banco observa y no frena; el firmware puede advertir la pérdida al cruzar un Hall.
+- **Estado:** implementación en curso; evidencia integrada pendiente.
+
+**D90 · El límite provisional de esfuerzo compara con el uso normal de D76.**
+- **Decisión:** usar por articulación el esfuerzo máximo de operación normal que calcula N2 con las aceleraciones de D76 y 5 kg, incluyendo peso, fricción y transmisión. Los picos del banco se comparan con esos valores, identificados como provisionales.
+- **Por qué:** faltan materiales y resistencias respaldados; no se puede afirmar una carga de rotura. Un exceso solo significa mayor esfuerzo que en el uso normal adoptado.
+- **Estado:** parámetro provisional, pendiente de confirmación experimental.
+
+**D91 · Mover a mano cambia la planta sin declarar referencia.**
+- **Decisión:** `MANO j posición`, por `scara-sim/1`, lleva una articulación dentro de sus límites solo con todos los drivers sin corriente. El supervisor coloca el Joint y reinicia su dinámica; no se modela la mano ni una fuerza durante ese traslado. La vuelta de corriente retiene la posición física simulada, sin referenciar el firmware.
+- **Por qué:** el ensayo C4 busca demostrar el efecto de mover el brazo apagado sobre la referencia, no la dinámica de la persona. Con corriente corresponde al empujón.
+- **Consecuencias:** el banco muestra la física junto a la estimada; `DISABLE` ya elimina la referencia (D40). Homing vuelve a encontrar los Hall. Una referencia manual fuera de las marcas declara una pose falsa y deja el recorrido corrido sin aviso.
+- **Estado:** implementación en curso; evidencia integrada pendiente.

@@ -41,7 +41,8 @@ from urc import planner  # noqa: E402
 from urc.session import Session  # noqa: E402
 
 PORT = 9103
-WEBOTS = os.environ.get("WEBOTS", r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
+WEBOTS = os.environ.get("WEBOTS", "/Applications/Webots.app/Contents/MacOS/webots" if sys.platform == "darwin"
+                        else r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
 WORLD = ROOT / "webots" / "worlds" / "_ensayo_homing.wbt"
 OBSERVER = ROOT / "webots" / "controllers" / "_observador_homing"
 LOG = open(sys.argv[1], "w", encoding="utf-8", newline="\n")
@@ -149,7 +150,7 @@ def run(label, deviation, jog_test):
               f'  controllerArgs ["{sample_file.as_posix()}", "absoluto"]\n  supervisor TRUE\n}}\n')
     WORLD.write_text(world, encoding="utf-8")
     session = Session(port=PORT)
-    webots = subprocess.Popen([WEBOTS, "--batch", "--minimize", "--no-rendering", "--mode=realtime",
+    webots = subprocess.Popen([WEBOTS, "--batch", *([] if sys.platform == "darwin" else ["--minimize"]), "--no-rendering", "--mode=realtime",
                                "--stdout", "--stderr", str(WORLD)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                               text=True, encoding="utf-8", errors="replace")
     recorder = None

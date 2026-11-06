@@ -166,6 +166,49 @@ void againstAStop() {
   check(200 - stepper.lost() < 2 * scara::MICROSTEPS, "y queda a menos de medio ciclo", stepper.lost(), 200);
 }
 
+// Un esfuerzo externo por encima del par disponible hace saltar ciclos
+// aunque el firmware no emita pulsos. Al retirarlo conserva el corrimiento.
+void externalLoad() {
+  plant::Stepper stepper(plant::MOTORS[0], scara::STEPS_PER_REV);
+  plant::Load load = plant::loadOf(0, HEAVY_TOOL);
+  for (int tick = 0; tick < 1000; ++tick) stepper.advance(0, DT, load, 1, -0.9);
+  check(stepper.lost() > CYCLE, "carga externa supera retención y pierde pasos", stepper.lost(), CYCLE);
+  for (int tick = 0; tick < 3000; ++tick) stepper.advance(0, DT, load, 1);
+  long lost = stepper.lost();
+  double position = stepper.position();
+  check(std::fabs(position + lost) < 1, "al retirar la carga queda en el equilibrio corrido", position, lost);
+  for (int tick = 0; tick < 500; ++tick) stepper.advance(0, DT, load, 1);
+  check(stepper.lost() == lost && std::fabs(stepper.position() - position) < 1,
+        "el esfuerzo retirado no recupera pasos", stepper.lost(), lost);
+}
+
+// El contacto inmoviliza el cuerpo y su rotor, pero el estator sigue. Al
+// quitar el obstáculo solo queda la elasticidad de medio ciclo eléctrico;
+// los pulsos siguientes parten desde la posición corrida, sin alcanzarla.
+void contactRelease() {
+  plant::Stepper stepper(plant::MOTORS[0], scara::STEPS_PER_REV);
+  plant::Load load = plant::loadOf(0, HEAVY_TOOL);
+  const long commanded = 203;
+  for (long pulse = 1; pulse <= commanded; ++pulse) {
+    stepper.constrain(0, 0);
+    stepper.advance(pulse, DT, load, 1, -0.56);
+  }
+  long lost = stepper.lost();
+  check(lost > 0 && lost % CYCLE == 0, "bloqueado pierde ciclos completos", lost, commanded);
+  double maxRelease = 0;
+  for (int tick = 0; tick < 2000; ++tick) {
+    stepper.advance(commanded, DT, load, 1);
+    maxRelease = std::fmax(maxRelease, std::fabs(stepper.position()));
+  }
+  check(maxRelease < 2 * scara::MICROSTEPS, "liberado no salta al objetivo anterior", maxRelease, commanded);
+  check(stepper.lost() == lost, "al liberar no recupera pasos", stepper.lost(), lost);
+  double released = stepper.position();
+  for (long tick = 1; tick <= 500; ++tick) stepper.advance(commanded + tick, DT, load, 1);
+  for (int tick = 0; tick < 2000; ++tick) stepper.advance(commanded + 500, DT, load, 1);
+  check(stepper.lost() == lost, "pulsos nuevos conservan pérdida", stepper.lost(), lost);
+  check(std::fabs(stepper.position() - released - 500) < 1, "continúa desde donde quedó", stepper.position() - released, 500);
+}
+
 // Margen de par en los límites de D45, a la velocidad máxima: el disponible
 // contra el que piden la aceleración máxima, el peso (al subir) y la fricción.
 void table() {
@@ -199,5 +242,7 @@ int main(int argc, char** argv) {
   lostByLoad();
   lostByAcceleration();
   againstAStop();
+  externalLoad();
+  contactRelease();
   return failures == 0 ? 0 : 1;
 }

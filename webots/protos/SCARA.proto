@@ -90,7 +90,11 @@ PROTO SCARA [
                     geometry Box { size 0.002 0.004 0.0217000002264977 } } ] } ] } ] } Receiver { translation -0.06 0 0.2913625 name "hall1"
       type "radio" channel 1
       children [ Shape { appearance PBRAppearance { baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }
-        geometry Box { size 0.008 0.008 0.004 } } ] } HingeJoint {
+        geometry Box { size 0.008 0.008 0.004 } } ] }
+      # Un Solid físico bajo la base estática queda soldado al entorno por
+      # Webots. Da a J1 un cuerpo padre para medir su esfuerzo sin liberar la base.
+      DEF J1_MOUNT Solid { name "soporte_j1_fijo"
+        children [ HingeJoint {
           jointParameters HingeJointParameters { axis 0 0 1 anchor 0 0 0.2913625
             position 0 minStop -2.356194490192345 maxStop 2.356194490192345
             dampingConstant 0.01 }
@@ -385,6 +389,9 @@ PROTO SCARA [
               physics Physics { density -1 mass 0.3
       centerOfMass [ 0.125000603573795 -2.91433543964104e-16 -0.0148812496460975 ]
       inertiaMatrix [ 0.000285182991362636 0.00273553882097095 0.00270261899172394, 0 0 0 ] } } } ]
+        # Masa e inercia numéricas del soporte inmóvil; no agregan geometría.
+        physics Physics { density -1 mass 1 centerOfMass [ 0 0 0 ]
+          inertiaMatrix [ 0.01 0.01 0.01, 0 0 0 ] } } ]
     boundingObject Group { children [ # 0-Torre-1 | validated_individual_bodies_zero_area_cleanup
           Pose { translation 6.98768300166908e-17 -7.42678488152571e-18 0.110800001955032 rotation 0.712328719358671 -0.701845991351974 0 3.14159265358979
             children [ Box { size 0.317583858966827 0.257583886384964 0.221599996089935 } ] }

@@ -8,6 +8,14 @@ scara-sim/1, un protocolo de texto aparte de scara/1:
                         (20 por segundo)
     URC → controlador   F1 m porcentaje · F2 0|1 · F3 j activo|inactivo|libre
                         F4 0|1 · F5 · CARGA gramos · RECARGA
+                        OBSTACULO maceta X Y | OBSTACULO ninguno
+                        MANO articulacion posicion
+    controlador → URC   SIM OBSTACULO tipo X Y altura
+                        SIM CONTACTO tipo cuerpo e1 e2 e3 e4 p1 p2 p3 p4 l1 l2 l3 l4
+                        SIM MANO j posicion (aplicada) · SIM ERR motivo (rechazada)
+
+X, Y y altura van en mm. e, p y l son esfuerzo actual, pico y límite
+provisional de J1–J4 (N·m en J1–J3; N en J4), respectivamente.
 
 J1–J4 es la posición física simulada en unidades de scara/1; f3 tiene un
 carácter por articulación: "-" libre, "A" trabado activo, "I" inactivo.
@@ -16,6 +24,9 @@ La carga es la que se agrega a la herramienta, sin el pistón ni su soporte
 driver en % de la nominal (F1: con menos, el motor tiene menos par) y p1–p4,
 los pasos completos que perdió cada motor desde el último homing de su eje o
 desde que recuperó la corriente (D64, D67, D86).
+MANO usa las mismas centésimas y límites de las articulaciones; solo coloca
+la posición física con todos los drivers sin corriente. La estimada sigue
+igual y ENABLE no recupera la referencia perdida con DISABLE (D40).
 
 Solo lo usa el banco de ensayo de la página. La sesión con la UCI, el
 planificador y la validación no lo importan: capturan y planifican con la
@@ -27,12 +38,15 @@ anota lo que cambió y avisa si una orden no se aplicó en CONFIRM (D79).
 """
 
 from collections import deque
+import math
 import select
+import math
 import socket
 import threading
 import time
 
 from urc.events import EventLog
+from scara.kinematics import load_config
 
 
 PROTOCOL = "scara-sim/1"
@@ -43,6 +57,8 @@ LOAD_MAX = 4850
 CURRENT_MIN = 10             # % de la corriente nominal de un driver (F1)
 FIELDS = 19
 CONFIRM = 2.0                # s para que el estado SIM muestre una orden aplicada
+MANUAL_LIMITS = [tuple(round(q * (18000 / math.pi if j < 3 else 100000)) for q in bounds)
+                 for j, bounds in enumerate(load_config()["limits"])]
 
 
 class Instrumentation:
@@ -56,6 +72,7 @@ class Instrumentation:
         self.client = None
         self.greeted = False
         self.state = None
+        self.experiment = {}
         self.state_time = None
         self.rejected = deque(maxlen=10)
         # La URC le pasa el registro de la sesión: el banco anota en el mismo.
@@ -69,6 +86,7 @@ class Instrumentation:
         with self.lock:
             state = dict(self.state) if self.state else {}
             return {
+                **self.experiment,
                 "protocol": PROTOCOL,
                 "connected": self.client is not None and self.greeted,
                 "simulated": state.get("simulated"),
@@ -79,6 +97,7 @@ class Instrumentation:
                 "load_max": LOAD_MAX,        # el tope del campo de la página sale de acá
                 "current_pct": state.get("current_pct"),
                 "lost_steps": state.get("lost_steps"),
+                "manual_limits": MANUAL_LIMITS,
                 "age_s": None if self.state_time is None else round(time.monotonic() - self.state_time, 3),
                 "rejected": list(self.rejected),
                 "pending": [{"key": key, "value": value} for key, (value, _) in self.pending.items()],
@@ -90,6 +109,8 @@ class Instrumentation:
         with self.lock:
             if self.client is None or not self.greeted:
                 raise ConnectionError("No hay canal de instrumentación: solo existe en la simulación")
+            if line.startswith("MANO ") and (self.state is None or self.state["power"] != 0):
+                raise ValueError("Mover a mano requiere todos los drivers sin corriente: usá DISABLE")
             try:
                 self.client.sendall(line.encode() + b"\n")
             except OSError as exc:  # el controlador se fue (por ejemplo, recargando el mundo)
@@ -125,7 +146,10 @@ class Instrumentation:
         for key, (value, deadline) in list(self.pending.items()):
             if now > deadline:
                 del self.pending[key]
-                current = "sin estado" if self.state is None else _value(key, _values(self.state)[key])
+                if key == "mano":
+                    self.events.add("aviso", "Banco", f"Sin confirmación de {_name(key)}: {_value(key, value)}")
+                    continue
+                current = "sin estado" if self.state is None else _value(key, _values(self.state).get(key, self.experiment.get("obstacle")))
                 self.events.add("aviso", "Banco", f"No se aplicó {_name(key)}: se pidió {_value(key, value)} "
                                 f"y el simulador sigue en {current}")
 
@@ -140,6 +164,43 @@ class Instrumentation:
             fields = line.split()
             if fields == ["SIM", "HELLO", PROTOCOL]:
                 self.greeted = True
+                return
+            if len(fields) == 4 and fields[:2] == ["SIM", "MANO"]:
+                joint, value = int(fields[2]), int(fields[3])
+                if not 1 <= joint <= 4 or not MANUAL_LIMITS[joint - 1][0] <= value <= MANUAL_LIMITS[joint - 1][1]:
+                    raise ValueError("confirmación MANO inválida")
+                wanted = self.pending.get("mano")
+                if wanted is not None and wanted[0] == (joint, value):
+                    del self.pending["mano"]
+                self.events.add("ok", "Banco", describe(f"MANO {joint} {value}"))
+                return
+            if fields[:2] == ["SIM", "ERR"]:
+                self.rejected.append(line)
+                self.events.add("aviso", "Banco", f"Orden rechazada por el simulador: {' '.join(fields[2:])}")
+                return
+            if fields[:2] == ["SIM", "OBSTACULO"] and len(fields) == 6:
+                kind = fields[2]
+                if kind not in ("ninguno", "maceta"):
+                    raise ValueError("obstáculo desconocido")
+                values = [int(v) for v in fields[3:]]
+                obstacle = {"tipo": kind, "x": values[0], "y": values[1], "altura": values[2]}
+                self.experiment["obstacle"] = obstacle
+                if "obstaculo" in self.pending and self.pending["obstaculo"][0] == obstacle:
+                    del self.pending["obstaculo"]
+                    self.events.add("ok", "Banco", f"Obstáculo de ensayo: {kind}, X {values[0]} mm, Y {values[1]} mm")
+                return
+            if fields[:2] == ["SIM", "CONTACTO"] and len(fields) == 16:
+                values = [float(v) for v in fields[4:]]
+                if (fields[2] not in ("ninguno", "maceta")
+                        or fields[3] not in ("ninguno", "ARM", "FOREARM", "WRIST", "TOOL")
+                        or not all(math.isfinite(v) for v in values)
+                        or any(v < 0 for v in values[4:8]) or any(v <= 0 for v in values[8:])):
+                    raise ValueError("contacto o esfuerzo inválido")
+                contact = fields[3] != "ninguno"
+                if contact and self.experiment.get("contact") != fields[3]:
+                    self.events.add("aviso", "Banco", f"Contacto: {fields[3]} con {fields[2]} (solo instrumentación)")
+                self.experiment.update(contact=fields[3] if contact else None,
+                                       effort=values[:4], peak_effort=values[4:8], effort_limit=values[8:])
                 return
             if (len(fields) != FIELDS or fields[0] != "SIM" or len(fields[8]) != 4
                     or any(c not in STUCK for c in fields[8])):
@@ -176,6 +237,7 @@ class Instrumentation:
                             self.client.close()
                         self.client, self.greeted, self.state, self.state_time = new_client, False, None, None
                         self.pending.clear()
+                        self.experiment.clear()
                     buffer = b""
                     continue
                 if client is not None and client in readable:
@@ -233,7 +295,28 @@ def order_line(request):
         return f"CARGA {grams}"
     if request.get("recarga") is True:
         return "RECARGA"
-    raise ValueError("Se espera falla, carga o recarga")
+    if "obstaculo" in request:
+        obstacle = request["obstaculo"]
+        if not isinstance(obstacle, dict) or obstacle.get("tipo") not in ("ninguno", "maceta"):
+            raise ValueError("obstaculo lleva tipo ninguno o maceta")
+        if obstacle["tipo"] == "ninguno":
+            return "OBSTACULO ninguno"
+        x, y = obstacle.get("x"), obstacle.get("y")
+        if any(type(v) is not int or not -1000 <= v <= 1000 for v in (x, y)):
+            raise ValueError("X e Y van en mm enteros de −1000 a 1000")
+        return f"OBSTACULO maceta {x} {y}"
+    if "mano" in request:
+        move = request["mano"]
+        if not isinstance(move, dict):
+            raise ValueError("mano requiere articulacion y posicion")
+        joint, value = move.get("articulacion"), move.get("posicion")
+        if type(joint) is not int or not 1 <= joint <= 4 or type(value) is not int:
+            raise ValueError("Mover a mano lleva articulacion (1 a 4) y posicion en centésimas")
+        low, high = MANUAL_LIMITS[joint - 1]
+        if not low <= value <= high:
+            raise ValueError(f"La posición de J{joint} va de {low} a {high} centésimas")
+        return f"MANO {joint} {value}"
+    raise ValueError("Se espera falla, carga, recarga o mano")
 
 
 # Lo que el banco puede confirmar, por clave: la carga, la corriente de cada
@@ -253,13 +336,18 @@ def _values(state):
 
 def _name(key):
     kind, _, index = key.partition(" ")
-    return {"carga": "Carga en la herramienta", "F1": f"F1 · corriente del driver de M{index}",
+    return {"mano": "Mover a mano", "obstaculo": "Obstáculo de ensayo", "carga": "Carga en la herramienta", "F1": f"F1 · corriente del driver de M{index}",
             "F2": "F2 · driver de M4 sin corriente", "F3": f"F3 · Hall de J{index}",
             "F4": "F4 · enlace scara/1 cortado"}[kind]
 
 
 def _value(key, value):
     kind = key.split()[0]
+    if kind == "mano":
+        joint, position = value
+        return f"J{joint} a {position / 100:g} {'mm' if joint == 4 else '°'}"
+    if kind == "obstaculo":
+        return str(value)
     if kind == "carga":
         return f"{value} g"
     if kind == "F1":
@@ -272,6 +360,12 @@ def _value(key, value):
 def _expected(line):
     """(clave, valor) que el estado SIM tiene que mostrar después de la orden; None si no hay qué confirmar."""
     words = line.split()
+    if words[0] == "MANO":
+        return "mano", (int(words[1]), int(words[2]))
+    if words[0] == "OBSTACULO":
+        return "obstaculo", {"tipo": words[1], "x": int(words[2]) if len(words) > 2 else 0,
+                              "y": int(words[3]) if len(words) > 3 else 0,
+                              "altura": 150 if words[1] == "maceta" else 0}
     if words[0] == "F1":
         return f"F1 {words[1]}", int(words[2])
     if words[0] in ("F2", "F4"):
@@ -285,6 +379,9 @@ def _expected(line):
 
 def describe(line):
     """Una orden de scara-sim/1 como la lee el operador, para el registro de eventos."""
+    if line.startswith("MANO "):
+        _, joint, value = line.split()
+        return f"Movido a mano: J{joint} a {int(value) / 100:g} {'mm' if joint == '4' else '°'} (sin corriente)"
     expected = _expected(line)
     if expected is not None:
         return f"{_name(expected[0])}: {_value(*expected)}"

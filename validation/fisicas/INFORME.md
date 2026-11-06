@@ -1,0 +1,13 @@
+# Contacto con obstáculos de ensayo (C1)
+
+La maceta es un cilindro estático de ⌀120 × 150 mm, colocado en X,Y sobre Z=0. No tiene `Physics`: permanece fija. Se crea y retira en caliente mediante `OBSTACULO maceta X Y` y `OBSTACULO ninguno` del canal `scara-sim/1`. Capturar puntos, planificar y comprobar choques no reciben ese obstáculo (ADR 0004).
+
+El contacto físico se confirma comparando los puntos que Webots informa para el obstáculo y los cuerpos del robot. La reacción se aproxima por el esfuerzo contrario al del accionamiento durante ese contacto; se refleja al eje del motor por las poleas y el ACME. El rotor queda ligado al mecanismo frenado y pierde ciclos eléctricos mientras el firmware continúa contando pulsos. Al retirar el objeto conserva los pasos perdidos. El banco muestra el contacto y el esfuerzo sin frenar: un robot sin encoder ni sensor de contacto solo puede notar la discrepancia cuando vuelve a cruzar un Hall.
+
+El esfuerzo de cada articulación se limita por el par disponible de los motores, su corriente y la transmisión. A baja velocidad y corriente nominal, J4 dispone de unos 73,67 N por el ACME de 8 mm y eficiencia 0,67. El feedback de Webots mide esfuerzo del accionamiento; no entrega el impulso directo del contacto. No permite afirmar la carga de rotura.
+
+Los límites provisionales son cotas calculadas con N2, las aceleraciones máximas de D76 y 5 kg totales en el extremo: J1 1,943 N·m, J2 0,939 N·m, J3 0,052 N·m y J4 52,783 N. Incluyen la inercia reflejada y del rotor, la gravedad de J4, la fricción y la transmisión; J1 incluye el acople M1/M2. No son límites de resistencia medidos. Superarlos significa cargar más la articulación que en el uso normal adoptado.
+
+El escenario usa los primeros dos puntos de `demo-barrido-ptp.json`, en formato versión 2, y coloca la maceta en la posición del punto de herramienta a medio barrido. Repite al 25 y al 100 %, registra pico/límite y pasos perdidos, retira la maceta sin pulsos nuevos y continúa con un tramo de 10° de J1. Comprueba que no recupera el recorrido perdido, busca un Hall para recibir `EV LOST` y termina con homing. La tolerancia de liberación y continuidad es menos de dos pasos completos por motor (J2 admite el acople); después de homing, menos de un paso completo con el robot quieto. La tolerancia se contrasta durante la corrida y queda identificada junto a su registro.
+
+Para repetir: `python3 validation/campana/campana.py fisicas`. La campaña completa guarda versión, huellas y registro en `validation/campana/`. La evidencia integrada de C1 está pendiente de finalizar; no se presenta esta descripción como una corrida aprobada.

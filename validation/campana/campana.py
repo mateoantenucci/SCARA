@@ -44,6 +44,7 @@ ARTIFACTS = [CONTROLLER, ROOT / "webots" / "worlds" / "scara_uci.wbt", ROOT / "w
 
 # Ensayo: script, puertos que usa y cuánto puede tardar (s).
 ENSAYOS = {
+    "fisicas": ("validation/fisicas/ensayo_webots.py", (9130, 9131), 1200),
     "protocolo": ("validation/protocolo/ensayo_webots.py", (9100,), 300),
     "transmision": ("validation/transmision/ensayo_webots.py", (9101,), 300),
     "segmentos": ("validation/segmentos/ensayo_webots.py", (9102,), 300),
@@ -52,12 +53,28 @@ ENSAYOS = {
     "perdida_pasos": ("validation/perdida_pasos/ensayo_webots.py", (9110, 9111), 900),
     "reproduccion": ("validation/reproduccion/ensayo_webots.py", (9114, 9115), 600),
     "campana": ("validation/campana/ensayo_webots.py", (9120, 9121), 900),
+    "movido_mano": ("validation/movido_mano/ensayo_webots.py", (9132, 9133), 600),
 }
 
 # Escenarios de la campaña: id, nombre, condición inicial, resultado esperado,
 # tolerancia y dónde se ejecuta (ensayos y pasos de sus registros). Un
 # escenario pasa si pasan todos sus ensayos.
 ESCENARIOS = [
+    {"id": "C1", "nombre": "Maceta a medio recorrido",
+     "inicial": "Referenciado, demo-barrido-ptp versión 2, maceta fija en medio del barrido largo de J1",
+     "esperado": "A 25 y 100 %, contacto bloquea el brazo y pierde pasos; al retirar no salta, "
+                 "sigue corrido, EV LOST al cruzar Hall y homing recupera",
+     "tolerancia": "Liberación y continuidad de J1 a menos de dos pasos completos (0,9°); "
+                   "homing física contra estimada a menos de un paso completo; picos contra límite D76/5 kg",
+     "ensayos": ["fisicas"], "pasos": "C1: ambas velocidades, comparación y recuperación"},
+    {"id": "C4", "nombre": "Movido a mano sin corriente",
+     "inicial": "Referenciado en el reposo; DISABLE, J1 colocado a mano a 10° y ENABLE",
+     "esperado": "MANO solo se aplica sin corriente. DISABLE pierde la referencia y la URC bloquea play. "
+                 "Homing recupera la posición; una referencia manual fuera del reposo deja la trayectoria "
+                 "corrida 10° en J1, sin ERR ni EV LOST",
+     "tolerancia": "Física menos estimada: ≤ 0,45° en J1/J3, ≤ 0,90° en J2 y ≤ 0,04 mm en J4. "
+                   "Con referencia manual incorrecta, J1 10° ± 0,45°; los demás dentro de la misma cota",
+     "ensayos": ["movido_mano"], "pasos": "C4.1 a C4.3"},
     {"id": "H1", "nombre": "Homing desde el reposo",
      "inicial": "Mundo en la pose de reposo (--desvio 0), drivers con corriente, sin referencia",
      "esperado": "Sin referencia, el jog de J4 va a 5 mm/s y lo frena su Hall; el homing referencia J4, J1, J2 y "
