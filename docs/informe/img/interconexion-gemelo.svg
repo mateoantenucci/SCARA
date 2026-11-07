@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .grupo { fill: #f6f7fb; stroke: #8a90a6; stroke-width: 1.2; stroke-dasharray: 5 4; }
+      .caja { stroke: #335; stroke-width: 1.4; rx: 6; }
+      .igual { fill: #e8f0fb; }
+      .reemplazo { fill: #fdf3e6; }
+      .nuevo { fill: #e6f6ec; stroke-dasharray: 6 3; }
+      .titulo { font-weight: bold; font-size: 14px; }
+      .chico { font-size: 11px; fill: #333; }
+      .flecha { stroke: #333; stroke-width: 1.5; fill: none; marker-end: url(#f); marker-start: url(#f); }
+      .verde { stroke: #1f7a3f; stroke-dasharray: 6 3; }
+      .rot { font-size: 11px; fill: #222; }
+    </style>
+  </defs>
+
+  <rect class="grupo" x="15" y="20" width="930" height="440" rx="10"/>
+  <text class="titulo" x="30" y="42">PC (macOS 27.2 o Windows 11): todo corre en 127.0.0.1</text>
+
+  <!-- Lado URC -->
+  <rect class="caja igual" x="45" y="65" width="240" height="60"/>
+  <text class="titulo" x="60" y="90">Navegador</text>
+  <text class="chico" x="60" y="110">página de la URC</text>
+
+  <rect class="caja igual" x="45" y="180" width="240" height="105"/>
+  <text class="titulo" x="60" y="205">URC · python3 -m urc.app</text>
+  <text class="chico" x="60" y="224">sin cambios respecto del robot real:</text>
+  <text class="chico" x="60" y="239">sesión scara/1, planificador,</text>
+  <text class="chico" x="60" y="254">trayectorias y reproducción</text>
+  <text class="chico" x="60" y="272">+ módulo urc/instrumentation.py</text>
+
+  <rect class="caja nuevo" x="45" y="330" width="240" height="60"/>
+  <text class="titulo" x="60" y="355">Banco de ensayo</text>
+  <text class="chico" x="60" y="375">panel de la página, solo simulación</text>
+
+  <path class="flecha" d="M165,125 L165,180"/>
+  <text class="rot" x="172" y="150">HTTP + JSON · 127.0.0.1:8766</text>
+  <path class="flecha" d="M165,285 L165,330"/>
+
+  <!-- Webots -->
+  <rect class="grupo" x="390" y="60" width="540" height="385" rx="10"/>
+  <text class="titulo" x="405" y="82">Webots R2025a · mundo scara_uci.wbt (Real-time, ≤ 1×)</text>
+
+  <rect class="grupo" x="405" y="95" width="300" height="250" rx="8"/>
+  <text class="titulo" x="418" y="115">Controlador scara_uci (C++)</text>
+
+  <rect class="caja igual" x="420" y="128" width="270" height="50"/>
+  <text class="titulo" x="433" y="150">firmware/: el mismo núcleo del UNO</text>
+  <text class="chico" x="433" y="167">parser scara/1, jog, homing, cola de SEG</text>
+
+  <rect class="caja reemplazo" x="420" y="190" width="270" height="45"/>
+  <text class="titulo" x="433" y="210">WebotsHal (capa de hardware)</text>
+  <text class="chico" x="433" y="226">cliente TCP, reloj simulado, pasos, Hall</text>
+
+  <rect class="caja reemplazo" x="420" y="247" width="270" height="45"/>
+  <text class="titulo" x="433" y="267">Planta simulada</text>
+  <text class="chico" x="433" y="283">drivers, rotores N1+N2, transmisión, Hall</text>
+
+  <rect class="caja nuevo" x="420" y="302" width="270" height="35"/>
+  <text class="titulo" x="433" y="324">Bench: canal scara-sim/1</text>
+
+  <rect class="caja reemplazo" x="725" y="128" width="190" height="210"/>
+  <text class="titulo" x="738" y="150">SCARA.proto</text>
+  <text class="chico" x="738" y="170">mallas STL del CAD</text>
+  <text class="chico" x="738" y="186">3 HingeJoint (J1–J3)</text>
+  <text class="chico" x="738" y="202">1 SliderJoint (J4)</text>
+  <text class="chico" x="738" y="218">4 motores de Webots</text>
+  <text class="chico" x="738" y="234">4 PositionSensor</text>
+  <text class="chico" x="738" y="250">4 Receiver = KY-003</text>
+  <text class="chico" x="738" y="266">8 Emitter = imanes</text>
+  <text class="chico" x="738" y="282">física ODE, paso de 2 ms</text>
+  <text class="chico" x="738" y="298">supervisor TRUE</text>
+
+  <path class="flecha" d="M690,270 L725,270"/>
+  <text class="rot" x="728" y="356">↔ por la API de Webots</text>
+
+  <!-- enlaces TCP -->
+  <path class="flecha" d="M285,215 C350,215 350,153 420,153"/>
+  <text class="rot" x="296" y="240">TCP 9000</text>
+  <text class="rot" x="296" y="254">scara/1</text>
+  <text class="rot" x="296" y="268">URC: servidor</text>
+  <text class="rot" x="296" y="282">UCI: cliente</text>
+
+  <path class="flecha verde" d="M285,360 C350,360 350,320 420,320"/>
+  <text class="rot" x="296" y="392">TCP 9001</text>
+  <text class="rot" x="296" y="406">scara-sim/1</text>
+  <text class="rot" x="296" y="420">URC: servidor</text>
+  <text class="rot" x="296" y="434">Webots: cliente</text>
+
+  <!-- leyenda -->
+  <rect class="caja igual" x="30" y="478" width="18" height="14"/>
+  <text class="chico" x="55" y="489">igual que con el robot real</text>
+  <rect class="caja reemplazo" x="230" y="478" width="18" height="14"/>
+  <text class="chico" x="255" y="489">reemplaza al hardware (UNO, drivers, motores, sensores)</text>
+  <rect class="caja nuevo" x="580" y="478" width="18" height="14"/>
+  <text class="chico" x="605" y="489">agregado, solo existe en la simulación (ADR 0004)</text>
+</svg>

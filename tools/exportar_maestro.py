@@ -2,7 +2,8 @@
 
 Convierte el Markdown a HTML con mistune (tools/requirements-docs.txt) y lo
 imprime a PDF con Edge o Chrome sin interfaz. No toca 00-SCARA-Master.pdf.
-`<!-- SALTO DE PAGINA -->` en el Markdown fuerza un salto de página.
+`<!-- SALTO DE PAGINA -->` en el Markdown fuerza un salto de página. Las
+imágenes con ruta relativa se resuelven desde la carpeta del Markdown.
 """
 
 import argparse
@@ -47,18 +48,35 @@ pre code { background: none; padding: 0; }
 blockquote { border-left: 3pt solid #c90; margin: 8pt 0; padding: 2pt 10pt; background: #fff8e6; }
 a { color: #1f4e9c; text-decoration: none; }
 .salto { break-after: page; }
+figure { margin: 8pt 0 12pt; text-align: center; break-inside: avoid; }
+figure img { max-width: 100%; max-height: 120mm; }
+figure.ancha img { max-height: 200mm; }
+figure.captura img { max-height: 95mm; border: 0.6pt solid #bbb; }
+figcaption { font-size: 9pt; color: #444; margin-top: 3pt; }
+.fotos { display: flex; gap: 8pt; justify-content: center; align-items: flex-end; }
+.fotos figure { flex: 1; margin: 4pt 0; }
+.caratula { text-align: center; padding-top: 30mm; }
+.caratula h1 { font-size: 28pt; margin: 18pt 0 6pt; }
+.caratula p { margin: 4pt 0; }
+.caratula .rotulo { font-size: 9pt; text-transform: uppercase; letter-spacing: 1pt; color: #667;
+                    margin-top: 16pt; }
+.caratula .dato { font-size: 13pt; }
+.pendiente { background: #fff1b8; padding: 0 2pt; }
 """
 
 
-def a_html(texto, titulo):
+def a_html(texto, titulo, carpeta=None):
     import mistune
 
     convertir = mistune.create_markdown(plugins=["table", "strikethrough"], escape=False)
     partes = [convertir(parte) for parte in texto.split(SALTO)]
     cuerpo = '\n<div class="salto"></div>\n'.join(partes)
+    # El HTML se imprime desde una carpeta temporal: <base> resuelve las
+    # imágenes relativas desde la carpeta del Markdown.
+    base = f'<base href="{html.escape(carpeta.as_uri())}/">' if carpeta else ""
     return (
         '<!doctype html>\n<html lang="es"><head><meta charset="utf-8">'
-        f"<title>{html.escape(titulo)}</title><style>{ESTILO}</style></head>"
+        f"{base}<title>{html.escape(titulo)}</title><style>{ESTILO}</style></head>"
         f"<body>\n{cuerpo}\n</body></html>\n"
     )
 
@@ -100,7 +118,7 @@ def main(argv=None):
     args = parser.parse_args(argv)
     texto = args.fuente.read_text(encoding="utf-8")
     titulo = next((l[2:].strip() for l in texto.splitlines() if l.startswith("# ")), "SCARA")
-    imprimir(a_html(texto, titulo), args.destino.resolve(), buscar_navegador())
+    imprimir(a_html(texto, titulo, args.fuente.resolve().parent), args.destino.resolve(), buscar_navegador())
     print(args.destino)
 
 

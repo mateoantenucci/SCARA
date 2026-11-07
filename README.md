@@ -71,7 +71,8 @@ En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. 
 | --- | --- |
 | Diseño, decisiones y validación | [Maestro v2](docs/maestro/SCARA-Master-v2.md), [registro de decisiones](docs/REGISTRO_DE_DECISIONES.md) y [ADR](docs/adr/) |
 | Archivos del proyecto | [Proceso y archivos](docs/PROCESO_Y_ARCHIVOS.md) |
-| Protocolo | [`scara/1`](docs/PROTOCOLO_SCARA_1.md) |
+| Protocolo | [`scara/1`](docs/PROTOCOLO_SCARA_1.md) y el canal de instrumentación [`scara-sim/1`](docs/PROTOCOLO_SCARA_SIM_1.md) |
+| Informe del trabajo final (Gemelos digitales) | [Informe](docs/informe/INFORME-SCARA.md) y su [PDF](output/pdf/SCARA-Informe-Gemelos-Digitales.pdf) |
 | Webots y Arduino | [UCI en Webots](docs/UCI_WEBOTS.md) y [UCI en el Arduino UNO](docs/ARDUINO_UNO.md) |
 | Transmisión y motores | [Transmisión](docs/TRANSMISION.md) |
 | Colisiones | [Colisiones y recorridos](docs/COLISIONES_Y_RECORRIDOS.md) y [montaje](docs/MONTAJE_Y_AUTOCOLISIONES.md) |

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .grupo { fill: #f6f7fb; stroke: #8a90a6; stroke-width: 1.2; stroke-dasharray: 5 4; }
+      .caja { fill: #ffffff; stroke: #335; stroke-width: 1.4; rx: 6; }
+      .sw { fill: #e8f0fb; }
+      .hw { fill: #fdf3e6; }
+      .titulo { font-weight: bold; font-size: 14px; }
+      .chico { font-size: 11px; fill: #333; }
+      .flecha { stroke: #333; stroke-width: 1.5; fill: none; marker-end: url(#f); marker-start: url(#f); }
+      .uno { stroke: #333; stroke-width: 1.5; fill: none; marker-end: url(#f); }
+      .rot { font-size: 11px; fill: #222; }
+    </style>
+  </defs>
+
+  <!-- PC -->
+  <rect class="grupo" x="15" y="30" width="300" height="400" rx="10"/>
+  <text class="titulo" x="30" y="52">PC del operador</text>
+
+  <rect class="caja sw" x="45" y="70" width="240" height="60"/>
+  <text class="titulo" x="60" y="95">Navegador</text>
+  <text class="chico" x="60" y="115">página de la URC (index.html)</text>
+
+  <rect class="caja sw" x="45" y="185" width="240" height="75"/>
+  <text class="titulo" x="60" y="210">URC · urc/ (Python 3)</text>
+  <text class="chico" x="60" y="229">cinemática, planificador PTP/LIN,</text>
+  <text class="chico" x="60" y="244">trayectorias, reproducción</text>
+
+  <rect class="caja sw" x="45" y="320" width="240" height="60"/>
+  <text class="titulo" x="60" y="345">socat</text>
+  <text class="chico" x="60" y="365">puente USB-serie ⇄ TCP</text>
+
+  <path class="flecha" d="M165,130 L165,185"/>
+  <text class="rot" x="172" y="155">HTTP + JSON</text>
+  <text class="rot" x="172" y="169">127.0.0.1:8766</text>
+
+  <path class="flecha" d="M165,260 L165,320"/>
+  <text class="rot" x="172" y="283">TCP 9000 · scara/1</text>
+  <text class="rot" x="172" y="297">URC servidor, socat cliente</text>
+
+  <!-- Gabinete -->
+  <rect class="grupo" x="365" y="30" width="300" height="400" rx="10"/>
+  <text class="titulo" x="380" y="52">Gabinete de control (UCI)</text>
+
+  <rect class="caja hw" x="395" y="70" width="240" height="95"/>
+  <text class="titulo" x="410" y="95">Arduino UNO</text>
+  <text class="chico" x="410" y="114">firmware/ (núcleo C++ portable)</text>
+  <text class="chico" x="410" y="129">+ capa de hardware del UNO</text>
+  <text class="chico" x="410" y="144">(pines, serie, Timer1 a 20 kHz)</text>
+
+  <rect class="caja hw" x="395" y="225" width="240" height="60"/>
+  <text class="titulo" x="410" y="250">4 × driver TB6600</text>
+  <text class="chico" x="410" y="270">1/8 de paso (1600 pulsos/vuelta)</text>
+
+  <rect class="caja hw" x="395" y="335" width="240" height="60"/>
+  <text class="titulo" x="410" y="360">Fuentes</text>
+  <text class="chico" x="410" y="380">36 V 10 A (drivers) · 12 V 2 A (UNO)</text>
+
+  <path class="uno" d="M515,165 L515,225"/>
+  <text class="rot" x="524" y="183">STEP: D2 D3 D5 D6</text>
+  <text class="rot" x="524" y="197">DIR: A0–A3</text>
+  <text class="rot" x="524" y="211">ENABLE común: D7</text>
+
+  <!-- USB -->
+  <path class="flecha" d="M285,350 L340,350 L340,118 L395,118"/>
+  <text class="rot" x="333" y="330" transform="rotate(-90 333 330)">USB-serie 115200 baudios · scara/1</text>
+
+  <!-- Robot -->
+  <rect class="grupo" x="715" y="30" width="230" height="400" rx="10"/>
+  <text class="titulo" x="730" y="52">Brazo SCARA</text>
+
+  <rect class="caja hw" x="735" y="215" width="190" height="80"/>
+  <text class="titulo" x="750" y="240">Motores paso a paso</text>
+  <text class="chico" x="750" y="259">M1, M2: NEMA 23 (base)</text>
+  <text class="chico" x="750" y="274">M3: NEMA 17 (antebrazo)</text>
+  <text class="chico" x="750" y="289">M4: NEMA 17 (columna Z)</text>
+
+  <rect class="caja hw" x="735" y="80" width="190" height="75"/>
+  <text class="titulo" x="750" y="105">Sensores Hall</text>
+  <text class="chico" x="750" y="124">4 × KY-003 (uno por eje)</text>
+  <text class="chico" x="750" y="139">8 imanes de neodimio</text>
+
+  <rect class="caja hw" x="735" y="335" width="190" height="65"/>
+  <text class="titulo" x="750" y="360">Transmisión</text>
+  <text class="chico" x="750" y="378">poleas GT2 4:1 y 60T–60T,</text>
+  <text class="chico" x="750" y="392">varilla ACME 8 mm/vuelta</text>
+
+  <path class="uno" d="M635,255 L735,255"/>
+  <text class="rot" x="645" y="247">bobinas A/B × 4</text>
+  <path class="uno" d="M735,118 L635,118"/>
+  <text class="rot" x="642" y="110">D8 D9 A4 A5</text>
+  <path class="uno" d="M830,295 L830,335"/>
+
+  <text class="chico" x="15" y="458">Diseño previsto por el maestro v1 y el maestro v2: el robot no está construido (ADR 0001). El tramo socat + serie se ensayó con un puerto serie virtual (D49).</text>
+</svg>
