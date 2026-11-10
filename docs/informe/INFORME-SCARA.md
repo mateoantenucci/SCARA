@@ -10,10 +10,10 @@
 <p class="dato"><strong>SCARA</strong> · brazo robótico de cuatro grados de libertad con teach &amp; play, simulado en Webots</p>
 
 <p class="rotulo">Equipo</p>
-<p class="dato"><span class="pendiente">[NOMBRE DEL EQUIPO]</span></p>
+<p class="dato">Alan Turing</p>
 
 <p class="rotulo">Integrantes</p>
-<p class="dato">Mateo Antenucci · Luciano Grosso · <span class="pendiente">[completar el resto de los integrantes]</span></p>
+<p class="dato">Albarracin Ignacio · Antenucci Mateo · Grosso Luciano · Villalobo Evaristo</p>
 
 <p class="rotulo">Docente</p>
 <p class="dato">Ing. Gustavo Sbrugnera</p>
@@ -27,14 +27,18 @@
 
 # Homenaje
 
-**En homenaje a <span class="pendiente">[NOMBRE DE LA PERSONA HOMENAJEADA]</span>**
+**En homenaje a Alan Turing**
 
 <figure>
-<p class="pendiente">[Retrato de la persona homenajeada: guardar la imagen en la carpeta <code>docs/informe/img/</code> y reemplazar este párrafo por una etiqueta <code>img</code> que la muestre]</p>
-<figcaption><span class="pendiente">[Nombre, años de vida y fuente de la imagen]</span></figcaption>
+<img src="img/alan-turing.jpg" alt="Retrato de Alan Turing a los 16 años">
+<figcaption>Alan Mathison Turing (Londres, 1912 – Wilmslow, 1954), a los 16 años. Fotografía de 1928–1929, de dominio público (Turing Archive, King's College, Cambridge, vía Wikimedia Commons).</figcaption>
 </figure>
 
-<span class="pendiente">[Motivos por los que se lo conmemora, media página. El equipo elige a la persona y escribe este texto: no está en el repositorio.]</span>
+Elegimos a Alan Turing como nombre del equipo porque buena parte de lo que hicimos en este trabajo descansa sobre ideas suyas. En 1936, con veinticuatro años, publicó «On Computable Numbers», donde definió una máquina abstracta que lee y escribe símbolos según una tabla de reglas, y demostró que existe una máquina *universal* capaz de imitar a cualquier otra si se le da la descripción de esa otra. Con eso fijó qué significa calcular y dónde están los límites de lo que una máquina puede resolver. Un gemelo digital es, en el fondo, esa misma idea llevada a la práctica: una computadora que se comporta como otra máquina, siguiendo su descripción, al punto de que el programa que la controla no nota la diferencia.
+
+Durante la Segunda Guerra Mundial trabajó en Bletchley Park descifrando los mensajes que la marina alemana cifraba con la máquina Enigma. La *bombe* que diseñó, a partir del trabajo previo de los criptógrafos polacos, permitió leer las comunicaciones de los submarinos del Atlántico y se considera que acortó la guerra. Terminado el conflicto diseñó el ACE, una de las primeras computadoras de programa almacenado, trabajó en la de Manchester y en 1950 planteó la pregunta de si las máquinas pueden pensar, con la prueba que hoy lleva su nombre. Hacia el final de su vida estudió cómo se forman los patrones en los seres vivos, un trabajo que abrió el camino a la biología matemática.
+
+En 1952 fue condenado por su homosexualidad y obligado a someterse a un tratamiento hormonal; murió dos años después, a los cuarenta y uno. El gobierno británico le pidió perdón públicamente en 2009 y la Corona lo indultó en 2013. Hoy el premio más importante de la informática lleva su nombre. Lo recordamos por lo que aportó y también por lo que se le negó: buena parte de la disciplina que estudiamos se apoya en el trabajo de alguien que su propio país no supo proteger.
 
 <!-- SALTO DE PAGINA -->
 
@@ -49,9 +53,9 @@
 
 Anexo A. Archivos entregados y cómo ejecutarlos
 
-**Alcance de este informe.** Siguiendo la consigna, no repite la documentación oficial del robot (el *documento maestro* v1 de la cátedra, `00-SCARA-Master.pdf`): reseña lo que tiene que ver con la virtualización. El detalle de cada parte está en el repositorio del proyecto, y cada decisión, con su porqué, en el registro de decisiones (`docs/REGISTRO_DE_DECISIONES.md`, citadas como D*n*) y en los ADR (`docs/adr/`). La sección 3, el protocolo, es el aporte central: el SCARA no tenía protocolo ni programa externo, y los dos se diseñaron en este trabajo.
+**Alcance de este informe.** Siguiendo la consigna, no repite la documentación oficial del robot (el documento maestro de la cátedra): reseña lo que tiene que ver con la virtualización. La sección 3, el protocolo, es el aporte central: el SCARA no tenía protocolo ni programa externo, y los dos se diseñaron en este trabajo.
 
-**Una advertencia que vale para todo el documento.** El SCARA no está construido: no hay un robot físico con el que comparar el modelo (ADR 0001). El gemelo digital simula el *diseño*. Cada parámetro declara su procedencia (CAD, maestro v1, hoja de datos de la familia más cercana o supuesto) y ninguno se presenta como una medición.
+**Una advertencia que vale para todo el documento.** El SCARA no está construido: no hay un robot físico con el que comparar el modelo. El gemelo digital simula el *diseño*. Cada parámetro declara su procedencia (CAD, maestro v1, hoja de datos de la familia más cercana o supuesto) y ninguno se presenta como una medición.
 
 <!-- SALTO DE PAGINA -->
 
@@ -79,15 +83,15 @@ Lo propio de este SCARA, y lo que más pesa en la simulación, es la **cadena ci
 J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8 mm × vueltas de M4
 ```
 
-Mover solo M1 gira el brazo y cambia J2 en sentido opuesto: el antebrazo conserva su orientación en el mundo. Para mover solo J1, el firmware da la misma cantidad de pasos a M1 y a M2. La simulación reproduce ese acople paso a paso (sección 4 del maestro v2).
+Mover solo M1 gira el brazo y cambia J2 en sentido opuesto: el antebrazo conserva su orientación en el mundo. Para mover solo J1, el firmware da la misma cantidad de pasos a M1 y a M2. La simulación reproduce ese acople paso a paso.
 
 **En Webots.** El modelo (`webots/protos/SCARA.proto`, usado por el mundo `webots/worlds/scara_uci.wbt`) se armó con las piezas de SolidWorks convertidas a STL (sldprt2step y OpenCascade), colocadas con las transformaciones recuperadas de los ensambles. Tiene tres `HingeJoint` (J1–J3) y un `SliderJoint` (J4), masas e inercias calculadas del CAD con densidades nominales y envolventes de colisión simplificadas por cuerpo rígido. El robot es un `supervisor` para que la planta simulada pueda aplicar cargas, obstáculos y el «movido a mano».
 
 ### 1.3 Sensores
 
-El diseño **no tiene encoders**: la posición se estima contando pasos. El maestro v1 prevé «sensores de inicio y final de carrera en los cuatro ejes, con imanes de neodimio y sensores de efecto Hall», sin ubicación ni cantidad. El grupo propuso (propuesta P2 al profesor, D10) **un sensor KY-003 por articulación**, en la pieza fija, y **dos imanes** en la pieza móvil, centrados en los extremos del recorrido con una zona activa de ±5° (±3 mm en J4). El de un extremo es la referencia del *homing*; el del otro, protección por sobrerrecorrido. Además, el firmware usa cada cruce de un imán para detectar pasos perdidos (`EV LOST`, sección 3).
+El diseño **no tiene encoders**: la posición se estima contando pasos. El maestro v1 prevé «sensores de inicio y final de carrera en los cuatro ejes, con imanes de neodimio y sensores de efecto Hall», sin ubicación ni cantidad. El grupo propuso al profesor **un sensor KY-003 por articulación**, en la pieza fija, y **dos imanes** en la pieza móvil, centrados en los extremos del recorrido con una zona activa de ±5° (±3 mm en J4). El de un extremo es la referencia del *homing*; el del otro, protección por sobrerrecorrido. Además, el firmware usa cada cruce de un imán para detectar pasos perdidos (`EV LOST`, sección 3).
 
-En Webots, cada KY-003 es un `Receiver` y cada imán un `Emitter`. Como Webots no entrega paquetes dentro de un mismo robot, la planta simulada mide la distancia entre los dos nodos y activa el Hall cuando el imán está dentro de su alcance (D57): la activación sale de la geometría del modelo, no de leer la posición perfecta del simulador. Los cuatro `PositionSensor` de Webots no los ve el firmware: solo alimentan el canal de instrumentación, que muestra la posición física simulada al lado de la estimada.
+En Webots, cada KY-003 es un `Receiver` y cada imán un `Emitter`. Como Webots no entrega paquetes dentro de un mismo robot, la planta simulada mide la distancia entre los dos nodos y activa el Hall cuando el imán está dentro de su alcance: la activación sale de la geometría del modelo, no de leer la posición perfecta del simulador. Los cuatro `PositionSensor` de Webots no los ve el firmware: solo alimentan el canal de instrumentación, que muestra la posición física simulada al lado de la estimada.
 
 ### 1.4 Actuadores
 
@@ -98,15 +102,15 @@ En Webots, cada KY-003 es un `Receiver` y cada imán un `Emitter`. Como Webots n
 | M3 | J3 | Shinano Kenshi STP-42D221-03, NEMA 17 | 20T → 80T (4:1), montado en el antebrazo |
 | M4 | J4 | 42D265, NEMA 17, 0,7 A | Acople flexible y varilla ACME de 8 mm por vuelta |
 
-Cada motor tiene un driver **TB6600**. El grupo propuso configurarlos a **1/8 de paso** (1600 pulsos por vuelta) en lugar de los 400 del maestro (propuesta P1, D9): con 400, un pulso de M1 mueve el extremo casi 2 mm con el brazo estirado y una recta se vería escalonada; con 1/8, medio milímetro. Es un único parámetro del firmware (`firmware/config.h`).
+Cada motor tiene un driver **TB6600**. El grupo propuso al profesor configurarlos a **1/8 de paso** (1600 pulsos por vuelta) en lugar de los 400 del maestro: con 400, un pulso de M1 mueve el extremo casi 2 mm con el brazo estirado y una recta se vería escalonada; con 1/8, medio milímetro. Es un único parámetro del firmware (`firmware/config.h`).
 
-En la simulación, cada motor es un rotor que sigue a los pulsos con el par de su curva par–velocidad (modelo N2, ADR 0006): si la carga o la aceleración piden más par, el rotor cae al equilibrio siguiente y **pierde cuatro pasos completos sin que el firmware se entere**, como un paso a paso real. Las articulaciones de Webots se comandan en velocidad para seguir a esos rotores. Sin corriente, el motor no retiene: J4 cae por su peso.
+En la simulación, cada motor es un rotor que sigue a los pulsos con el par de su curva par–velocidad (modelo N2): si la carga o la aceleración piden más par, el rotor cae al equilibrio siguiente y **pierde cuatro pasos completos sin que el firmware se entere**, como un paso a paso real. Las articulaciones de Webots se comandan en velocidad para seguir a esos rotores. Sin corriente, el motor no retiene: J4 cae por su peso.
 
 ### 1.5 Unidad de control
 
-La unidad de control (UCI) es un **Arduino UNO** en un gabinete separado del brazo, conectado a la PC por USB-serie a 115 200 baudios. Usa 13 de sus 20 pines (STEP y DIR de cada motor, un ENABLE común y una entrada por Hall), más los dos del puerto serie, y deja libres los del shield Ethernet (D47). Los pulsos los genera una interrupción del Timer1 a 20 kHz: hasta 10 000 pasos por segundo por motor (D48).
+La unidad de control (UCI) es un **Arduino UNO** en un gabinete separado del brazo, conectado a la PC por USB-serie a 115 200 baudios. Usa 13 de sus 20 pines (STEP y DIR de cada motor, un ENABLE común y una entrada por Hall), más los dos del puerto serie, y deja libres los del shield Ethernet. Los pulsos los genera una interrupción del Timer1 a 20 kHz: hasta 10 000 pasos por segundo por motor.
 
-El firmware es **uno solo**, en C++ portable y sin memoria dinámica ni flotantes (`firmware/`), y corre igual en el UNO y dentro del controlador de Webots (D3, ADR 0002): solo cambia la capa de hardware. Compilado para el UNO ocupa 16 148 bytes de flash (50 %) y 1297 bytes de RAM global (63 %). No hay placa: el firmware compila para el UNO y su camino serie se ensayó con un puerto serie virtual y socat (D49).
+El firmware es **uno solo**, en C++ portable y sin memoria dinámica ni flotantes (`firmware/`), y corre igual en el UNO y dentro del controlador de Webots: solo cambia la capa de hardware. Compilado para el UNO ocupa 16 148 bytes de flash (50 %) y 1297 bytes de RAM global (63 %). No hay placa: el firmware compila para el UNO y su camino serie se ensayó con un puerto serie virtual y socat.
 
 ### 1.6 Imágenes del prototipo
 
@@ -126,13 +130,13 @@ El robot no se construyó: no hay fotografías de la máquina real. Las dos prim
 
 ## 2. Descripción funcional del software externo
 
-### 2.1 No había un programa preexistente
+### 2.1 El programa externo: la URC
 
-Para el SCARA la consigna indica «programa externo: no desarrollado». No había nada que conservar intacto, así que el grupo lo desarrolló: la **URC** (Unidad Remota de Coordinación), una aplicación en Python que corre en la PC y se opera desde una **página web local**. Se diseñó para que sea **la misma con el robot real y con la simulación**: habla `scara/1` por TCP y no sabe si del otro lado hay un Arduino o Webots.
+El programa externo del SCARA se desarrolló en este trabajo: la **URC** (Unidad Remota de Coordinación), una aplicación en Python que corre en la PC y se opera desde una **página web local**. Se diseñó para que sea **la misma con el robot real y con la simulación**: habla `scara/1` por TCP y no sabe si del otro lado hay un Arduino o Webots.
 
 ### 2.2 Responsabilidades
 
-El reparto entre la URC y el firmware es el de GRBL y Klipper (D6, ADR 0005): **la URC planifica y el firmware ejecuta**.
+El reparto entre la URC y el firmware es el de GRBL y Klipper: **la URC planifica y el firmware ejecuta**.
 
 | La URC | El firmware de la UCI |
 | --- | --- |
@@ -150,7 +154,7 @@ El reparto entre la URC y el firmware es el de GRBL y Klipper (D6, ADR 0005): **
 
 - **Python 3** (probado con 3.15 en macOS y con Python 3 en Windows 11). La URC usa solo la biblioteca estándar: no hay que instalar paquetes.
 - **Un navegador** moderno (Chrome, Edge, Safari) en la misma PC: la URC escucha solo en `127.0.0.1:8766` y rechaza órdenes de otro origen.
-- **Webots R2025a** con el controlador `scara_uci` compilado (en macOS, con las Command Line Tools de Xcode; en Windows, con el `g++` que trae Webots). La simulación debe correr en **tiempo real, a 1× o menos**: el watchdog del firmware cuenta tiempo simulado y la URC envía `PING` en tiempo real (issue #51).
+- **Webots R2025a** con el controlador `scara_uci` compilado (en macOS, con las Command Line Tools de Xcode; en Windows, con el `g++` que trae Webots). La simulación debe correr en **tiempo real, a 1× o menos**: el watchdog del firmware cuenta tiempo simulado y la URC envía `PING` en tiempo real.
 - Con el robot real, en lugar de Webots: el Arduino UNO por USB y **socat** para puentear el puerto serie al TCP 9000.
 - Puertos libres: 8766 (página), 9000 (`scara/1`) y 9001 (canal de instrumentación).
 
@@ -158,7 +162,7 @@ Se arranca con `python3 -m urc.app` desde la raíz del repositorio; el orden res
 
 ### 2.4 La interfaz de usuario
 
-La página separa lo que vale ahora (barra de estado fija arriba: enlace, motores, referencia, qué hace el robot, carga y fallas), lo que hay que ver enseguida (avisos emergentes) y lo que pasó (registro de eventos numerado a la derecha) (D78–D80). Un botón que la URC rechazaría por el estado del robot aparece deshabilitado y dice por qué. Las cuatro capturas son de una corrida real del 07/11/2026 con Webots.
+La página separa lo que vale ahora (barra de estado fija arriba: enlace, motores, referencia, qué hace el robot, carga y fallas), lo que hay que ver enseguida (avisos emergentes) y lo que pasó (registro de eventos numerado a la derecha). Un botón que la URC rechazaría por el estado del robot aparece deshabilitado y dice por qué. Las cuatro capturas son de una corrida real del 07/11/2026 con Webots.
 
 <figure class="captura"><img src="img/urc-1-conexion.png" alt="URC recién conectada"><figcaption>Figura 5. La UCI recién conectada: motores sin corriente y sin referencia. La columna «Simulado» llega por el canal de instrumentación: el mundo arranca con un desvío al azar de hasta ±10°, y la posición estimada por pasos todavía no lo sabe.</figcaption></figure>
 
@@ -168,7 +172,7 @@ La página separa lo que vale ahora (barra de estado fija arriba: enlace, motore
 
 <figure class="captura"><img src="img/urc-4-banco.png" alt="Banco de ensayo"><figcaption>Figura 8. Banco de ensayo, que solo aparece con la simulación: carga, movido a mano, fallas F1–F5, obstáculos, empujón en la punta y el estado de cada motor simulado.</figcaption></figure>
 
-**Teclado.** Con la página enfocada, el jog es «estilo videojuego» (D12): A/D, W/S, Q/E y R/F mueven J1, J2, J3 y J4 en jog articular, o Y, X, rumbo y Z en jog cartesiano (Tab cambia de modo, Mayús lo hace lento); Espacio captura el punto, Retroceso lo borra, Enter termina la trayectoria y Esc frena todo.
+**Teclado.** Con la página enfocada, el jog es «estilo videojuego»: A/D, W/S, Q/E y R/F mueven J1, J2, J3 y J4 en jog articular, o Y, X, rumbo y Z en jog cartesiano (Tab cambia de modo, Mayús lo hace lento); Espacio captura el punto, Retroceso lo borra, Enter termina la trayectoria y Esc frena todo.
 
 <!-- SALTO DE PAGINA -->
 
@@ -179,10 +183,10 @@ La página separa lo que vale ahora (barra de estado fija arriba: enlace, motore
 | Enlace | Extremos | Transporte | Formato | Existe con el robot real |
 | --- | --- | --- | --- | --- |
 | **`scara/1`** | URC ⇄ UCI (firmware) | TCP 9000; con el UNO, USB-serie 115 200 puenteado por socat | Texto ASCII, una línea por mensaje | Sí: es el protocolo del robot |
-| **`scara-sim/1`** | URC ⇄ controlador de Webots | TCP 9001 | Texto ASCII, una línea por mensaje | No: solo existe en la simulación (ADR 0004) |
+| **`scara-sim/1`** | URC ⇄ controlador de Webots | TCP 9001 | Texto ASCII, una línea por mensaje | No: solo existe en la simulación |
 | HTTP | Navegador ⇄ URC | HTTP 8766 en `127.0.0.1` | JSON | Sí (es interno del programa externo) |
 
-`scara/1` es el contrato entre el programa externo y la máquina, y el que exige la consigna. `scara-sim/1` lleva lo que el robot real no podría dar (la posición física verdadera) y lo que solo tiene sentido en la simulación (inyectar fallas, cambiar la carga, recargar el mundo). Separarlos fue una decisión deliberada (D2, ADR 0004): si la verdad del simulador viajara por `scara/1`, la URC podría terminar dependiendo de ella sin querer, y dejaría de funcionar con el robot real. Una prueba automática verifica que la sesión, el planificador y la validación de la URC no importen el módulo del canal de instrumentación.
+`scara/1` es el contrato entre el programa externo y la máquina, y el que exige la consigna. `scara-sim/1` lleva lo que el robot real no podría dar (la posición física verdadera) y lo que solo tiene sentido en la simulación (inyectar fallas, cambiar la carga, recargar el mundo). Separarlos fue una decisión deliberada: si la verdad del simulador viajara por `scara/1`, la URC podría terminar dependiendo de ella sin querer, y dejaría de funcionar con el robot real. Una prueba automática verifica que la sesión, el planificador y la validación de la URC no importen el módulo del canal de instrumentación.
 
 La especificación normativa de `scara/1` está en `docs/PROTOCOLO_SCARA_1.md`, y la de `scara-sim/1`, en `docs/PROTOCOLO_SCARA_SIM_1.md`. Esta sección las reúne y las completa con la máquina de estados, la temporización y diálogos reales.
 
@@ -190,7 +194,7 @@ La especificación normativa de `scara/1` está en `docs/PROTOCOLO_SCARA_1.md`, 
 
 **Medio.** TCP/IP sobre la interfaz local (`127.0.0.1:9000`, configurable con `--uci-port`). Con el robot real, el UNO habla por **USB-serie a 115 200 baudios, 8N1**, y `socat` puentea ese puerto al mismo TCP 9000 (`socat /dev/cu.usbmodem1101,b115200,rawer TCP:127.0.0.1:9000`): la URC no cambia. Es una conexión **full-duplex**: los dos lados escriben cuando lo necesitan, sin turnos.
 
-**Cliente y servidor (D1).** La **URC es el servidor**: escucha en el 9000 y queda siempre esperando. La **UCI es el cliente**: el controlador de Webots se conecta y, si la URC no está, reintenta cada segundo sin frenar la simulación; con el robot real, el cliente es socat. Así el robot puede reiniciarse o reconectarse sin tocar la URC, y el mismo esquema sirve para Webots, para socat y para un futuro UNO con shield Ethernet. La URC atiende una sola UCI: una conexión nueva reemplaza a la anterior y descarta lo que estaba pendiente.
+**Cliente y servidor.** La **URC es el servidor**: escucha en el 9000 y queda siempre esperando. La **UCI es el cliente**: el controlador de Webots se conecta y, si la URC no está, reintenta cada segundo sin frenar la simulación; con el robot real, el cliente es socat. Así el robot puede reiniciarse o reconectarse sin tocar la URC, y el mismo esquema sirve para Webots, para socat y para un futuro UNO con shield Ethernet. La URC atiende una sola UCI: una conexión nueva reemplaza a la anterior y descarta lo que estaba pendiente.
 
 **Maestro y esclavo.** En el plano de las órdenes, la **URC es el maestro** y la **UCI el esclavo**: todo movimiento nace de una orden de la URC, y la UCI nunca inicia uno por su cuenta. Pero no es un esclavo que solo responde cuando le preguntan:
 
@@ -200,7 +204,7 @@ La especificación normativa de `scara/1` está en `docs/PROTOCOLO_SCARA_1.md`, 
 
 Que el esclavo sea el cliente TCP no es una contradicción: el rol de red resuelve quién espera a quién, y el de maestro, quién decide los movimientos.
 
-**Apertura de una sesión.** Al aceptar la conexión, la URC envía `HELLO` y la UCI responde `HI scara/1 <versión>`. El firmware de Webots arranca con la **primera** conexión y anuncia `BOOT scara/1 1`, como el UNO, que se reinicia cuando socat abre el puerto USB (D36); las reconexiones siguientes no lo reinician. Con el UNO, el `HELLO` puede perderse mientras la placa está en el *bootloader*; no importa, porque `BOOT` ya trae el protocolo y la versión. No hay cierre explícito: la sesión termina cuando se cae la conexión.
+**Apertura de una sesión.** Al aceptar la conexión, la URC envía `HELLO` y la UCI responde `HI scara/1 <versión>`. El firmware de Webots arranca con la **primera** conexión y anuncia `BOOT scara/1 1`, como el UNO, que se reinicia cuando socat abre el puerto USB; las reconexiones siguientes no lo reinician. Con el UNO, el `HELLO` puede perderse mientras la placa está en el *bootloader*; no importa, porque `BOOT` ya trae el protocolo y la versión. No hay cierre explícito: la sesión termina cuando se cae la conexión.
 
 ### 3.3 `scara/1`: formato de los mensajes
 
@@ -208,11 +212,11 @@ Que el esclavo sea el cliente TCP no es una contradicción: el rol de red resuel
 - **ASCII imprimible** (bytes 32 a 126). Una línea con cualquier otro byte se descarta entera con `ERR 1 comando`: un byte nulo cortaría la línea en C sin avisar.
 - **Hasta 64 bytes con el LF.** Una línea más larga se descarta entera con `ERR 3 largo`. El límite es por la RAM del UNO.
 - **Campos separados por uno o más espacios.** El primero es el comando, en mayúsculas. Una línea vacía no es un mensaje.
-- **Solo enteros**, en unidades articulares (D5, ADR 0003): **centésimas de grado** en J1–J3 (`9000` = 90,00°) y **centésimas de milímetro** en J4 (`12000` = 120,00 mm). El firmware convierte a pasos y resuelve el acople M1/M2: la URC nunca habla en pasos ni en motores, salvo en el jog por motor.
+- **Solo enteros**, en unidades articulares: **centésimas de grado** en J1–J3 (`9000` = 90,00°) y **centésimas de milímetro** en J4 (`12000` = 120,00 mm). El firmware convierte a pasos y resuelve el acople M1/M2: la URC nunca habla en pasos ni en motores, salvo en el jog por motor.
 - **Convención de signos.** J1–J3 positivos en sentido antihorario visto desde arriba; J4 positivo hacia abajo (aumentar J4 baja la herramienta).
-- **Sin acuse para las órdenes que salen bien** (D35): el efecto se ve en el próximo `S`. Las únicas respuestas son `HI` (a `HELLO`), `S` (a `STATUS`), `OK n` (a `SEG`, como control de flujo) y `ERR` (a una orden rechazada).
+- **Sin acuse para las órdenes que salen bien**: el efecto se ve en el próximo `S`. Las únicas respuestas son `HI` (a `HELLO`), `S` (a `STATUS`), `OK n` (a `SEG`, como control de flujo) y `ERR` (a una orden rechazada).
 
-El formato es deliberadamente simple, «al nivel de un Arduino»: se puede hablar a mano con `nc -l 9000` frente a Webots, o con el monitor serie del IDE de Arduino frente a la placa (D4).
+El formato es deliberadamente simple, «al nivel de un Arduino»: se puede hablar a mano con `nc -l 9000` frente a Webots, o con el monitor serie del IDE de Arduino frente a la placa.
 
 ### 3.4 `scara/1`: órdenes de la URC a la UCI
 
@@ -225,10 +229,10 @@ La forma de cada orden (comando, cantidad de argumentos, rangos, largo) se verif
 | `STATUS` | Sin argumentos | Pide el estado ya: responde un `S` fuera de su período. | — |
 | `ENABLE` | Sin argumentos | Da corriente a los cuatro drivers (ENABLE común). Modo `OFF` → `IDLE`. Si ya tenían corriente, no cambia nada. | — |
 | `DISABLE` | Sin argumentos | Frena, corta la corriente y **pierde la referencia** de los cuatro ejes: sin corriente los motores giran libres y J4 cae. Modo → `OFF`. | — |
-| `JOG j s v` | `j`: articulación 1–4. `s`: `+` o `-`. `v`: velocidad en centésimas por segundo, 1–1000. | Jog articular continuo: mueve solo la articulación `j` (para J1, M1 y M2 juntos). Reemplaza al jog anterior. **Sin referencia, el firmware lo limita a 500** (5 °/s o 5 mm/s, D58). Frena solo si se activa el Hall del eje, con `ERR 10 fin`; con ese Hall activo, solo deja salir hacia el otro lado. | `ERR 2`, `ERR 6`; `ERR 5` con segmentos u homing; `ERR 10` hacia el tope |
-| `JOG Mm s v` | `m`: motor 1–4; `s` y `v` como arriba, en las unidades de la articulación de ese motor | Jog **por motor** (D46): mueve solo el motor `m`, sin compensar el acople. Con M1 se ve que el antebrazo conserva su orientación. Mismos frenos que el articular. | Igual que `JOG j` |
+| `JOG j s v` | `j`: articulación 1–4. `s`: `+` o `-`. `v`: velocidad en centésimas por segundo, 1–1000. | Jog articular continuo: mueve solo la articulación `j` (para J1, M1 y M2 juntos). Reemplaza al jog anterior. **Sin referencia, el firmware lo limita a 500** (5 °/s o 5 mm/s). Frena solo si se activa el Hall del eje, con `ERR 10 fin`; con ese Hall activo, solo deja salir hacia el otro lado. | `ERR 2`, `ERR 6`; `ERR 5` con segmentos u homing; `ERR 10` hacia el tope |
+| `JOG Mm s v` | `m`: motor 1–4; `s` y `v` como arriba, en las unidades de la articulación de ese motor | Jog **por motor**: mueve solo el motor `m`, sin compensar el acople. Con M1 se ve que el antebrazo conserva su orientación. Mismos frenos que el articular. | Igual que `JOG j` |
 | `JOG STOP` | Sin más argumentos | Frena el jog en seco (es lento: no pierde pasos). No afecta a los segmentos. | — |
-| `STOP` | Sin argumentos | Frena todo y **conserva la referencia** (D41). Los segmentos frenan con rampa (cada motor baja su velocidad en línea recta hasta cero, todos en el mismo tiempo) y la cola se vacía (D52); el jog, en seco. Durante un homing, los ejes de ese `HOME` quedan sin referencia. Los drivers siguen con corriente. | — |
+| `STOP` | Sin argumentos | Frena todo y **conserva la referencia**. Los segmentos frenan con rampa (cada motor baja su velocidad en línea recta hasta cero, todos en el mismo tiempo) y la cola se vacía; el jog, en seco. Durante un homing, los ejes de ese `HOME` quedan sin referencia. Los drivers siguen con corriente. | — |
 | `HALT` | Sin argumentos | Parada inmediata, en seco, y descarta la cola. Si había movimiento, **pierde la referencia** (parar en seco puede perder pasos). Los drivers siguen con corriente. | — |
 | `ZERO` | Sin argumentos | Referencia manual: declara que el robot está en la **pose de reposo** (J1 = J2 = J3 = 0, J4 = 120 mm) y deja los cuatro ejes referenciados. Menos precisa que el homing. | `ERR 6`; `ERR 5` en movimiento |
 | `HOME [j]` | Opcional `j`: 1–4 | Homing de los cuatro ejes en el orden **J4, J1, J2, J3**, o solo de `j`. Por eje: sale del imán si arranca sobre él, busca rápido (15 °/s; J4 10 mm/s), retrocede hasta que el Hall se apaga y 3° más, y vuelve a 1 °/s al **mismo flanco**, que fija la referencia: J1 y J2 en −130°, J3 en −145°, J4 a 3 mm de arriba. Envía `EV HOMED j` por eje. La vuelta al reposo la planifica la URC. | `ERR 6`; `ERR 5`; aborta con `ERR 11` o `ERR 12` |
@@ -241,10 +245,10 @@ La forma de cada orden (comando, cantidad de argumentos, rangos, largo) se verif
 | `BOOT` | `BOOT scara/1 <versión>` | Una vez, al arrancar el firmware. Arranca **sin corriente y sin referencia**: toda referencia anterior se perdió. Uno a mitad de una sesión es la falla F5. |
 | `HI` | `HI scara/1 <versión>` | Respuesta a `HELLO`. Hoy la versión del firmware es 1. |
 | `S` | `S modo ref J1 J2 J3 J4 hall libres último` | Estado, **cada 50 ms** (20 por segundo) y ante `STATUS`. |
-| `OK` | `OK n` | El segmento `n` entró en la cola. Es el control de flujo (D50). |
+| `OK` | `OK n` | El segmento `n` entró en la cola. Es el control de flujo. |
 | `ERR` | `ERR código palabra` | Orden rechazada, o evento que frenó el robot. Con segmentos en ejecución, todo `ERR` frena con rampa, como `STOP`. |
-| `EV HOMED` | `EV HOMED j` | El homing referenció el eje `j` (D56). |
-| `EV LOST` | `EV LOST j pasos` | Al entrar en un imán con el eje `j` referenciado, la cuenta de pasos difiere de la del flanco en **2 pasos completos o más** (D65). `pasos`: reales menos contados, en pasos completos del motor, con signo. |
+| `EV HOMED` | `EV HOMED j` | El homing referenció el eje `j`. |
+| `EV LOST` | `EV LOST j pasos` | Al entrar en un imán con el eje `j` referenciado, la cuenta de pasos difiere de la del flanco en **2 pasos completos o más**. `pasos`: reales menos contados, en pasos completos del motor, con signo. |
 
 Campos del estado `S`:
 
@@ -308,20 +312,20 @@ La referencia se **pierde** con `DISABLE`, con `HALT` en movimiento, con un `BOO
 
 ### 3.7 `scara/1`: temporización y control de flujo
 
-| Parámetro | Valor | Quién | Decisión |
-| --- | --- | --- | --- |
-| Período del estado `S` | 50 ms (20 por segundo) | UCI | D27 |
-| Período del `PING` | 250 ms, en tiempo real | URC | D27 |
-| Watchdog | 1 s sin una línea completa de la URC, solo con el robot en `JOG`, `RUN` o `HOMING` | UCI | D27, D37 |
-| Duración de un segmento | 20 ms (la URC muestrea el perfil cada 20 ms) | URC | D27, D50 |
-| Cola de segmentos | 16 lugares, el que se ejecuta incluido | UCI | D27, D50 |
-| Segmentos en cola durante el jog verificado | 3 | URC | D75 |
-| Renovación del jog desde la página | cada 150 ms; sin renovar 500 ms, la URC lo frena | Página y URC | D37 |
-| Búsqueda de homing | 60 s por eje como máximo | UCI | D56 |
+| Parámetro | Valor | Quién |
+| --- | --- | --- |
+| Período del estado `S` | 50 ms (20 por segundo) | UCI |
+| Período del `PING` | 250 ms, en tiempo real | URC |
+| Watchdog | 1 s sin una línea completa de la URC, solo con el robot en `JOG`, `RUN` o `HOMING` | UCI |
+| Duración de un segmento | 20 ms (la URC muestrea el perfil cada 20 ms) | URC |
+| Cola de segmentos | 16 lugares, el que se ejecuta incluido | UCI |
+| Segmentos en cola durante el jog verificado | 3 | URC |
+| Renovación del jog desde la página | cada 150 ms; sin renovar 500 ms, la URC lo frena | Página y URC |
+| Búsqueda de homing | 60 s por eje como máximo | UCI |
 
-**Control de flujo (D50).** La URC envía un `SEG` y **espera su `OK` antes de enviar el siguiente**. Mientras haya lugar, el `OK` sale enseguida; con la cola llena, el firmware **retiene** el segmento recibido y demora su `OK` hasta que termine el que se ejecuta. Así la URC nunca envía de más, y un `SEG` antes de ese `OK` es un error de la URC (`ERR 9 cola`). A 50 segmentos por segundo son unos 2 KB/s, contra los ~11 KB/s del enlace serie a 115 200 baudios.
+**Control de flujo.** La URC envía un `SEG` y **espera su `OK` antes de enviar el siguiente**. Mientras haya lugar, el `OK` sale enseguida; con la cola llena, el firmware **retiene** el segmento recibido y demora su `OK` hasta que termine el que se ejecuta. Así la URC nunca envía de más, y un `SEG` antes de ese `OK` es un error de la URC (`ERR 9 cola`). A 50 segmentos por segundo son unos 2 KB/s, contra los ~11 KB/s del enlace serie a 115 200 baudios.
 
-**El reloj lo pone el firmware.** Un segmento empieza cuando termina el anterior, no cuando llega: una demora del enlace no se nota mientras quede cola (16 × 20 ms = 320 ms de margen). Si la cola se vacía, el robot se queda en el último destino; por eso la URC planifica cada tramo hasta velocidad cero. En Webots el reloj del firmware es el de la simulación, y por eso Webots debe correr a 1× o menos: acelerado, el watchdog (tiempo simulado) se adelanta a los `PING` (tiempo real) y frena el robot con `ERR 4` (issue #51).
+**El reloj lo pone el firmware.** Un segmento empieza cuando termina el anterior, no cuando llega: una demora del enlace no se nota mientras quede cola (16 × 20 ms = 320 ms de margen). Si la cola se vacía, el robot se queda en el último destino; por eso la URC planifica cada tramo hasta velocidad cero. En Webots el reloj del firmware es el de la simulación, y por eso Webots debe correr a 1× o menos: acelerado, el watchdog (tiempo simulado) se adelanta a los `PING` (tiempo real) y frena el robot con `ERR 4`.
 
 **Números de segmento.** La URC no los repite en una sesión: un `OK` que llega tarde, después de un `STOP`, no se confunde con el de un tramo nuevo. El campo `último` de `S` dice hasta dónde llegó el tramo.
 
@@ -448,13 +452,13 @@ URC → UCI  HELLO ñ          UCI → URC  ERR 1 comando
 - **La URC nunca envía una orden que el firmware rechazaría por su forma**: la revisa antes con la misma gramática (`urc/protocol.py`), y las conversaciones de conformidad lo verifican.
 - **Corte del enlace (F4).** Si la URC deja de hablar, el watchdog frena el robot en 1 s; la referencia se conserva porque frenar no pierde pasos. Si la conexión TCP se cae, la URC cancela los segmentos pendientes y espera la reconexión; el controlador de Webots reintenta cada segundo y vuelve sin `BOOT`.
 - **Todo `BOOT` significa robot sin referencia.** Con USB, abrir el puerto reinicia la mayoría de los Arduino: la URC nunca supone que el robot sigue referenciado después de una reconexión.
-- **Tres frenos para el jog** (D37): la página deja de renovar el pedido al soltar la tecla, perder el foco u ocultarse; la URC frena el jog si no se renovó en 500 ms; y la UCI frena sola a 1 s sin mensajes.
+- **Tres frenos para el jog**: la página deja de renovar el pedido al soltar la tecla, perder el foco u ocultarse; la URC frena el jog si no se renovó en 500 ms; y la UCI frena sola a 1 s sin mensajes.
 
 ### 3.10 `scara-sim/1`: el canal de instrumentación
 
 Solo existe en la simulación. Mismo estilo que `scara/1` (ASCII, una línea por mensaje terminada en LF, campos separados por espacios), por otro puerto: **TCP 9001**, con la **URC como servidor** y el **controlador de Webots como cliente** (se desactiva con `--sim-port 0`). La UCI real no lo tiene; sin él, la URC funciona igual y el banco de ensayo no aparece.
 
-**Roles.** El controlador de Webots informa el estado del simulador por su cuenta, 20 veces por segundo; la URC envía órdenes del banco de ensayo. No hay acuse por orden: la URC **confirma** cada orden viendo el cambio en el estado `SIM`, y si no lo ve en 2 s, lo avisa en el registro de eventos (D79). Las órdenes que no se ven en el estado (`MANO`, `EMPUJON`) tienen eco.
+**Roles.** El controlador de Webots informa el estado del simulador por su cuenta, 20 veces por segundo; la URC envía órdenes del banco de ensayo. No hay acuse por orden: la URC **confirma** cada orden viendo el cambio en el estado `SIM`, y si no lo ve en 2 s, lo avisa en el registro de eventos. Las órdenes que no se ven en el estado (`MANO`, `EMPUJON`) tienen eco.
 
 **Del controlador a la URC:**
 
@@ -476,9 +480,9 @@ Campos del estado `SIM`:
 | `corriente` | Máscara de drivers con corriente (bit 0 = M1); 15 = todos. |
 | `f2`, `f4` | Falla F2 (driver de M4 sin corriente) y F4 (enlace `scara/1` cortado): 0 o 1. |
 | `f3` | Cuatro caracteres, uno por articulación: `-` Hall libre, `A` trabado activo, `I` trabado inactivo. |
-| `carga` | Gramos agregados a la herramienta, sin el pistón y su soporte (150 g): 0–4850, para no pasar de 5 kg (D85). |
+| `carga` | Gramos agregados a la herramienta, sin el pistón y su soporte (150 g): 0–4850, para no pasar de 5 kg. |
 | `i1`–`i4` | Corriente de cada driver, en % de la nominal (F1). |
-| `p1`–`p4` | Pasos completos que perdió cada motor desde el último homing de su eje o desde que recuperó la corriente (D86). |
+| `p1`–`p4` | Pasos completos que perdió cada motor desde el último homing de su eje o desde que recuperó la corriente. |
 
 **De la URC al controlador:**
 
@@ -492,8 +496,8 @@ Campos del estado `SIM`:
 | `CARGA g` | 0–4850 | Masa agregada a la herramienta (campo `toolMass` del proto). |
 | `RECARGA` | — | Recarga el mundo de Webots; los dos canales se vuelven a conectar. |
 | `OBSTACULO …` | `ninguno` · `maceta X Y` · `mesa X Y altura` (X, Y: ±1000 mm; altura: −20 a 90 mm) | Pone o saca un obstáculo físico (pruebas C1 y C2). |
-| `EMPUJON f dir ms` | Fuerza en centinewtons 1–5000; dirección −180 a 180°; duración 50–2000 ms | Empujón horizontal breve en la punta (prueba C3, D92). |
-| `MANO j pos` | Articulación 1–4; posición en centésimas, dentro de los límites | Lleva la articulación a mano, solo con los cuatro drivers sin corriente (prueba C4, D91). |
+| `EMPUJON f dir ms` | Fuerza en centinewtons 1–5000; dirección −180 a 180°; duración 50–2000 ms | Empujón horizontal breve en la punta (prueba C3). |
+| `MANO j pos` | Articulación 1–4; posición en centésimas, dentro de los límites | Lleva la articulación a mano, solo con los cuatro drivers sin corriente (prueba C4). |
 
 Diálogo real: la apertura del canal y la inyección de F1 con carga. Al `F1 4 50` el estado responde con `i4` = 50 en el siguiente `SIM`, y la URC da la orden por confirmada:
 
@@ -525,11 +529,11 @@ La página y la URC se comunican por HTTP con JSON, en `127.0.0.1:8766`. No es p
 | `POST /api/reproduccion/…` | `reproducir` (`start`, `speed` 10–100, `loops`), `pausa`, `reanudar`, `stop`. |
 | `POST /api/banco` | Órdenes del banco, que la URC traduce a `scara-sim/1`. |
 
-Respuestas: 202 si la orden se envió, 200 con el plan si fue una consulta, 400 con `error` (una línea) y `detail` (el porqué, plegado en la página, D77) si se rechazó, y 409 si la UCI no está conectada o la URC necesita una confirmación.
+Respuestas: 202 si la orden se envió, 200 con el plan si fue una consulta, 400 con `error` (una línea) y `detail` (el porqué, plegado en la página) si se rechazó, y 409 si la UCI no está conectada o la URC necesita una confirmación.
 
 ### 3.12 Conformidad: un protocolo, dos implementaciones
 
-Los dos lados de `scara/1` están escritos en lenguajes distintos (C++ y Python). Para que no lo entiendan de maneras distintas, las **24 conversaciones de conformidad** de `firmware/test/conversaciones/` son la definición ejecutable del protocolo (D42) y se corren contra los dos:
+Los dos lados de `scara/1` están escritos en lenguajes distintos (C++ y Python). Para que no lo entiendan de maneras distintas, las **24 conversaciones de conformidad** de `firmware/test/conversaciones/` son la definición ejecutable del protocolo y se corren contra los dos:
 
 - **Contra el firmware:** el núcleo C++ real, compilado para la PC con una capa de hardware falsa (reloj controlable, contadores de pasos, imanes con la misma geometría que Webots, Hall trabados y pasos perdidos a voluntad), recibe las órdenes `>` y tiene que responder exactamente las líneas `<`.
 - **Contra la URC:** una UCI falsa en Python se conecta por TCP a la URC real y le envía las líneas `<`; la URC tiene que entenderlas y poder enviar cada `>`, salvo las que el firmware rechaza por su forma, que tiene que negarse a enviar con el mismo código.
@@ -588,8 +592,8 @@ Webots reemplaza al gabinete y al brazo. El navegador, la URC y `scara/1` no cam
 
 | Componente | Versión | Uso |
 | --- | --- | --- |
-| macOS | 27.2 (Apple Silicon, arm64) | Desarrollo, campaña de validación vigente (06/11/2026) y capturas de este informe |
-| Windows 11 | — | Desarrollo y primera campaña de validación (01/11/2026) |
+| macOS | 27.2 (Apple Silicon) | Desarrollo y ensayos en Webots |
+| Windows | 11 | Desarrollo y ensayos en Webots |
 | **Webots** | **R2025a** | Simulador: mundo `scara_uci.wbt`, proto `SCARA.proto` y controlador `scara_uci`; física ODE con paso de 2 ms |
 | Arduino UNO | — | Destino del firmware (compila; no hay placa) |
 
@@ -602,7 +606,7 @@ Webots reemplaza al gabinete y al brazo. El navegador, la URC y `scara/1` no cam
 | URC (`urc/`) | Python 3, solo biblioteca estándar | Servidor HTTP, sesión `scara/1`, planificador, trayectorias, reproducción |
 | Página de la URC | HTML, CSS y JavaScript sin frameworks | `urc/index.html` y tres scripts |
 | Cinemática y colisiones (`scara/`) | Python 3 | Compartidas por la URC y las herramientas |
-| Pruebas | Python `unittest` | Conformidad contra los dos lados, endpoints, planificador, modelo N2, campaña |
+| Pruebas | Python `unittest` | Pruebas automáticas del firmware, la URC y el protocolo |
 
 ### 5.3 IDEs: ¿para qué se usaron?
 
@@ -610,8 +614,8 @@ Webots reemplaza al gabinete y al brazo. El navegador, la URC y `scara/1` no cam
 | --- | --- |
 | Editor de Webots | Abrir el mundo, compilar el controlador (Build) y ver la simulación |
 | Orca | Entorno de trabajo con copias aisladas del repositorio (*worktrees*) por tarea y terminales para los agentes de IA |
-| Terminal (zsh, PowerShell) | Compilar con `make`, correr la URC, la suite y la campaña |
-| <span class="pendiente">[completar: editor de código que usó cada integrante, p. ej. VS Code]</span> | <span class="pendiente">[para qué]</span> |
+| VS Code | Edición del código (C++, Python, HTML/JS) y de la documentación, y revisión de los cambios antes de cada commit |
+| Terminal (zsh, PowerShell) | Compilar con `make`, correr la URC y las pruebas |
 
 ### 5.4 Modeladores 3D: ¿para qué se usaron?
 
@@ -628,12 +632,11 @@ No se usaron Blender ni CadQuery completo.
 
 | Herramienta | Licencia | Para qué |
 | --- | --- | --- |
-| Claude Code (Anthropic), con los modelos Claude Opus 5.5, Sonnet 5.5, Haiku 5.5 y Fable 5.1 | Suscripción comercial <span class="pendiente">[confirmar plan]</span> | Asistencia en la implementación (firmware, URC, planta, pruebas), la redacción de la documentación y los informes, la investigación de fuentes y la revisión de código. Los commits asistidos llevan la línea `Co-Authored-By` del modelo. |
-| <span class="pendiente">[confirmar: otras IAs usadas, p. ej. Codex]</span> | <span class="pendiente">[licencia]</span> | <span class="pendiente">[para qué]</span> |
+| Claude Code (Anthropic), con los modelos Claude Opus 5.5, Sonnet 5.5, Haiku 5.5. | Suscripción comercial. | Asistencia en la implementación (firmware, URC, planta, pruebas), la redacción de la documentación y los informes, la investigación de fuentes y la revisión de código. Los commits asistidos llevan la línea `Co-Authored-By` del modelo. |
 
-Las decisiones de diseño son del grupo: cada una está en el registro de decisiones con lo que se descartó y por qué, y lo que dependía del profesor se llevó a clase (propuestas P1 y P2). Lo que la IA produjo se aceptó solo con evidencia: pruebas automáticas, conversaciones de conformidad y ensayos en Webots con la versión identificada por commit y SHA-256.
+Las decisiones de diseño fueron del grupo, y lo que dependía del profesor se consultó en clase. Lo que produjo la IA se aceptó solo después de verificarlo con pruebas automáticas y ensayos en Webots.
 
-Licencias de los componentes de terceros: Webots (Apache-2.0), sldprt2step (Apache-2.0, con su `LICENSE` y `NOTICE` en `tools/patches/`), OpenCascade (LGPL-2.1 con excepción), socat (GPL-2.0), Python (PSF), mistune (BSD-3-Clause). SolidWorks y los modelos son de la cátedra.
+Licencias de los componentes de terceros: Webots (Apache-2.0), sldprt2step (Apache-2.0, con su `LICENSE` y `NOTICE` en `tools/patches/`), OpenCascade (LGPL-2.1 con excepción), socat (GPL-2.0), Python (PSF). SolidWorks y los modelos son de la cátedra.
 
 ### 5.6 Otros componentes
 
@@ -644,8 +647,6 @@ Licencias de los componentes de terceros: Webots (Apache-2.0), sldprt2step (Apac
 | `arduino-cli` | Compilar el firmware para el UNO y verificar su presupuesto de flash y RAM |
 | `tools/espiar_enlace.py` | Registrador interpuesto en los enlaces 9000 y 9001 (diálogos de la sección 3.8) |
 | Git, GitHub y `gh` | Repositorio privado, issues como especificación de cada tarea, pull requests |
-| Google Chrome sin interfaz y mistune | Exportar este informe y el maestro de Markdown a PDF, y las capturas de la URC |
-| MSYS2 | En Windows: `make` y `g++` de Webots, y socat para el ensayo serie |
 
 <!-- SALTO DE PAGINA -->
 
@@ -662,32 +663,18 @@ Más allá del mínimo:
 - **Teach & play completo:** jog articular, cartesiano y por motor; captura y edición de puntos; tramos LIN (recta del extremo) y PTP (menor recorrido); validación previa de toda la trayectoria (límites, alcance, velocidades, codo y colisiones); reproducción con loop, pausa y stop.
 - **Fallas reproducibles** F1–F5 y pruebas físicas del entorno C1–C4 (choque con una maceta, J4 contra una mesa, empujón en la punta, movido a mano sin corriente).
 
-La **campaña de validación** registrada (06/11/2026, macOS con Webots R2025a, commit `39df64d`) aprobó los 18 escenarios, cada uno con condición inicial, resultado esperado, tolerancia y registro:
-
-| Grupo | Escenarios | Resultado destacado |
-| --- | --- | --- |
-| Homing | H1, H2 | Los cuatro ejes en el flanco de su Hall, a ≤ 3 pasos, también con desvío y después de un homing abortado |
-| Teach & play | T1, T2, T3 | Cada tramo dura lo planificado (26,86 s medidos contra 26,86 s en el loop de T2); los LIN, a ≤ 0,21 mm de la recta; las tres demostraciones, sin errores |
-| Fallas | F1, F2, F3a, F3b, F4, F5 | `EV LOST` = pasos perdidos ± 1 paso completo en J1 y ± 2 en J4; watchdog en < 1 s; `BOOT` inesperado detectado en plena reproducción |
-| Físicas | C1–C4 | Pérdida de pasos por contacto sin aviso hasta el homing, que recupera la posición a < 1 paso completo |
-| Soporte | P1, P2, P3 | Protocolo, transmisión N1 (escalones de 0,05625°) y segmentos con llegada conjunta |
-
-La suite automática (`python3 -m unittest discover`, sin Webots) corrió el 07/11/2026 sobre la versión de este informe: **218 pruebas, todas en verde, 8 omitidas** (las de propiedades CAD, que necesitan OpenCascade; las del exportador de documentos, las de socat y la compilación para el UNO, que necesitan herramientas no instaladas en esa PC).
-
 ### 6.2 ¿Qué quedó pendiente de implementación?
 
 - **El electroimán del extremo.** La consigna anticipa «un sencillo electroimán, para demostraciones de pick & place». No está en el CAD ni en el maestro, y quedó fuera de alcance: las trayectorias de *pick and place* mueven el punto de herramienta, pero no toman ni sueltan nada.
-- **Probar con la placa real.** El firmware compila para el UNO y el camino serie se ensayó con un puerto virtual y socat, pero no hay robot ni placa (D49).
-- **Respuesta del profesor a las propuestas** P1 (microstepping 1/8) y P2 (ubicación y signos de los Hall). Están implementadas; si cambian, cambia la configuración, no la arquitectura.
-- **Parámetros provisionales.** Las hojas de datos exactas de los motores no aparecieron: el par se tomó de la familia más cercana o de supuestos declarados. Las envolventes de colisión son cajas simplificadas, y quedan discrepancias entre el maestro v1, los planos y el CAD.
-- **Falla F6** (correa que patina o se corta) y el **modelo eléctrico de los motores** (N3: corrientes, inductancia, resonancias).
-- **Un homing intermitente** que no terminó en una corrida parcial de la campaña y no se volvió a reproducir en otras tres (sin causa encontrada).
+- **Probar con la placa real.** El firmware compila para el UNO y el camino serie se ensayó con un puerto virtual y socat, pero no hay robot ni placa.
+- **Medir los parámetros del robot real.** El par de los motores se tomó de la familia más cercana porque sus hojas de datos no aparecieron, y las envolventes de colisión son cajas simplificadas.
+- **Simular fallas de la transmisión** (una correa que patina o se corta) **y el comportamiento eléctrico de los motores**.
 
 ### 6.3 ¿Qué se podría mejorar en una próxima iteración?
 
 - **Agregar el electroimán**: un nodo `Connector` en el proto y una orden nueva en `scara/1` (por ejemplo, `TOOL 0|1`), agregada al final sin romper la versión 1, con su conversación de conformidad; y un tipo de punto «tomar/soltar» en el gestor de trayectorias.
 - **Hardware en el lazo:** conectar un UNO real por socat a la planta de Webots, para ensayar los tiempos del Timer1 y del enlace serie sin construir el brazo.
-- **Desacoplar el watchdog de la velocidad de Webots**, para poder correr la simulación acelerada en los ensayos largos sin abortos (issue #51).
+- **Desacoplar el watchdog de la velocidad de Webots**, para poder correr la simulación acelerada en los ensayos largos sin abortos.
 - **Encoders o un sensor por motor**, si se construye el robot: hoy un paso perdido se descubre recién al cruzar un imán.
 - **Ver la escena de Webots en la página de la URC** (*streaming* de la vista), para operar desde una sola ventana.
 - **Calibrar con el robot construido:** reemplazar cada parámetro provisional por una medición, empezando por el par de los motores y las masas.
@@ -704,9 +691,8 @@ La suite automática (`python3 -m unittest discover`, sin Webots) corrió el 07/
 | Firmware para el UNO | `firmware/arduino/scara_uci/` |
 | Trayectorias de demostración | `trayectorias/demo-*.json` |
 | Especificaciones del protocolo | `docs/PROTOCOLO_SCARA_1.md`, `docs/PROTOCOLO_SCARA_SIM_1.md`, `firmware/test/conversaciones/` |
-| Documento maestro v2, decisiones y ADR | `docs/maestro/`, `docs/REGISTRO_DE_DECISIONES.md`, `docs/adr/` |
 | Evidencia de la validación | `validation/campana/` (informe, `campana.json` y registros) |
-| Este informe | `docs/informe/INFORME-SCARA.md`, exportado a `output/pdf/SCARA-Informe-Gemelos-Digitales.pdf` |
+| Este informe | `docs/informe/INFORME-SCARA.md`, exportado a `output/docx/SCARA-Informe-Gemelos-Digitales.docx` |
 
 Primera ejecución, desde la raíz del repositorio:
 
@@ -714,5 +700,3 @@ Primera ejecución, desde la raíz del repositorio:
 2. Levantar la URC: `python3 -m urc.app`, y abrir `http://127.0.0.1:8766`.
 3. En Webots, abrir `webots/worlds/scara_uci.wbt` en **Real-time** (a 1× o menos).
 4. En la página: «Habilitar motores», «Homing…», y cargar y reproducir una demostración.
-
-Para regenerar este PDF: `python3 tools/exportar_maestro.py --fuente docs/informe/INFORME-SCARA.md --destino output/pdf/SCARA-Informe-Gemelos-Digitales.pdf` (requiere `mistune` y Chrome o Edge).

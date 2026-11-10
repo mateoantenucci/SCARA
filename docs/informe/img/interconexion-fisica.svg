@@ -94,5 +94,5 @@
   <text class="rot" x="642" y="110">D8 D9 A4 A5</text>
   <path class="uno" d="M830,295 L830,335"/>
 
-  <text class="chico" x="15" y="458">Diseño previsto por el maestro v1 y el maestro v2: el robot no está construido (ADR 0001). El tramo socat + serie se ensayó con un puerto serie virtual (D49).</text>
+  <text class="chico" x="15" y="458">Diseño previsto por el maestro v1: el robot no está construido. El tramo socat + serie se ensayó con un puerto serie virtual.</text>
 </svg>
