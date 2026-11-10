@@ -280,23 +280,7 @@ Campos del estado `S`:
 
 ### 3.6 `scara/1`: máquina de estados de la UCI
 
-```text
-            ENABLE                   JOG j|Mm ± v  (otro JOG lo reemplaza)
-  ┌─────┐ ─────────► ┌──────┐ ─────────────────────────► ┌─────┐
-  │ OFF │            │ IDLE │ ◄───────────────────────── │ JOG │
-  └─────┘ ◄───────── └──────┘   JOG STOP · STOP · HALT ·  └─────┘
-   BOOT    DISABLE    │    ▲    watchdog · Hall de fin
-          (desde      │    │
-          cualquier   │    │  cola vacía, o fin de la rampa
-          modo)       │    │  de STOP, watchdog o ERR
-              SEG n … ▼    │
-                    ┌──────┐
-                    │ RUN  │  incluye «frenando»
-                    └──────┘
-
-  IDLE ── HOME [j] ──► HOMING ──► IDLE
-                    (terminado · ERR 11/12 · STOP · HALT · watchdog)
-```
+<figure class="ancha"><img src="img/maquina-estados-uci.svg" alt="Máquina de estados de la UCI"><figcaption>Figura 9. Máquina de estados de la UCI: los modos que informa el estado <code>S</code> y las órdenes o eventos que los cambian.</figcaption></figure>
 
 Qué acepta la UCI en cada modo (✓ acepta; el número es el `ERR` con que rechaza):
 
@@ -331,7 +315,7 @@ La referencia se **pierde** con `DISABLE`, con `HALT` en movimiento, con un `BOO
 
 ### 3.8 `scara/1`: diálogos reales
 
-Las transcripciones siguientes son **tráfico real**, capturado el 07/11/2026 en macOS con Webots R2025a y la URC del commit `b54b675`, con un registrador interpuesto en el enlace (`tools/espiar_enlace.py`) que reenvía cada byte sin cambiarlo. El registro completo está en `docs/informe/dialogo/dialogo-2026-11-07.log`. La primera columna es el tiempo en segundos desde que arrancó el registrador. Se omitieron `PING` y estados `S` repetidos donde no aportan; los `(…)` son comentarios.
+Las transcripciones siguientes son **tráfico real** entre la URC y el gemelo en Webots, registrado sin alterar ningún byte. La primera columna es el tiempo en segundos desde el inicio del registro. Se omitieron los `PING` y los estados `S` repetidos que no aportan; los `(…)` son comentarios.
 
 **Apertura de la sesión.** El controlador de Webots se conecta, el firmware arranca y la URC saluda. El primer `S` dice: sin corriente, sin referencia, todo en 0 (la cuenta empieza en el arranque) y el Hall de J4 activo (`hall` = 8).
 
@@ -420,26 +404,26 @@ El firmware no corrige la cuenta ni frena: la URC marca la referencia de J4 como
 **Otros diálogos, de las conversaciones de conformidad.** Estos se ejecutan como pruebas automáticas (sección 3.12) y documentan casos que conviene no provocar en vivo:
 
 ```text
-(watchdog.txt: corte de la URC en pleno jog)
+(corte de la URC en pleno jog)
 URC → UCI  JOG 1 + 450
            … más de 1 s sin mensajes …
 UCI → URC  ERR 4 watchdog
 UCI → URC  S IDLE 0 900 0 0 0 0 16 0
 
-(seg_stop.txt: STOP con rampa a mitad de un segmento de J1 a 18 °/s)
+(STOP con rampa a mitad de un segmento de J1 a 18 °/s)
 URC → UCI  SEG 1 1000 1800 0 0 12000
 UCI → URC  OK 1
 URC → UCI  STOP                                  (a los 500 ms, con J1 en 9°)
 UCI → URC  S RUN 15 990 0 0 12000 0 16 0     (frenando, cola vacía)
 UCI → URC  S IDLE 15 1018 0 0 12000 0 16 0    (129 ms después; v²/2a)
 
-(homing_hall_trabado.txt: Hall de J1 trabado activo)
+(Hall de J1 trabado activo)
 URC → UCI  HOME
 UCI → URC  EV HOMED 4
 UCI → URC  ERR 12 trabado
 UCI → URC  S IDLE 0 -602 0 0 300 9 16 0          (sin referencia, ni siquiera J4)
 
-(errores.txt: mensajes mal formados; la UCI responde y sigue)
+(mensajes mal formados; la UCI responde y sigue)
 URC → UCI  MOVER 1          UCI → URC  ERR 1 comando
 URC → UCI  JOG 5 + 100      UCI → URC  ERR 2 argumentos
 URC → UCI  JOG 1 + 1001     UCI → URC  ERR 2 argumentos
@@ -493,7 +477,7 @@ Campos del estado `SIM`:
 | `F3 j estado` | Articulación 1–4; `activo`, `inactivo` o `libre` | Traba el Hall de `j` o lo devuelve a la geometría. |
 | `F4 0\|1` | — | Corta `scara/1` sin cerrar la conexión TCP, como un cable desenchufado: lo que entra se pierde y lo que sale no llega. Actúa el watchdog. |
 | `F5` | — | Reinicia el firmware de la UCI: `BOOT` inesperado, sin corriente ni referencia. |
-| `CARGA g` | 0–4850 | Masa agregada a la herramienta (campo `toolMass` del proto). |
+| `CARGA g` | 0–4850 | Masa que se suma a la herramienta, en el extremo de J4 (el pistón y su soporte, 150 g): con 4850 g el conjunto llega a 5 kg, la masa con la que se verificaron los límites de los motores. Fuera de ese rango, la URC no la envía y el controlador la rechaza con `SIM ERR orden`. |
 | `RECARGA` | — | Recarga el mundo de Webots; los dos canales se vuelven a conectar. |
 | `OBSTACULO …` | `ninguno` · `maceta X Y` · `mesa X Y altura` (X, Y: ±1000 mm; altura: −20 a 90 mm) | Pone o saca un obstáculo físico (pruebas C1 y C2). |
 | `EMPUJON f dir ms` | Fuerza en centinewtons 1–5000; dirección −180 a 180°; duración 50–2000 ms | Empujón horizontal breve en la punta (prueba C3). |
@@ -566,13 +550,13 @@ Hay que escribir `PING` al menos una vez por segundo mientras el robot se mueve,
 
 Como el SCARA no está construido, el «original» es el diseño previsto: el que describe el maestro v1 (mecánica, motores, drivers, UNO, fuentes) completado por el grupo con el protocolo, la URC y la ubicación de los sensores. Con la placa real, socat puentea el USB-serie del UNO al TCP 9000 donde escucha la URC.
 
-<figure class="ancha"><img src="img/interconexion-fisica.svg" alt="Interconexión del equipo físico"><figcaption>Figura 9. Interconexión del equipo físico (previsto) con el software externo.</figcaption></figure>
+<figure class="ancha"><img src="img/interconexion-fisica.svg" alt="Interconexión del equipo físico"><figcaption>Figura 10. Interconexión del equipo físico (previsto) con el software externo.</figcaption></figure>
 
 ### 4.2 Diagrama con el gemelo digital
 
 Webots reemplaza al gabinete y al brazo. El navegador, la URC y `scara/1` no cambian: el controlador `scara_uci` se conecta al mismo puerto 9000 que usaría socat. Dentro del controlador corre el **mismo firmware** del UNO; lo que cambia es la capa de hardware (`WebotsHal`: reloj simulado, cliente TCP, pasos y Hall) y la **planta simulada**, que reemplaza a drivers, motores, transmisión y sensores y mueve las articulaciones de Webots por su API. Se agregan dos componentes que solo existen en la simulación: el canal `scara-sim/1` (9001) y el banco de ensayo de la página.
 
-<figure class="ancha"><img src="img/interconexion-gemelo.svg" alt="Interconexión con el gemelo digital"><figcaption>Figura 10. Interconexión del software externo con el gemelo digital.</figcaption></figure>
+<figure class="ancha"><img src="img/interconexion-gemelo.svg" alt="Interconexión con el gemelo digital"><figcaption>Figura 11. Interconexión del software externo con el gemelo digital.</figcaption></figure>
 
 | Componente | Robot real (previsto) | Gemelo digital |
 | --- | --- | --- |

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .grupo { fill: #f6f7fb; stroke: #8a90a6; stroke-width: 1.2; stroke-dasharray: 5 4; }
+      .caja { stroke: #335; stroke-width: 1.4; rx: 6; }
+      .apagado { fill: #eceef3; }
+      .quieto { fill: #e8f0fb; }
+      .mueve { fill: #fdf3e6; }
+      .sub { fill: #ffffff; }
+      .titulo { font-weight: bold; font-size: 14px; }
+      .chico { font-size: 11px; fill: #333; }
+      .flecha { stroke: #333; stroke-width: 1.5; fill: none; marker-end: url(#f); }
+      .rot { font-size: 11px; fill: #222; }
+      .orden { font-size: 11px; fill: #222; font-weight: bold; }
+    </style>
+  </defs>
+
+  <!-- Arranque -->
+  <circle cx="115" cy="140" r="7" fill="#333"/>
+  <path class="flecha" d="M115,147 L115,213"/>
+  <text class="orden" x="125" y="172">BOOT</text>
+  <text class="rot" x="125" y="186">arranque o reinicio</text>
+
+  <rect class="caja apagado" x="40" y="215" width="150" height="60"/>
+  <text class="titulo" x="55" y="240">OFF</text>
+  <text class="chico" x="55" y="259">drivers sin corriente</text>
+
+  <!-- Con corriente -->
+  <rect class="grupo" x="290" y="20" width="655" height="460" rx="10"/>
+  <text class="titulo" x="305" y="42">Con corriente</text>
+
+  <path class="flecha" d="M190,232 L418,232"/>
+  <text class="orden" x="200" y="224">ENABLE</text>
+  <path class="flecha" d="M290,262 L192,262"/>
+  <text class="orden" x="200" y="280">DISABLE</text>
+  <text class="rot" x="200" y="294">desde cualquier</text>
+  <text class="rot" x="200" y="308">modo</text>
+
+  <rect class="caja quieto" x="420" y="205" width="170" height="80"/>
+  <text class="titulo" x="435" y="232">IDLE</text>
+  <text class="chico" x="435" y="251">quieto, con corriente</text>
+  <text class="chico" x="435" y="266">acepta órdenes de movimiento</text>
+
+  <!-- JOG -->
+  <rect class="caja mueve" x="700" y="65" width="200" height="60"/>
+  <text class="titulo" x="715" y="90">JOG</text>
+  <text class="chico" x="715" y="109">articular (j) o de un motor (Mm)</text>
+
+  <path class="flecha" d="M470,205 C470,130 560,95 698,95"/>
+  <text class="orden" x="462" y="150" text-anchor="end">JOG j|Mm ± v</text>
+
+  <path class="flecha" d="M760,65 C760,35 820,35 820,63"/>
+  <text class="rot" x="828" y="47">otro JOG lo reemplaza</text>
+
+  <path class="flecha" d="M720,125 C720,165 600,165 560,203"/>
+  <text class="orden" x="735" y="150">JOG STOP · STOP · HALT</text>
+  <text class="orden" x="735" y="164">watchdog · Hall de fin</text>
+
+  <!-- RUN -->
+  <rect class="caja mueve" x="680" y="180" width="250" height="280"/>
+  <text class="titulo" x="695" y="203">RUN</text>
+  <text class="chico" x="735" y="203">el estado S dice RUN en los dos</text>
+
+  <rect class="caja sub" x="700" y="215" width="180" height="55"/>
+  <text class="titulo" x="713" y="238">ejecutando</text>
+  <text class="chico" x="713" y="256">segmentos de la cola</text>
+  <path class="flecha" d="M880,232 C912,230 912,256 882,254"/>
+  <text class="rot" x="890" y="282" text-anchor="middle">SEG n …</text>
+  <text class="rot" x="890" y="296" text-anchor="middle">a la cola</text>
+
+  <path class="flecha" d="M790,270 L790,368"/>
+  <text class="orden" x="800" y="316">STOP · watchdog</text>
+  <text class="rot" x="800" y="330">se vacía la cola</text>
+
+  <rect class="caja sub" x="700" y="370" width="180" height="70"/>
+  <text class="titulo" x="713" y="393">frenando</text>
+  <text class="chico" x="713" y="411">rampa hasta cero</text>
+  <text class="chico" x="713" y="426">rechaza movimientos (ERR 5)</text>
+
+  <!-- IDLE ⇄ RUN -->
+  <path class="flecha" d="M590,232 L698,232"/>
+  <text class="orden" x="600" y="224">SEG n …</text>
+  <path class="flecha" d="M680,268 L592,268"/>
+  <text class="orden" x="598" y="290">cola vacía</text>
+  <text class="orden" x="598" y="304">fin de la rampa</text>
+  <text class="orden" x="598" y="318">HALT · ERR</text>
+
+  <!-- HOMING -->
+  <rect class="caja mueve" x="420" y="390" width="170" height="70"/>
+  <text class="titulo" x="435" y="415">HOMING</text>
+  <text class="chico" x="435" y="434">busca los Hall</text>
+  <text class="chico" x="435" y="449">J4 primero, después J1–J3</text>
+
+  <path class="flecha" d="M545,285 L545,388"/>
+  <text class="orden" x="553" y="350">HOME [j]</text>
+  <path class="flecha" d="M470,390 L470,287"/>
+  <text class="orden" x="462" y="330" text-anchor="end">terminado · ERR 11/12</text>
+  <text class="orden" x="462" y="344" text-anchor="end">STOP · HALT · watchdog</text>
+
+  <!-- leyenda -->
+  <rect class="caja apagado" x="30" y="503" width="18" height="14"/>
+  <text class="chico" x="55" y="514">sin corriente</text>
+  <rect class="caja quieto" x="170" y="503" width="18" height="14"/>
+  <text class="chico" x="195" y="514">quieto: el watchdog no actúa</text>
+  <rect class="caja mueve" x="400" y="503" width="18" height="14"/>
+  <text class="chico" x="425" y="514">en movimiento: a 1 s sin mensajes de la URC, el watchdog lo frena</text>
+</svg>
