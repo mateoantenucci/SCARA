@@ -248,7 +248,7 @@ def calculate(extended=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT/"validation/self_collisions.json")
+    parser.add_argument("--output", type=Path, default=ROOT/"validation/cad/self_collisions.json")
     parser.add_argument("--self-check", action="store_true", help="Comprueba el cálculo con dos cajas y cajas separadas")
     parser.add_argument("--extended", action="store_true", help="Añade seis recorridos CAD muestreados, pares y variantes de carga del guard")
     args = parser.parse_args()

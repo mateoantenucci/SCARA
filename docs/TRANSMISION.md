@@ -13,7 +13,7 @@ Fuente: [maestro, pp. 10–14](../00-SCARA-Master.pdf#page=10). Los datos son de
 
 ## Qué se comprobó en el CAD
 
-Se incorporaron como visuales las salidas de brazo y codo y la polea de muñeca, con colocaciones sustentadas. La elección entre las poses R y B de muñeca y las incompatibilidades pendientes están en [Montaje](MONTAJE_Y_AUTOCOLISIONES.md).
+Se incorporaron como visuales las salidas de brazo y codo y la polea de muñeca, con colocaciones sustentadas. La elección entre las poses R y B de muñeca y las incompatibilidades pendientes están en [Montaje](cad/MONTAJE_Y_COLISIONES.md).
 
 La polea grande de muñeca tiene **80 dientes contados en la geometría**, coincidentes con el maestro. El plano suelto la describe como de 60: falta confirmar revisión. Las otras siete geometrías de polea son lisas y no permiten contar dientes; sus nombres y el maestro son referencias documentales.
 
@@ -99,7 +99,7 @@ con `e` el atraso del rotor. El par máximo, con un paso completo de atraso, es 
 - **Sin modelo eléctrico (N3).** Corrientes, inductancia y resonancias quedan resumidas en la curva y en un amortiguamiento fijo (ζ = 0,6). El rotor se integra en 10 subpasos de 0,2 ms dentro de cada paso de 2 ms de Webots: el paso de la simulación no cambia.
 - **En Webots.** Cada articulación va hacia la posición de los rotores con control de velocidad: la velocidad del rotor más la mitad de lo que le falta por paso, sin el límite de aceleración del proto (la dinámica ya la puso el rotor), y quedándose a 1/8 de paso completo de sus topes, porque un motor de ODE que empuja contra su tope vibra. Al volver la corriente, su fuerza sube en rampa durante 0,1 s: con J4 apoyado en su tope, ODE le aplica de más en el primer paso que el motor lo saca de ahí, y lo haría saltar milímetros. El par de las articulaciones de Webots se sube en el mundo de la UCI (campos `j1MaxTorque`… de `SCARA.proto`) para que no sea Webots el que limita; el mundo viejo conserva sus valores (D64).
 
-**Parámetros y su fuente.** El maestro nombra los modelos, pero sus hojas de datos exactas no aparecieron, ni en esta búsqueda (31/10/2026) ni en la de la sesión 3 ([fuentes físicas](../validation/physics_sources.json)). Cada número es de la familia más cercana o un supuesto típico declarado:
+**Parámetros y su fuente.** El maestro nombra los modelos, pero sus hojas de datos exactas no aparecieron, ni en esta búsqueda (31/10/2026) ni en la de la sesión 3 ([fuentes físicas](../validation/cad/physics_sources.json)). Cada número es de la familia más cercana o un supuesto típico declarado:
 
 | Parámetro | M1, M2 | M3 | M4 | Fuente o supuesto |
 | --- | --- | --- | --- | --- |
@@ -146,4 +146,4 @@ Evidencia: [ensayo de la pérdida de pasos en Webots](../validation/perdida_paso
 
 Confirmar revisión, fijaciones, recorrido de correas, sentidos, ceros, códigos de motores, conexión y corriente de drivers, curvas torque–velocidad, fricción/eficiencia y sostén vertical. Con las hojas de datos exactas de los motores se reemplazan los supuestos de N2 (D64).
 
-Respaldo: [fuentes de transmisión](../validation/transmission_sources.json), [montaje de salidas](../validation/pulley_mounts.json), [conteo geométrico](../validation/pulley_geometry.json), [montaje restante](../validation/remaining_mounts.json) y [nominales y fuentes físicas](../validation/physics_sources.json). Los ensayos del montaje están centralizados en [Validación](historico/VALIDACION_WEBOTS.md).
+Respaldo: [fuentes de transmisión](../validation/cad/transmission_sources.json), [montaje de salidas](../validation/cad/pulley_mounts.json), [conteo geométrico](../validation/cad/pulley_geometry.json), [montaje restante](../validation/cad/remaining_mounts.json) y [nominales y fuentes físicas](../validation/cad/physics_sources.json). Los ensayos del montaje están centralizados en [Validación](historico/VALIDACION_WEBOTS.md).

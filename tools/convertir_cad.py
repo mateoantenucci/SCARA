@@ -2,7 +2,7 @@
 """Convert local SolidWorks parts and validate geometry before publishing STL.
 
 Requires the separately downloaded, reviewed sldprt2step revision documented in
-docs/EVALUACION_CONVERSION_CAD.md, plus tools/requirements-cad.txt. No network,
+docs/cad/DEL_CAD_A_WEBOTS.md, plus tools/requirements-cad.txt. No network,
 assembly placement, automatic repairs, material assignments or source edits.
 """
 from __future__ import annotations

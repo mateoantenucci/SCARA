@@ -1,6 +1,6 @@
 # UCI en Webots y URC: el camino nuevo
 
-El sistema que reemplazó al banco `scara-dev/1` (D16), ya retirado (issue #17). Hoy cubre la bala trazadora (issue #5), el protocolo completo (issue #6) y la transmisión N1 (issue #7): corriente de los drivers, jog articular de J1–J4 y jog por motor desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas.
+El sistema que reemplazó al banco `scara-dev/1` (D16). Cubre corriente de los drivers, jog articular de J1–J4 y jog por motor desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas.
 
 ## Cómo funciona
 
@@ -29,7 +29,7 @@ navegador ──HTTP 8766──► URC (urc/, Python) ◄──TCP 9000, scara/1
    Según la documentación oficial de [Webots R2025a](https://raw.githubusercontent.com/cyberbotics/webots/R2025a/docs/guide/the-user-interface.md#simulation-menu), la simulación ofrece los modos **Real-time** (sincronizada con el tiempo real) y **Fast** (a la máxima velocidad que permita la CPU/GPU). Para evitar que el reloj simulado adelante al watchdog del firmware, se recomienda operar Webots en **modo Real-time** (menú *Simulation → Real-time*, botón Real-time o argumento CLI `--mode=realtime`), comprobando en el indicador de velocidad que la simulación se mantenga en ~1× o menor.
 10. **Paradas (D41):** «Stop» o <kbd>Esc</kbd> envía `STOP` (frena y conserva la referencia); «Parada inmediata» envía `HALT` (si había movimiento, pierde la referencia); «Deshabilitar motores» envía `DISABLE` (corta la corriente y pierde la referencia).
 
-La planta todavía no modela el driver sin corriente: en Webots J4 no cae con `DISABLE`. Llega con las fallas (F2).
+Sin corriente, J4 cae por su peso y los motores pierden los pasos (D60): la posición estimada deja de valer. Es la falla F2.
 
 `ZERO` (botón «Referencia manual») declara que el robot está en la pose de reposo: J1 = J2 = J3 = 0 y J4 abajo (120 mm). El mundo `scara_uci.wbt` arranca exactamente en esa pose (D38); el desvío aleatorio llega con el homing (issue #8).
 
@@ -80,9 +80,7 @@ Con Webots, la página muestra además el panel «Banco de ensayo (solo simulaci
 
 El panel aparece recién cuando el controlador se conecta al 9001. Si no aparece, el controlador está compilado con un firmware anterior al canal: compilarlo de nuevo ([arriba](#compilar-el-controlador)) y recargar el mundo. Sirve, por ejemplo, para ensayar el watchdog sin soltar la tecla: con **D** apretada, marcar con el mouse «F4 · Cortar el enlace scara/1» (un clic en la misma página no frena el jog); el brazo tiene que frenar solo en menos de 1 s.
 
-No se puede usar a la vez con el banco viejo: los dos quieren el puerto 9000 (en uno escucha la URC; en el otro, Webots).
-
-## Resultado en Windows (D19)
+## Primer ensayo en Windows y campaña en macOS (D19, D73)
 
 Probado el 30/10/2026 en Windows 11 Pro con Webots R2025a y el `g++` 14.2.0 (MSYS2) que trae Webots:
 

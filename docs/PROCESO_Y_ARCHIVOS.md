@@ -6,7 +6,7 @@ Esta guía explica el trabajo realizado y conecta cada idea con los archivos que
 
 El proyecto representa en Webots el diseño de un brazo robótico SCARA entregado por la cátedra. Webots es el programa que calcula y muestra su movimiento. El objetivo es moverlo desde una aplicación externa, grabar y reproducir trayectorias (teach & play) y ensayar fallas.
 
-La [consigna](../CONSIGNA-TP-FINAL.pdf), páginas 1–2, pide un modelo físico en un mundo `.wbt`, un controlador y una aplicación visual externa conectada mediante mensajes de texto por TCP/IP. En la página 6 identifica al SCARA como no construido, con protocolo y programa externo sin desarrollar. El [plan](PLAN_GEMELO_DIGITAL.md) distingue esos requisitos escritos de las ampliaciones acordadas por el grupo.
+La [consigna](../CONSIGNA-TP-FINAL.pdf), páginas 1–2, pide un modelo físico en un mundo `.wbt`, un controlador y una aplicación visual externa conectada mediante mensajes de texto por TCP/IP. En la página 6 identifica al SCARA como no construido, con protocolo y programa externo sin desarrollar. El [maestro v2](maestro/SCARA-Master-v2.md) separa lo que pide la consigna de lo que propuso el grupo (sección 1).
 
 El [documento maestro v1](../00-SCARA-Master.pdf) describe la mecánica prevista; el [maestro v2](maestro/SCARA-Master-v2.md) lo actualiza con el CAD como fuente de verdad. Es una fuente de diseño: contiene datos incompletos y diferencias respecto de algunos planos. No acredita que se haya construido y medido ese robot.
 
@@ -67,7 +67,7 @@ El proceso tuvo estos pasos, que resolvieron problemas diferentes:
 6. **Elegir cuerpos y referencias.** `config/cad_integration.json` declara qué piezas acompañan a cada cuerpo y qué colocaciones se adoptan. `tools/integrate_cad.py` calcula sus posiciones locales, conservando la geometría de las mallas.
 7. **Generar Webots.** `tools/generate_world.py` construye el robot y el mundo a partir de esos datos y de `config/scara.json`.
 
-Los detalles para justificar este proceso están en [conversión](EVALUACION_CONVERSION_CAD.md), [recuperación de geometrías](RECUPERACION_GEOMETRIAS.md), [ensambles](ENSAMBLE_CAD.md) y [criterios de integración](INTEGRACION_CAD_CRITERIOS.md). No hace falta dominar el formato binario de SolidWorks para explicar qué resolvió cada paso.
+Los detalles para justificar este proceso están en [Del CAD a Webots](cad/DEL_CAD_A_WEBOTS.md). No hace falta dominar el formato binario de SolidWorks para explicar qué resolvió cada paso.
 
 **Pregunta para defenderlo:** ¿por qué convertir todas las piezas no arma automáticamente el robot? Porque la forma de cada pieza no determina su colocación, su cuerpo rígido, sus articulaciones ni sus propiedades físicas.
 
@@ -141,7 +141,7 @@ El planificador de la URC comprueba cada segmento, también los del jog verifica
 
 Hay además auditorías CAD de poses seleccionadas y ensayos de contacto en Webots. Cumplen funciones diferentes. Todavía no existe comprobación continua general de todos los pares internos ni búsqueda automática de caminos alternativos. Las cajas pueden causar rechazos conservadores y los contactos internos generales están desactivados (`selfCollision FALSE`). Una falla (por ejemplo, pasos perdidos) puede separar el movimiento físico de la referencia previamente comprobada.
 
-Detalles y evidencia: [colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md) y [montaje](MONTAJE_Y_AUTOCOLISIONES.md).
+Detalles y evidencia: [montaje y colisiones](cad/MONTAJE_Y_COLISIONES.md).
 
 ## 9. Mapa de archivos para explorar
 
@@ -166,8 +166,8 @@ Detalles y evidencia: [colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md) y [m
 | `cad/` | Derivados, ensambles y propiedades geométricas del CAD. |
 | `tools/` | Conversión, extracción, integración y generación del modelo; diagnósticos CAD; `exportar_maestro.py` y `verificar_enlaces.py`. |
 | `tests/` | Pruebas automáticas: conformidad, planificador, URC, planta, Hall, UNO, demos y documentación. |
-| `validation/` | Evidencia de cada ensayo; la vigente del sistema es la [campaña](../validation/campana/INFORME.md). |
-| `validation/historico/`, `docs/historico/` | Etapas anteriores y el banco `scara-dev/1`. Se consultan para contrastar, no como prueba. |
+| `validation/` | Evidencia de cada ensayo; la vigente del sistema es la [campaña](../validation/campana/INFORME.md). Las auditorías CAD están en `validation/cad/`. Mapa: [`validation/README.md`](../validation/README.md). |
+| `docs/historico/`, `validation/historico/` | El banco `scara-dev/1` y dos líneas base que usa `check_wrist_bearings.py`. Se consultan para contrastar, no como prueba. El resto de la evidencia de etapas previas está en el tag `pre-limpieza`. |
 
 | Herramientas | Función |
 | --- | --- |
@@ -198,41 +198,20 @@ Un JSON es texto estructurado con nombres y valores. Para leer un informe, busc�
 
 La [campaña de validación](../validation/campana/INFORME.md) identifica la versión respaldada por commit y SHA-256. Un informe antiguo no aprueba automáticamente los archivos que hoy hay en la carpeta.
 
-## 11. Cómo prepararlo para explicarlo y defenderlo
-
-El [maestro v2](maestro/SCARA-Master-v2.md) ordena la presentación. Un recorrido posible:
-
-1. Problema y requisitos: simular el diseño, moverlo desde una aplicación externa y grabar y reproducir trayectorias.
-2. Material recibido y recuperación: formas, colocaciones y ejes.
-3. Arquitectura: URC, firmware único y `scara/1`; por qué la URC planifica y el firmware ejecuta.
-4. Referencia: pose de reposo, homing con Hall y qué se puede hacer sin referencia.
-5. Evidencia: teach & play y una falla, indicando la versión ensayada.
-6. Límites: física provisional, propuestas P1 y P2 sin revisar, sin placa real ni hardware.
-
-Preguntas para verificar tu comprensión:
-
-- ¿Qué desarrollamos nosotros y qué recibimos de la cátedra?
-- ¿Por qué el protocolo usa unidades articulares y no pasos ni coordenadas cartesianas?
-- ¿Qué cambia entre el firmware en Webots y en el UNO?
-- ¿Por qué la posición simulada de Webots no es un encoder del robot real?
-- ¿Cómo se detecta una pérdida de pasos sin encoders?
-- ¿Qué confirma un ensayo aprobado y qué no permite concluir?
-
 ## Documentación para profundizar por tema
 
 | Cuando necesites… | Leer |
 | --- | --- |
 | Operar el robot | [README](../README.md) y [UCI en Webots](UCI_WEBOTS.md). |
 | El diseño completo y cada decisión | [Maestro v2](maestro/SCARA-Master-v2.md), [registro de decisiones](REGISTRO_DE_DECISIONES.md) y [ADR](adr/). |
-| Alcance y pendientes | [Plan](PLAN_GEMELO_DIGITAL.md) y [decisión de simular sin hardware](adr/0001-simulacion-del-diseno-sin-hardware.md). |
+| Alcance y pendientes | Secciones 9 y 10 del [maestro v2](maestro/SCARA-Master-v2.md) y [decisión de simular sin hardware](adr/0001-simulacion-del-diseno-sin-hardware.md). |
 | Resolver un término | [Glosario](../GLOSSARY.md). |
 | El protocolo | [`scara/1`](PROTOCOLO_SCARA_1.md). |
 | El robot real | [UCI en el Arduino UNO](ARDUINO_UNO.md). |
-| Justificar conversiones y recuperaciones | [Conversión CAD](EVALUACION_CONVERSION_CAD.md), [tres geometrías recuperadas](RECUPERACION_GEOMETRIAS.md) y [torre por cuerpos](../cad/derivados/torre_por_cuerpos/README.md). |
-| Explicar posiciones, ejes y cuerpos | [Ensamble](ENSAMBLE_CAD.md) y [criterios de integración](INTEGRACION_CAD_CRITERIOS.md). |
-| Montaje, transmisión y motores | [Montaje](MONTAJE_Y_AUTOCOLISIONES.md) y [transmisión](TRANSMISION.md). |
-| Física y materiales | [Propiedades geométricas](PROPIEDADES_GEOMETRICAS_CAD.md). |
-| Rechazos y choques | [Colisiones y recorridos](COLISIONES_Y_RECORRIDOS.md). |
+| Justificar conversiones, recuperaciones, posiciones, ejes y cuerpos | [Del CAD a Webots](cad/DEL_CAD_A_WEBOTS.md) y [torre por cuerpos](../cad/derivados/torre_por_cuerpos/README.md). |
+| Montaje, transmisión y motores | [Montaje y colisiones](cad/MONTAJE_Y_COLISIONES.md) y [transmisión](TRANSMISION.md). |
+| Física y materiales | [Propiedades geométricas](cad/PROPIEDADES.md). |
+| Rechazos y choques | [Montaje y colisiones](cad/MONTAJE_Y_COLISIONES.md). |
 | Pruebas, homing y fallas | [Campaña de validación](../validation/campana/INFORME.md) y sección 10 del maestro. |
-| Fuentes técnicas | [Referencias](FUENTES_CAD_WEBOTS.md). |
+| Fuentes técnicas | Sección «Fuentes» de [Del CAD a Webots](cad/DEL_CAD_A_WEBOTS.md). |
 | El banco anterior `scara-dev/1` | [Documentación histórica](historico/README.md). |

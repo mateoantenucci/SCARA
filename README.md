@@ -49,7 +49,7 @@ Las tres trayectorias de demostración están en `trayectorias/`, la carpeta por
 
 ## Qué se validó y qué falta
 
-La [campaña de validación](validation/campana/INFORME.md) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la [sección 10 del maestro](docs/maestro/SCARA-Master-v2.md#10-validación). Una prueba anterior no valida automáticamente una versión nueva.
+La [campaña de validación](validation/campana/INFORME.md) ([mapa de la evidencia](validation/README.md)) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la [sección 10 del maestro](docs/maestro/SCARA-Master-v2.md#10-validación). Una prueba anterior no valida automáticamente una versión nueva.
 
 Faltan, entre otras cosas (maestro, secciones 9 y 10):
 
@@ -75,7 +75,7 @@ En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. 
 | Informe del trabajo final (Gemelos digitales) | [Informe](docs/informe/INFORME-SCARA.md) y su [PDF](output/pdf/SCARA-Informe-Gemelos-Digitales.pdf) |
 | Webots y Arduino | [UCI en Webots](docs/UCI_WEBOTS.md) y [UCI en el Arduino UNO](docs/ARDUINO_UNO.md) |
 | Transmisión y motores | [Transmisión](docs/TRANSMISION.md) |
-| Colisiones | [Colisiones y recorridos](docs/COLISIONES_Y_RECORRIDOS.md) y [montaje](docs/MONTAJE_Y_AUTOCOLISIONES.md) |
-| Alcance y pendientes | [Plan](docs/PLAN_GEMELO_DIGITAL.md) y [glosario](GLOSSARY.md) |
+| Del CAD a Webots | [Conversión, ensambles e integración](docs/cad/DEL_CAD_A_WEBOTS.md), [propiedades](docs/cad/PROPIEDADES.md) y [montaje y colisiones](docs/cad/MONTAJE_Y_COLISIONES.md) |
+| Alcance, pendientes y vocabulario | Secciones 9 y 10 del [maestro v2](docs/maestro/SCARA-Master-v2.md) y [glosario](GLOSSARY.md) |
 
-La documentación y la evidencia del banco provisional `scara-dev/1`, que este sistema reemplazó, están en [`docs/historico/`](docs/historico/README.md) y [`validation/historico/`](validation/historico/README.md).
+La documentación del banco provisional `scara-dev/1`, que este sistema reemplazó, está en [`docs/historico/`](docs/historico/README.md). La evidencia de etapas previas se sacó del árbol para la entrega y se recupera del tag `pre-limpieza` ([`validation/historico/`](validation/historico/README.md)).

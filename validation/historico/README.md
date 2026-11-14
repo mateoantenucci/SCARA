@@ -1,9 +1,10 @@
 # Evidencia histórica
 
-Esta carpeta conserva revisiones anteriores, fuentes y resultados de ensayos. Sus documentos describen la versión que acompañan y pueden contradecir el estado actual. No forman parte de la lectura inicial ni se actualizan para que parezcan vigentes: eso alteraría la evidencia.
+Para la entrega, la evidencia de etapas anteriores se sacó del árbol: el banco provisional `scara-dev/1`, los respaldos «antes de…» de cada etapa del CAD, el banco de cajas y la limpieza documental del 17/10/2026. Nada se perdió: está en el tag `pre-limpieza` (`git checkout pre-limpieza -- validation/historico`). Esos archivos describen la versión que acompañaban y pueden contradecir el estado actual.
 
-Para estudiar el proyecto, empezar por [la guía desde cero](../../docs/PROCESO_Y_ARCHIVOS.md). Para comprobar resultados, usar el [índice de validación](../../docs/VALIDACION_WEBOTS.md).
+Quedan dos carpetas:
 
-La [limpieza documental del 17/10/2026](limpieza_documental_20261017/README.md) conserva un respaldo recuperable y explica qué se retiró de la lectura principal.
+- `antes_montaje_20261016/`: línea base que usa [`tools/check_wrist_bearings.py`](../../tools/check_wrist_bearings.py).
+- `antes_rodamientos_muneca_20261017/`: estado previo que cita [`wrist_bearings.json`](../cad/wrist_bearings.json).
 
-El [banco `scara-dev/1`](banco_scara_dev_1/README.md) se retiró el 01/11/2026; su evidencia y sus [documentos](../../docs/historico/README.md) quedan como historia.
+La documentación del banco `scara-dev/1` sigue en [`docs/historico/`](../../docs/historico/README.md). La evidencia vigente está en [`validation/`](../README.md).

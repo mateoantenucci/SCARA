@@ -4,6 +4,9 @@
 /.codex/
 /.aws/
 
+# Material interno del grupo (guion de la defensa y guías de estudio): se comparte fuera del repo.
+/docs/interno/
+
 # Credenciales y entornos propios de cada equipo.
 .env
 .env.*

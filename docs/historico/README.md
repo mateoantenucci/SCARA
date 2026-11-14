@@ -1,6 +1,6 @@
 # Documentación histórica
 
-Estos documentos describen el banco provisional `scara-dev/1` (Webots como servidor, cliente HTTP y puente Python) o revisiones fechadas de ese momento. Se conservan como historia del proceso, sin editar sus bytes: pueden contradecir el estado actual y sus enlaces internos apuntan a archivos que ya no existen. No se citan como prueba del sistema nuevo (D16, D25).
+Estos documentos describen el banco provisional `scara-dev/1` (Webots como servidor, cliente HTTP y puente Python) o revisiones fechadas de ese momento. Se conservan como historia del proceso, sin editar sus bytes: pueden contradecir el estado actual y sus enlaces internos apuntan a archivos que ya no existen. No se citan como prueba del sistema nuevo (D16, D25). La evidencia que citan, antes en `validation/historico/`, está en el tag `pre-limpieza`.
 
 El 01/11/2026, con el retiro del banco (#17, PR #34) y la campaña de validación nueva (#18, PR #36), pasaron acá:
 

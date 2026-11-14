@@ -42,7 +42,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--converter-root", required=True, type=Path)
     parser.add_argument("--output", type=Path,
-                        default=ROOT / "validation/cad_recovery_regression.json")
+                        default=ROOT / "validation/cad/cad_recovery_regression.json")
     args = parser.parse_args()
     converter = args.converter_root.resolve()
     code_hashes = {p.relative_to(converter).as_posix(): sha256(p)

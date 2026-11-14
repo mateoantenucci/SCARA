@@ -12,8 +12,8 @@ from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
-# Además de `historico/`, las carpetas locales que .gitignore excluye del repo.
-EXCLUIDAS = {".git", ".claude", ".agent-state", ".agents", ".codex", "historico", "node_modules", "output"}
+# Además de `historico/`, las carpetas locales que .gitignore excluye del repo (`interno/` incluida).
+EXCLUIDAS = {".git", ".claude", ".agent-state", ".agents", ".codex", "historico", "interno", "node_modules", "output"}
 BLOQUE = re.compile(r"^(```|~~~).*?^\1", re.S | re.M)
 CODIGO = re.compile(r"`[^`\n]*`")
 ENLACE = re.compile(r"!?\[[^\]]*\]\(\s*(<[^>]+>|[^)\s]+)")

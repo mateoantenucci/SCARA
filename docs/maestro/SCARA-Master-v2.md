@@ -9,7 +9,7 @@ Cómo leer el estado de cada parte:
 | **Decidido** | El grupo lo decidió; está en el [registro de decisiones](../REGISTRO_DE_DECISIONES.md) y, si es difícil de revertir, en un [ADR](../adr/). |
 | **Propuesta al profesor** | La implementamos igual y se revisa en clase. Si el profesor la cambia, se cambia la configuración, no la arquitectura. |
 | **Evidencia** | Ensayo en Webots registrado, con su versión y su tolerancia. Prueba el diseño simulado, no un robot construido. |
-| **Pendiente** | Lo que no se pudo verificar: la placa real y la compilación en macOS. |
+| **Pendiente** | Lo que no se pudo verificar: la placa real. |
 | **Parámetro provisional** | Valor con fuente o hipótesis explícita, todavía no confirmado. No es una medición. |
 
 ## Contenido
@@ -141,10 +141,10 @@ SCARA de cuatro articulaciones: J1 (hombro), J2 (codo) y J3 (muñeca) rotacional
 | Recorrido J4 | 0–120 mm, positivo hacia abajo | Parámetro provisional, coincide con el maestro |
 | Punto de herramienta | Centro de la cara exterior de `Z-SoporteEfector`, sin pinza | Provisional hasta que se defina la herramienta |
 | Envolventes de colisión | Cajas simplificadas por cuerpo rígido | Provisional; cubren ciertos pares, no todos los contactos internos |
-| Masas e inercias | Calculadas del CAD con densidades nominales | Provisional ([propiedades](../PROPIEDADES_GEOMETRICAS_CAD.md)) |
+| Masas e inercias | Masas exploratorias por cuerpo (0,30, 0,50, 0,35 y 0,15 kg); centro de masa e inercia de cajas envolventes de los grupos CAD. El precálculo geométrico del CAD todavía no se aplica | Provisional ([propiedades](../cad/PROPIEDADES.md)) |
 | Sensores Hall | Un KY-003 por articulación, en la pieza fija, y dos imanes en la que se mueve, centrados en los extremos del recorrido, con una zona activa de ±5° (±3 mm en J4). En J1–J3, imanes pegados al carretel que gira y el sensor en una escuadra; en J4, imanes dentro del pistón y el sensor colgado del buje exterior | Propuesta al profesor (D10, D56); el montaje está decidido (D93). En el modelo de Webots desde el issue #8 |
 
-El montaje del modelo y sus elecciones están en [Montaje y autocolisiones](../MONTAJE_Y_AUTOCOLISIONES.md) y [Ensamble CAD](../ENSAMBLE_CAD.md).
+El montaje del modelo y sus elecciones están en [Montaje y colisiones](../cad/MONTAJE_Y_COLISIONES.md) y [Del CAD a Webots](../cad/DEL_CAD_A_WEBOTS.md).
 
 **Montaje de los Hall (D93).** Los imanes (Ø8 × 3 mm) y las escuadras de PLA los agregó el grupo: solo están en el modelo de Webots, no en el CAD. En J1–J3, los imanes van pegados por fuera de la pared del carretel que gira con la pieza (A-CarretelSup, B-CarretelInf y R-CarretelSup), y el KY-003 del CAD mira a esa pared a 1,5 mm, desde 180°, en una escuadra atornillada a la tapa de la torre, a la cara de abajo del brazo o a la de arriba del antebrazo. En J4, los imanes van por dentro del pistón y el KY-003 cuelga del buje exterior con una abrazadera; el pistón se toma de aluminio, que no es magnético, y el sensor detecta los imanes a través de su pared, a unos 4 mm. Una bandera por fuera del pistón no entra: con J4 arriba chocaría con el antebrazo. Ninguna pieza nueva toca a otra en todo el recorrido; la menor luz es de 1 mm.
 
@@ -625,7 +625,7 @@ Los tres escenarios de soporte, protocolo `scara/1` (P1), transmisión N1 (P2) y
 
 **Trayectorias de demostración (D74).** Tres, versionadas en `trayectorias/`, la carpeta por defecto de la URC: *pick and place* (LIN para bajar y subir, PTP para cruzar, esperas), un cuadrado LIN de 80 mm y un barrido PTP con cambio de codo. Una prueba las carga y las reproduce en loop de 2 vueltas en cada corrida de la suite.
 
-**Límites.** Solo se validó en Windows; macOS queda pendiente (D19). El firmware para el UNO compila y su camino serie se probó con un puerto virtual y socat, pero no con la placa (D49). Los ensayos corren con Webots minimizado: lo visual queda para la QA humana. Los parámetros siguen siendo provisionales: la campaña prueba el diseño simulado, no un robot construido ([ADR 0001](../adr/0001-simulacion-del-diseno-sin-hardware.md)).
+**Límites.** La campaña vigente se corrió en macOS con Webots R2025a (D73); antes se había probado en Windows 11 (D19). El firmware para el UNO compila y su camino serie se probó con un puerto virtual y socat, pero no con la placa (D49). Los ensayos corren con Webots minimizado: lo visual queda para la QA humana. Los parámetros siguen siendo provisionales: la campaña prueba el diseño simulado, no un robot construido ([ADR 0001](../adr/0001-simulacion-del-diseno-sin-hardware.md)).
 
 <!-- SALTO DE PAGINA -->
 
@@ -747,7 +747,7 @@ Las 76 decisiones de la ronda, cada una con su porqué en una línea. El texto c
 | D15 | Interfaz web local servida por la URC | Ya existe, no agrega dependencias y la consigna admite una página web | |
 | D16 | El camino nuevo se construye al lado del viejo | Nunca quedarse sin algo que funcione | |
 | D17 | Maestro v2 en Markdown, exportado a PDF, sin tocar el original | Se versiona con el código y se exporta para clase | |
-| D19 | Compilación en Windows, validada en la bala trazadora | Resuelta el 30/10/2026: compila con el `g++` de Webots. macOS queda pendiente | |
+| D19 | Compilación en Windows, validada en la bala trazadora | Resuelta el 30/10/2026: compila con el `g++` de Webots. La campaña vigente corrió en macOS (D73) | |
 | D25 | Documentación y evidencia del camino viejo a histórico | Una sola descripción vigente; lo viejo no se cita como prueba del sistema nuevo. Lo hace el issue #1 | |
 | D73 | Un ejecutor corre los ensayos de cada issue y registra la versión ensayada | Reusar los ensayos evita dos versiones de la misma prueba; el SHA-256 identifica el binario | |
 | D74 | Las trayectorias de demostración se versionan en `trayectorias/` | Aparecen en «Cargar» para la defensa, y la suite avisa si una deja de valer | |
