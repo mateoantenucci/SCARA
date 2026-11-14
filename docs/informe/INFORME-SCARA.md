@@ -34,11 +34,9 @@
 <figcaption>Alan Mathison Turing (Londres, 1912 – Wilmslow, 1954), a los 16 años. Fotografía de 1928–1929, de dominio público (Turing Archive, King's College, Cambridge, vía Wikimedia Commons).</figcaption>
 </figure>
 
-Elegimos a Alan Turing como nombre del equipo porque buena parte de lo que hicimos en este trabajo descansa sobre ideas suyas. En 1936, con veinticuatro años, publicó «On Computable Numbers», donde definió una máquina abstracta que lee y escribe símbolos según una tabla de reglas, y demostró que existe una máquina *universal* capaz de imitar a cualquier otra si se le da la descripción de esa otra. Con eso fijó qué significa calcular y dónde están los límites de lo que una máquina puede resolver. Un gemelo digital es, en el fondo, esa misma idea llevada a la práctica: una computadora que se comporta como otra máquina, siguiendo su descripción, al punto de que el programa que la controla no nota la diferencia.
+Elegimos a Alan Turing como nombre del equipo porque buena parte de lo que hicimos en este trabajo descansa sobre ideas suyas. En 1936, con veinticuatro años, publicó «On Computable Numbers», donde definió una máquina abstracta que lee y escribe símbolos según una tabla de reglas, y demostró que existe una máquina universal capaz de imitar a cualquier otra si se le da la descripción de esa misma. Con eso fijó qué significa calcular y dónde están los límites de lo que una máquina puede resolver. Un gemelo digital es, en el fondo, esa idea llevada a la práctica: una computadora que se comporta como otra máquina, siguiendo su descripción, al punto de que el programa que la controla no nota la diferencia.
 
-Durante la Segunda Guerra Mundial trabajó en Bletchley Park descifrando los mensajes que la marina alemana cifraba con la máquina Enigma. La *bombe* que diseñó, a partir del trabajo previo de los criptógrafos polacos, permitió leer las comunicaciones de los submarinos del Atlántico y se considera que acortó la guerra. Terminado el conflicto diseñó el ACE, una de las primeras computadoras de programa almacenado, trabajó en la de Manchester y en 1950 planteó la pregunta de si las máquinas pueden pensar, con la prueba que hoy lleva su nombre. Hacia el final de su vida estudió cómo se forman los patrones en los seres vivos, un trabajo que abrió el camino a la biología matemática.
-
-En 1952 fue condenado por su homosexualidad y obligado a someterse a un tratamiento hormonal; murió dos años después, a los cuarenta y uno. El gobierno británico le pidió perdón públicamente en 2009 y la Corona lo indultó en 2013. Hoy el premio más importante de la informática lleva su nombre. Lo recordamos por lo que aportó y también por lo que se le negó: buena parte de la disciplina que estudiamos se apoya en el trabajo de alguien que su propio país no supo proteger.
+Durante la Segunda Guerra Mundial trabajó en Bletchley Park descifrando los mensajes que la marina alemana cifraba con la máquina Enigma. La bombe que diseñó, a partir del trabajo previo de los criptógrafos polacos, permitió leer las comunicaciones de los submarinos del Atlántico y se considera que acortó la guerra. Terminado el conflicto, diseñó el ACE, una de las primeras computadoras de programa almacenado, colaboró en la computadora de Manchester y, en 1950, planteó la pregunta de si las máquinas pueden pensar mediante la prueba que hoy lleva su nombre. Su legado sigue tan vigente que la máxima distinción de la informática, el Premio ACM A.M. Turing (considerado el Nobel de la computación), lleva su nombre en homenaje.
 
 <!-- SALTO DE PAGINA -->
 
@@ -63,15 +61,11 @@ Anexo A. Archivos entregados y cómo ejecutarlos
 
 ### 1.1 Descripción general
 
-Tomada de la consigna del trabajo final:
-
 > SCARA es un brazo robótico de tipo SCARA, que se está desarrollando en el Laboratorio. Sus movimientos se controlan desde cuatro motores paso a paso, no retroalimentados. En el extremo se montará un sencillo electroimán, para demostraciones de "pick & place".
 >
 > Estado del proyecto: no construido; no disponible; no operativo. Estado del protocolo: no redactado. Estado del programa externo: no desarrollado.
 >
 > Objetivos: Desarrollar un esquema similar al planeado en AGSA-BOT y CARTESIANA: un programa externo deberá registrar puntos de una trayectoria, y luego ejecutarla. Este programa se comunicará con el controlador de WeBots a través de TCP/IP.
-
-En la clase del 27/10/2026 el profesor precisó el objetivo como *teach & play*: mover el robot a mano desde el programa externo, guardar puntos, armar trayectorias con nombre y reproducirlas siguiendo rectas o el menor recorrido. También fijó que los modelos de SolidWorks son la fuente de verdad cuando difieren del maestro v1.
 
 ### 1.2 Descripción estructural
 
@@ -80,7 +74,8 @@ El robot es un SCARA de cuatro articulaciones en cadena serie R-R-R-P: J1 (hombr
 Lo propio de este SCARA, y lo que más pesa en la simulación, es la **cadena cinemática híbrida**: los motores de J1 y J2 están en la base y mueven dos ejes concéntricos. El exterior gira el brazo; el interior lleva una polea que, por una correa a lo largo del brazo, gira el antebrazo. Por eso el motor M2 fija el ángulo *absoluto* del antebrazo, no el ángulo relativo J2:
 
 ```text
-J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8 mm × vueltas de M4
+J1 = θM1 / 4        J2 = (θM2 − θM1) / 4
+J3 = θM3 / 4        J4 = 8 mm × vueltas de M4
 ```
 
 Mover solo M1 gira el brazo y cambia J2 en sentido opuesto: el antebrazo conserva su orientación en el mundo. Para mover solo J1, el firmware da la misma cantidad de pasos a M1 y a M2. La simulación reproduce ese acople paso a paso.
@@ -89,7 +84,7 @@ Mover solo M1 gira el brazo y cambia J2 en sentido opuesto: el antebrazo conserv
 
 ### 1.3 Sensores
 
-El diseño **no tiene encoders**: la posición se estima contando pasos. El maestro v1 prevé «sensores de inicio y final de carrera en los cuatro ejes, con imanes de neodimio y sensores de efecto Hall», sin ubicación ni cantidad. El grupo propuso al profesor **un sensor KY-003 por articulación**, en la pieza fija, y **dos imanes** en la pieza móvil, centrados en los extremos del recorrido con una zona activa de ±5° (±3 mm en J4). El de un extremo es la referencia del *homing*; el del otro, protección por sobrerrecorrido. Además, el firmware usa cada cruce de un imán para detectar pasos perdidos (`EV LOST`, sección 3).
+El diseño **no tiene encoders**: la posición se estima contando pasos. El maestro v1 prevé «sensores de inicio y final de carrera en los cuatro ejes, con imanes de neodimio y sensores de efecto Hall», sin ubicación ni cantidad. El grupo propuso **un sensor KY-003 por articulación**, en la pieza fija, y **dos imanes** en la pieza móvil, centrados en los extremos del recorrido con una zona activa de ±5° (±3 mm en J4). El de un extremo es la referencia del *homing*; el del otro, protección por sobrerrecorrido. Además, el firmware usa cada cruce de un imán para detectar pasos perdidos (`EV LOST`, sección 3).
 
 **Montaje.** Las escuadras, la abrazadera y los imanes los agregó el grupo: no están en el CAD (Figuras 5 a 8). En J1–J3, los dos imanes (Ø8 × 3 mm) van pegados por fuera del carretel que gira con la pieza móvil, y el KY-003, el modelo del CAD, mira a esa pared a 1,5 mm desde una escuadra de PLA atornillada a la pieza fija. En J4, el pistón es lo único que recorre los 120 mm frente a un punto fijo: los imanes van por dentro de su pared, y el sensor cuelga del buje exterior con una abrazadera. El pistón se tomó de aluminio, que no es magnético: el KY-003 detecta los imanes a través de su pared, a unos 4 mm. Una bandera por fuera del pistón chocaría con el antebrazo con J4 arriba. Se verificó con las mallas del CAD que ninguna de estas piezas toca a otra en todo el recorrido.
 
@@ -148,7 +143,9 @@ El programa externo del SCARA se desarrolló en este trabajo: la **URC** (Unidad
 
 ### 2.2 Responsabilidades
 
-El reparto entre la URC y el firmware es el de GRBL y Klipper: **la URC planifica y el firmware ejecuta**.
+El reparto entre la URC y el firmware es el que usan GRBL (firmware de código abierto para máquinas CNC sobre Arduino) y Klipper (firmware de impresoras 3D): un computador calcula la trayectoria y un microcontrolador chico se limita a ejecutarla con su propio reloj. Acá, **la URC planifica y el firmware ejecuta.**
+
+Hay dos tipos de **tramo**, es decir, de movimiento entre dos puntos de una trayectoria. En un tramo **PTP** (*point to point*) cada articulación va directo a su destino y todas llegan a la vez, por el camino más corto en articulaciones: el extremo describe una curva. En un tramo **LIN** (lineal) el extremo del robot sigue una recta en el espacio, y para lograrlo la URC resuelve la cinemática inversa a lo largo de todo el trayecto.
 
 | La URC | El firmware de la UCI |
 | --- | --- |
@@ -162,6 +159,18 @@ El reparto entre la URC y el firmware es el de GRBL y Klipper: **la URC planific
 | Registro de eventos, avisos y estado del enlace | Detecta pasos perdidos al cruzar un Hall (`EV LOST`) |
 | Banco de ensayo (solo simulación): fallas, carga, obstáculos | Anuncia cada arranque (`BOOT`) |
 
+Qué significan los términos de la tabla:
+
+- **Cinemática directa e inversa.** La directa calcula dónde queda el extremo a partir de los ángulos: con L1 = L2 = 250 mm, `x = L1·cos J1 + L2·cos(J1 + J2)` y `y = L1·sen J1 + L2·sen(J1 + J2)`; la altura sale de J4 y el rumbo es J1 + J2 + J3. La inversa hace el camino contrario: dado un punto (x, y, z) y un rumbo, encuentra J1 a J4. J2 sale de la ley de los cosenos del triángulo que forman brazo y antebrazo; J1, de la dirección del punto; J3, de que el rumbo es la suma de los tres ángulos; y J4, de la altura.
+- **Configuración del codo.** Para llegar al mismo punto hay dos poses: con el codo a un lado (J2 positivo) o al otro (J2 negativo). La URC elige la que queda más cerca de la pose actual y respeta los límites de cada articulación. Cambiar de lado exige pasar por el brazo estirado (J2 = 0°), una **singularidad**: ahí ninguna recta se puede seguir, y por eso un tramo LIN no puede cambiar de codo (un PTP sí).
+- **Perfil trapezoidal.** Es la forma en que varía la velocidad a lo largo de un tramo: acelera con la aceleración máxima permitida, avanza a velocidad constante y frena igual. Si el tramo es corto y no llega a esa velocidad, el perfil es triangular. La velocidad y la aceleración las fija la articulación o el motor más exigido.
+- **Verifica antes de mover.** La URC planifica el tramo completo y comprueba cada segmento de 20 ms antes de enviar el primero; si uno falla, no envía nada y explica qué cambiar. Comprueba que el punto esté **al alcance** (el brazo estirado y el pliegue máximo del codo dejan una corona de alcance, y una recta no puede pasar por el centro, cerca de la torre), que cada articulación se mantenga dentro de su **límite** de recorrido, que el **codo** no cambie de lado, que ninguna articulación ni motor supere su **velocidad y aceleración** máximas (cerca del brazo estirado una recta exige giros cada vez más rápidos) y que no haya **colisiones**: cada pieza del robot se modela como una caja y debe quedar a más de 1 mm de la base y de los obstáculos.
+- **Unidades articulares a pasos y acople M1/M2.** El firmware recibe ángulos (en centésimas de grado) y los convierte en pasos de cada motor con la relación de la transmisión (ver 1.2). Los dos motores están en la base y el acople va en un solo sentido: M1 gira el brazo (J1) y, al hacerlo, también cambia J2 en sentido opuesto; M2, en cambio, solo mueve J2 respecto del brazo. Por eso el firmware, para mover únicamente J1, da los mismos pasos a M1 y a M2, y para mover únicamente J2 mueve solo M2. El recorrido de M2 equivale a J1 + J2.
+- **Jog.** Es mover el robot a mano, con el teclado, mientras se mantiene la tecla. Hay tres formas. En el **articular**, cada tecla mueve una articulación. En el **cartesiano**, el extremo se mueve en X o en Y, gira el rumbo o sube y baja, y la URC resuelve la inversa en cada paso. **Por motor** mueve un motor suelto, sin compensar el acople: es un modo de prueba (con M1 se ve que el antebrazo conserva su orientación).
+- **Jog verificado y jog sin referencia.** Con el robot referenciado (es decir, si la URC conoce dónde está), la URC verifica cada paso de 20 ms antes de enviarlo: límites, borde del alcance y distancia a los obstáculos, de los que solo deja alejarse. Sin referencia no sabe dónde está, así que no puede verificar nada: el firmware limita la velocidad a 5 °/s y se apoya en los Hall, que frenan el movimiento al llegar al fin de carrera.
+- **Parada con rampa y en seco.** `STOP` frena con una rampa: cada motor baja su velocidad linealmente hasta cero, todos en el mismo tiempo, así los motores no pierden pasos por la inercia y el robot conserva la referencia. `HALT` corta los pulsos de inmediato; es el freno de emergencia, pero a velocidad alta el rotor puede patinar, y por eso si el robot se movía el firmware da la referencia por perdida.
+- **Watchdog.** Es un temporizador de seguridad: si el firmware pasa 1 s sin recibir una línea de la URC mientras el robot se mueve, frena solo. Por eso la URC manda `PING` cada 250 ms aunque no tenga nada que decir.
+
 ### 2.3 Requisitos para su funcionamiento
 
 - **Python 3** (probado con 3.15 en macOS y con Python 3 en Windows 11). La URC usa solo la biblioteca estándar: no hay que instalar paquetes.
@@ -174,11 +183,11 @@ Se arranca con `python3 -m urc.app` desde la raíz del repositorio; el orden res
 
 ### 2.4 La interfaz de usuario
 
-La página separa lo que vale ahora (barra de estado fija arriba: enlace, motores, referencia, qué hace el robot, carga y fallas), lo que hay que ver enseguida (avisos emergentes) y lo que pasó (registro de eventos numerado a la derecha). Un botón que la URC rechazaría por el estado del robot aparece deshabilitado y dice por qué. Las cuatro capturas son de una corrida real del 07/11/2026 con Webots.
+La página separa lo que vale ahora (barra de estado fija arriba: enlace, motores, referencia, qué hace el robot, carga y fallas), lo que hay que ver enseguida (avisos emergentes) y lo que pasó (registro de eventos numerado a la derecha). Un botón que la URC rechazaría por el estado del robot aparece deshabilitado y dice por qué.
 
 <figure class="captura"><img src="img/urc-1-conexion.png" alt="URC recién conectada"><figcaption>Figura 9. La UCI recién conectada: motores sin corriente y sin referencia. La columna «Simulado» llega por el canal de instrumentación: el mundo arranca con un desvío al azar de hasta ±10°, y la posición estimada por pasos todavía no lo sabe.</figcaption></figure>
 
-<figure class="captura"><img src="img/urc-2-reproduccion.png" alt="Reproducción de una trayectoria"><figcaption>Figura 10. Referenciado tras el homing (J4, J1, J2, J3), reproduciendo la demostración <em>pick and place</em>: tramos PTP y LIN, con espera de 1 s abajo. El punto resaltado es al que va el tramo en ejecución.</figcaption></figure>
+<figure class="captura"><img src="img/urc-2-reproduccion.png" alt="Reproducción de una trayectoria"><figcaption>Figura 10. Reproducción de la demostración <em>pick and place</em> con el robot referenciado. La tabla muestra los puntos con su tipo de tramo (PTP o LIN), su velocidad y su espera, de 1 s abajo. La fila resaltada (punto 3) es el destino del tramo en ejecución: una subida en recta (LIN) desde el punto 2, donde el extremo está a Z = 43,4 mm camino a 54,67 mm. A la derecha, la posición estimada por pasos junto a la del simulador (diferencia de 0,04° o menos en J1–J3 y de 0,64 mm en J4, que sube en ese momento).</figcaption></figure>
 
 <figure class="captura"><img src="img/urc-3-referencia-dudosa.png" alt="Referencia dudosa por EV LOST"><figcaption>Figura 11. Falla F1 inyectada: con 5 kg y el driver de M4 al 50 %, J4 no subió. Al volver al reposo, el Hall de abajo delató 1254 pasos perdidos (<code>EV LOST 4 1254</code>): la barra marca la referencia dudosa en rojo y la reproducción queda bloqueada hasta un homing.</figcaption></figure>
 
