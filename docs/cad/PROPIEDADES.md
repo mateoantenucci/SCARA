@@ -41,7 +41,7 @@ Ejemplo, `A-Brazo` en su marco de pieza: V = 6,9501053162809×10⁻⁵ m³ (69,5
 
 ### 38 contra 39
 
-El de 39 es el vigente: agrega una sola ocurrencia, la polea de muñeca `2GT_80Teet_40Bore` (+9,166651648 cm³ en `wrist`); lo demás coincide exactamente con el de 38. El de 38 sigue en el repo porque lo leen [`tools/check_collisions.py`](../../tools/check_collisions.py) y [`tools/check_self_collisions.py`](../../tools/check_self_collisions.py), y se dejó con ese nombre. El comando de reproducción sin `--output` sobrescribe el par sin sufijo (el de 38): para comparar, elegí siempre un destino nuevo.
+El de 39 es el vigente: agrega una sola ocurrencia, la polea de muñeca `2GT_80Teet_40Bore` (+9,166651648 cm³ en `wrist`); lo demás coincide exactamente con el de 38. El de 38 sigue en el repo porque lo leen [`tools/check_collisions.py`](../../tools/check_collisions.py) y [`tools/check_self_collisions.py`](../../tools/check_self_collisions.py),. El comando de reproducción sin `--output` sobrescribe el par sin sufijo (el de 38): para comparar, elegí siempre un destino nuevo.
 
 ### Vistas del CSV
 
@@ -110,18 +110,18 @@ Cajas analíticas y geometría transformada por otro camino en OCCT detectan una
 - **Corrida de 38.** Los cinco grupos se releyeron, se transformaron los BREP con `gp_Trsf`, se armó un compuesto y se integró de nuevo, sin las funciones de rotación y suma del precálculo. Máxima diferencia relativa de tensor 7,30×10⁻¹⁵, de volumen 1,78×10⁻¹⁵ y de centroides 5,03×10⁻¹⁶ m.
 - **Muñeca con 6 y 7 instancias.** Mismo método sobre los compuestos afectados: volumen 2,22×10⁻¹⁶, centroides 1,67×10⁻¹⁶ m y tensor 4,37×10⁻¹⁵ de error máximo, dentro de 10⁻⁹, 10⁻¹⁰ m y 10⁻⁹. Los otros cuatro grupos coinciden exactamente con el informe de 38, sin recalcularlos por el camino independiente.
 
-Son acuerdos numéricos entre dos caminos, no incertidumbre física del diseño. La evidencia está en `validation/cad/cad_properties.json` y `validation/cad/sesion8/contraste.json`. `verificar_sesion8.py` compara hashes de archivos que ya no están en el repo: para reproducir esa verificación hay que partir del tag `pre-limpieza`.
+Son acuerdos numéricos entre dos caminos, no incertidumbre física del diseño. La evidencia está en `validation/cad/cad_properties.json` y `validation/cad/sesion8/contraste.json`. `verificar_sesion8.py` compara hashes de archivos que ya no están en el repo: reproducir esa verificación requiere el tag `pre-limpieza`.
 
 ## De propiedades geométricas a masas
 
-Procedimiento previsto, no aplicado todavía:
+Procedimiento previsto, no aplicado:
 
 1. **Pieza homogénea:** `m = rho V`, centro de masa `c`, inercia central `rho Jc`.
 2. **Grupo multimaterial:** `mi = rhoi Vi`, `C = Σ mi ci / Σ mi`, `I = Σ [rhoi Ji + mi ((di·di) E − di diᵀ)]` con `di = ci − C`.
 3. **Componente comercial:** masa, COM e inercia de su ficha o de un modelo equivalente, sin multiplicar por una densidad.
-4. **Webots:** `density -1`, masa explícita, `centerOfMass` local y tensor central en el orden `[Ixx Iyy Izz], [Ixy Ixz Iyz]`. Habría que adaptar también `scara/dynamics.py`, el generador y los ensayos, que hoy reconstruyen cajas y una carga cúbica de 40 mm. Cambiar solo `mass`, o copiar Jc sin multiplicar por rho, deja un modelo incoherente.
+4. **Webots:** `density -1`, masa explícita, `centerOfMass` local y tensor central en el orden `[Ixx Iyy Izz], [Ixy Ixz Iyz]`. Habría que adaptar también `scara/dynamics.py`, el generador y los ensayos, que reconstruyen cajas y una carga cúbica de 40 mm. Cambiar solo `mass`, o copiar Jc sin multiplicar por rho, deja un modelo incoherente.
 
-**Hoy.** `config/scara.json` conserva masas exploratorias de **0,30 kg (brazo), 0,50 (antebrazo), 0,35 (muñeca) y 0,15 (herramienta)**, con centro e inercia de las cajas envolventes de cada grupo CAD. El campo `provenance.body_properties` del archivo lo declara: no son propiedades materiales validadas. La herramienta suma además la carga del banco, hasta 5 kg ([Transmisión](../TRANSMISION.md)). El maestro v2 llama a estas masas «provisionales»; la tabla de su sección de física dice «calculadas del CAD con densidades nominales», pero el precálculo no se usó para fijarlas: vale lo que dice `config/scara.json`.
+**Estado actual.** `config/scara.json` conserva masas exploratorias de **0,30 kg (brazo), 0,50 (antebrazo), 0,35 (muñeca) y 0,15 (herramienta)**, con centro e inercia de las cajas envolventes de cada grupo CAD. El campo `provenance.body_properties` del archivo lo declara: no son propiedades materiales validadas. La herramienta suma además la carga del banco, hasta 5 kg ([Transmisión](../TRANSMISION.md)). El maestro v2 llama a estas masas «provisionales»; la tabla de su sección de física dice «calculadas del CAD con densidades nominales», pero el precálculo no se usó para fijarlas: vale lo que dice `config/scara.json`.
 
 ## Límites
 

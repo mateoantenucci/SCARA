@@ -1,4 +1,4 @@
-# Movimiento a mano sin corriente (C4, issue #49)
+# Movimiento a mano sin corriente (C4)
 
 `MANO j posicion`, en `scara-sim/1`, representa al operador que coloca una articulación con el brazo sin corriente. La posición se expresa en centésimas de grado para J1–J3 y de mm para J4. No es un jog: el supervisor de Webots coloca la articulación directamente, dentro de sus topes mecánicos, y quita la velocidad residual del robot. J4 queda libre y puede caer por su peso después de soltarlo. No se modela la mano ni el esfuerzo de esa colocación.
 

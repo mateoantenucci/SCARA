@@ -1,4 +1,4 @@
-# Segmentos temporizados y tramo PTP en Webots (issue #9)
+# Segmentos temporizados y tramo PTP en Webots
 
 Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots y el microstepping por defecto, 1/8.
 
@@ -9,6 +9,8 @@ Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scar
 ```sh
 python validation/segmentos/ensayo_webots.py validation/segmentos/ensayo_webots.log
 ```
+
+La evidencia vigente es la de la campaña ([`campana/registros/`](../campana/registros/)); este informe describe la corrida del ensayo por separado.
 
 ## Resultado
 
@@ -31,7 +33,7 @@ Las conversaciones de conformidad prueban lo mismo sin Webots, paso a paso: [`se
 
 ## Qué mirar en la QA humana
 
-El ensayo no se vio en la ventana de Webots: se denegó computer use. En `scara_uci.wbt`, con la URC (`python -m urc.app`), «Habilitar motores» y «Referencia manual»:
+El ensayo no se vio en la ventana de Webots. En `scara_uci.wbt`, con la URC (`python -m urc.app`), «Habilitar motores» y «Referencia manual»:
 
 1. En **«Ir a una pose (PTP)»**, escribir J1 = 30, J2 = −60, J3 = 20, J4 = 80 y apretar **«Ir a la pose…»**. La URC muestra la duración (unos 12 s al 25 %) y pide confirmación. Al confirmar, **las cuatro articulaciones arrancan juntas, aceleran, frenan y llegan a la vez**; el extremo no va en línea recta. La página muestra el avance del tramo y, en la posición estimada, el modo «Ejecutando segmentos».
 2. Con **Punto de herramienta**, escribir X = 433, Y = 0, Z = 14,7 y rumbo −10: es la misma pose, con el codo preferido (J2 negativo). Con «J2 positivo», el codo dobla para el otro lado.

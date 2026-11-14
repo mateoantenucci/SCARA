@@ -1,6 +1,6 @@
 # Del CAD de la cátedra al robot en Webots
 
-Este documento detalla, paso por paso, cómo las piezas y ensambles SolidWorks de la cátedra (`Modelos3D/`) se convirtieron en el robot articulado de Webots: conversión de piezas, geometrías recuperadas, colocaciones de los ensambles, criterios de integración (cuerpos, ejes, pose canónica) y generación del mundo. Leelo cuando tengas que justificar o reproducir una decisión del CAD. Para el resumen del proceso, ver §4 de [PROCESO_Y_ARCHIVOS](../PROCESO_Y_ARCHIVOS.md). Las propiedades geométricas y masas están en [PROPIEDADES](PROPIEDADES.md); el montaje, las autocolisiones y los recorridos, en [MONTAJE_Y_COLISIONES](MONTAJE_Y_COLISIONES.md). Los términos están en el [glosario](../../GLOSSARY.md).
+Este documento detalla, paso por paso, cómo las piezas y ensambles SolidWorks de la cátedra (`Modelos3D/`) se convirtieron en el robot articulado de Webots: conversión de piezas, geometrías recuperadas, colocaciones de los ensambles, criterios de integración (cuerpos, ejes, pose canónica) y generación del mundo. Sirve para justificar o reproducir una decisión del CAD. Para el resumen del proceso, ver §4 de [PROCESO_Y_ARCHIVOS](../PROCESO_Y_ARCHIVOS.md). Las propiedades geométricas y masas están en [PROPIEDADES](PROPIEDADES.md); el montaje, las autocolisiones y los recorridos, en [MONTAJE_Y_COLISIONES](MONTAJE_Y_COLISIONES.md). Los términos están en el [glosario](../../GLOSSARY.md).
 
 La idea que ordena todo: **convertir las piezas resuelve formas, no armado.** La forma de una pieza no dice dónde va, a qué cuerpo rígido pertenece ni cómo gira. Cada paso de abajo cubre un problema distinto.
 
@@ -27,7 +27,7 @@ Se fija [sldprt2step](https://github.com/BlinkingSun/sldprt2step) a la revisión
 | Adaptador | Qué hace | Qué no hace |
 | --- | --- | --- |
 | [ole_ministreams.py](../../tools/patches/ole_ministreams.py) (`SCARA-CFB-MiniFAT-1`) | Lee los streams menores de 4096 bytes guardados en MiniFAT, que el lector original trataba como FAT normal. Valida límites y ciclos y conserva offsets. | No cambia la geometría ni el upstream. |
-| [intersection_precision.py](../../tools/patches/intersection_precision.py) | Refina las curvas de intersección con objetivo de 10⁻⁹ m (antes 10⁻⁷ m). | No usa cosido, relleno de huecos ni `ShapeFix`. El objetivo no es una cota certificada de error. |
+| [intersection_precision.py](../../tools/patches/intersection_precision.py) | Refina las curvas de intersección con objetivo de 10⁻⁹ m (el del conversor es 10⁻⁷ m). | No usa cosido, relleno de huecos ni `ShapeFix`. El objetivo no es una cota certificada de error. |
 
 El pipeline verifica el hash del árbol Python fijado y registra adaptadores, código, fuentes y artefactos por separado; las identidades exactas están en el informe. Se conservan la [licencia Apache-2.0](../../tools/patches/LICENSE-sldprt2step.txt) y el [NOTICE](../../tools/patches/NOTICE-sldprt2step.txt) del conversor.
 
@@ -64,14 +64,14 @@ El lote devuelve código 1 mientras conserve piezas rechazadas, aunque las demá
 
 ### B-CarretelInf, B-CarretelSup y Z-SoporteEfector
 
-Las tres estaban rechazadas por una tolerancia numérica del conversor en las curvas de intersección. Se regeneraron desde los mismos `.SLDPRT` con el adaptador de precisión y el mismo control del lote; no se reconstruyeron desde planos ni se añadieron superficies.
+El conversor las rechaza por una tolerancia numérica en las curvas de intersección. Se regeneran desde los mismos `.SLDPRT` con el adaptador de precisión y el mismo control del lote; no se reconstruyeron desde planos ni se añadieron superficies.
 
 | Pieza | Causa del rechazo | Resultado |
 | --- | --- | --- |
 | B-CarretelInf y B-CarretelSup | El conversor declaraba un sólido, pero OCCT obtenía 25 caras y cero sólidos. | 1 sólido válido, 25 caras, 8.290 triángulos, 12.725,752428 mm³, diferencia STL/BREP 0,148 %, caja 70×70×14 mm. |
 | Z-SoporteEfector | Sólido inválido, con advertencias de blends e intersecciones. | 1 sólido válido, 49 caras OCCT (el STEP declara 48), 6.188 triángulos, 22.148,156985 mm³, diferencia 0,1124 %, caja 60×60×19 mm. |
 
-Las tres mallas tienen cero aristas libres y cero no manifold. El STEP declara incertidumbre de 10⁻⁵ mm: el objetivo viejo (10⁻⁴ mm) era mayor y el nuevo (10⁻⁶ mm) es menor. Eso explica la inconsistencia corregida, pero **no certifica un error máximo igual al objetivo**; las advertencias sobre blends aproximados siguen. Los dos STEP B son idénticos salvo los nombres de pieza, pero sus nativos tienen hashes distintos: no se sustituyó una mitad por la otra.
+Las tres mallas tienen cero aristas libres y cero no manifold. El STEP declara incertidumbre de 10⁻⁵ mm: el objetivo del conversor (10⁻⁴ mm) es mayor y el del adaptador (10⁻⁶ mm) es menor. Eso explica el rechazo, pero **no certifica un error máximo igual al objetivo**; las advertencias sobre blends aproximados siguen. Los dos STEP B son idénticos salvo los nombres de pieza, pero sus nativos tienen hashes distintos: no se sustituyó una mitad por la otra.
 
 Los stamps de SolidWorks (191/196 para Z-SoporteEfector, 266/267 para los carreteles B) son valores de caché, no revisiones aprobadas, y no permiten elegir una revisión oficial. El [plano de Z-SoporteEfector](../../Modelos3D/Z-SoporteEfector.PDF) indica **PLA, relleno 30 % y masa desconocida**: no se lo convierte en densidad ni masa. El [maestro, p. 24](../../00-SCARA-Master.pdf), declara su acople rígido al pistón y al efector.
 
@@ -103,7 +103,7 @@ python tools/calcular_propiedades_cad.py
 
 La integración corre **sin `--update-config`**: la configuración de física conserva sus bytes. Una malla visual más completa no vuelve contactos CAD a las cajas de colisión.
 
-Evidencia vigente en `validation/cad/`: [cad_recovery.json](../../validation/cad/cad_recovery.json) (`passed`; 152 originales, 47 entradas retenidas y configuración de física intactos), [cad_recovery_regression.json](../../validation/cad/cad_recovery_regression.json) (15/15), [collisions_recovery.json](../../validation/cad/collisions_recovery.json) (11 poses, 22 BREP móviles; ocho intersecciones esperadas contra el pedestal, rechazadas), [cad_motion_recovery.json](../../validation/cad/cad_motion_recovery.json) (330 colocaciones, error máximo ≈ 4,50 × 10⁻⁶ m) y [collisions_native_recovery.json](../../validation/cad/collisions_native_recovery.json) (cinco controles nativos). Aprobarlos significa que las invasiones de prueba se detectan, no que el espacio de trabajo esté libre. Los informes de 41 y 44 STL aceptados están en el tag `pre-limpieza`.
+Evidencia vigente en `validation/cad/`: [cad_recovery.json](../../validation/cad/cad_recovery.json) (`passed`; 152 originales, 47 entradas retenidas y configuración de física intactos), [cad_recovery_regression.json](../../validation/cad/cad_recovery_regression.json) (15/15), [collisions_recovery.json](../../validation/cad/collisions_recovery.json) (11 poses, 22 BREP móviles; ocho intersecciones esperadas contra el pedestal, rechazadas), [cad_motion_recovery.json](../../validation/cad/cad_motion_recovery.json) (330 colocaciones, error máximo ≈ 4,50 × 10⁻⁶ m) y [collisions_native_recovery.json](../../validation/cad/collisions_native_recovery.json) (cinco controles nativos). Aprobarlos significa que las invasiones de prueba se detectan, no que el espacio de trabajo esté libre.
 
 ### Torre por cuerpos
 
@@ -146,7 +146,7 @@ Todas las referencias resuelven a archivos locales, sin supresión ni ocultamien
 - **Los diez árboles contienen piezas directas: ningún ensamble referencia a los otros nueve como subensamble.** No forman un maestro único.
 - `0-EnsambleColision` reúne torre, brazo, antebrazo y mecanismo Z: **20 instancias de 19 piezas distintas**. Es el conjunto local de referencia, no un ensamble maestro oficial. Quedan 28 tipos de pieza ausentes de esa vista (base inferior, motores NEMA23, ejes, poleas, rodamientos, soportes de brazo y antebrazo, componentes internos de Z).
 - Los conjuntos no se superponen como un mismo estado: comparten piezas móviles, tienen poses y revisiones distintas y copias repetidas. [registrar_subensambles.py](../../tools/registrar_subensambles.py) los relaciona por piezas compartidas y conserva las ambigüedades en [registro_subensambles.json](../../cad/ensambles/registro_subensambles.json). La vía Torre→global depende de una única instancia compartida (`0-Torre`); Base→Torre tiene más referencias compatibles. Es evidencia de colocaciones coherentes, no certificación de mates.
-- No se agregaron instancias mediante relaciones ambiguas. La referencia `2GT_60Teet_40Bore.SLDPRT` que aparece en texto antiguo no está en el árbol actual de `R-EnsambleRotacion`, que usa `2GT_80Teet_40Bore.SLDPRT` (disponible localmente).
+- No se agregaron instancias mediante relaciones ambiguas. `R-EnsambleRotacion` usa `2GT_80Teet_40Bore.SLDPRT` (disponible localmente), no `2GT_60Teet_40Bore.SLDPRT`.
 
 ## 4. Criterios de integración
 
@@ -166,7 +166,7 @@ Instancias del snapshot (`0-EnsambleColision`):
 
 El master (pp. 5 y 9) distingue cuerpo exterior, pistón y soporte; pp. 11–12 ubican M1/M2 en la base y M3 sobre el antebrazo. Los planos de rotación muestran R-Bancada/R-ContraBancada como alojamiento atravesado por Z-BujeExterior con rodamientos.
 
-**Ampliación desde subensamblajes.** Al snapshot se suman **23 ocurrencias registradas** desde otros ensambles: en total **43 instancias** en el manifiesto (39 con malla aceptada, 3 con malla aceptada y caja distinta de la caché y la torre por cuerpos). Pertenencia aprobada para la representación visual:
+**Piezas de otros ensambles.** Al snapshot se suman **23 ocurrencias registradas** desde otros ensambles: en total **43 instancias** en el manifiesto (39 con malla aceptada, 3 con malla aceptada y caja distinta de la caché y la torre por cuerpos). Pertenencia aprobada para la representación visual:
 
 | Cuerpo | Adiciones |
 | --- | --- |
@@ -177,7 +177,7 @@ El master (pp. 5 y 9) distingue cuerpo exterior, pistón y soporte; pp. 11–12 
 
 Los dos NEMA23 son carcazas fijas (el eje es parte de la malla) y los seis rodamientos son simplificaciones sin anillos ni masa. Las poleas de salida 80T/16 y 60T/8 acompañan al brazo y al antebrazo (fase guardada, provisional). Las poleas de motor y la 80T/10 giran **solo como visual**, sin física: las anima la planta (`PULLEYS` en `webots/controllers/scara_uci/scara_uci.cpp`) según las articulaciones (`rotating_occurrences`). La polea de muñeca 80T/40 se toma de `R-EnsambleRotacion`, que apoya en el escalón de Z-BujeExterior sin invasión BREP; la pose de `B-EnsambleAntebrazo` lo invade 470,3756 mm³. Quedan fuera los ejes ambiguos, la 60T del eje interior y la transmisión no sustentada ([TRANSMISION](../TRANSMISION.md)). Ningún componente se agrega a un cuerpo solo por compartir subensamble.
 
-**Corrección de colocación.** `R-ContraBancada-1` adopta su pose relativa a `R-Bancada-1` de `R-EnsambleRotacion`: la tapa del ensamble global está invertida y desplaza 3 mm los asientos. Se conserva el original y no se deforma geometría; es una corrección del prototipo, no revisión mecánica oficial. Rodamientos, tapa y polea de muñeca se detallan en [MONTAJE_Y_COLISIONES](MONTAJE_Y_COLISIONES.md).
+**Corrección de colocación.** `R-ContraBancada-1` adopta su pose relativa a `R-Bancada-1` de `R-EnsambleRotacion`: la tapa del ensamble global está invertida y desplaza 3 mm los asientos. Se conserva el original y no se deforma geometría; es una corrección de la simulación, no revisión mecánica oficial. Rodamientos, tapa y polea de muñeca se detallan en [MONTAJE_Y_COLISIONES](MONTAJE_Y_COLISIONES.md).
 
 **Masas.** No se asigna masa por archivo CAD. El PROTO tiene cuatro bloques `Physics`, uno por cuerpo móvil, con masas exploratorias de 0,30; 0,50; 0,35 y 0,15 kg (`config/scara.json`). Cambiar visuales o envolventes no las vuelve propiedades medidas. M1/M2 quedan dentro de la base fija. Es dinámica equivalente provisional con visuales CAD parciales, no un ensamble de las 50 piezas.
 
@@ -248,7 +248,7 @@ python3 tools/integrate_cad.py
 python3 tools/generate_world.py
 ```
 
-`integrate_cad.py --update-config` actualiza además dimensiones cinemáticas y cajas equivalentes conservando las masas exploratorias; es un cambio deliberado de configuración, así que repetí los controles afectados. Una adición solo visual se integra sin esa opción. No edites a mano el manifiesto, el mundo ni el PROTO: son generados. Los ensayos nativos usan una copia recargada de la versión regenerada.
+`integrate_cad.py --update-config` actualiza además dimensiones cinemáticas y cajas equivalentes conservando las masas exploratorias; es un cambio deliberado de configuración, así que repetí los controles afectados. Una adición solo visual se integra sin esa opción. No edites a mano el manifiesto, el mundo ni el PROTO: son generados.
 
 ## 5. Generación del mundo y vista de inspección
 
@@ -262,7 +262,7 @@ python3 tools/generate_world.py
 
 El generador verifica hashes de original, STEP, informe, exportador y mallas, y recalcula las métricas de cada STL; [inspeccion_webots.json](../../cad/ensambles/inspeccion_webots.json) registra disposición, hashes y malla de cada instancia. No hay suelo: el marco guardado deja la torre por encima de los brazos ([preview nativo](../../cad/ensambles/previews/0-EnsambleColision.png)); la rotación de 180° sobre X solo se aplica en la integración (§4). No sobrescribe `webots/worlds/scara.wbt`; para otro conjunto admite `--assembly A-EnsambleBrazo.SLDASM --output /ruta/otra_vista.wbt` dentro del proyecto.
 
-Las capturas [scara_cad_inspeccion.png](../../validation/cad/scara_cad_inspeccion.png) y [scara_cad_sin_torre.png](../../validation/cad/scara_cad_sin_torre.png) son históricas (Webots R2025b Nightly, build `a459c02c7292d23ae437101c76111ec1668198c8`).
+Las capturas [scara_cad_inspeccion.png](../../validation/cad/scara_cad_inspeccion.png) y [scara_cad_sin_torre.png](../../validation/cad/scara_cad_sin_torre.png) se tomaron con Webots R2025b Nightly, build `a459c02c7292d23ae437101c76111ec1668198c8`.
 
 Reproducción de extracción y vista (con la revisión local del conversor en `/ruta/conversor`):
 
@@ -290,7 +290,7 @@ No hace falta reconvertir para usar los mundos ya preparados.
 
 ## 7. Fuentes técnicas
 
-Las referencias de Webots describen R2025a; los ensayos nativos identifican aparte el ejecutable usado.
+Las referencias de Webots describen R2025a.
 
 - Webots R2025a: [Mesh](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/mesh.md), [Solid](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/solid.md), [Physics](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/physics.md), [HingeJointParameters](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/hingejointparameters.md), [Motor](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/motor.md), [PositionSensor](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/positionsensor.md), [Supervisor](https://github.com/cyberbotics/webots/blob/R2025a/docs/reference/supervisor.md), [controlador](https://github.com/cyberbotics/webots/blob/R2025a/docs/guide/controller-programming.md) y [TCP/IP](https://github.com/cyberbotics/webots/blob/R2025a/docs/guide/interfacing-webots-to-third-party-software-with-tcp-ip.md).
 - [sldprt2step, revisión fijada](https://github.com/BlinkingSun/sldprt2step/tree/fa954124f4f126e0c465c8f96454978ac80b812e) y [paquete OCP sin VTK](https://pypi.org/project/cadquery-ocp-novtk/8.0.1.1.0/) (versiones en `tools/requirements-cad.txt`).

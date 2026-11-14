@@ -1,4 +1,4 @@
-# Transmisión N1 en Webots (issue #7)
+# Transmisión N1 en Webots
 
 Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots y el microstepping por defecto, 1/8.
 
@@ -9,6 +9,8 @@ Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scar
 ```sh
 python validation/transmision/ensayo_webots.py validation/transmision/ensayo_webots.log
 ```
+
+La evidencia vigente es la de la campaña ([`campana/registros/`](../campana/registros/)); este informe describe la corrida del ensayo por separado.
 
 ## Resultado
 
@@ -32,7 +34,7 @@ Con el robot quieto, la física y la estimada coinciden dentro de un paso: J1 f�
 
 ## Qué mirar en la QA humana
 
-El ensayo no se vio en la ventana de Webots: se denegó computer use. En `scara_uci.wbt`, con la URC (`python -m urc.app`), «Habilitar motores» y «Referencia manual»:
+El ensayo no se vio en la ventana de Webots. En `scara_uci.wbt`, con la URC (`python -m urc.app`), «Habilitar motores» y «Referencia manual»:
 
 1. **A/D** (J1): el brazo gira y el antebrazo sigue alineado con él.
 2. **W/S** (J2), **Q/E** (J3) y **R/F** (J4, R sube): cada uno mueve solo su articulación.

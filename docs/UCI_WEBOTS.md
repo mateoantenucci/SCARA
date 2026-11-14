@@ -1,6 +1,6 @@
-# UCI en Webots y URC: el camino nuevo
+# UCI en Webots y URC
 
-El sistema que reemplazó al banco `scara-dev/1` (D16). Cubre corriente de los drivers, jog articular de J1–J4 y jog por motor desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas.
+Controlador de Webots que corre el firmware de la UCI y se conecta a la URC (D16). Cubre corriente de los drivers, jog articular de J1–J4 y jog por motor desde la página de la URC, paradas, watchdog y reinicio, de punta a punta, atravesando todas las capas.
 
 ## Cómo funciona
 
@@ -25,13 +25,13 @@ navegador ──HTTP 8766──► URC (urc/, Python) ◄──TCP 9000, scara/1
 9. **Seguridad del enlace y recomendación operativa de tiempo real:** la URC envía `PING` periódicamente cada 250 ms reales (`PING_PERIOD = 0.25 s`); si el firmware pasa más de 1 s sin recibir mensajes, frena el movimiento en curso (watchdog, D27). En Webots, la capa de hardware (`WebotsHal::millis()`) consulta el reloj de la simulación (`robot_.getTime() * 1000.0`), por lo que el watchdog evalúa tiempo simulado:
    - A **~1× o menor** (tiempo real sincronizado o simulación demorada), 250 ms reales corresponden a ≤250 ms simulados; el margen nominal hasta los 1000 ms es de ~750 ms o más, suficiente para absorber la fluctuación de los procesos del host.
    - En simulación acelerada a **>3×**, 250 ms reales consumen >750 ms simulados, reduciendo el margen teórico frente a cualquier demora del host a menos de ~80 ms reales. A factores nominales **≥4×**, el intervalo de 250 ms reales alcanza o supera los 1000 ms simulados incluso sin demoras adicionales del host, provocando el disparo del watchdog durante movimientos continuos.
-   - **Evidencia empírica y limitaciones (issue #51):** El origen exacto de los 3,03× observados en la sesión del ticket del 06/11/2026 no se determinó. En la reproducción aislada ([`validation/homing/reproducir_51.py`](../validation/homing/reproducir_51.py), [registro](../validation/homing/reproduccion_51.log)), con el mismo modelo y `basicTimeStep 2`, el modo Fast en este host alcanzó 2,38–2,70× y completó 3/3 homings sin abortos de watchdog; mientras que en una serie auxiliar con `basicTimeStep 8` la aceleración alcanzó 12,77× y reprodujo 1/1 abortos por `ERR 4 watchdog`.
+   - **Evidencia empírica y limitaciones:** el origen exacto de los 3,03× observados el 06/11/2026 no se determinó. En la reproducción aislada ([`validation/homing/reproducir_51.py`](../validation/homing/reproducir_51.py), [registro](../validation/homing/reproduccion_51.log)), con el mismo modelo y `basicTimeStep 2`, el modo Fast en este host alcanzó 2,38–2,70× y completó 3/3 homings sin abortos de watchdog; en una serie auxiliar con `basicTimeStep 8` la aceleración alcanzó 12,77× y reprodujo 1/1 abortos por `ERR 4 watchdog`.
    Según la documentación oficial de [Webots R2025a](https://raw.githubusercontent.com/cyberbotics/webots/R2025a/docs/guide/the-user-interface.md#simulation-menu), la simulación ofrece los modos **Real-time** (sincronizada con el tiempo real) y **Fast** (a la máxima velocidad que permita la CPU/GPU). Para evitar que el reloj simulado adelante al watchdog del firmware, se recomienda operar Webots en **modo Real-time** (menú *Simulation → Real-time*, botón Real-time o argumento CLI `--mode=realtime`), comprobando en el indicador de velocidad que la simulación se mantenga en ~1× o menor.
 10. **Paradas (D41):** «Stop» o <kbd>Esc</kbd> envía `STOP` (frena y conserva la referencia); «Parada inmediata» envía `HALT` (si había movimiento, pierde la referencia); «Deshabilitar motores» envía `DISABLE` (corta la corriente y pierde la referencia).
 
 Sin corriente, J4 cae por su peso y los motores pierden los pasos (D60): la posición estimada deja de valer. Es la falla F2.
 
-`ZERO` (botón «Referencia manual») declara que el robot está en la pose de reposo: J1 = J2 = J3 = 0 y J4 abajo (120 mm). El mundo `scara_uci.wbt` arranca exactamente en esa pose (D38); el desvío aleatorio llega con el homing (issue #8).
+`ZERO` (botón «Referencia manual») declara que el robot está en la pose de reposo: J1 = J2 = J3 = 0 y J4 abajo (120 mm). El mundo `scara_uci.wbt` arranca en esa pose (D38) con `--desvio 0`; por defecto arranca con un desvío al azar que el homing corrige ([Usarlo](#usarlo)).
 
 ## Archivos
 
@@ -51,7 +51,7 @@ Sin corriente, J4 cae por su peso y los motores pierden los pasos (D60): la posi
 
 Webots no compila solo los controladores C++: hay que compilarlo una vez, y de nuevo cada vez que cambia el firmware.
 
-**Desde el editor de Webots (cualquier sistema):** abrir `scara_uci.wbt`, abrir `scara_uci.cpp` en el editor de texto de Webots (clic derecho sobre el robot → *Edit Controller*) y apretar **Build** (ícono del engranaje, o F7). Después, **Reload World**. Esta vía no se probó todavía; la de terminal, sí.
+**Desde el editor de Webots (cualquier sistema):** abrir `scara_uci.wbt`, abrir `scara_uci.cpp` en el editor de texto de Webots (clic derecho sobre el robot → *Edit Controller*) y apretar **Build** (ícono del engranaje, o F7). Después, **Reload World**. Esta vía no se probó; la de terminal, sí.
 
 **macOS (terminal):** hacen falta las Command Line Tools de Xcode (`xcode-select --install`).
 
@@ -70,7 +70,7 @@ Hay que correrlo desde la raíz del repo. Llamar a ese `make` desde Git Bash no 
 ## Usarlo
 
 1. `python3 -m urc.app` (Windows: `python -m urc.app`) y abrir <http://127.0.0.1:8766>.
-2. En Webots, abrir `webots/worlds/scara_uci.wbt` y ejecutar en **modo Real-time (botón Real-time)**. Verificar en el indicador de velocidad que la simulación se mantenga en ~1× o menor; no usar el modo Fast, ya que la aceleración de la simulación adelanta el reloj del firmware respecto de los pings de la URC y puede provocar abortos con `ERR 4 watchdog` (issue #51). La consola anuncia `UCI: conectada a la URC`. El orden no importa: si Webots arranca primero, reintenta.
+2. En Webots, abrir `webots/worlds/scara_uci.wbt` y ejecutar en **modo Real-time (botón Real-time)**. Verificar en el indicador de velocidad que la simulación se mantenga en ~1× o menor; no usar el modo Fast, ya que la aceleración de la simulación adelanta el reloj del firmware respecto de los pings de la URC y puede provocar abortos con `ERR 4 watchdog`. La consola anuncia `UCI: conectada a la URC`. El orden no importa: si Webots arranca primero, reintenta.
 3. Apretar **Habilitar motores** y después **Homing…**: la página dibuja la pose de reposo y pide confirmarla. La simulación arranca cerca del reposo, con un desvío al azar de hasta ±10° en J1–J3 (`--desvio` en `controllerArgs`; 0 arranca justo en el reposo). El homing referencia J4, J1, J2 y J3 con sus sensores Hall y vuelve solo al reposo. **Referencia manual…** declara la pose de reposo sin homing, y **Estacionar…** lleva el robot al reposo con un PTP.
 4. Mantener **D** o **A** con la página enfocada: J1 gira y el antebrazo sigue alineado con el brazo. **W/S** mueven J2, **Q/E** J3 y **R/F** J4 (R sube).
 5. Para ver el acople, marcar **«Jog por motor (M1–M4)»** y mantener **D**: solo gira M1, el antebrazo conserva su orientación en el mundo y el rumbo de la herramienta no cambia.
@@ -78,30 +78,11 @@ Hay que correrlo desde la raíz del repo. Llamar a ese `make` desde Git Bash no 
 
 Con Webots, la página muestra además el panel «Banco de ensayo (solo simulación)»: el controlador se conecta al puerto 9001 con el canal de instrumentación (`--sim-port` en `controllerArgs`; 0 lo apaga). Muestra la posición física simulada junto a la estimada e inyecta las fallas F2–F5, la carga y la recarga del mundo ([validación](../validation/instrumentacion/INFORME.md)).
 
-El panel aparece recién cuando el controlador se conecta al 9001. Si no aparece, el controlador está compilado con un firmware anterior al canal: compilarlo de nuevo ([arriba](#compilar-el-controlador)) y recargar el mundo. Sirve, por ejemplo, para ensayar el watchdog sin soltar la tecla: con **D** apretada, marcar con el mouse «F4 · Cortar el enlace scara/1» (un clic en la misma página no frena el jog); el brazo tiene que frenar solo en menos de 1 s.
+El panel aparece recién cuando el controlador se conecta al 9001. Si no aparece, el controlador compilado no trae el canal: compilarlo de nuevo ([arriba](#compilar-el-controlador)) y recargar el mundo. Sirve, por ejemplo, para ensayar el watchdog sin soltar la tecla: con **D** apretada, marcar con el mouse «F4 · Cortar el enlace scara/1» (un clic en la misma página no frena el jog); el brazo tiene que frenar solo en menos de 1 s.
 
-## Primer ensayo en Windows y campaña en macOS (D19, D73)
+## Qué se ensayó
 
-Probado el 30/10/2026 en Windows 11 Pro con Webots R2025a y el `g++` 14.2.0 (MSYS2) que trae Webots:
-
-- El controlador compila sin advertencias con `-Wall -Wextra` y corre.
-- Webots se conecta a la URC, envía `BOOT` y responde `HELLO`.
-- Con D apretada 5 s, la posición estimada de J1 pasó de 0° a 21,7° y J2 quedó en 0°. La simulación corría a ~0,82× tiempo real, así que avanzó ~4,3 s simulados a 5 °/s, como manda D26. Las capturas de Webots antes y después muestran el brazo girado y el antebrazo alineado: [evidencia](../validation/bala_trazadora/INFORME.md).
-- Al cortar la URC, Webots anuncia el enlace perdido y reintenta; al volver la URC se reconecta sin `BOOT` y conserva la referencia.
-- Las pruebas del firmware corren con el mismo `g++`.
-
-En macOS, los ensayos eligen `/Applications/Webots.app/Contents/MacOS/webots` por defecto y conservan la ventana sin minimizar: en Webots R2025a con macOS 27.2, `--minimize` junto con `--no-rendering` deja la aplicación sin iniciar sus controladores. El 06/11/2026 se completó y registró la campaña completa de validación (diez ensayos y todos los escenarios C1–C4 y H1–P3 aprobados) en [`validation/campana/campana.json`](../validation/campana/campana.json) e [informe](../validation/campana/INFORME.md) (D19, D73).
-
-## Ensayo del protocolo completo (issue #6)
-
-El 30/10/2026, en Windows 11 con Webots R2025a, [`validation/protocolo/ensayo_webots.py`](../validation/protocolo/ensayo_webots.py) manejó la sesión real de la URC contra el controlador compilado, en un Webots minimizado, sin vista y a tiempo real ([registro](../validation/protocolo/ensayo_webots.log)):
-
-1. La UCI arranca sin corriente (`S OFF`) y rechaza el jog con `ERR 6 deshabilitado`.
-2. `ENABLE` y `ZERO` la dejan quieta y referenciada.
-3. `STOP` tras 2 s de jog a 5 °/s: J1 queda en ~8,5°, quieto y referenciado.
-4. `HALT` en pleno jog: frena y pierde la referencia.
-5. Con la URC cortada en pleno jog, el firmware frena solo (watchdog). Al volver la URC, la UCI se reconecta sin `BOOT`, quieta y referenciada.
-6. `DISABLE` deja `S OFF` sin referencia.
-7. Al reiniciar Webots, la URC lee el `BOOT` y marca el robot sin referencia.
-
-No se pudo comprobar mirando la ventana de Webots: se ensayó por el protocolo, con Webots minimizado.
+- **Primero en Windows 11 Pro, con Webots R2025a** y el `g++` 14.2.0 (MSYS2) que trae Webots (30/10/2026): el controlador compila sin advertencias con `-Wall -Wextra`, se conecta a la URC y recorre el protocolo completo (corriente, `ENABLE` y `ZERO`, `STOP`, `HALT`, watchdog con la URC cortada, `DISABLE`, reinicio con `BOOT`). Con D apretada 5 s, J1 pasó de 0° a 21,7° con J2 en 0°, a ~0,82× tiempo real. Informes: [jog](../validation/bala_trazadora/INFORME.md) y [registro del protocolo](../validation/protocolo/ensayo_webots.log).
+- **Campaña vigente en macOS 27.2 con Webots R2025a** (06/11/2026): diez ensayos y todos los escenarios C1–C4 y H1–P3 aprobados (D19, D73). Registro en [`campana.json`](../validation/campana/campana.json), [informe](../validation/campana/INFORME.md) con commit y SHA-256 de lo ensayado, y [mapa de la evidencia](../validation/README.md).
+- En macOS, los ensayos usan `/Applications/Webots.app/Contents/MacOS/webots` y no minimizan la ventana: en R2025a con macOS 27.2, `--minimize` junto con `--no-rendering` deja la aplicación sin iniciar sus controladores.
+- Los ensayos corren por el protocolo, sin mirar la ventana de Webots; las capturas del jog están en el informe de arriba.

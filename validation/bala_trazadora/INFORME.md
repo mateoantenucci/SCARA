@@ -1,6 +1,6 @@
-# Bala trazadora: jog de J1 en Webots (issue #5)
+# Bala trazadora: jog de J1 en Webots
 
-Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, `g++` 14.2.0 del MSYS2 de Webots y Python 3.12.7. Revisión: rama `claude/t05-bala-trazadora-98a03e`, antes del merge del PR que cierra #5.
+Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, `g++` 14.2.0 del MSYS2 de Webots y Python 3.12.7.
 
 ## Procedimiento
 
@@ -26,5 +26,5 @@ Las teclas se enviaron como eventos de teclado a la página (`keydown`/`keyup` c
 ## Límites
 
 - `ZERO` se ensayó con J1 en 8,94°, solo para ejercitar el mensaje: referenciar fuera de la pose de reposo es un error de operación que la planta no detecta.
-- La posición física simulada no se informa todavía (canal de instrumentación, issue #14). La comparación de J2 es visual.
+- Este ensayo no usa la posición física simulada, que informa el canal de instrumentación. La comparación de J2 es visual.
 - macOS no se ensayó en esta máquina.

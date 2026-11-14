@@ -1,16 +1,18 @@
 # Registro de decisiones: grabar y reproducir trayectorias
 
-Por qué el SCARA quedó diseñado así. Sirve para responder al profesor. Cada entrada dice qué se decidió, por qué y qué se descartó. Las decisiones difíciles de revertir tienen además un ADR en [`docs/adr/`](adr/). El análisis completo está en la [investigación del 29/10/2026](historico/INVESTIGACION_TEACH_AND_PLAY_2026-10-29.md). El [documento maestro v2](maestro/SCARA-Master-v2.md) lo resume: cada decisión con su porqué en una línea (sección 11).
+Por qué el SCARA quedó diseñado así. Cada entrada dice qué se decidió, por qué y qué se descartó. Las decisiones difíciles de revertir tienen además un ADR en [`docs/adr/`](adr/). El [documento maestro v2](maestro/SCARA-Master-v2.md) las resume, cada una con su porqué en una línea (sección 11).
 
 Estados:
 
 - **Aceptada:** el grupo la decidió.
-- **Propuesta al profesor:** la implementamos y se revisa en clase.
-- **Abierta:** falta decidir.
+- **Propuesta al profesor:** está implementada y se revisa en clase.
+- **Reemplazada por Dn / Retirada:** la entrada queda reducida a su título y una línea, para que las citas por número sigan llevando a algo.
+
+Reemplazadas o retiradas: D16, D25 y D66.
 
 ## Origen
 
-Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
+El profesor pidió hacer algo similar a AGSABOT:
 
 - Mover articulaciones a mano, guardar puntos y reproducir trayectorias.
 - Seguir rectas o el menor recorrido.
@@ -36,13 +38,13 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
   - Lo pidió el profesor.
   - Con el robot real, socat abre el USB y es quien se conecta.
   - La URC queda siempre esperando, y el robot puede reiniciarse o desconectarse sin tocarla.
-- **Descartado:** Webots como servidor, que es como funcionaba `scara-dev/1`.
+- **Descartado:** Webots como servidor.
 - **Estado:** Aceptada.
 
 **D2 · Canal de instrumentación aparte.**
 - **Decisión:** el protocolo solo lleva lo que un Arduino podría saber. La verdad del simulador, las fallas, la carga y la recarga van por otro puerto. Ese canal vive en el mismo controlador de Webots.
 - **Por qué:** así la URC no puede depender sin querer de información que el robot real no da.
-- **Descartado:** mezclar todo en un mensaje, como `scara-dev/1`; o un segundo robot supervisor en Python, que obligaría a pasar las fallas entre dos procesos.
+- **Descartado:** mezclar todo en un mensaje; o un segundo robot supervisor en Python, que obligaría a pasar las fallas entre dos procesos.
 - **Estado:** Aceptada. [ADR 0004](adr/0004-canal-de-instrumentacion-separado.md).
 
 **D3 · Un único firmware en C++ para Arduino y Webots.**
@@ -137,7 +139,7 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 - **Descartado:**
   - Medir J2 desde la base: no protege los topes relativos.
   - `TouchSensor`: genera choques físicos.
-  - Calcular el Hall con la posición del simulador: es lo que hacía `scara-dev/1`, y es trampa.
+  - Calcular el Hall con la posición del simulador: es trampa.
 - **Estado:** Propuesta al profesor. Dónde se monta cada sensor e imán está en D93.
 
 **D11 · Secuencia de homing.**
@@ -198,7 +200,7 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 **D13 · Las trayectorias las guarda la URC.**
 - **Decisión:** se guardan como JSON con versión de formato. Cada punto registra la pose (punto de herramienta, X, Y, Z y rumbo, desde D88), no el camino por el que se llegó.
 - **Por qué:** igual que en AGSABOT, el robot solo informa la posición y la PC administra los datos. El camino se calcula al reproducir, así que no hace falta "mover bien" con las teclas.
-- **Estado:** Aceptada. El codo ya no se guarda (D88).
+- **Estado:** Aceptada.
 
 **D14 · Tramos LIN o PTP.**
 - **Decisión:** LIN (recta) por defecto y PTP (articular sincronizado) como opción. Si una recta es imposible (fuera de alcance, cambio de codo, límites, choque), se rechaza antes de arrancar y se ofrece PTP.
@@ -245,12 +247,12 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 
 **D34 · Puntos definidos sin jog.**
 - **Decisión:**
-  - Se puede agregar un punto escribiendo XYZ y rumbo, o J1–J4. ~~En XYZ el codo toma la configuración preferida, con opción de elegir la otra.~~ Desde D88 el codo no se elige.
-  - Se pueden editar puntos capturados. ~~Al editar en XYZ se conserva la configuración del codo del punto.~~
+  - Se puede agregar un punto escribiendo XYZ y rumbo, o J1–J4. El codo lo resuelve D88.
+  - Se pueden editar puntos capturados.
   - La URC valida al agregar, al editar y al cargar un archivo: versión del formato, alcance, límites y choque en reposo. Si algo falla, informa qué punto y por qué.
   - El JSON se puede editar a mano, pero no se promociona.
 - **Por qué:** con jog es difícil clavar un valor exacto. Combinar el jog "a ojo" con la edición permite trayectorias precisas. Un punto escrito nunca fue visitado, así que se valida. Igual el robot llega al paso más cercano: ~0,5 mm en el peor caso.
-- **Estado:** Aceptada. El codo ya no se elige (D88).
+- **Estado:** Aceptada.
 
 **D22 · Parámetros de cada tramo.**
 - **Decisión:**
@@ -284,37 +286,26 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
 
 ## Proceso y entrega
 
-**D16 · Migración del código actual.**
-- **Decisión:** se construye el camino nuevo al lado del viejo y se borra lo viejo cuando el nuevo funciona.
-  - **Se conservan:** `kinematics.py` y `collisions.py`, como planificador.
-  - **Se mudan al canal de instrumentación:** fallas, carga y recarga.
-- **Por qué:** nunca quedarse sin algo que funcione.
-- **Estado:** Aceptada.
+**D16 · Migración del código anterior.**
+- Retirada: correspondía a la migración desde el banco de pruebas anterior.
 
-**D25 · Documentación y evidencia del camino viejo.**
-- **Decisión:** se sigue la convención existente de `validation/historico/`.
-  - Los documentos que no dependen del control (CAD, montaje, colisiones, propiedades, transmisión) siguen vigentes, con sus referencias actualizadas.
-  - Los del banco `scara-dev/1` pasan a `docs/historico/`, con la línea «Reemplazado por…»; su evidencia pasa a `validation/historico/`.
-  - Se reescriben el README, la guía desde cero y el plan.
-  - Se hace una campaña de validación nueva.
-  - Nada se borra: se mueve con `git mv`, sin alterar bytes.
-- **Por qué:** una sola descripción vigente del sistema. La historia queda como registro del proceso, pero no se cita como prueba del sistema nuevo.
-- **Estado:** Aceptada. Es un ticket propio, posterior a que el camino nuevo funcione.
+**D25 · Documentación y evidencia del camino anterior.**
+- Retirada: correspondía a la organización de carpetas históricas.
 
 **D17 · Documento maestro v2.**
-- **Decisión:** Markdown en el repo, exportado a PDF, sin tocar el original y con enlaces a los ADR.
+- **Decisión:** Markdown en el repo, exportado a PDF y con enlaces a los ADR.
 - **Estado:** Aceptada.
 
 **D19 · Compilación en Windows.**
-- **Decisión:** se valida en la bala trazadora. Si no se logra, se documenta que solo se validó en Mac.
+- **Decisión:** se valida con el primer camino completo. Si no se logra, se documenta que solo se validó en Mac.
 - **Estado:** Aceptada.
-- **Resultado (30/10/2026, actualizado 06/11/2026):** compila y corre en Windows 11 con el `g++` 14.2 que trae Webots R2025a en su MSYS2, sin instalar nada más. Hay que usar el `bash` de Webots con `mingw64/bin/cpp` en el PATH, donde Webots guarda las DLL de C++. Detalle en [UCI en Webots](UCI_WEBOTS.md#resultado-en-windows-d19). El 06/11/2026 se resolvió y validó en macOS con Apple Clang y Webots R2025a en la campaña completa (D73).
+- **Resultado:** compila y corre en Windows 11 con el `g++` 14.2 que trae Webots R2025a en su MSYS2, sin instalar nada más. Hay que usar el `bash` de Webots con `mingw64/bin/cpp` en el PATH, donde Webots guarda las DLL de C++. Detalle en [UCI en Webots](UCI_WEBOTS.md#qué-se-ensayó). En macOS compila con Apple Clang y se validó con Webots R2025a en la campaña completa (D73).
 
-## Bala trazadora (issue #5)
+## Primer camino completo
 
-Decisiones tomadas al construir el primer camino completo. El protocolo completo (issue #6) puede revisarlas.
+Decisiones tomadas al construir el primer camino completo, de la URC al firmware y a Webots.
 
-**D35 · Forma de los mensajes de la bala trazadora.**
+**D35 · Forma de los mensajes básicos.**
 - **Decisión:**
   - `BOOT` y `HI` llevan el protocolo y la versión de firmware como entero: `HI scara/1 1`.
   - `S` tiene nueve campos fijos: `S modo ref J1 J2 J3 J4 hall libres último`. El modo es una palabra (`IDLE`, `JOG`; `OFF` desde D40); el resto, enteros.
@@ -334,21 +325,21 @@ Decisiones tomadas al construir el primer camino completo. El protocolo completo
 - **Decisión:**
   - La página renueva el pedido de jog cada 150 ms mientras se mantiene la tecla y frena al soltarla, al perder el foco o al ocultarse.
   - La URC envía `JOG` una sola vez y envía `JOG STOP` si la página no renueva el pedido en 500 ms.
-  - El firmware frena si pasa más de 1 s sin mensajes de la URC; la URC envía `PING` cada 250 ms. `PING` y el watchdog entran ya en la bala trazadora.
+  - El firmware frena si pasa más de 1 s sin mensajes de la URC; la URC envía `PING` cada 250 ms.
 - **Por qué:** cada frente puede caerse por separado: el navegador (pestaña cerrada con la tecla apretada), la URC o el enlace. Sin el watchdog, cortar la URC en pleno jog deja al robot girando hasta el tope; en el ensayo, J1 se detuvo solo.
 - **Estado:** Aceptada.
 
-**D38 · Mundo nuevo al lado del viejo, arrancando en la pose de reposo.**
-- **Decisión:** `scara_uci.wbt` usa el mismo `SCARA.proto` con el controlador `scara_uci`; `scara.wbt` no se toca. La planta lleva las articulaciones a la pose de reposo al arrancar (supervisor) y desde ahí suma lo que dan los motores. J4 abajo es 120 mm.
-- **Por qué:** el banco viejo tiene que seguir funcionando (D16). Arrancar en reposo hace que `ZERO` sea verdad en la simulación; el desvío aleatorio de ±10° llega con el homing (D11, issue #8).
+**D38 · Mundo `scara_uci.wbt`, arrancando en la pose de reposo.**
+- **Decisión:** `scara_uci.wbt` usa `SCARA.proto` con el controlador `scara_uci`. La planta lleva las articulaciones a la pose de reposo al arrancar (supervisor) y desde ahí suma lo que dan los motores. J4 abajo es 120 mm.
+- **Por qué:** arrancar en reposo hace que `ZERO` sea verdad en la simulación. El desvío aleatorio de ±10° lo agrega el homing (D11, D57).
 - **Estado:** Aceptada.
 
 **D39 · Pruebas del firmware como conversaciones.**
 - **Decisión:** las pruebas del firmware son archivos de texto con lo que envía la URC, lo que tiene que responder la UCI, avances del reloj y pasos esperados por motor. Un programa C++ las corre contra el núcleo real con una capa de hardware falsa, y `python -m unittest discover` lo compila y lo ejecuta (se omite si no hay compilador). El núcleo se compila sin excepciones ni RTTI y la prueba verifica que no use memoria dinámica.
-- **Por qué:** es el seam 1 de la spec: se prueba el comportamiento por el protocolo, no detalles internos. Los mismos archivos servirán para la UCI falsa de Python (seam 2). Integrarlas a `unittest` evita una segunda herramienta (`cmake` no está en todas las máquinas).
+- **Por qué:** se prueba el comportamiento por el protocolo, no detalles internos. Los mismos archivos sirven para la UCI falsa de Python. Integrarlas a `unittest` evita una segunda herramienta (`cmake` no está en todas las máquinas).
 - **Estado:** Aceptada.
 
-## Protocolo completo (issue #6)
+## Protocolo completo
 
 Decisiones tomadas al completar `scara/1`. La especificación está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md).
 
@@ -364,7 +355,7 @@ Decisiones tomadas al completar `scara/1`. La especificación está en [`PROTOCO
 
 **D41 · `STOP` conserva la referencia; `HALT` la pierde si había movimiento.**
 - **Decisión:**
-  - `STOP` frena y conserva la referencia. Con los segmentos (#9), frena con rampa y vacía la cola.
+  - `STOP` frena y conserva la referencia. Con segmentos, frena con rampa y vacía la cola.
   - `HALT` para en seco y descarta todo. Si había movimiento, borra la referencia.
   - Los dos dejan los drivers con corriente: J4 no cae. El watchdog frena como `STOP`.
   - <kbd>Esc</kbd> y «Stop» envían `STOP`; «Parada inmediata» envía `HALT`.
@@ -387,9 +378,9 @@ Decisiones tomadas al completar `scara/1`. La especificación está en [`PROTOCO
 - **Por qué:** las órdenes pendientes eran para un firmware que ya no existe. Con USB, abrir el puerto reinicia el UNO, así que un `BOOT` al principio de la conexión es lo normal y no merece alarma; a mitad de una conexión indica un reinicio por falla (alimentación, watchdog del micro).
 - **Estado:** Aceptada.
 
-## Transmisión N1 (issue #7)
+## Transmisión N1
 
-Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta simulada. Cómo funciona y la evidencia: [Transmisión](TRANSMISION.md#transmisión-n1-en-el-firmware-y-en-la-planta).
+Decisiones de la transmisión N1 en el firmware y en la planta simulada. Cómo funciona y la evidencia: [Transmisión](TRANSMISION.md#transmisión-n1-en-el-firmware-y-en-la-planta).
 
 **D44 · El microstepping es un solo parámetro, en `firmware/config.h`.**
 - **Decisión:**
@@ -398,18 +389,18 @@ Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta
   - La mecánica (poleas 4:1, 60T–60T al codo, ACME de 8 mm) se escribe por separado en el firmware y en la planta: la planta es el robot y el firmware es lo que el robot cree.
   - Las pruebas compilan la conversión con los seis valores del TB6600 (1 a 32). Las conversaciones de conformidad están escritas para 1/8.
 - **Por qué:** en el robot real, el microstepping es una llave DIP de los TB6600 que el firmware tiene que conocer. Si la planta tuviera su propio valor, cambiarlo en un solo lado haría que el robot simulado se moviera distinto de lo que el firmware cree, sin que falle ninguna prueba. La mecánica, en cambio, puede diferir a propósito para estudiar errores del modelo.
-- **Descartado:** una constante en el controlador de Webots y otra en el firmware, como en la bala trazadora, y compartir también la mecánica.
+- **Descartado:** una constante en el controlador de Webots y otra en el firmware, y compartir también la mecánica.
 - **Estado:** Aceptada. El valor 1/8 sigue siendo propuesta al profesor (D9).
 
 **D45 · Límites de velocidad y aceleración por motor, derivados a las articulaciones por la transmisión.**
 - **Decisión:**
-  - Los límites se fijan por motor, en grados de su eje: M1 y M2 a 80 °/s y 136 °/s², M3 a 112 °/s y 204 °/s², M4 a 1350 °/s y 2700 °/s² (`firmware/config.h`).
-  - Son un parámetro provisional, elegidos para que cada articulación quede dentro de los límites conservadores del modelo (J1 y J2 a 20 °/s, J3 a 28 °/s, J4 a 30 mm/s). Las curvas de par de N2 (#15) los reemplazan.
+  - Los límites se fijan por motor, en grados de su eje, en `firmware/config.h`. Los valores vigentes están en D76.
+  - Son un parámetro provisional: faltan los datos del fabricante. Las curvas de par de N2 (D64) dan el margen.
   - Los de las articulaciones se derivan con el acople: |ω_J1| ≤ ω_M1/4 y |ω_J1 + ω_J2| ≤ ω_M2/4. Mover J1 y J2 a la vez en el mismo sentido gasta el margen de M2.
   - El jog arranca y frena sin rampa, así que su velocidad máxima tiene que quedar dentro de la de cada motor. El firmware lo verifica al compilar.
-- **Por qué:** la limitación física está en los motores, no en las articulaciones. Con el acople, J2 no tiene un límite propio: depende de cuánto se mueva J1. El planificador de la URC (#9, #10) necesita esa forma para validar los tramos PTP y LIN. Faltan los datos del fabricante («1000 rpm» sin carga, aceleraciones «??»): un valor provisional declarado es mejor que uno inventado como si fuera de placa.
+- **Por qué:** la limitación física está en los motores, no en las articulaciones. Con el acople, J2 no tiene un límite propio: depende de cuánto se mueva J1. El planificador de la URC necesita esa forma para validar los tramos PTP y LIN. Faltan los datos del fabricante («1000 rpm» sin carga, aceleraciones «??»): un valor provisional declarado es mejor que uno inventado como si fuera de placa.
 - **Descartado:** límites por articulación independientes (ignoran que M2 sostiene J1 + J2) y «1000 rpm» del maestro (26,7 kHz por motor a 1/8: el UNO no los genera).
-- **Estado:** Aceptada. Los valores los reemplaza D76; la forma (por motor, con el acople) sigue.
+- **Estado:** Aceptada. La forma (por motor, con el acople) vale; los valores los fija D76.
 
 **D46 · Jog por motor como modo de prueba: `JOG Mm ± vel`.**
 - **Decisión:**
@@ -419,9 +410,9 @@ Decisiones tomadas al completar la transmisión N1 en el firmware y en la planta
 - **Descartado:** un comando aparte (`JOGM`) y medir la velocidad del motor en pasos por segundo (dependería del microstepping, y el protocolo no lo conoce, ADR 0003).
 - **Estado:** Aceptada.
 
-## Arduino UNO y socat (issue #16)
+## Arduino UNO y socat
 
-Decisiones tomadas al escribir la capa de hardware del UNO y ensayar el camino serie. El detalle está en [UCI en el Arduino UNO](ARDUINO_UNO.md).
+Decisiones de la capa de hardware del UNO y del camino serie. El detalle está en [UCI en el Arduino UNO](ARDUINO_UNO.md).
 
 **D47 · Pines del UNO compatibles con el shield Ethernet.**
 - **Decisión:**
@@ -453,9 +444,9 @@ Decisiones tomadas al escribir la capa de hardware del UNO y ensayar el camino s
 - **Descartado:** que socat cree el PTY (`PTY,link=…`): en MSYS2 no espera a que lo abran (`wait-slave`) y se cierra con un error de E/S; además la receta dejaría de ser la del robot real. Un par de puertos COM virtuales (com0com): exige instalar un driver con permisos de administrador.
 - **Estado:** Aceptada.
 
-## Segmentos temporizados y tramo PTP (issue #9)
+## Segmentos temporizados y tramo PTP
 
-Decisiones tomadas al implementar la cola de segmentos del firmware y el planificador PTP de la URC. La forma de los mensajes está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#segmentos); cómo funciona y la evidencia, en la [validación de segmentos](../validation/segmentos/INFORME.md).
+Decisiones de la cola de segmentos del firmware y del planificador PTP de la URC. La forma de los mensajes está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#segmentos); cómo funciona y la evidencia, en la [validación de segmentos](../validation/segmentos/INFORME.md).
 
 **D50 · Un `SEG` sin confirmar por vez; con la cola llena, el firmware retiene uno y demora su `OK`.**
 - **Decisión:**
@@ -480,7 +471,7 @@ Decisiones tomadas al implementar la cola de segmentos del firmware y el planifi
   - `STOP` y el watchdog, con segmentos en ejecución: cada motor sigue en el sentido del segmento actual y baja su velocidad en línea recta hasta cero. Todos tardan lo mismo, lo que necesita el motor más exigido con su aceleración de D45, así el robot sigue en la misma dirección en articulaciones. La cola se vacía y la referencia se conserva. Mientras frena, `S` dice `RUN`.
   - `HALT` sigue parando en seco (D41). El jog sigue frenando en seco: a su velocidad baja no pierde pasos.
   - Con segmentos en ejecución, toda orden rechazada (`ERR`) frena con rampa. La URC, ante cualquier `ERR` con el tramo en marcha, deja de enviarlo y no envía `STOP`. Si `S` muestra el robot quieto antes del último segmento, con todo enviado, la URC también da el tramo por terminado: el firmware frenó por algo que no vio.
-- **Por qué:** frenar de golpe desde 20 °/s pide una aceleración infinita y es justo lo que pierde pasos (ADR 0006). La velocidad del segmento actual ya está en la cola, así que el firmware frena sin cálculos de la URC; con 34 °/s² en J1, desde 20 °/s son 0,59 s y 5,9°. Si se rechaza un segmento a mitad de un tramo, lo encolado termina en un punto intermedio del plan, quizás a plena velocidad: frenar es lo seguro, y que los dos lados den el tramo por terminado evita un `STOP` duplicado.
+- **Por qué:** frenar de golpe a velocidad de trabajo pide una aceleración infinita y es justo lo que pierde pasos (ADR 0006). La velocidad del segmento actual ya está en la cola, así que el firmware frena sin cálculos de la URC; con los límites de D76, desde 90 °/s J1 tarda 0,64 s y recorre 29°. Si se rechaza un segmento a mitad de un tramo, lo encolado termina en un punto intermedio del plan, quizás a plena velocidad: frenar es lo seguro, y que los dos lados den el tramo por terminado evita un `STOP` duplicado.
 - **Descartado:** rampa por motor con tiempos distintos (cada articulación frenaría en otro momento y el robot se desviaría del camino) y `STOP` automático de la URC ante un `ERR` (el firmware ya frena).
 - **Estado:** Aceptada.
 
@@ -491,33 +482,33 @@ Decisiones tomadas al implementar la cola de segmentos del firmware y el planifi
   - La velocidad del tramo (porcentaje) reduce las velocidades máximas; la aceleración queda en su máximo.
   - El perfil se parte en segmentos de 20 ms; si la duración no es múltiplo de 20 ms, se estira hasta el siguiente, sin pasar ningún máximo. Las posiciones se redondean a la centésima y el último segmento es el destino exacto.
   - «Ir a una pose» acepta J1–J4 o X, Y, Z y rumbo (con el codo preferido, J2 negativo, D31, o el otro). Verifica límites articulares y choques en todo el camino, que en un PTP es la recta en articulaciones, muestra la duración y pide confirmación. El inicio puede estar fuera del recorrido (un jog lo llevó ahí): un PTP de vuelta se acepta, y el chequeo de choques arranca desde el punto más cercano dentro del recorrido.
-- **Por qué:** es el PTP sincronizado de los robots industriales y la definición de tramo PTP del glosario. Limitar solo por motores dejaría a J2 a 40 °/s cuando J1 gira al revés, y Webots lo saturaría (D45). La URC conoce los límites de los motores en las unidades de cada articulación, no el microstepping (ADR 0003); una prueba verifica que coincidan con `firmware/config.h`. Bajar también la aceleración al reducir la velocidad alargaría las rampas sin hacer falta: la aceleración es lo que limita el par.
-- **Descartado:** un perfil por articulación (cada una llegaría en otro momento), un perfil de quinto grado como el del banco viejo (más suave, pero llega a la aceleración máxima solo en un instante y alarga el tramo) y leer los límites del motor desde `config.h` en tiempo de ejecución.
+- **Por qué:** es el PTP sincronizado de los robots industriales y la definición de tramo PTP del glosario. Limitar solo por motores dejaría a J2 al doble de la velocidad de J1 cuando gira al revés, y Webots lo saturaría (D45, D76). La URC conoce los límites de los motores en las unidades de cada articulación, no el microstepping (ADR 0003); una prueba verifica que coincidan con `firmware/config.h`. Bajar también la aceleración al reducir la velocidad alargaría las rampas sin hacer falta: la aceleración es lo que limita el par.
+- **Descartado:** un perfil por articulación (cada una llegaría en otro momento), un perfil de quinto grado (más suave, pero llega a la aceleración máxima solo en un instante y alarga el tramo) y leer los límites del motor desde `config.h` en tiempo de ejecución.
 - **Estado:** Aceptada.
 
-## Tramo LIN y validación previa (issue #10)
+## Tramo LIN y validación previa
 
-Decisiones tomadas al implementar el tramo LIN y la validación de tramos en la URC: [`urc/planner.py`](../urc/planner.py) (`plan_lin`, `lin_tolerance`) y [`urc/validation.py`](../urc/validation.py) (`check_lin`, `check_ptp`, `check_tramo`). Pruebas en [`tests/test_lin.py`](../tests/test_lin.py).
+Decisiones del tramo LIN y de la validación de tramos en la URC: [`urc/planner.py`](../urc/planner.py) (`plan_lin`, `lin_tolerance`) y [`urc/validation.py`](../urc/validation.py) (`check_lin`, `check_ptp`, `check_tramo`). Pruebas en [`tests/test_lin.py`](../tests/test_lin.py).
 
 **D54 · Tramo LIN: velocidad del punto de herramienta, perfil trapezoidal y tolerancia calculada.**
 - **Decisión:**
   - El punto de herramienta recorre la recta entre los dos puntos y el rumbo (J1 + J2 + J3, sin envolver) va de uno al otro, con el mismo perfil trapezoidal s(t) de D53. En cada muestra de 20 ms la URC resuelve la cinemática inversa con la configuración del codo del tramo y mantiene J1 continuo.
-  - La velocidad del tramo es una fracción de 30 mm/s sobre la recta y de 20 °/s de rumbo, con 60 mm/s² y 34 °/s² al 100 %. Son las de J4 y M1 (D45): una recta vertical o un giro en el lugar al 100 % nunca superan su articulación. A diferencia del PTP, la fracción baja también la aceleración: la rampa dura siempre 0,5 s.
+  - La velocidad del tramo es una fracción de un máximo sobre la recta (150 mm/s con 300 mm/s²) y de otro de rumbo (90 °/s con 140 °/s², los de M1), según D76. A diferencia del PTP, la fracción baja también la aceleración: la rampa dura siempre 0,5 s. La componente vertical de la recta no pasa de la de M4, también escalada por la fracción: una recta vertical al 100 % nunca supera J4.
   - Configuración del codo: la de los extremos. El brazo estirado (J2 = 0) admite las dos: toma la del otro extremo y, si los dos están estirados, la preferida (J2 negativo, D31). Se cuenta el signo exacto de J2: un J2 de +0,03° es el codo positivo.
-  - **Tolerancia sobre la recta: 0,069 mm**, calculada por `lin_tolerance` con la geometría y los límites vigentes. Es lo más que se aparta de la recta el camino que ejecuta el firmware, interpolando lineal en articulaciones entre los destinos redondeados. Suma dos efectos:
+  - **Tolerancia sobre la recta: 0,127 mm**, calculada por `lin_tolerance` con la geometría y los límites vigentes (D76). Es lo más que se aparta de la recta el camino que ejecuta el firmware, interpolando lineal en articulaciones entre los destinos redondeados. Suma dos efectos:
     - Redondeo a la centésima: media centésima de grado en J1 y en J2, una entera en el antebrazo, media centésima de mm en J4. Da l1·e + l2·2e = 0,066 mm.
-    - Cuerda: dentro de un segmento el extremo describe arcos. Con el brazo y el antebrazo girando Δ1 y Δφ, la flecha es a lo sumo (l1·Δ1² + l2·Δφ²)/8. Con M1 y M2 a 20 °/s, son 0,4° por segmento y 0,003 mm.
+    - Cuerda: dentro de un segmento el extremo describe arcos. Con el brazo y el antebrazo girando Δ1 y Δφ, la flecha es a lo sumo (l1·Δ1² + l2·Δφ²)/8. Crece con la velocidad de M1 y M2: a 90 °/s son 1,8° por segmento.
   - El plan informa el apartamiento medido (`deviation`), en cuatro puntos de cada segmento. En una recta típica al 50 % es de 0,02 mm.
 - **Por qué:**
   - Así es el LIN de los robots industriales: el operador elige la velocidad del extremo y el robot la mantiene constante. Con la velocidad fija, una recta que pasa cerca del brazo estirado pide a J2 velocidades sin cota, y eso se puede rechazar con un motivo («velocidad excesiva») que se resuelve bajando la velocidad o con PTP.
-  - Cerca del brazo estirado, la aceleración de J2 crece con la del punto de herramienta. Si la fracción no la bajara, bajar la velocidad no resolvería un rechazo por aceleración. Con la aceleración fija, una recta radial de 420 a 485 mm se rechazaba por la aceleración de J2 aun al 25 %. Así, se rechaza al 100 % por velocidad y pasa al 25 %.
+  - Cerca del brazo estirado, la aceleración de J2 crece con la del punto de herramienta. Si la fracción no la bajara, bajar la velocidad no resolvería un rechazo por aceleración. Con la aceleración fija, una recta radial de 420 a 485 mm se rechazaría por la aceleración de J2 aun al 25 %; con la fracción en la aceleración, se rechaza al 100 % por velocidad y pasa al 25 %.
   - La tolerancia es una cota y no un valor medido: vale para todo tramo que pasó la validación, porque esta acota Δ1 y Δφ.
-  - **Qué no incluye:** el robot da pasos enteros. Con 1/8, medio paso de M1 y de M2 corre el extremo hasta 0,25 mm. La planta de Webots, además, va unas centésimas detrás de la posición estimada (D45). La URC no conoce el microstepping (ADR 0003): ese error es de la ejecución y se mide en el ensayo de Webots.
+  - **Qué no incluye:** el robot da pasos enteros. Con 1/8, medio paso de M1 y de M2 corre el extremo hasta 0,25 mm. La planta de Webots, además, va unas centésimas detrás de la posición estimada. La URC no conoce el microstepping (ADR 0003): ese error es de la ejecución y se mide en el ensayo de Webots.
 - **Descartado:**
-  - Bajar la velocidad del tramo hasta que todas las articulaciones queden dentro de sus límites, como reduce ABB cerca de una singularidad. El tramo entero iría lento por un solo punto y nunca habría un rechazo por velocidad, pero la spec lo pide.
-  - Una velocidad cartesiana más alta, por ejemplo 50 mm/s. Una recta vertical al 100 % superaría J4 y se rechazaría.
+  - Bajar la velocidad del tramo hasta que todas las articulaciones queden dentro de sus límites, como reduce ABB cerca de una singularidad. El tramo entero iría lento por un solo punto y nunca habría un rechazo por velocidad.
+  - Atar la velocidad del LIN a la de J4: casi no cambiaba (D76).
   - Una banda muerta alrededor de J2 = 0. Si el inicio está levemente del otro lado, la primera muestra salta de configuración y se rechaza igual por aceleración.
-- **Estado:** Aceptada. La velocidad cartesiana es un parámetro provisional, como D45. D76 la separa de J4 (150 mm/s, con la componente vertical limitada por M4) y la tolerancia pasa a 0,127 mm.
+- **Estado:** Aceptada. La velocidad cartesiana es un parámetro provisional, como D45.
 
 **D55 · Validación previa: se verifica cada segmento que se va a enviar, y cada rechazo dice el tramo, el motivo y qué probar.**
 - **Decisión:**
@@ -527,39 +518,39 @@ Decisiones tomadas al implementar el tramo LIN y la validación de tramos en la 
     3. Límites articulares en cada segmento.
     4. Velocidad y aceleración de cada articulación y de cada motor, con el acople (M2 = J1 + J2), en cada segmento. Se usan las muestras sin redondear: el redondeo suma a lo sumo una centésima, dentro de lo que admite el firmware (D51).
     5. Choques: el chequeo de colisiones existente, en la recta en articulaciones de cada segmento, que es lo que ejecuta el firmware.
-  - `check_ptp` verifica el destino y los choques del PTP como «Ir a una pose» (D53). `check_tramo` elige según el tipo; el gestor de trayectorias (#12) lo llama tramo por tramo.
+  - `check_ptp` verifica el destino y los choques del PTP como «Ir a una pose» (D53). `check_tramo` elige según el tipo; el gestor de trayectorias lo llama tramo por tramo.
   - Un rechazo es `Rejection`, subclase de `ValueError`. Lleva el número de tramo, el motivo (`alcance`, `codo`, `limite`, `velocidad`, `colision`) y un detalle con dónde ocurre (porcentaje del tramo, articulación o motor, valor pedido contra máximo; «brazo casi estirado» si |J2| < 30°). Un LIN sugiere PTP; por velocidad, primero bajar la velocidad.
   - Un LIN exige que el inicio esté dentro del recorrido. El PTP acepta un inicio levemente fuera (D53) y es la sugerencia.
 - **Por qué:**
   - D14 exige que nunca arranque un tramo que no se puede terminar. Verificar los segmentos que se van a enviar, y no la recta ideal, cubre también el redondeo y las muestras.
   - El chequeo de colisiones acota el camino solo para una recta en articulaciones. Por eso se aplica a cada segmento y no al tramo entero.
-  - Todo lo que el operador necesita para corregir está en el mensaje, como pide la historia 40 de la spec.
+  - Todo lo que el operador necesita para corregir está en el mensaje.
 - **Costo:** unos 3 ms por segmento en el chequeo de colisiones, o 3 s para un LIN de 17 s. Si validar una trayectoria larga antes de cada play resulta lento, se pueden agrupar segmentos.
 - **Descartado:**
   - Muestrear el camino en puntos sueltos: entre dos muestras podría haber un choque.
   - Verificar choques en la recta en articulaciones entre los extremos del tramo: no es el camino de un LIN.
 - **Estado:** Aceptada.
 
-## Sensores Hall y homing (issue #8)
+## Sensores Hall y homing
 
-Decisiones tomadas al implementar los Hall en la planta de Webots y el homing del firmware. La forma de `HOME` y `EV HOMED` está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#homing); la evidencia, en la [validación del homing](../validation/homing/INFORME.md).
+Decisiones de los Hall en la planta de Webots y del homing del firmware. La forma de `HOME` y `EV HOMED` está en [`PROTOCOLO_SCARA_1.md`](PROTOCOLO_SCARA_1.md#homing); la evidencia, en la [validación del homing](../validation/homing/INFORME.md).
 
 **D56 · Homing por flanco, en cinco fases, y vuelta al reposo planificada por la URC.**
 - **Decisión:**
   - Los imanes están centrados en los extremos del recorrido, con una zona activa de ±5° (±3 mm en J4). La referencia es el flanco del lado alcanzable: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba (`HALL_EDGE` en `firmware/config.h`, parámetro provisional).
   - `HOME [j]` busca J4, J1 (M1 y M2 juntos), J2 (M2) y J3, o solo el eje `j`. En cada eje:
     1. Si el Hall está activo al empezar, sale del imán hacia la referencia, a 1 °/s (desde el reposo, J4 descansa sobre el de abajo). Si el eje tenía referencia y está en su flanco, retrocede directamente.
-    2. Busca a 8 °/s (8 mm/s) hasta que el Hall se activa.
-    3. Retrocede a 1 °/s hasta que se apaga, y 3° (3 mm) más a 8 °/s.
+    2. Busca rápido (D72) hasta que el Hall se activa.
+    3. Retrocede a 1 °/s hasta que se apaga, y 3° (3 mm) más a velocidad de búsqueda.
     4. Vuelve a 1 °/s (1 mm/s) al mismo flanco, que fija la referencia, y envía `EV HOMED j`.
   - La búsqueda está acotada en recorrido (todo el recorrido del eje y algo más) y en tiempo (60 s por eje). Si el Hall no aparece, `ERR 11 ausente`; si no se apaga dentro del ancho del imán más 1° (1 mm) de margen, `ERR 12 trabado`. Las fases que miden esa cota van lento: así no depende de la velocidad, ni del atraso con que Webots sigue a los pasos. Al abortar, y también con `STOP`, `HALT` o el watchdog, los ejes de ese `HOME` quedan sin referencia.
-  - El firmware termina en los flancos. La vuelta a la pose de reposo es un tramo PTP de la URC al 50 %, con el chequeo de choques, que la URC envía sola al recibir los cuatro `EV HOMED`. «Estacionar» es el mismo tramo.
+  - El firmware termina en los flancos. La vuelta a la pose de reposo es un tramo PTP de la URC (velocidad en D72), con el chequeo de choques, que la URC envía sola al recibir los cuatro `EV HOMED`. «Estacionar» es el mismo tramo.
 - **Por qué:**
   - El flanco al que se llega lento y siempre desde el mismo lado es repetible: no depende de la velocidad ni del lado de llegada. Centrar el imán en el extremo deja el flanco 5° antes del tope: el homing nunca empuja contra él.
   - Un solo sensor no distingue los dos imanes. Desde el reposo, el único Hall activo es el de J4, sobre su imán de fin; la referencia previa resuelve el caso de un segundo homing.
-  - La vuelta al reposo mueve los cuatro ejes desde una pose plegada (J1 y J2 en −130°): planificarla en la URC, como cualquier PTP, verifica choques en todo el camino (ADR 0005) y no agrega un generador de trayectorias al UNO. Al 25 % tardaría 52 s, porque M2 recorre J1 + J2 = 260°.
+  - La vuelta al reposo mueve los cuatro ejes desde una pose plegada (J1 y J2 en −130°): planificarla en la URC, como cualquier PTP, verifica choques en todo el camino (ADR 0005) y no agrega un generador de trayectorias al UNO. M2 recorre J1 + J2 = 260°, por eso el tramo es largo.
 - **Descartado:** referenciar con el centro del imán (exige recorrerlo entero, hasta el tope), que el firmware vuelva solo al reposo eje por eje (sin chequeo de choques y con más código en el UNO), y conservar las referencias de los ejes ya encontrados cuando el homing aborta (el operador no sabría qué quedó valiendo).
-- **Estado:** Aceptada. Las posiciones de los imanes siguen siendo propuesta al profesor (D10). D72 cambia las velocidades de búsqueda, la vuelta al reposo y el arranque sobre un imán.
+- **Estado:** Aceptada. Las posiciones de los imanes son propuesta al profesor (D10). D72 fija las velocidades de búsqueda, la vuelta al reposo y el arranque sobre un imán.
 
 **D57 · En Webots, el Hall se activa por la distancia entre el imán y el sensor.**
 - **Decisión:**
@@ -581,9 +572,9 @@ Decisiones tomadas al implementar los Hall en la planta de Webots y el homing de
 - **Descartado:** rechazar el jog rápido con un `ERR` (la página usa una sola velocidad de jog y quedaría inutilizable sin referencia) y frenar el jog solo sin referencia (un fin de carrera protege siempre).
 - **Estado:** Aceptada.
 
-## Canal de instrumentación y banco de ensayo (issue #14)
+## Canal de instrumentación y banco de ensayo
 
-Decisiones tomadas al implementar el canal que solo existe en la simulación (ADR 0004). Cómo funciona y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md).
+Decisiones del canal que solo existe en la simulación (ADR 0004). Cómo funciona y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md).
 
 **D59 · `scara-sim/1`: un protocolo de texto aparte, en el puerto 9001, que la URC solo muestra.**
 - **Decisión:**
@@ -599,7 +590,7 @@ Decisiones tomadas al implementar el canal que solo existe en la simulación (AD
 - **Decisión:**
   - La planta deja sin fuerza al motor sin corriente, el eje queda libre y J4 cae por su peso. Pasa con `DISABLE`, con la UCI recién arrancada y con la falla F2, que deja sin corriente solo el driver de M4.
   - Los pulsos que llegan a un motor sin corriente no lo mueven. Cuando vuelve la corriente, la planta toma la posición física como punto de partida: el motor retiene el eje donde quedó, y lo que se movió sin corriente el firmware no lo sabe.
-- **Por qué:** es el comportamiento real de un paso a paso sin corriente (falla F2: «J4 cae; la posición estimada por pasos ya no vale»). Antes, la planta seguía sosteniendo los ejes sin corriente.
+- **Por qué:** es el comportamiento real de un paso a paso sin corriente (falla F2: «J4 cae; la posición estimada por pasos ya no vale»).
 - **Descartado:** que J4 vuelva solo a la posición de los pasos al recuperar la corriente (un motor real no sabe dónde estaba).
 - **Estado:** Aceptada.
 
@@ -607,49 +598,46 @@ Decisiones tomadas al implementar el canal que solo existe en la simulación (AD
 - **Decisión:**
   - F4: el controlador descarta lo que llega por `scara/1` y no envía nada, con la conexión TCP abierta, como un cable desenchufado. El watchdog del firmware frena; su `ERR 4` se pierde con el enlace.
   - F5: el controlador crea el firmware de nuevo y este envía `BOOT`, sin corriente y sin referencia (D40). La planta no se reinicia: J1–J3 quedan donde estaban y J4, sin corriente, cae.
-  - La carga cambia `toolMass` del `SCARA.proto` (de 0 a 5 kg). Hoy cambia la física de la herramienta; la pérdida de pasos por carga llega con N2 (#15).
+  - La carga se suma a `toolMass` del `SCARA.proto` (D85). Cambia la física de la herramienta y, con N2 (D64), puede producir pérdida de pasos.
   - `RECARGA` recarga el mundo: el controlador se vuelve a conectar a los dos canales y la UCI arranca de nuevo.
 - **Por qué:** cerrar la conexión sería otra falla (la URC la vería como una desconexión de Webots). El reinicio tiene que ser del firmware, no del mundo, para que se vea que la URC detecta el `BOOT` con el robot en la misma pose.
-- **Estado:** Aceptada. D85 corrige la carga: es la que se agrega a la herramienta, de 0 a 4850 g.
+- **Estado:** Aceptada.
 
-## Captura de puntos y gestor de trayectorias (issue #12)
+## Captura de puntos y gestor de trayectorias
 
-Decisiones tomadas al implementar el gestor de trayectorias en la URC: [`urc/trajectories.py`](../urc/trajectories.py) (modelo, archivo y validación de puntos) y [`urc/trajectories.js`](../urc/trajectories.js) (panel y teclas de la página). Pruebas por los endpoints HTTP en [`tests/test_trajectories.py`](../tests/test_trajectories.py).
+Decisiones del gestor de trayectorias de la URC: [`urc/trajectories.py`](../urc/trajectories.py) (modelo, archivo y validación de puntos) y [`urc/trajectories.js`](../urc/trajectories.js) (panel y teclas de la página). Pruebas por los endpoints HTTP en [`tests/test_trajectories.py`](../tests/test_trajectories.py).
 
-**D62 · La trayectoria en edición vive en la URC, y cada una es un archivo `scara-trayectoria` versión 1 en el que mandan las articulaciones.**
+**D62 · La trayectoria en edición vive en la URC, y cada una es un archivo `scara-trayectoria`.**
 - **Decisión:**
   - La URC guarda la trayectoria abierta, su nombre, su archivo y si tiene cambios sin guardar. La página la muestra y pide cada cambio por `/api/trayectoria/*`: capturar, punto, editar, sobrescribir, borrar, mover, ir, nueva, guardar y cargar.
   - Un pedido que descartaría trabajo devuelve 409 y se repite con permiso explícito: «nueva» y «cargar» con cambios sin guardar (`discard`), y «guardar como» sobre un archivo que ya existe (`overwrite`). La página pregunta en el medio.
   - Archivo: uno por trayectoria, en la carpeta `trayectorias/` de la URC (`--trayectorias` la cambia). El nombre del archivo sale del de la trayectoria, sin tildes ni signos: «Pick & place» → `pick-place.json`. Se rechazan los nombres de dispositivo de Windows (`con`, `nul`, `com1`…), que no pueden ser archivos. Se escribe en un temporal y se reemplaza, así un corte no deja un archivo a medias.
-  - Contenido: `format` (`scara-trayectoria`), `version` (1), `name`, `saved` (fecha ISO 8601), `units` y `points`. Cada punto lleva `joints` (enteros en las unidades de `scara/1`: centésimas de grado en J1–J3 y de mm en J4), `tool` (X, Y, Z en mm y rumbo en grados, derivados), `kind`, `speed` (% entero) y `wait` (s).
-  - Al cargar, mandan las articulaciones. `tool` es opcional, pero si está tiene que coincidir con ellas (±0,01): si alguien editó el XYZ a mano, se rechaza en vez de ignorarlo en silencio. Se rechazan una versión distinta de la 1, otras unidades, claves desconocidas o faltantes y una trayectoria sin puntos. El mensaje dice el archivo, el punto y por qué, y la trayectoria abierta no cambia.
+  - Contenido: `format` (`scara-trayectoria`), `version`, `name`, `saved` (fecha ISO 8601), `units` y `points`. Qué lleva cada punto, en D88.
+  - Al cargar se rechazan una versión desconocida, otras unidades, claves desconocidas o faltantes y una trayectoria sin puntos. El mensaje dice el archivo, el punto y por qué, y la trayectoria abierta no cambia.
 - **Por qué:**
-  - La reproducción (#13) necesita la trayectoria en la URC, que es la que planifica (ADR 0005). Con el estado en la URC, la página no puede perder la trayectoria al recargarse, y las pruebas del seam 2 cubren el gestor entero.
-  - Las articulaciones guardan la configuración del codo y las vueltas de J1 y J3, que un XYZ con rumbo no determina (D13). En centésimas enteras, guardar y cargar no redondea nada: la trayectoria cargada es exactamente la guardada.
+  - La reproducción necesita la trayectoria en la URC, que es la que planifica (ADR 0005). Con el estado en la URC, la página no puede perder la trayectoria al recargarse, y las pruebas cubren el gestor entero por sus endpoints.
   - Un archivo con claves estrictas detecta los errores de una edición a mano, por ejemplo `velocidad` en lugar de `speed`, que con valores por defecto pasarían inadvertidos.
-- **Descartado:** guardar solo XYZ y rumbo (pierde el codo y las vueltas), guardar las articulaciones en grados con decimales (redondeo al ir y volver), la trayectoria solo en la página (se pierde al recargar y la reproducción no la vería) y elegir cualquier archivo de la PC (la URC solo lee y escribe en su carpeta, sin rutas).
-- **Estado:** Aceptada. Reemplazada en el contenido de los puntos por la versión 2 (D88).
+- **Descartado:** la trayectoria solo en la página (se pierde al recargar y la reproducción no la vería) y elegir cualquier archivo de la PC (la URC solo lee y escribe en su carpeta, sin rutas).
+- **Estado:** Aceptada. El contenido de los puntos es el de D88.
 
-**D63 · Capturar exige el robot referenciado y quieto; un punto escrito o editado conserva su codo y se valida solo.**
+**D63 · Capturar exige el robot referenciado y quieto; cada punto se valida solo.**
 - **Decisión:**
   - Capturar y sobrescribir usan la posición estimada por pasos del último estado `S`. Exigen robot referenciado (D21) y quieto: modo `IDLE`, sin jog y sin segmentos de un tramo por ejecutar (justo después de enviarlos, `S` todavía dice `IDLE`). El estado tiene que tener menos de 1 s: si la UCI dejó de informar, la posición no está al día.
   - Capturar inserta después del seleccionado y selecciona el punto nuevo. Retroceso borra el seleccionado: después de capturar es el último capturado, y varios Retroceso deshacen hacia atrás. Enter abre el diálogo del nombre y guarda.
-  - Un punto escrito en XYZ y rumbo usa el codo preferido (J2 negativo, D31) o el que se elija. De las vueltas posibles de J1 y J3, toma la más cercana al punto anterior de la lista. Al editar en XYZ, el punto conserva su codo (un J2 = 0 cuenta como el preferido) y las vueltas más cercanas a las suyas. Para cambiar el codo se edita en J1–J4.
-  - Cada punto se valida al capturarlo, escribirlo, editarlo, sobrescribirlo y cargarlo: alcance (si se escribió en XYZ), límites articulares y choque en reposo, con el chequeo de colisiones de los tramos. El rechazo dice el número de punto.
+  - Cada punto se valida al capturarlo, escribirlo, editarlo, sobrescribirlo y cargarlo: alcance (si se escribió en XYZ), límites articulares y choque en reposo, con el chequeo de colisiones de los tramos. El rechazo dice el número de punto. El codo y las vueltas los resuelve D88.
   - Los tramos (recta posible, velocidades, choques en el camino, cambio de codo) no se validan al editar: dependen del orden y del tipo, y los valida la reproducción antes de cada play (D29, D55).
   - «Ir al punto» es un PTP al 25 %, la velocidad del tramo de aproximación (D33). Primero planifica y muestra la duración; mueve recién con la confirmación, que trae el destino que vio el operador: si el punto cambió en el medio, no se mueve.
 - **Por qué:**
   - Durante el jog, el estado `S` llega cada 50 ms y el robot sigue frenando con rampa después de soltar la tecla: el punto capturado no sería donde el robot se detiene.
   - Retroceso «borra el último» en el uso normal, que es capturar al final. Si se captura en el medio, borrar el último de la lista borraría otro punto: el que se acaba de capturar es el que el operador quiere corregir.
-  - Las vueltas más cercanas evitan que un punto escrito haga girar J1 o J3 una vuelta entera respecto de sus vecinos, y que una edición chica cambie mucho la pose.
   - Validar los tramos en cada edición tardaría segundos (D55) y rechazaría estados intermedios legítimos mientras se arma la trayectoria.
   - «Ir al punto» arranca, igual que la aproximación, desde una pose que no está en la trayectoria.
 - **Descartado:** capturar en movimiento, que Retroceso borre siempre el último de la lista, y validar la trayectoria entera en cada cambio.
 - **Estado:** Aceptada.
 
-## Pérdida de pasos N2 y falla F1 (issue #15)
+## Pérdida de pasos N2 y falla F1
 
-Decisiones tomadas al modelar el par de los motores en la planta de Webots y la detección de pasos perdidos en el firmware ([ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)). Cómo funciona, los parámetros y su fuente: [Transmisión, N2](TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2). La forma de `EV LOST`: [protocolo](PROTOCOLO_SCARA_1.md#pérdida-de-pasos). La evidencia: [ensayo en Webots](../validation/perdida_pasos/INFORME.md).
+Decisiones del modelo del par de los motores en la planta de Webots y la detección de pasos perdidos en el firmware ([ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)). Cómo funciona, los parámetros y su fuente: [Transmisión, N2](TRANSMISION.md#par-de-los-motores-y-pérdida-de-pasos-n2). La forma de `EV LOST`: [protocolo](PROTOCOLO_SCARA_1.md#pérdida-de-pasos). La evidencia: [ensayo en Webots](../validation/perdida_pasos/INFORME.md).
 
 **D64 · N2: el rotor sigue al campo con la curva par–ángulo y el par de su curva par–velocidad.**
 - **Decisión:**
@@ -659,7 +647,7 @@ Decisiones tomadas al modelar el par de los motores en la planta de Webots y la 
   - La carga de cada motor sale de las masas del proto, con el brazo estirado, sin términos cruzados entre M1 y M2, y con `toolMass`. El peso de J4 pasa por el ACME con eficiencias distintas al subir y al bajar.
   - Webots lleva cada articulación hacia sus rotores con control de velocidad, sin su límite de aceleración y sin apoyarse en los topes. Al volver la corriente, la fuerza de la articulación sube en rampa durante 0,1 s: con J4 apoyado en su tope, ODE le aplica de más en el primer paso que el motor lo saca de ahí. En el mundo de la UCI, el par de las articulaciones de Webots se sube (campos `j1MaxTorque`… de `SCARA.proto`): quien limita es el modelo del motor.
   - Las hojas de datos exactas de los motores del maestro no aparecieron: M1 y M2 toman la familia Minebea 23KM-K3 (23KM-K349B), M3 el STP-42D201-37 y el resto son supuestos típicos declarados, con 24 V en los TB6600.
-- **Por qué:** es lo que hace un paso a paso real cuando se le pide más par del que tiene: pierde pasos en múltiplos de cuatro, y con micropasos el atraso normal es una fracción de paso. La curva par–ángulo da el arranque sin rampa y la carga con la misma regla, sin una cota aparte por cada caso. La investigación del 29/10 proponía usar el control de posición de Webots con par limitado y medir el atraso; pero ese control se atrasa por su propia ganancia y por los límites de velocidad y aceleración del proto (con el jog sin rampa, J1 se atrasaría 1,5°, más que medio ciclo eléctrico), y no puede repartir el par de M1 y M2 entre J1 y J2 con el acople. Un modelo aparte, además, se prueba sin Webots.
+- **Por qué:** es lo que hace un paso a paso real cuando se le pide más par del que tiene: pierde pasos en múltiplos de cuatro, y con micropasos el atraso normal es una fracción de paso. La curva par–ángulo da el arranque sin rampa y la carga con la misma regla, sin una cota aparte por cada caso. Usar el control de posición de Webots con par limitado y medir el atraso no sirve: ese control se atrasa por su propia ganancia y por los límites de velocidad y aceleración del proto (con el jog sin rampa, J1 se atrasaría 1,5°, más que medio ciclo eléctrico), y no puede repartir el par de M1 y M2 entre J1 y J2 con el acople. Un modelo aparte, además, se prueba sin Webots.
 - **Descartado:** el control de posición de Webots con par limitado (falsas pérdidas de pasos), un modelo cuasiestático que compara el par pedido con el disponible en cada paso de 2 ms (la aceleración, estimada de pulsos de a uno, es puro ruido), y N3 (ADR 0006).
 - **Estado:** Aceptada. Los parámetros son provisionales hasta tener las hojas de datos.
 
@@ -675,22 +663,19 @@ Decisiones tomadas al modelar el par de los motores en la planta de Webots y la 
 - **Estado:** Aceptada.
 
 **D66 · N2 confirma los límites de D45.**
-- **Decisión:** se conservan los valores de D45. Con la corriente nominal, el par que piden en su velocidad y aceleración máximas, con 5 kg, queda entre 1,4 veces (M4) y 22 veces por debajo del disponible, y las pruebas lo verifican también con el jog que arranca sin rampa.
-- **Por qué:** dejan margen en todos los motores, y subir los de J1–J3 no se puede sin cambiar los límites articulares del modelo de Webots que también usa el planificador.
-- **Descartado:** subirlos ahora (cambia el modelo y el planificador en paralelo con #11 y #13).
-- **Estado:** Reemplazada por D76: con #11 y #13 cerrados, el margen de N2 se usó para subir los límites.
+- Reemplazada por D76.
 
 **D67 · F1 se provoca bajando la corriente de un driver: `F1 m porcentaje`.**
 - **Decisión:**
   - El canal de instrumentación acepta `F1 m porcentaje` (10 a 100 % de la corriente nominal del driver de Mm) y `SIM` informa, además, la corriente de cada driver y los pasos completos que perdió cada motor según la planta.
   - El banco de ensayo lo ofrece junto a la carga, y muestra la referencia dudosa que informó el firmware.
-- **Por qué:** con la corriente nominal el robot no pierde pasos dentro de D45 (D66), ni con los 5 kg que admite el banco. Un TB6600 regulado de menos es una falla real y común, y la pérdida aparece por las dos causas del enunciado: por carga (M4 al 50 % no sube 5 kg) y por aceleración (M1 al 20 % pierde pasos al arrancar el jog sin rampa).
+- **Por qué:** con la corriente nominal el robot no pierde pasos dentro de los límites de D45 (D76), ni con los 5 kg que admite el banco. Un TB6600 regulado de menos es una falla real y común, y la pérdida aparece por las dos causas del enunciado: por carga (M4 al 50 % no sube 5 kg) y por aceleración (M1 al 20 % pierde pasos al arrancar el jog sin rampa).
 - **Descartado:** forzar pasos perdidos desde el banco sin causa física (no muestra el modelo) y permitir más carga o más aceleración que lo que planifica la URC (cambia el planificador).
 - **Estado:** Aceptada.
 
-## Reproducción de trayectorias (issue #13)
+## Reproducción de trayectorias
 
-Decisiones tomadas al implementar la reproducción desde el gestor de trayectorias: [`urc/playback.py`](../urc/playback.py) y el panel de [`urc/trajectories.js`](../urc/trajectories.js). Pruebas por los endpoints HTTP en [`tests/test_playback.py`](../tests/test_playback.py); la evidencia, en el [ensayo en Webots](../validation/reproduccion/INFORME.md).
+Decisiones de la reproducción desde el gestor de trayectorias: [`urc/playback.py`](../urc/playback.py) y el panel de [`urc/trajectories.js`](../urc/trajectories.js). Pruebas por los endpoints HTTP en [`tests/test_playback.py`](../tests/test_playback.py); la evidencia, en el [ensayo en Webots](../validation/reproduccion/INFORME.md).
 
 **D68 · La reproducción valida todo antes de mover y encola un tramo detrás de otro, con sus esperas, en un solo movimiento.**
 - **Decisión:**
@@ -727,9 +712,9 @@ Decisiones tomadas al implementar la reproducción desde el gestor de trayectori
 - **Descartado:** frenar con una rampa planificada por la URC, reanudar desde cualquier pose y repetir la espera completa.
 - **Estado:** Aceptada.
 
-## QA de la ronda 3
+## Jog con límites, PTP junto a obstáculos y homing
 
-Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con Webots el 31/10/2026: jog lento y sin límites, un PTP que no podía salir de cerca del pedestal, la «Parada inmediata» que no perdía la referencia durante el jog y un homing que no se podía repetir después de frenarlo.
+Decisiones sobre el jog con límites de recorrido y choques, la salida de un PTP desde cerca del pedestal, la «Parada inmediata» durante el jog y un homing que se puede repetir después de frenarlo.
 
 **D70 · Con referencia, el jog va a 10 °/s y la URC lo frena antes del límite de recorrido y de un choque.**
 - **Decisión:**
@@ -739,18 +724,18 @@ Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con W
   - La casilla del jog por motor se llama «Jog por motor (M1–M4)», sin «modo de prueba», y aclara que no afecta al PTP, que siempre mueve las articulaciones (D46).
   - «Copiar la pose actual» recorta cada articulación a su recorrido y avisa: la posición estimada puede quedar un poco afuera.
 - **Por qué:**
-  - A 5 °/s el jog no servía para mostrar. 10 °/s ya lo acepta el firmware y N2 verifica que arranca sin rampa sin perder pasos (D66). Ir más rápido exige una rampa en el firmware.
-  - El jog no verificaba nada con referencia: en reposo, J4 bajó medio milímetro de más sobre su imán de fin (D58 deja entrar el ancho del imán) y la pose copiada quedó fuera del recorrido. Sin referencia sigue protegiendo el Hall (D21).
-  - La página enviaba `JOG STOP` y después `HALT`: el `HALT` llegaba con el robot quieto y conservaba la referencia (D41).
+  - A 5 °/s el jog es demasiado lento para mostrar. 10 °/s ya lo acepta el firmware y N2 verifica que arranca sin rampa sin perder pasos (D76). Ir más rápido exige una rampa en el firmware.
+  - Con referencia, el firmware solo protege con el Hall, y D58 deja entrar el ancho del imán: J4 puede bajar medio milímetro de más sobre su imán de fin y la pose copiada quedar fuera del recorrido. Sin referencia protege el Hall (D21).
+  - Si la página enviara `JOG STOP` antes de `HALT`, el `HALT` llegaría con el robot quieto y conservaría la referencia (D41).
 - **Descartado:** los límites del jog en el firmware (no conoce el recorrido ni los choques, ADR 0005) y un jog que verifica choques con el camino continuo de `first_conflict` (más lento a 20 por segundo, sin ganar nada con lo que avanza en 0,3 s).
-- **Estado:** Aceptada. Desde D75, con referencia, el freno de la URC rige solo para el jog por motor: el articular y el cartesiano son segmentos verificados.
+- **Estado:** Aceptada. Con referencia, el freno de la URC rige solo para el jog por motor: el articular y el cartesiano son segmentos verificados (D75).
 
 **D71 · Un PTP puede salir de la zona de margen de un obstáculo si se aleja.**
 - **Decisión:**
   - `CollisionChecker.first_conflict_leaving`, que usan el PTP de la página y la validación de los tramos PTP, admite un camino rechazado por `first_conflict` si: el inicio está a menos del margen más dos veces la resolución de un obstáculo, la separación crece en muestras cada vez más lejos del inicio (s = 2⁻²⁰ … 1) hasta salir de esa zona, en ese tramo las envolventes no se tocan (sin margen, con la cota continua) y el resto del camino respeta el margen.
   - `clearance` mide la separación quieta: por par de cajas, la mayor distancia en un eje, la misma regla con la que `first_conflict` declara conflicto.
   - El mensaje de un destino fuera del recorrido empieza con «El destino tiene…».
-- **Por qué:** cerca del inicio, la cota continua no puede demostrar la separación si es menor que la resolución, así que todo camino desde ahí se rechazaba. Con pasos chicos el PTP llegó a J2 = 107,33° junto al pedestal y el robot quedó encerrado: solo salía con jog.
+- **Por qué:** cerca del inicio, la cota continua no puede demostrar la separación si es menor que la resolución, así que todo camino desde ahí se rechazaba. Sin esto, un PTP que terminaba junto al pedestal (por ejemplo J2 = 107,33°) dejaba al robot encerrado: solo salía con jog.
 - **Descartado:** bajar la resolución en todo el chequeo (más lento en cada tramo) y prohibir los destinos dentro de esa zona (el robot igual llega con jog o con pasos perdidos).
 - **Estado:** Aceptada.
 
@@ -760,27 +745,27 @@ Decisiones tomadas al corregir lo que encontró la prueba manual de la URC con W
   - El firmware recuerda qué ejes tienen una cuenta de pasos que sale de una referencia (`found_`), aunque un `STOP` o un homing abortado se la hayan quitado: solo la olvida con `HALT` en movimiento, `DISABLE` o un reinicio. Con el Hall activo al empezar, un eje así que está en su flanco retrocede directamente.
   - Si un eje sale hacia la referencia desde un imán (`LEAVE`) y recorre más que su ancho y el margen sin que el Hall se apague, era el imán de la referencia: retrocede lo que avanzó y busca el flanco. `ERR 12 trabado` queda para el Hall que no se apaga en ningún sentido.
 - **Por qué:**
-  - El homing tardaba ~80 s y la vuelta al reposo ~26 s; así, unos 55 s y 14 s. La aproximación lenta, que fija la referencia, no cambia.
+  - Con esas velocidades el homing tarda unos 55 s y la vuelta al reposo unos 14 s. La aproximación lenta, que fija la referencia, no cambia.
   - N2 verifica que la búsqueda arranca y frena sin rampa sin perder pasos, con 5 kg. M4 a 15 mm/s pierde pasos subiendo 5 kg: por eso J4 va como el jog.
   - Frenar el homing después de J4 y repetirlo daba `ERR 12 trabado`: J4, sin referencia y sobre su imán de arriba, salía hacia el tope como si fuera el de abajo. Con `STOP` no se pierden pasos, así que la cuenta sigue diciendo dónde está.
   - El modo rápido de Webots no sirve para esto: los `PING` llegan en tiempo real y el watchdog cuenta tiempo simulado (D26).
 - **Descartado:** conservar la referencia de los ejes encontrados al abortar (D56) y buscar a 15 mm/s también en J4.
 - **Estado:** Aceptada.
 
-## Campaña de validación (issue #18)
+## Campaña de validación
 
-Decisiones tomadas al armar la campaña de validación en Webots del camino nuevo (seam 3 de la spec #2). Los escenarios, la versión ensayada y los resultados: [informe de la campaña](../validation/campana/INFORME.md).
+Decisiones de la campaña de validación en Webots. Los escenarios, la versión ensayada y los resultados: [informe de la campaña](../validation/campana/INFORME.md).
 
-**D73 · La campaña corre los ensayos de cada issue con un solo ejecutor, que registra la versión ensayada.**
+**D73 · La campaña corre los ensayos de cada área con un solo ejecutor, que registra la versión ensayada.**
 - **Decisión:**
-  - [`validation/campana/campana.py`](../validation/campana/campana.py) compila el controlador y corre, uno detrás de otro, los ocho ensayos en Webots: los siete de los issues #6 a #15 y uno nuevo, [`validation/campana/ensayo_webots.py`](../validation/campana/ensayo_webots.py), con lo que ninguno cubría: F3 con un Hall trabado inactivo, F5 en plena reproducción, teach & play con puntos capturados con jog y las trayectorias de demostración.
-  - Escribe `validation/campana/campana.json`: el commit; el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; Webots, Python y el sistema; y, por escenario, condición inicial, resultado esperado, tolerancia, ensayo, paso de su registro y resultado. Los registros van a `validation/campana/registros/`: los de cada issue quedan como estaban. Una corrida parcial (`campana.py homing`) deja los suyos en un temporal y no toca los de la última campaña.
+  - [`validation/campana/campana.py`](../validation/campana/campana.py) compila el controlador y corre, uno detrás de otro, los ensayos en Webots: uno por área (protocolo, transmisión, segmentos, homing, instrumentación, pérdida de pasos y reproducción) y uno propio, [`validation/campana/ensayo_webots.py`](../validation/campana/ensayo_webots.py), con lo que ninguno cubría: F3 con un Hall trabado inactivo, F5 en plena reproducción, teach & play con puntos capturados con jog y las trayectorias de demostración.
+  - Escribe `validation/campana/campana.json`: el commit; el SHA-256 del controlador compilado, del mundo, del proto y de las trayectorias de demostración; Webots, Python y el sistema; y, por escenario, condición inicial, resultado esperado, tolerancia, ensayo, paso de su registro y resultado. Los registros van a `validation/campana/registros/`: los de cada área quedan como estaban. Una corrida parcial (`campana.py homing`) deja los suyos en un temporal y no toca los de la última campaña.
   - Solo registra una campaña completa, con el árbol sin cambios sin commitear y si la versión no cambió mientras corría. Un escenario pasa si todos sus ensayos terminan con `ENSAYO OK`: cada ensayo verifica sus tolerancias con `assert` y se corta en la primera que no se cumple.
 - **Por qué:**
   - Reusar los ensayos evita dos versiones de la misma prueba que después divergen. Cada uno ya mide lo que dice su informe, con su tolerancia.
   - El controlador se compila en cada máquina y no se versiona: el commit solo no dice qué binario se ensayó. Compilar antes de correr hace que salga de ese commit, y el SHA-256 lo identifica.
   - Los ensayos se corren de a uno porque Webots tiene que ir a tiempo real (D26): dos a la vez lo atrasan, y los que miden con el reloj de la PC (el watchdog de F4, por ejemplo) dejarían de valer.
-- **Descartado:** copiar los ensayos en uno solo (duplica y diverge), correrlos en paralelo y volver a escribir los registros de cada issue (D25: la evidencia de cada issue no se altera).
+- **Descartado:** copiar los ensayos en uno solo (duplica y diverge), correrlos en paralelo y volver a escribir los registros de cada área.
 - **Estado:** Aceptada.
 
 **D74 · Las trayectorias de demostración se versionan en `trayectorias/`, la carpeta por defecto de la URC.**
@@ -830,20 +815,20 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - **LIN:** 150 mm/s sobre la recta con 300 mm/s² (la rampa sigue durando 0,5 s), y 90 °/s de rumbo con 140 °/s², las de M1. La componente vertical de la recta no pasa de la de M4, también escalada por la fracción: una recta vertical al 100 % va a 40 mm/s.
   - La velocidad global (D22) y la de cada tramo siguen siendo porcentajes de estos máximos. El jog, el homing y el tramo de aproximación no cambian.
 - **Por qué:**
-  - D66 dejaba entre 6,8 y 22 veces de margen con 5 kg: el robot usaba un 6 % de la velocidad de esquina de M1. Un PTP de 90° de J1 tardaba 5,1 s; ahora, 1,6 s.
+  - Los límites iniciales dejaban entre 6,8 y 22 veces de margen con 5 kg: el robot usaba un 6 % de la velocidad de esquina de M1, y un PTP de 90° de J1 tardaba 5,1 s (con los de D76, 1,6 s).
   - 2 veces es un margen usual al dimensionar un paso a paso en lazo abierto: cubre lo que el modelo no tiene (resonancias, N3) y la dispersión de los supuestos de N2. Las pruebas de N2 lo verifican además simulando: ningún paso perdido y menos de un paso completo de atraso, también con 5 kg.
   - Con el modelo por debajo de los motores, Webots saturaba la articulación y la física se atrasaba del firmware (validación de segmentos). Por encima, el plan lo limitan los motores, como en el robot real.
   - Atado a J4, el LIN quedaba en 40 mm/s y casi no cambiaba. Limitar solo la componente vertical conserva lo que D54 quería (una recta vertical nunca supera J4) sin frenar las horizontales. No es bajar la velocidad por un punto: la componente vertical es la misma en toda la recta. Las rectas que piden más que un motor se siguen rechazando con su motivo (D55).
 - **Consecuencias:**
   - Esc y `STOP` frenan con la misma rampa (D52): desde 90 °/s, J1 tarda 0,64 s y recorre 29°, unos 25 cm con la herramienta a 0,5 m del eje. Al 50 % de velocidad global, 0,32 s y 7°. Para probar algo nuevo, conviene empezar con la velocidad global baja.
   - La tolerancia del LIN pasa de 0,069 a 0,127 mm: la cuerda de cada segmento crece con la velocidad de M1 y M2 (1,8° en 20 ms).
-  - F1 por aceleración: con el driver de M1 al 20 % y 5 kg, ahora también pierde pasos la rampa del planificador, no solo el jog sin rampa.
-  - En el robot real los números siguen saliendo de los supuestos de N2: hay que confirmarlos con las hojas de datos o midiendo antes de usarlos al 100 %.
+  - F1 por aceleración: con el driver de M1 al 20 % y 5 kg, también pierde pasos la rampa del planificador, no solo el jog sin rampa.
+  - En el robot real los números salen de los supuestos de N2: hay que confirmarlos con las hojas de datos o midiendo antes de usarlos al 100 %.
 - **Descartado:**
   - Llegar al par disponible (margen 1): cualquier error de los supuestos pierde pasos.
   - J4 a 50 mm/s: son los 10 000 pulsos/s del Timer1, sin margen.
   - Subir el jog: arranca sin rampa y necesita una en el firmware (D70).
-- **Estado:** Aceptada. Reemplaza los valores de D45 y la conclusión de D66.
+- **Estado:** Aceptada. Fija los valores de D45 y reemplaza a D66.
 
 ## Mensajes de rechazo
 
@@ -853,22 +838,22 @@ Decisiones tomadas al armar la campaña de validación en Webots del camino nuev
   - Qué pasa es concreto: la articulación o el motor («M1 (J1) no da la aceleración que pide la recta», «J3 sale de su recorrido al 34 % de la recta») o la parte del robot y el obstáculo («el efector puede chocar con la pieza Torre de la base»), sin el sufijo del CAD.
   - La URC responde `{"error": <mensaje>, "detail": <porqué>}`, y la página muestra el porqué plegado bajo «Por qué», en la reproducción, en «Ir al punto» y en el PTP manual. El porqué da los valores (J2 de cada extremo, el valor pedido contra el máximo, el porcentaje de la recta) y las alternativas. En la vuelta del loop, explica que usa el tipo y la velocidad del punto 1, y que sin loop a ese punto se llega con el tramo de aproximación, que es PTP.
   - Una sola sugerencia en el mensaje, según el motivo. Por codo, alcance o límite en el camino: PTP. Por velocidad: bajar la del punto o la global; el porqué agrega que, si no alcanza (cerca del brazo estirado puede no alcanzar), PTP. Por choque: PTP o un punto intermedio; en la aproximación y en un PTP suelto, mover con jog. Un destino fuera del recorrido: corregir el punto.
-  - «Ir al punto», el PTP manual y «Estacionar» validan con `check_ptp` y dan el mismo tipo de mensaje («Movimiento PTP (pose actual → punto 2): …»). `planner.check_target` se elimina.
+  - «Ir al punto», el PTP manual y «Estacionar» validan con `check_ptp` y dan el mismo tipo de mensaje («Movimiento PTP (pose actual → punto 2): …»).
   - Los recorridos se dicen en grados y mm, no en centésimas.
-- **Por qué:** con un LIN en el punto 1, la reproducción simple funcionaba y el loop no: el punto 1 se alcanza con el tramo 0, que es PTP, y su LIN solo rige en la vuelta. El mensaje decía «Tramo de vuelta» y «Usá un tramo PTP» sin decir de qué punto a qué punto ni cuál cambiar, y el operador tenía que probar. Con toda la explicación en el mensaje quedaba un párrafo largo: lo que hace falta para actuar va en una línea, y el porqué queda a un click.
+- **Por qué:** con un LIN en el punto 1, la reproducción simple funciona y el loop no: el punto 1 se alcanza con el tramo 0, que es PTP, y su LIN solo rige en la vuelta. Un mensaje como «Tramo de vuelta… Usá un tramo PTP», sin decir de qué punto a qué punto ni cuál cambiar, obliga al operador a probar. Con toda la explicación en el mensaje sería un párrafo largo: lo que hace falta para actuar va en una línea, y el porqué queda a un click.
 - **Estado:** Aceptada. Amplía el formato del rechazo de D55 y D68.
 
-## QA del banco de ensayo
+## Banco de ensayo: carga, pasos perdidos y avisos
 
-Decisiones tomadas al revisar con Webots los pasos de la QA humana de las fallas (R6), con los límites de D76. El recorrido corregido y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana).
+Decisiones sobre la carga, el contador de pasos perdidos y el aviso del homing abortado, con los límites de D76. El recorrido de la QA humana y la evidencia: [validación del canal de instrumentación](../validation/instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana).
 
 **D85 · La carga del banco es la que se agrega a la herramienta: de 0 a 4850 g, para no pasar de 5 kg.**
 - **Decisión:**
   - `CARGA gramos` deja `toolMass` del `SCARA.proto` en 0,15 kg (el pistón y su soporte) más la carga, y `SIM` informa la carga sin la herramienta. 0 g es la herramienta sola, que es como arranca el mundo.
   - El banco acepta de 0 a 4850 g: con la herramienta, 5 kg, la masa con la que D76 verificó los límites. El tope está en `TOOL_MAX` del controlador (`stepper.h`) y en `LOAD_MAX` de `urc/instrumentation.py`.
 - **Por qué:**
-  - `CARGA 0` dejaba `toolMass` en 0, y Webots no acepta una masa nula: la consola avisaba «valor inválido» y la herramienta seguía con la carga anterior. Sacar la carga no funcionaba.
-  - El panel decía «carga» y mostraba la masa de la herramienta: sin carga marcaba 150 g, y para sacarla había que escribir 150.
+  - Con `toolMass` en 0, Webots avisa «valor inválido» (no acepta una masa nula) y la herramienta sigue con la carga anterior: sacar la carga no funcionaría.
+  - Un panel que diga «carga» y muestre la masa de la herramienta marcaría 150 g sin carga, y para sacarla habría que escribir 150.
   - Con 5 kg encima de la herramienta (5,15 kg), el jog de J4, que arranca sin rampa, se atrasa 1,006 pasos completos con la corriente nominal: no pierde pasos, pero pasa el criterio de las pruebas de N2 (menos de un paso completo).
 - **Descartado:** la carga como masa total, con un mínimo de 150 g (lo que se quiere al escribir 0 es sacarla), y 5000 g de carga (pasa el criterio de los límites).
 - **Estado:** Aceptada. Corrige la carga de D61.
@@ -878,21 +863,21 @@ Decisiones tomadas al revisar con Webots los pasos de la QA humana de las fallas
   - El contador de Mj del banco vuelve a cero con el `EV HOMED j` del firmware (J1 → M1, J2 → M2, J3 → M3, J4 → M4) y, como antes, cuando el motor recupera la corriente (`ENABLE`, F2 apagada). El controlador lo ve en lo que escribe el firmware, también con F4.
   - No lo limpian `ZERO` ni el homing de otro eje. La planta no cambia: el rotor sigue donde está, solo cambia desde dónde se cuenta.
   - El número es la verdad del simulador: los pasos completos que el motor se corrió de los pulsos que le contó el firmware desde que esa cuenta empezó a valer. Siempre es múltiplo de 4 (D64); positivo, el eje quedó más adelante de lo que contó el firmware.
-- **Por qué:** el banco compara la verdad con lo que sabe el robot. Después del homing la cuenta del firmware vuelve a salir del imán, y lo que se perdió antes ya no está en ella: un «M1: 4» que seguía ahí parecía una falla sin corregir, mientras la columna «Diferencia» volvía a cero.
-- **Descartado:** acumularlo hasta recargar el mundo (era lo que hacía, y confundía), un botón para ponerlo en cero (otra orden de `scara-sim/1` para lo que ya hace el homing) y limpiarlo con `ZERO` (la referencia manual no mide nada: la diferencia sigue si el robot no estaba en el reposo).
+- **Por qué:** el banco compara la verdad con lo que sabe el robot. Después del homing la cuenta del firmware vuelve a salir del imán, y lo que se perdió antes ya no está en ella: un «M1: 4» que siguiera ahí parecería una falla sin corregir, mientras la columna «Diferencia» vuelve a cero.
+- **Descartado:** acumularlo hasta recargar el mundo (confunde), un botón para ponerlo en cero (otra orden de `scara-sim/1` para lo que ya hace el homing) y limpiarlo con `ZERO` (la referencia manual no mide nada: la diferencia sigue si el robot no estaba en el reposo).
 - **Estado:** Aceptada. Precisa D67.
 
 **D87 · El homing abortado se dice en el mensaje de estado; el `BOOT` inesperado va también a Errores.**
 - **Decisión:**
   - Si el homing aborta (`ERR 11`, `ERR 12`, `ERR 4`, Stop, la UCI no lo empieza o se detiene sin terminar), el mensaje de estado dice «Homing abortado, sin referencia:» y la causa, por ejemplo «ERR 12 trabado: el Hall no se apagó, está trabado activo».
   - El `BOOT` a mitad de una conexión (F5) se agrega, además del mensaje, a la lista de errores, como `EV LOST` (D65).
-- **Por qué:** en la QA de F3, el homing abortaba con `ERR 12` pero el mensaje seguía en «Homing en curso: J4, J1, J2 y J3»; el aborto solo se veía en la línea del homing y en Errores. El aviso de F5 vivía en el mensaje de estado, una sola línea que la siguiente orden pisa.
+- **Por qué:** con F3, el homing aborta con `ERR 12`; si el mensaje siguiera en «Homing en curso: J4, J1, J2 y J3», el aborto solo se vería en la línea del homing y en Errores. El aviso de F5 en el mensaje de estado, una sola línea, lo pisa la orden siguiente.
 - **Descartado:** una notificación aparte en la página: es trabajo de la interfaz, y con esto la URC ya da el texto.
 - **Estado:** Aceptada.
 
-## Interfaz de operación (QA de la ronda 5)
+## Interfaz de operación
 
-Decisiones tomadas al rehacer la página de la URC después de la QA humana de la ronda 5: [`urc/index.html`](../urc/index.html), [`urc/avisos.js`](../urc/avisos.js), [`urc/trajectories.js`](../urc/trajectories.js), [`urc/banco.js`](../urc/banco.js) y el registro de eventos ([`urc/events.py`](../urc/events.py)). Pruebas en [`tests/test_eventos.py`](../tests/test_eventos.py).
+Decisiones de la página de la URC: [`urc/index.html`](../urc/index.html), [`urc/avisos.js`](../urc/avisos.js), [`urc/trajectories.js`](../urc/trajectories.js), [`urc/banco.js`](../urc/banco.js) y el registro de eventos ([`urc/events.py`](../urc/events.py)). Pruebas en [`tests/test_eventos.py`](../tests/test_eventos.py).
 
 **D78 · La página separa lo que vale ahora, lo que hay que ver ahora y lo que pasó: barra de estado, avisos emergentes y un registro de eventos que lleva la URC.**
 - **Decisión:**
@@ -900,7 +885,7 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
   - **Registro de eventos**, que lleva la URC ([`urc/events.py`](../urc/events.py)). Anotan la sesión (cada mensaje; cada `ERR`, `EV LOST` y `EV HOMED`; las líneas que no respetan `scara/1`; el homing abortado; el estado `S` que deja de llegar por más de 1 s y cuando vuelve), el servidor HTTP (cada orden que mueve o frena el robot o cambia el banco, antes de ejecutarla, y cada orden rechazada, con su error y, si lo trae, su detalle) y el banco (D79). Cada evento lleva número, hora de la PC, nivel (info, ok, aviso o error) y quién lo produjo. Uno igual al anterior dentro de 3 s suma una repetición («×11»): el jog contra un límite se renueva cada 150 ms. La página lo pide con `/api/eventos?desde=versión` y lo muestra a la derecha, el más nuevo arriba, con un filtro de avisos y errores.
   - **Avisos emergentes**, abajo a la derecha, para lo que no es info. Salen del registro, así que dicen su número y su hora. Una orden rechazada y un aviso se van a los 10 s; una confirmación, a los 5 s; un error (`ERR`, `EV LOST`, `BOOT` inesperado, UCI desconectada, enlace cortado) queda hasta cerrarlo o hasta que se resuelve: el enlace vuelve, el homing limpia la duda. El detalle de un rechazo va plegado.
   - Cada grupo de botones conserva su línea de resultado: el aviso emergente es para verlo ahora; la línea, para saber qué pasó con ese botón.
-- **Por qué:** en la QA de la ronda 5, después de «Aplicar» nada decía qué estaba vigente; con F1 en M4, el aviso de pérdida de pasos de «Estacionar» quedaba 3000 px más abajo, en un panel de errores sin hora ni número que no distinguía dos `ERR` iguales; y «último estado S hace 0.0 s» no le decía nada al operador. El registro lo lleva la URC porque la página consulta cada 200 ms: comparando estados, perdería lo que pasa entre dos consultas, no distinguiría dos eventos iguales y se borraría al recargar.
+- **Por qué:** el operador necesita ver qué está vigente, ver ya los avisos (con F1 en M4, la pérdida de pasos de «Estacionar» tiene que aparecer a la vista, con hora y número que distingan dos `ERR` iguales) y saber qué pasó, y «último estado S hace 0.0 s» no le dice nada. El registro lo lleva la URC porque la página consulta cada 200 ms: comparando estados, perdería lo que pasa entre dos consultas, no distinguiría dos eventos iguales y se borraría al recargar.
 - **Descartado:** armar el historial en la página; un aviso emergente por cada evento (el jog contra un límite daría uno cada 150 ms); `alert()` (frena la página y el jog).
 - **Estado:** Aceptada.
 
@@ -909,7 +894,7 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
   - Los campos del banco son lo pedido. Un campo editado queda marcado y la página no lo pisa hasta aplicarlo; al lado de cada control dice lo vigente («vigente: 150 g»), «sin aplicar» si difiere, y «aplicando…» hasta la confirmación. Arriba del panel y en la barra de estado están la carga y las fallas activas.
   - La URC confirma cada orden que cambia el estado del simulador (la carga, F1 de cada motor, F2, F3 de cada articulación y F4): espera que el estado `SIM` muestre el valor pedido. Si llega, anota el cambio, «Carga en la herramienta: 150 g → 500 g»; si en 2 s no llegó, «No se aplicó Carga en la herramienta: se pidió 0 g y el simulador sigue en 150 g». Los cambios que nadie pidió, como los de F5 o de recargar el mundo, se anotan como información. F5 y la recarga no tienen qué confirmar: se ven en el `BOOT` y en la reconexión.
   - La posición simulada y la diferencia con la estimada pasan junto a la estimada, a la derecha. La diferencia se marca en rojo desde un paso completo, y solo en los ejes referenciados: sin referencia, la estimada no dice dónde está el eje.
-- **Por qué:** en la QA, «Aplicar» no decía si se había aplicado, y un porcentaje editado volvía al valor anterior al hacer click afuera: el polling lo pisaba cada 250 ms. Además, el simulador puede no aplicar una orden (en la QA, la carga de 0 g no se aplicaba), y el banco tiene que decirlo.
+- **Por qué:** «Aplicar» tiene que decir si se aplicó, y un porcentaje editado no puede volver al valor anterior porque el polling lo pise cada 250 ms. Además, el simulador puede no aplicar una orden (por ejemplo, una carga de 0 g que Webots rechace), y el banco tiene que decirlo.
 - **Descartado:** confirmar solo en la página (el registro no lo sabría) y dejar de actualizar el panel mientras tiene el foco (tampoco mostraría lo vigente).
 - **Estado:** Aceptada.
 
@@ -918,7 +903,7 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
   - Dos columnas. A la derecha, fijas al desplazarse, la posición estimada (con la simulada, D79) y el registro de eventos (D78). A la izquierda, en el orden de uso: motores y referencia, con el paso que falta para operar (habilitar los motores, hacer homing), jog, ir a una pose, trayectoria y reproducción, banco y diagnóstico. Con menos de 1000 px de ancho, una sola columna.
   - Un botón que la URC rechazaría por el estado del robot queda deshabilitado, con el motivo en su ayuda y en una línea junto a él: «Homing…» sin corriente; «Estacionar…», «Ir a la pose…», capturar, sobrescribir e «Ir al punto…» sin referencia; reproducir sin referencia, con la referencia dudosa (D68) o sin puntos: «Reproducir bloqueado: la referencia de J4 es dudosa por pérdida de pasos; hacé homing.». La URC lo sigue verificando.
   - «Tráfico scara/1» queda plegado en «Diagnóstico», con una línea que dice qué es. Los `ERR` y las líneas no entendidas van al registro de eventos.
-- **Por qué:** en la QA, la página medía 3700 px en una sola columna, y los botones más usados quedaban lejos de sus mensajes. Con la referencia dudosa, reproducir parecía permitido hasta que la URC lo rechazaba. El tráfico del protocolo no le dice nada al operador.
+- **Por qué:** en una sola columna la página medía 3700 px y los botones más usados quedaban lejos de sus mensajes. Con la referencia dudosa, reproducir parecería permitido hasta que la URC lo rechazara. El tráfico del protocolo no le dice nada al operador.
 - **Descartado:** pestañas (esconderían la posición o el banco mientras se usa el otro) y deshabilitar por estados de un instante, como el robot en movimiento (los botones parpadearían durante el jog; eso lo rechaza la URC con su motivo).
 - **Estado:** Aceptada.
 
@@ -928,7 +913,7 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
 - **Decisión:**
   - Cada punto guarda X, Y, Z (mm) y rumbo (°), al micrón, más cómo se llega: tipo, velocidad y espera. Capturar, sobrescribir y escribir en J1–J4 guardan el punto de herramienta de esa pose; el codo y las vueltas de J1 y J3 se descartan.
   - Las articulaciones de cada punto se resuelven en cadena, cada vez que la lista cambia: el punto 1 empieza por el codo preferido (J2 negativo, D31) y cada uno de los siguientes mantiene el del anterior. Si con ese codo queda fuera de alcance o de los límites, o choca en reposo, toma el otro. J1 y J3 dan la vuelta más cercana al punto anterior. Si un cambio deja algún punto sin solución, se rechaza entero y dice qué punto y por qué.
-  - Un LIN nunca cambia el codo por su cuenta ni se convierte en PTP: si el punto solo se alcanza con el otro codo, la validación lo rechaza antes de mover y sugiere PTP (D14), como antes.
+  - Un LIN nunca cambia el codo por su cuenta ni se convierte en PTP: si el punto solo se alcanza con el otro codo, la validación lo rechaza antes de mover y sugiere PTP (D14).
   - Archivo `scara-trayectoria` versión 2: cada punto lleva `tool`, `kind`, `speed` y `wait`. La versión 1 se sigue cargando: mandan sus `joints`, de los que sale el punto de herramienta, y su codo se descarta. Las demos de `trayectorias/` se reescribieron en la versión 2.
   - La cinemática inversa de una pose escrita admite media centésima de holgura en los límites: con el redondeo al micrón, un punto capturado justo en un tope (J4 = 0) no queda inalcanzable.
 - **Por qué:** el profesor pidió que el robot llegue a P1 desde donde esté, no con el mismo codo con que se grabó. Guardar el codo hacía fallar LIN entre puntos alcanzables con el mismo codo solo porque se grabaron con codos distintos, y obligaba a elegir el codo al escribir un punto y a editarlo en J1–J4 para cambiarlo.
@@ -937,7 +922,7 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
 - **Estado:** Aceptada. Reemplaza el codo de D13, D34 y D62; cambia la demo del LIN imposible de la defensa.
 
 
-## Pruebas físicas del entorno (spec #45)
+## Pruebas físicas del entorno
 
 **D89 · El contacto carga al rotor y el banco solo observa.**
 - **Decisión:** el contacto en Webots se transmite al modelo N2 del rotor como esfuerzo externo, con el acople M1/M2 y la transmisión. Los accionamientos ODE conservan capacidades individuales de M1 y M2; se cancela en ARM la reacción del accionamiento relativo J2 para representar la correa referida a la bancada (feedback con un tick de retraso). Solo el rotor retenido más de un paso completo recibe la reacción, descontando la carga normal que N2 ya representa. El rotor bloqueado queda ligado a la posición física simulada; se conservan los ciclos eléctricos perdidos al quitar el obstáculo. La capacidad de empuje hacia abajo de J4 proviene del par disponible de M4 por el ACME con la eficiencia directa (`0,67`, ~73,7 N al 100 %), mientras que para sostener o subir contra la gravedad el accionamiento ODE usa la capacidad de retención inversa del husillo (`0,55`, ~89,9 N al 100 % y ~45,0 N al 50 %), consistente con `loadOf(3)` de N2.
@@ -969,11 +954,11 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
 - **Decisión:**
   - **J1–J3:** dos imanes de neodimio de Ø8 × 3 mm pegados por fuera de la pared del carretel que gira con la pieza (A-CarretelSup en el brazo, B-CarretelInf en el antebrazo, R-CarretelSup en el conjunto Z), a media altura de la pared y lejos del paso radial que el carretel tiene hacia 0°. El KY-003 mira a esa pared desde 180°, con 1,5 mm de luz, en una escuadra de PLA atornillada a la pieza fija: la tapa de la torre (J1), la cara de abajo del brazo (J2) y la de arriba del antebrazo (J3).
   - **J4:** los imanes van pegados por dentro de la pared del pistón, a 120 mm uno de otro, y el KY-003 cuelga del buje exterior con una abrazadera, frente a la cara del pistón y justo debajo del buje.
-  - El KY-003 es el modelo del CAD (`Modelos3D/KY-003.SLDPRT`, hasta ahora sin colocar), con la cabeza del TO-92 hacia el imán. Las escuadras, la abrazadera y los imanes son piezas nuevas: solo están en Webots (`tools/generate_world.py`), no en el CAD.
+  - El KY-003 es el modelo del CAD (`Modelos3D/KY-003.SLDPRT`, que no está colocado en el ensamble), con la cabeza del TO-92 hacia el imán. Las escuadras, la abrazadera y los imanes son piezas nuevas: solo están en Webots (`tools/generate_world.py`), no en el CAD.
   - Los flancos no cambian (`HALL_EDGE`): el alcance de cada imán se recalcula con la nueva distancia al sensor.
   - El pistón se toma de aluminio, que no es magnético: el KY-003 de J4 detecta los imanes a través de su pared de 1,2 mm, a unos 4 mm. En J1–J3 los separa 1,5 mm de aire.
 - **Por qué:**
-  - Antes los sensores y los imanes estaban en radios elegidos solo por la zona activa (60, 40 y 30 mm) y quedaban flotando o metidos dentro de otras piezas; en J3, sobre el plano de la correa.
+  - Poner los sensores y los imanes en radios elegidos solo por la zona activa (60, 40 y 30 mm) los dejaba flotando o metidos dentro de otras piezas; en J3, sobre el plano de la correa.
   - La pared de los carreteles mide 2 mm: un imán no entra embutido, pero se puede pegar por fuera.
   - En J4, el pistón es lo único que pasa frente a un punto fijo en los 120 mm de recorrido. Una bandera atada al soporte del efector tendría que subir 120 mm por encima del sensor y con J4 arriba chocaría con el antebrazo. Por fuera del pistón, los imanes rozarían el cuerpo Z: el pistón corre adentro con 1 mm de juego.
   - Se verificó con las mallas del CAD que ninguna pieza nueva toca a otra en todo el recorrido de su articulación (la menor luz es de 1 mm, entre los imanes de J2 y la mitad fija de su carretel).

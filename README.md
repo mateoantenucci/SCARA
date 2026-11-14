@@ -24,38 +24,38 @@ J1 mueve el brazo, J2 el antebrazo, J3 gira la muñeca y J4 desplaza el conjunto
 
 - Python 3, Webots y un navegador. Para usarlo no hace falta OCP, SolidWorks ni herramientas CAD.
 - Para compilar el controlador alcanza con el `g++` que trae Webots: [compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
-- La campaña de validación vigente (con escenarios C1–C4) se corrió en **macOS con Webots R2025a** (D19, D73), tras una primera campaña histórica en Windows 11.
+- La campaña de validación vigente (con escenarios C1–C4) se corrió en **macOS con Webots R2025a** (D19, D73).
 
 ## Copia del proyecto
 
-El [repositorio privado](https://github.com/mateoantenucci/SCARA) conserva código, originales CAD, derivados, documentación y evidencia. Para acceder, cada integrante acepta la invitación con su cuenta de GitHub:
+El [repositorio privado](https://github.com/mateoantenucci/SCARA) conserva código, originales CAD, derivados, documentación y evidencia:
 
 ```sh
 git clone https://github.com/mateoantenucci/SCARA.git
 cd SCARA
 ```
 
-Trabajar en una rama propia y proponer los cambios con un pull request. No subir credenciales, entornos de Python ni archivos de sesión. No convertir los saltos de línea de archivos existentes: sus bytes identifican la evidencia mediante SHA-256.
+No conviertas los saltos de línea de los archivos: sus bytes identifican la evidencia mediante SHA-256.
 
 ## Primera ejecución, paso a paso
 
 1. Compilá el controlador `scara_uci` una vez, y de nuevo cada vez que cambie el firmware: [compilar el controlador](docs/UCI_WEBOTS.md#compilar-el-controlador).
 2. Desde la raíz del proyecto, levantá la URC: `python3 -m urc.app` (Windows: `python -m urc.app`). Dejá esa terminal abierta.
 3. Abrí [la página de la URC](http://127.0.0.1:8766) en el navegador.
-4. En Webots, elegí **File → Open World**, abrí [webots/worlds/scara_uci.wbt](webots/worlds/scara_uci.wbt) y ejecutá en **tiempo real** (botón Real-time, verificando que el indicador de velocidad se mantenga en ~1× o menor, evitando el modo Fast mientras la URC esté conectada: el watchdog del firmware y los pings de la URC requieren sincronización en tiempo real, ver [UCI en Webots](docs/UCI_WEBOTS.md#cómo-funciona)). El controlador se conecta a la URC por TCP 9000.
+4. En Webots, elegí **File → Open World**, abrí [webots/worlds/scara_uci.wbt](webots/worlds/scara_uci.wbt) y ejecutá en **tiempo real** (botón Real-time, con el indicador de velocidad en ~1× o menos). No uses el modo Fast con la URC conectada: el watchdog del firmware y los pings de la URC requieren tiempo real ([UCI en Webots](docs/UCI_WEBOTS.md#cómo-funciona)). El controlador se conecta a la URC por TCP 9000.
 5. Seguí [Usarlo](docs/UCI_WEBOTS.md#usarlo): habilitar motores, homing, jog, trayectorias, fallas y carga por el banco de ensayo.
 
 Las tres trayectorias de demostración están en `trayectorias/`, la carpeta por defecto de la URC. Para el robot real, el mismo firmware compila para el UNO: [UCI en el Arduino UNO](docs/ARDUINO_UNO.md).
 
 ## Qué se validó y qué falta
 
-La [campaña de validación](validation/campana/INFORME.md) ([mapa de la evidencia](validation/README.md)) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la [sección 10 del maestro](docs/maestro/SCARA-Master-v2.md#10-validación). Una prueba anterior no valida automáticamente una versión nueva.
+La [campaña de validación](validation/campana/INFORME.md) ([mapa de la evidencia](validation/README.md)) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la [sección 10 del maestro](docs/maestro/SCARA-Master-v2.md#10-validación). Una prueba no valida automáticamente una versión distinta.
 
-Faltan, entre otras cosas (maestro, secciones 9 y 10):
+Quedan fuera del alcance, entre otras cosas (maestro, secciones 9 y 10):
 
 - Probar el firmware con la placa real; solo se probó el camino serie con un puerto virtual y socat (D49).
 - Sustituir parámetros provisionales por datos de materiales, componentes y motores con hoja de datos.
-- Las propuestas P1 (microstepping) y P2 (sensores Hall) esperan la revisión del profesor.
+- Las propuestas P1 (microstepping) y P2 (sensores Hall) quedan para la revisión del profesor.
 
 ## Pruebas y lectura adicional
 
@@ -77,5 +77,3 @@ En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. 
 | Transmisión y motores | [Transmisión](docs/TRANSMISION.md) |
 | Del CAD a Webots | [Conversión, ensambles e integración](docs/cad/DEL_CAD_A_WEBOTS.md), [propiedades](docs/cad/PROPIEDADES.md) y [montaje y colisiones](docs/cad/MONTAJE_Y_COLISIONES.md) |
 | Alcance, pendientes y vocabulario | Secciones 9 y 10 del [maestro v2](docs/maestro/SCARA-Master-v2.md) y [glosario](GLOSSARY.md) |
-
-La documentación del banco provisional `scara-dev/1`, que este sistema reemplazó, está en [`docs/historico/`](docs/historico/README.md). La evidencia de etapas previas se sacó del árbol para la entrega y se recupera del tag `pre-limpieza` ([`validation/historico/`](validation/historico/README.md)).

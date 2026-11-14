@@ -1,4 +1,4 @@
-# Reproducción de trayectorias en Webots (issue #13)
+# Reproducción de trayectorias en Webots
 
 Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots, el microstepping por defecto (1/8) y la planta N2.
 
@@ -9,6 +9,8 @@ Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scar
 ```sh
 python validation/reproduccion/ensayo_webots.py validation/reproduccion/ensayo_webots.log
 ```
+
+La evidencia vigente es la de la campaña ([`campana/registros/`](../campana/registros/)); este informe describe la corrida del ensayo por separado.
 
 Trayectoria mixta, armada con el gestor (en grados y mm; cada punto dice cómo se llega a él):
 

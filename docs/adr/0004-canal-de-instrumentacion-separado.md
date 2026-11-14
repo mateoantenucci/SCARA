@@ -4,7 +4,7 @@ status: accepted
 
 # Lo que solo existe en simulación va por un canal aparte
 
-El protocolo entre la URC y la UCI solo transporta lo que un Arduino real podría saber: pasos, Hall y modo. Todo lo exclusivo de la simulación viaja por un canal de instrumentación separado, otro puerto TCP que el robot real no tiene: posición física real, inyección de fallas, carga y recarga del mundo. Así la URC no puede depender sin querer de información que el hardware no da, y la interfaz separa a la vista la verdad del simulador de lo que sabe el robot. El protocolo provisional `scara-dev/1` mezclaba ambas cosas en el mismo mensaje de estado. Decidido el 29/10/2026.
+El protocolo entre la URC y la UCI solo transporta lo que un Arduino real podría saber: pasos, Hall y modo. Todo lo exclusivo de la simulación viaja por un canal de instrumentación separado, otro puerto TCP que el robot real no tiene: posición física real, inyección de fallas, carga y recarga del mundo. Así la URC no puede depender sin querer de información que el hardware no da, y la interfaz separa a la vista la verdad del simulador de lo que sabe el robot.
 
 ## Consequences
 

@@ -1,6 +1,6 @@
 # Cómo llega el movimiento de los motores a las articulaciones
 
-El maestro identifica transmisiones nominales. En el camino nuevo (UCI en Webots), la planta simulada las implementa a nivel N1: el firmware da pasos a los motores y la planta los convierte en movimiento de las articulaciones ([abajo](#transmisión-n1-en-el-firmware-y-en-la-planta)). A nivel N2, cada motor tiene el par que le da su curva par–velocidad y pierde pasos si la carga o la aceleración lo superan ([N2](#par-de-los-motores-y-pérdida-de-pasos-n2)). En el banco viejo (`scara.wbt`), Webots todavía acciona directamente las cuatro articulaciones. Las poleas visuales no implementan por sí solas la transmisión ni cambian masas o esfuerzos. Las de motor (20T de M1, M2 y M3) y la 80T del eje interior giran sobre su eje solo como visual: la planta les pone el ángulo que dan las articulaciones (`PULLEYS` en `scara_uci.cpp`). Las mallas de esas poleas son lisas, así que cada una lleva una franja amarilla en la llanta para que el giro se vea; no es geometría del CAD. Quedan dentro de la torre y del antebrazo: el campo `housingTransparency` del PROTO (0 a 1, en el árbol de escena de Webots) vuelve transparentes esas carcasas. Las correas no se dibujan, y la fase de los dientes es la guardada en el CAD, no una resuelta.
+El maestro identifica transmisiones nominales. En la UCI en Webots, la planta simulada las implementa a nivel N1: el firmware da pasos a los motores y la planta los convierte en movimiento de las articulaciones ([abajo](#transmisión-n1-en-el-firmware-y-en-la-planta)). A nivel N2, cada motor tiene el par que le da su curva par–velocidad y pierde pasos si la carga o la aceleración lo superan ([N2](#par-de-los-motores-y-pérdida-de-pasos-n2)). Las poleas visuales no implementan por sí solas la transmisión ni cambian masas o esfuerzos. Las de motor (20T de M1, M2 y M3) y la 80T del eje interior giran sobre su eje solo como visual: la planta les pone el ángulo que dan las articulaciones (`PULLEYS` en `scara_uci.cpp`). Las mallas de esas poleas son lisas, así que cada una lleva una franja amarilla en la llanta para que el giro se vea; no es geometría del CAD. Quedan dentro de la torre y del antebrazo: el campo `housingTransparency` del PROTO (0 a 1, en el árbol de escena de Webots) vuelve transparentes esas carcasas. Las correas no se dibujan, y la fase de los dientes es la guardada en el CAD, no una resuelta.
 
 | Motor | Qué mueve | Transmisión indicada en el maestro |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ Los seis carreteles de canal anular son piezas diferentes de las poleas dentadas
 
 ## Cálculos nominales y qué permiten concluir
 
-El maestro indica 400 impulsos por vuelta de motor. Son valores de configuración nominal, sin modelado de impulsos en el banco actual.
+El maestro indica 400 impulsos por vuelta de motor. Son valores de configuración nominal, sin modelado de impulsos.
 
 | Caso | Resultado nominal |
 | --- | --- |
@@ -42,7 +42,7 @@ Para una etapa aislada, `T_salida = 4 η T_motor`. Para el tornillo, con avance 
 
 ## Transmisión N1 en el firmware y en la planta
 
-Issue #7, decisiones D44–D46. Ecuaciones, con θ el ángulo del eje de cada motor y los ceros en la pose de reposo:
+Decisiones D44–D46. Ecuaciones, con θ el ángulo del eje de cada motor y los ceros en la pose de reposo:
 
 ```text
 J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8 mm · vueltas de M4
@@ -71,9 +71,9 @@ J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8
 | M3 | 720 °/s | 1440 °/s² | \|ω_J3\| ≤ 180 °/s, \|α_J3\| ≤ 360 °/s² |
 | M4 | 1800 °/s | 5400 °/s² | \|v_J4\| ≤ 40 mm/s, \|a_J4\| ≤ 120 mm/s² |
 
-Con 1/8, la velocidad de M4 son 8000 pulsos/s (el Timer1 del UNO da hasta 10 000), la de M3, 3200, y la de M1 y M2, 1600. Por el acople, J2 no tiene un límite propio: si J1 gira a 90 °/s, J2 puede ir de 0 a −180 °/s. El jog (hasta 10 °/s o 10 mm/s, sin rampa) queda dentro de todos; el firmware lo verifica al compilar. El planificador PTP de la URC (#9) planifica dentro de estos límites por motor y de los de cada articulación (D53), y el firmware rechaza un segmento que los supere (`ERR 8`, D51); el LIN (#10) no planifica dentro de ellos: los verifica en cada segmento y rechaza el tramo antes de enviarlo (D54, D55). Las articulaciones de Webots tienen sus propios límites (`maxVelocity` en `SCARA.proto`, de `config/scara.json`), algo por encima de los que permiten los motores (J2, hasta el doble): así limitan los motores y Webots no satura una articulación, que atrasaría la física como si se perdieran pasos (D76).
+Con 1/8, la velocidad de M4 son 8000 pulsos/s (el Timer1 del UNO da hasta 10 000), la de M3, 3200, y la de M1 y M2, 1600. Por el acople, J2 no tiene un límite propio: si J1 gira a 90 °/s, J2 puede ir de 0 a −180 °/s. El jog (hasta 10 °/s o 10 mm/s, sin rampa) queda dentro de todos; el firmware lo verifica al compilar. El planificador PTP de la URC planifica dentro de estos límites por motor y de los de cada articulación (D53), y el firmware rechaza un segmento que los supere (`ERR 8`, D51); el LIN no planifica dentro de ellos: los verifica en cada segmento y rechaza el tramo antes de enviarlo (D54, D55). Las articulaciones de Webots tienen sus propios límites (`maxVelocity` en `SCARA.proto`, de `config/scara.json`), algo por encima de los que permiten los motores (J2, hasta el doble): así limitan los motores y Webots no satura una articulación, que atrasaría la física como si se perdieran pasos (D76).
 
-**La planta simulada** ([`scara_uci.cpp`](../webots/controllers/scara_uci/scara_uci.cpp)) cuenta los pasos de cada motor, los convierte en ángulos con su propia copia de la mecánica y el microstepping de `config.h`, y lleva las articulaciones de Webots adonde están los rotores. Desde N2, cada rotor sigue a sus pasos con el par que tiene ([abajo](#par-de-los-motores-y-pérdida-de-pasos-n2)).
+**La planta simulada** ([`scara_uci.cpp`](../webots/controllers/scara_uci/scara_uci.cpp)) cuenta los pasos de cada motor, los convierte en ángulos con su propia copia de la mecánica y el microstepping de `config.h`, y lleva las articulaciones de Webots adonde están los rotores. A nivel N2, cada rotor sigue a sus pasos con el par que tiene ([abajo](#par-de-los-motores-y-pérdida-de-pasos-n2)).
 
 **Pruebas y evidencia.**
 
@@ -83,7 +83,7 @@ Con 1/8, la velocidad de M4 son 8000 pulsos/s (el Timer1 del UNO da hasta 10 000
 
 ## Par de los motores y pérdida de pasos (N2)
 
-Issue #15, decisiones D64–D67 y [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md). El modelo está en [`stepper.h`](../webots/controllers/scara_uci/stepper.h), sin Webots, y tiene sus pruebas en la PC ([`test/stepper.cpp`](../webots/controllers/scara_uci/test/stepper.cpp), `tests/test_planta.py`).
+Decisiones D64–D67 y [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md). El modelo está en [`stepper.h`](../webots/controllers/scara_uci/stepper.h), sin Webots, y tiene sus pruebas en la PC ([`test/stepper.cpp`](../webots/controllers/scara_uci/test/stepper.cpp), `tests/test_planta.py`).
 
 **Cómo funciona.** Cada pulso del firmware adelanta el campo del estator un micropaso. El rotor es una inercia (la suya más la de la carga, reflejada por la transmisión) que sigue al campo con la curva par–ángulo del motor híbrido:
 
@@ -99,7 +99,7 @@ con `e` el atraso del rotor. El par máximo, con un paso completo de atraso, es 
 - **Sin modelo eléctrico (N3).** Corrientes, inductancia y resonancias quedan resumidas en la curva y en un amortiguamiento fijo (ζ = 0,6). El rotor se integra en 10 subpasos de 0,2 ms dentro de cada paso de 2 ms de Webots: el paso de la simulación no cambia.
 - **En Webots.** Cada articulación va hacia la posición de los rotores con control de velocidad: la velocidad del rotor más la mitad de lo que le falta por paso, sin el límite de aceleración del proto (la dinámica ya la puso el rotor), y quedándose a 1/8 de paso completo de sus topes, porque un motor de ODE que empuja contra su tope vibra. Al volver la corriente, su fuerza sube en rampa durante 0,1 s: con J4 apoyado en su tope, ODE le aplica de más en el primer paso que el motor lo saca de ahí, y lo haría saltar milímetros. El par de las articulaciones de Webots se sube en el mundo de la UCI (campos `j1MaxTorque`… de `SCARA.proto`) para que no sea Webots el que limita; el mundo viejo conserva sus valores (D64).
 
-**Parámetros y su fuente.** El maestro nombra los modelos, pero sus hojas de datos exactas no aparecieron, ni en esta búsqueda (31/10/2026) ni en la de la sesión 3 ([fuentes físicas](../validation/cad/physics_sources.json)). Cada número es de la familia más cercana o un supuesto típico declarado:
+**Parámetros y su fuente.** El maestro nombra los modelos, pero sus hojas de datos exactas no aparecieron ([fuentes físicas](../validation/cad/physics_sources.json)). Cada número es de la familia más cercana o un supuesto típico declarado:
 
 | Parámetro | M1, M2 | M3 | M4 | Fuente o supuesto |
 | --- | --- | --- | --- | --- |
@@ -129,7 +129,7 @@ Con la corriente nominal, el par que piden los límites (aceleración máxima a 
 
 **Criterio (D76).** Al menos 2 veces de margen con 5 kg, lo usual al dimensionar un paso a paso en lazo abierto: cubre lo que el modelo no tiene (resonancias, N3) y la dispersión de los supuestos de la tabla de parámetros. M1 y M2 lo fijan; M3 tiene de sobra y lo limita la vista, no el par. M4 conserva su 1,4: lo pone el peso que sube por el ACME, no la aceleración, y su velocidad la limitan los pulsos del UNO. Todas las velocidades quedan por debajo de la de esquina, donde el par todavía no cae.
 
-Las pruebas simulan además cada motor en sus límites y en el jog más rápido arrancando sin rampa, con 0,15 y 5 kg: ninguno pierde pasos y el atraso no llega a un paso completo. Con la corriente nominal, entonces, el robot no pierde pasos dentro de lo que planifica la URC: para provocarlos hace falta la falla F1. Hasta D76 los límites eran 4,5 veces más bajos en J1–J2 (D45, D66), elegidos antes de tener N2.
+Las pruebas simulan además cada motor en sus límites y en el jog más rápido arrancando sin rampa, con 0,15 y 5 kg: ninguno pierde pasos y el atraso no llega a un paso completo. Con la corriente nominal, entonces, el robot no pierde pasos dentro de lo que planifica la URC: para provocarlos hace falta la falla F1.
 
 ### F1: pérdida de pasos y `EV LOST`
 
@@ -146,4 +146,4 @@ Evidencia: [ensayo de la pérdida de pasos en Webots](../validation/perdida_paso
 
 Confirmar revisión, fijaciones, recorrido de correas, sentidos, ceros, códigos de motores, conexión y corriente de drivers, curvas torque–velocidad, fricción/eficiencia y sostén vertical. Con las hojas de datos exactas de los motores se reemplazan los supuestos de N2 (D64).
 
-Respaldo: [fuentes de transmisión](../validation/cad/transmission_sources.json), [montaje de salidas](../validation/cad/pulley_mounts.json), [conteo geométrico](../validation/cad/pulley_geometry.json), [montaje restante](../validation/cad/remaining_mounts.json) y [nominales y fuentes físicas](../validation/cad/physics_sources.json). Los ensayos del montaje están centralizados en [Validación](historico/VALIDACION_WEBOTS.md).
+Respaldo: [fuentes de transmisión](../validation/cad/transmission_sources.json), [montaje de salidas](../validation/cad/pulley_mounts.json), [conteo geométrico](../validation/cad/pulley_geometry.json), [montaje restante](../validation/cad/remaining_mounts.json) y [nominales y fuentes físicas](../validation/cad/physics_sources.json).

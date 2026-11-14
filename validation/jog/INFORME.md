@@ -1,4 +1,4 @@
-# Jog cartesiano y jog verificado en Webots (issue #11)
+# Jog cartesiano y jog verificado en Webots
 
 Ensayo del 01/11/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots, el microstepping por defecto (1/8) y la planta N2. Decisión: D75.
 
@@ -29,7 +29,7 @@ Frenado al soltar: mediana 80 ms, como mucho 90 ms simulados, en cuatro jogs.
 
 ## Observaciones
 
-- **La cola en el reloj de la UCI.** Las primeras corridas contaban la cola con el reloj de la PC: con Webots a 0,82×, crecía y el robot frenaba en 110–150 ms. Ahora la URC mide el ritmo de la UCI por el período de los `S`. Con otro Webots trabando la simulación, suponer que la UCI siguió avanzando sin recibir `S` llenó la cola: 320 ms. Por eso no supone avance más allá de dos períodos.
+- **La cola en el reloj de la UCI.** La URC cuenta la cola con el ritmo de la UCI, que mide por el período de los `S`, y no con el reloj de la PC: con Webots a 0,82×, el reloj de la PC hacía crecer la cola y el robot frenaba en 110–150 ms. Con otro Webots trabando la simulación, suponer que la UCI siguió avanzando sin recibir `S` llenó la cola: 320 ms. Por eso no supone avance más allá de dos períodos.
 - **La medida es ruidosa con la PC cargada.** Con otro ensayo de Webots corriendo a la vez, algunas corridas dieron 110–130 ms en un jog suelto: la simulación se traba de a ratos y el observador puede escribir tarde. El ensayo exige la mediana hasta 100 ms y cada jog hasta 150 ms.
 - **La cola se vacía a veces.** «La cola se vació» aparece una o dos veces en algunos jogs: el robot frena 20 ms y sigue, a una velocidad que arranca sin rampa.
-- **`EV LOST 4 -75` al subir J4 desde el reposo**, en algunas corridas, sin pasos perdidos: la posición física siguió a la estimada. Es del firmware y del Hall de Webots, no del jog: `checkLostSteps` corre en todo movimiento. Queda como seguimiento.
+- **`EV LOST 4 -75` al subir J4 desde el reposo**, en algunas corridas, sin pasos perdidos: la posición física siguió a la estimada. Es del firmware y del Hall de Webots, no del jog: `checkLostSteps` corre en todo movimiento. Sin causa resuelta.
