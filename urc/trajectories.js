@@ -14,12 +14,13 @@
       <h2>Trayectoria</h2>
       <span class="badge" id="tr-name"></span>
       <span class="badge warn" id="tr-dirty" hidden>cambios sin guardar</span>
-      <span class="grow"></span>
-      <button id="tr-new">Nueva</button>
-      <select id="tr-files" aria-label="Trayectorias guardadas"></select>
-      <button id="tr-load">Cargar</button>
-      <button id="tr-save">Guardar</button>
-      <button id="tr-save-as">Guardar como…</button>
+      <div class="row files">
+        <button id="tr-new">Nueva</button>
+        <select id="tr-files" aria-label="Trayectorias guardadas"></select>
+        <button id="tr-load">Cargar</button>
+        <button id="tr-save">Guardar</button>
+        <button id="tr-save-as">Guardar como…</button>
+      </div>
     </div>
     <div class="scroll"><table>
       <thead><tr><th>#</th><th>X (mm)</th><th>Y (mm)</th><th>Z (mm)</th><th>Rumbo</th><th>Codo</th>
