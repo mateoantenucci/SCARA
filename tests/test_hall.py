@@ -40,7 +40,9 @@ def config_array(name):
 
 
 ANCHORS = [vector(text) for text in re.findall(r"HingeJointParameters \{ axis 0 0 1 anchor ([^p]+) position", PROTO)]
-TOOL_Z = float(re.search(r'Receiver \{ translation [^ ]+ [^ ]+ ' + NUMBER + ' name "hall4"', PROTO).group(1))
+# Origen del pistón en el cuerpo Z con J4 = 0: su posición en el PROTO más la de la articulación.
+TOOL_Z = (float(re.search(r'translation 0 0 ' + NUMBER + ' name "piston_y_soporte"', PROTO).group(1)) +
+          float(re.search(r'JointParameters \{ axis 0 0 -1 position ' + NUMBER, PROTO).group(1)))
 
 
 def active(joint, position):

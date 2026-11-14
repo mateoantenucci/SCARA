@@ -100,7 +100,7 @@ En cada eje: avance rápido hasta el Hall, retroceso hasta que se apague y aprox
 
 **Descartado.** Medir J2 desde la base; `TouchSensor` en Webots (genera choques físicos); calcular el Hall con la posición del simulador; buscar J2 en el extremo positivo.
 
-**Cómo quedó (D56, D72).** Los imanes están centrados en los extremos, con una zona activa de ±5° (±3 mm en J4). La referencia es el flanco del lado alcanzable, 5° antes del tope: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba. El homing está en la sección 7 y su evidencia, en la sección 10.
+**Cómo quedó (D56, D72, D93).** Los imanes están centrados en los extremos, con una zona activa de ±5° (±3 mm en J4). Dónde va montado cada sensor e imán está en la sección 3. La referencia es el flanco del lado alcanzable, 5° antes del tope: J1 y J2 en −130°, J3 en −145° y J4 a 3 mm de arriba. El homing está en la sección 7 y su evidencia, en la sección 10.
 
 **Respuesta del profesor:** ______________________________________________
 
@@ -142,9 +142,11 @@ SCARA de cuatro articulaciones: J1 (hombro), J2 (codo) y J3 (muñeca) rotacional
 | Punto de herramienta | Centro de la cara exterior de `Z-SoporteEfector`, sin pinza | Provisional hasta que se defina la herramienta |
 | Envolventes de colisión | Cajas simplificadas por cuerpo rígido | Provisional; cubren ciertos pares, no todos los contactos internos |
 | Masas e inercias | Calculadas del CAD con densidades nominales | Provisional ([propiedades](../PROPIEDADES_GEOMETRICAS_CAD.md)) |
-| Sensores Hall | Un KY-003 por articulación, en la pieza fija, y dos imanes en la que se mueve, centrados en los extremos del recorrido, con una zona activa de ±5° (±3 mm en J4). Radios desde el eje: 60, 40 y 30 mm en J1–J3 | Propuesta al profesor (D10, D56); en el modelo de Webots desde el issue #8 |
+| Sensores Hall | Un KY-003 por articulación, en la pieza fija, y dos imanes en la que se mueve, centrados en los extremos del recorrido, con una zona activa de ±5° (±3 mm en J4). En J1–J3, imanes pegados al carretel que gira y el sensor en una escuadra; en J4, imanes dentro del pistón y el sensor colgado del buje exterior | Propuesta al profesor (D10, D56); el montaje está decidido (D93). En el modelo de Webots desde el issue #8 |
 
 El montaje del modelo y sus elecciones están en [Montaje y autocolisiones](../MONTAJE_Y_AUTOCOLISIONES.md) y [Ensamble CAD](../ENSAMBLE_CAD.md).
+
+**Montaje de los Hall (D93).** Los imanes (Ø8 × 3 mm) y las escuadras de PLA los agregó el grupo: solo están en el modelo de Webots, no en el CAD. En J1–J3, los imanes van pegados por fuera de la pared del carretel que gira con la pieza (A-CarretelSup, B-CarretelInf y R-CarretelSup), y el KY-003 del CAD mira a esa pared a 1,5 mm, desde 180°, en una escuadra atornillada a la tapa de la torre, a la cara de abajo del brazo o a la de arriba del antebrazo. En J4, los imanes van por dentro del pistón y el KY-003 cuelga del buje exterior con una abrazadera; el pistón se toma de aluminio, que no es magnético, y el sensor detecta los imanes a través de su pared, a unos 4 mm. Una bandera por fuera del pistón no entra: con J4 arriba chocaría con el antebrazo. Ninguna pieza nueva toca a otra en todo el recorrido; la menor luz es de 1 mm.
 
 **Hall en Webots (D57).** El KY-003 es un `Receiver` y el imán un `Emitter` con su alcance. Webots no entrega paquetes dentro de un mismo robot, así que la planta mide la distancia entre los dos nodos y activa el Hall cuando el imán está más cerca que su alcance. La activación sale de la geometría del modelo: si se corre un imán, se corre el flanco.
 

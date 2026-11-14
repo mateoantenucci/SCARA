@@ -91,6 +91,8 @@ Mover solo M1 gira el brazo y cambia J2 en sentido opuesto: el antebrazo conserv
 
 El diseño **no tiene encoders**: la posición se estima contando pasos. El maestro v1 prevé «sensores de inicio y final de carrera en los cuatro ejes, con imanes de neodimio y sensores de efecto Hall», sin ubicación ni cantidad. El grupo propuso al profesor **un sensor KY-003 por articulación**, en la pieza fija, y **dos imanes** en la pieza móvil, centrados en los extremos del recorrido con una zona activa de ±5° (±3 mm en J4). El de un extremo es la referencia del *homing*; el del otro, protección por sobrerrecorrido. Además, el firmware usa cada cruce de un imán para detectar pasos perdidos (`EV LOST`, sección 3).
 
+**Montaje.** Las escuadras, la abrazadera y los imanes los agregó el grupo: no están en el CAD (Figuras 5 a 8). En J1–J3, los dos imanes (Ø8 × 3 mm) van pegados por fuera del carretel que gira con la pieza móvil, y el KY-003, el modelo del CAD, mira a esa pared a 1,5 mm desde una escuadra de PLA atornillada a la pieza fija. En J4, el pistón es lo único que recorre los 120 mm frente a un punto fijo: los imanes van por dentro de su pared, y el sensor cuelga del buje exterior con una abrazadera. El pistón se tomó de aluminio, que no es magnético: el KY-003 detecta los imanes a través de su pared, a unos 4 mm. Una bandera por fuera del pistón chocaría con el antebrazo con J4 arriba. Se verificó con las mallas del CAD que ninguna de estas piezas toca a otra en todo el recorrido.
+
 En Webots, cada KY-003 es un `Receiver` y cada imán un `Emitter`. Como Webots no entrega paquetes dentro de un mismo robot, la planta simulada mide la distancia entre los dos nodos y activa el Hall cuando el imán está dentro de su alcance: la activación sale de la geometría del modelo, no de leer la posición perfecta del simulador. Los cuatro `PositionSensor` de Webots no los ve el firmware: solo alimentan el canal de instrumentación, que muestra la posición física simulada al lado de la estimada.
 
 ### 1.4 Actuadores
@@ -114,7 +116,7 @@ El firmware es **uno solo**, en C++ portable y sin memoria dinámica ni flotante
 
 ### 1.6 Imágenes del prototipo
 
-El robot no se construyó: no hay fotografías de la máquina real. Las dos primeras imágenes son renders del diseño en SolidWorks, de la cátedra; las dos siguientes, el modelo en Webots.
+El robot no se construyó: no hay fotografías de la máquina real. Las dos primeras imágenes son renders del diseño en SolidWorks, de la cátedra; las siguientes, el modelo en Webots, con los sensores Hall y sus soportes. Las fotos de Webots las saca el mundo `webots/worlds/scara_fotos.wbt`.
 
 <div class="fotos">
 <figure><img src="../../fotografias/render01.png" alt="Render del SCARA en SolidWorks"><figcaption>Figura 1. Render del diseño (SolidWorks, cátedra).</figcaption></figure>
@@ -122,8 +124,18 @@ El robot no se construyó: no hay fotografías de la máquina real. Las dos prim
 </div>
 
 <div class="fotos">
-<figure><img src="../../validation/scara_cad_articulado.png" alt="Modelo articulado en Webots"><figcaption>Figura 3. Modelo articulado en Webots, con las envolventes de colisión de la muñeca y la herramienta.</figcaption></figure>
-<figure><img src="../../validation/bala_trazadora/02_webots_despues_D.jpg" alt="SCARA en Webots tras un jog de J1"><figcaption>Figura 4. El gemelo en Webots, después de un jog de J1 enviado desde la URC.</figcaption></figure>
+<figure><img src="img/webots-general.png" alt="Modelo articulado en Webots"><figcaption>Figura 3. El gemelo en Webots, con los cuatro KY-003 en sus escuadras.</figcaption></figure>
+<figure><img src="img/webots-reposo.png" alt="SCARA en Webots en la pose de reposo"><figcaption>Figura 4. Pose de reposo: brazo estirado y J4 abajo, sobre su imán de fin.</figcaption></figure>
+</div>
+
+<div class="fotos">
+<figure><img src="img/webots-hall-j1.png" alt="Sensor Hall de J1"><figcaption>Figura 5. J1: el KY-003, en una escuadra sobre la tapa de la torre, frente a un imán pegado al carretel del brazo.</figcaption></figure>
+<figure><img src="img/webots-hall-j2.png" alt="Sensor Hall de J2"><figcaption>Figura 6. J2: la escuadra cuelga del brazo y mira al carretel del antebrazo, en el codo.</figcaption></figure>
+</div>
+
+<div class="fotos">
+<figure><img src="img/webots-hall-j3.png" alt="Sensor Hall de J3"><figcaption>Figura 7. J3: la escuadra se apoya en el antebrazo y mira a los imanes del carretel del conjunto Z.</figcaption></figure>
+<figure><img src="img/webots-hall-j4.png" alt="Sensor Hall de J4"><figcaption>Figura 8. J4: el KY-003 cuelga del buje exterior con una abrazadera. Los imanes van por dentro del pistón y no se ven.</figcaption></figure>
 </div>
 
 <!-- SALTO DE PAGINA -->
@@ -164,13 +176,13 @@ Se arranca con `python3 -m urc.app` desde la raíz del repositorio; el orden res
 
 La página separa lo que vale ahora (barra de estado fija arriba: enlace, motores, referencia, qué hace el robot, carga y fallas), lo que hay que ver enseguida (avisos emergentes) y lo que pasó (registro de eventos numerado a la derecha). Un botón que la URC rechazaría por el estado del robot aparece deshabilitado y dice por qué. Las cuatro capturas son de una corrida real del 07/11/2026 con Webots.
 
-<figure class="captura"><img src="img/urc-1-conexion.png" alt="URC recién conectada"><figcaption>Figura 5. La UCI recién conectada: motores sin corriente y sin referencia. La columna «Simulado» llega por el canal de instrumentación: el mundo arranca con un desvío al azar de hasta ±10°, y la posición estimada por pasos todavía no lo sabe.</figcaption></figure>
+<figure class="captura"><img src="img/urc-1-conexion.png" alt="URC recién conectada"><figcaption>Figura 9. La UCI recién conectada: motores sin corriente y sin referencia. La columna «Simulado» llega por el canal de instrumentación: el mundo arranca con un desvío al azar de hasta ±10°, y la posición estimada por pasos todavía no lo sabe.</figcaption></figure>
 
-<figure class="captura"><img src="img/urc-2-reproduccion.png" alt="Reproducción de una trayectoria"><figcaption>Figura 6. Referenciado tras el homing (J4, J1, J2, J3), reproduciendo la demostración <em>pick and place</em>: tramos PTP y LIN, con espera de 1 s abajo. El punto resaltado es al que va el tramo en ejecución.</figcaption></figure>
+<figure class="captura"><img src="img/urc-2-reproduccion.png" alt="Reproducción de una trayectoria"><figcaption>Figura 10. Referenciado tras el homing (J4, J1, J2, J3), reproduciendo la demostración <em>pick and place</em>: tramos PTP y LIN, con espera de 1 s abajo. El punto resaltado es al que va el tramo en ejecución.</figcaption></figure>
 
-<figure class="captura"><img src="img/urc-3-referencia-dudosa.png" alt="Referencia dudosa por EV LOST"><figcaption>Figura 7. Falla F1 inyectada: con 5 kg y el driver de M4 al 50 %, J4 no subió. Al volver al reposo, el Hall de abajo delató 1254 pasos perdidos (<code>EV LOST 4 1254</code>): la barra marca la referencia dudosa en rojo y la reproducción queda bloqueada hasta un homing.</figcaption></figure>
+<figure class="captura"><img src="img/urc-3-referencia-dudosa.png" alt="Referencia dudosa por EV LOST"><figcaption>Figura 11. Falla F1 inyectada: con 5 kg y el driver de M4 al 50 %, J4 no subió. Al volver al reposo, el Hall de abajo delató 1254 pasos perdidos (<code>EV LOST 4 1254</code>): la barra marca la referencia dudosa en rojo y la reproducción queda bloqueada hasta un homing.</figcaption></figure>
 
-<figure class="captura"><img src="img/urc-4-banco.png" alt="Banco de ensayo"><figcaption>Figura 8. Banco de ensayo, que solo aparece con la simulación: carga, movido a mano, fallas F1–F5, obstáculos, empujón en la punta y el estado de cada motor simulado.</figcaption></figure>
+<figure class="captura"><img src="img/urc-4-banco.png" alt="Banco de ensayo"><figcaption>Figura 12. Banco de ensayo, que solo aparece con la simulación: carga, movido a mano, fallas F1–F5, obstáculos, empujón en la punta y el estado de cada motor simulado.</figcaption></figure>
 
 **Teclado.** Con la página enfocada, el jog es «estilo videojuego»: A/D, W/S, Q/E y R/F mueven J1, J2, J3 y J4 en jog articular, o Y, X, rumbo y Z en jog cartesiano (Tab cambia de modo, Mayús lo hace lento); Espacio captura el punto, Retroceso lo borra, Enter termina la trayectoria y Esc frena todo.
 
@@ -280,7 +292,7 @@ Campos del estado `S`:
 
 ### 3.6 `scara/1`: máquina de estados de la UCI
 
-<figure class="ancha"><img src="img/maquina-estados-uci.svg" alt="Máquina de estados de la UCI"><figcaption>Figura 9. Máquina de estados de la UCI: los modos que informa el estado <code>S</code> y las órdenes o eventos que los cambian.</figcaption></figure>
+<figure class="ancha"><img src="img/maquina-estados-uci.svg" alt="Máquina de estados de la UCI"><figcaption>Figura 13. Máquina de estados de la UCI: los modos que informa el estado <code>S</code> y las órdenes o eventos que los cambian.</figcaption></figure>
 
 Qué acepta la UCI en cada modo (✓ acepta; el número es el `ERR` con que rechaza):
 
@@ -391,7 +403,7 @@ Las transcripciones siguientes son **tráfico real** entre la URC y el gemelo en
  174.594  UCI → URC  S RUN 15 0 0 0 6691 8 0 1705
 ```
 
-El firmware no corrige la cuenta ni frena: la URC marca la referencia de J4 como **dudosa**, avisa y bloquea la reproducción hasta un homing (Figura 7). La planta había perdido 1252 pasos completos; el error de 2 pasos es el que se espera a 40 mm/s, porque entre dos lecturas del Hall (2 ms) J4 avanza 0,08 mm.
+El firmware no corrige la cuenta ni frena: la URC marca la referencia de J4 como **dudosa**, avisa y bloquea la reproducción hasta un homing (Figura 11). La planta había perdido 1252 pasos completos; el error de 2 pasos es el que se espera a 40 mm/s, porque entre dos lecturas del Hall (2 ms) J4 avanza 0,08 mm.
 
 **Reinicio inesperado de la UCI (falla F5).** Sin cortar la conexión, el firmware vuelve a arrancar: `BOOT` en medio de la sesión. La URC lo marca «BOOT inesperado», descarta lo pendiente y da al robot por no referenciado; la UCI quedó sin corriente.
 
@@ -550,13 +562,13 @@ Hay que escribir `PING` al menos una vez por segundo mientras el robot se mueve,
 
 Como el SCARA no está construido, el «original» es el diseño previsto: el que describe el maestro v1 (mecánica, motores, drivers, UNO, fuentes) completado por el grupo con el protocolo, la URC y la ubicación de los sensores. Con la placa real, socat puentea el USB-serie del UNO al TCP 9000 donde escucha la URC.
 
-<figure class="ancha"><img src="img/interconexion-fisica.svg" alt="Interconexión del equipo físico"><figcaption>Figura 10. Interconexión del equipo físico (previsto) con el software externo.</figcaption></figure>
+<figure class="ancha"><img src="img/interconexion-fisica.svg" alt="Interconexión del equipo físico"><figcaption>Figura 14. Interconexión del equipo físico (previsto) con el software externo.</figcaption></figure>
 
 ### 4.2 Diagrama con el gemelo digital
 
 Webots reemplaza al gabinete y al brazo. El navegador, la URC y `scara/1` no cambian: el controlador `scara_uci` se conecta al mismo puerto 9000 que usaría socat. Dentro del controlador corre el **mismo firmware** del UNO; lo que cambia es la capa de hardware (`WebotsHal`: reloj simulado, cliente TCP, pasos y Hall) y la **planta simulada**, que reemplaza a drivers, motores, transmisión y sensores y mueve las articulaciones de Webots por su API. Se agregan dos componentes que solo existen en la simulación: el canal `scara-sim/1` (9001) y el banco de ensayo de la página.
 
-<figure class="ancha"><img src="img/interconexion-gemelo.svg" alt="Interconexión con el gemelo digital"><figcaption>Figura 11. Interconexión del software externo con el gemelo digital.</figcaption></figure>
+<figure class="ancha"><img src="img/interconexion-gemelo.svg" alt="Interconexión con el gemelo digital"><figcaption>Figura 15. Interconexión del software externo con el gemelo digital.</figcaption></figure>
 
 | Componente | Robot real (previsto) | Gemelo digital |
 | --- | --- | --- |
@@ -650,6 +662,7 @@ Más allá del mínimo:
 ### 6.2 ¿Qué quedó pendiente de implementación?
 
 - **El electroimán del extremo.** La consigna anticipa «un sencillo electroimán, para demostraciones de pick & place». No está en el CAD ni en el maestro, y quedó fuera de alcance: las trayectorias de *pick and place* mueven el punto de herramienta, pero no toman ni sueltan nada.
+- **Dibujar en SolidWorks las escuadras de los sensores Hall**, la abrazadera de J4 y los imanes, que hoy solo están en el modelo de Webots.
 - **Probar con la placa real.** El firmware compila para el UNO y el camino serie se ensayó con un puerto virtual y socat, pero no hay robot ni placa.
 - **Medir los parámetros del robot real.** El par de los motores se tomó de la familia más cercana porque sus hojas de datos no aparecieron, y las envolventes de colisión son cajas simplificadas.
 - **Simular fallas de la transmisión** (una correa que patina o se corta) **y el comportamiento eléctrico de los motores**.

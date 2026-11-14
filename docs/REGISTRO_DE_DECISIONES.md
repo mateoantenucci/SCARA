@@ -138,7 +138,7 @@ Clase del 27/10/2026. El profesor pidió hacer algo similar a AGSABOT:
   - Medir J2 desde la base: no protege los topes relativos.
   - `TouchSensor`: genera choques físicos.
   - Calcular el Hall con la posición del simulador: es lo que hacía `scara-dev/1`, y es trampa.
-- **Estado:** Propuesta al profesor.
+- **Estado:** Propuesta al profesor. Dónde se monta cada sensor e imán está en D93.
 
 **D11 · Secuencia de homing.**
 - **Decisión:**
@@ -961,3 +961,22 @@ Decisiones tomadas al rehacer la página de la URC después de la QA humana de l
 - **Por qué:** con los motores energizados y quietos, el accionamiento de velocidad de Webots sostiene la articulación hasta su par máximo sin mover el rotor de `stepper.h` salvo que la perturbación llegue al modelo N2. Proyectar la fuerza horizontal por el jacobiano planar (`Q1`, `Q2`) permite ensayar en C3 tanto el régimen elástico dentro del ciclo eléctrico (por debajo del par de retención, ~8,5 N en reposo a 90°: el rotor cede fracciones de paso y vuelve al soltar sin perder pasos) como el salto de ciclos completos (por encima de la retención: pierde múltiplos de 4 pasos y queda corrido sin `ERR` ni `EV LOST` hasta cruzar un Hall o hacer homing).
 - **Descartado:** mover la articulación directamente como en `MANO` (no usaría el par de retención de N2) o aplicar un pulso instantáneo de 1 tick (depende del paso de integración y no se ve en Webots).
 - **Estado:** Aceptada ([validación física](../validation/fisicas/INFORME.md)).
+
+
+## Montaje de los sensores Hall
+
+**D93 · Los imanes van sobre piezas que se mueven y cada KY-003 en una escuadra impresa sobre la pieza fija.**
+- **Decisión:**
+  - **J1–J3:** dos imanes de neodimio de Ø8 × 3 mm pegados por fuera de la pared del carretel que gira con la pieza (A-CarretelSup en el brazo, B-CarretelInf en el antebrazo, R-CarretelSup en el conjunto Z), a media altura de la pared y lejos del paso radial que el carretel tiene hacia 0°. El KY-003 mira a esa pared desde 180°, con 1,5 mm de luz, en una escuadra de PLA atornillada a la pieza fija: la tapa de la torre (J1), la cara de abajo del brazo (J2) y la de arriba del antebrazo (J3).
+  - **J4:** los imanes van pegados por dentro de la pared del pistón, a 120 mm uno de otro, y el KY-003 cuelga del buje exterior con una abrazadera, frente a la cara del pistón y justo debajo del buje.
+  - El KY-003 es el modelo del CAD (`Modelos3D/KY-003.SLDPRT`, hasta ahora sin colocar), con la cabeza del TO-92 hacia el imán. Las escuadras, la abrazadera y los imanes son piezas nuevas: solo están en Webots (`tools/generate_world.py`), no en el CAD.
+  - Los flancos no cambian (`HALL_EDGE`): el alcance de cada imán se recalcula con la nueva distancia al sensor.
+  - El pistón se toma de aluminio, que no es magnético: el KY-003 de J4 detecta los imanes a través de su pared de 1,2 mm, a unos 4 mm. En J1–J3 los separa 1,5 mm de aire.
+- **Por qué:**
+  - Antes los sensores y los imanes estaban en radios elegidos solo por la zona activa (60, 40 y 30 mm) y quedaban flotando o metidos dentro de otras piezas; en J3, sobre el plano de la correa.
+  - La pared de los carreteles mide 2 mm: un imán no entra embutido, pero se puede pegar por fuera.
+  - En J4, el pistón es lo único que pasa frente a un punto fijo en los 120 mm de recorrido. Una bandera atada al soporte del efector tendría que subir 120 mm por encima del sensor y con J4 arriba chocaría con el antebrazo. Por fuera del pistón, los imanes rozarían el cuerpo Z: el pistón corre adentro con 1 mm de juego.
+  - Se verificó con las mallas del CAD que ninguna pieza nueva toca a otra en todo el recorrido de su articulación (la menor luz es de 1 mm, entre los imanes de J2 y la mitad fija de su carretel).
+- **Descartado:** la bandera en J4 (choca); imanes embutidos en el carretel (no entran en 2 mm); sensores sin soporte (flotaban).
+- **Estado:** Aceptada. Si el profesor cambia el montaje o el material del pistón, se cambian las constantes de `tools/generate_world.py`: los flancos del firmware no se mueven.
+
