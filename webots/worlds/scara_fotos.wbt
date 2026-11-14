@@ -1,0 +1,92 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "../protos/SCARA.proto"
+
+WorldInfo {
+  info [
+    "Fotos del SCARA para el informe: webots/controllers/scara_fotos lleva el robot a cada pose y guarda las imágenes"
+  ]
+  basicTimeStep 8
+}
+Viewpoint {
+  orientation -0.247320324917239 0.12594159147589 0.960713990956388 2.23162100538708
+  position 0.95 -0.95 0.85
+}
+Background {
+  skyColor [
+    0.9 0.93 0.97
+  ]
+}
+DirectionalLight {
+  direction -0.4 0.5 -1
+  castShadows TRUE
+}
+DirectionalLight {
+  direction 0.5 -0.5 -1
+  intensity 0.5
+}
+DirectionalLight {
+  direction 0.3 0.8 0.4
+  intensity 0.35
+}
+Solid {
+  translation 0 0 -0.205
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.78 0.8 0.83
+        roughness 0.9
+        metalness 0
+      }
+      geometry Box {
+        size 2 2 0.01
+      }
+    }
+  ]
+  name "suelo"
+  boundingObject Box {
+    size 2 2 0.01
+  }
+}
+Solid {
+  translation 0 0 -0.1
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.45 0.48 0.52
+        roughness 0.9
+        metalness 0
+      }
+      geometry Box {
+        size 0.4 0.4 0.2
+      }
+    }
+  ]
+  name "pedestal"
+  boundingObject Box {
+    size 0.4 0.4 0.2
+  }
+}
+DEF SCARA SCARA {
+  controller "scara_fotos"
+  j1MaxTorque 6
+  j2MaxTorque 6
+  j3MaxTorque 2.4
+  j4MaxForce 210
+}
+Robot {
+  translation 1 -1 0.8
+  children [
+    Camera {
+      name "camara"
+      fieldOfView 0.6
+      width 1600
+      height 1200
+      antiAliasing TRUE
+      near 0.005
+    }
+  ]
+  name "fotografo"
+  controller "scara_fotos"
+  supervisor TRUE
+}

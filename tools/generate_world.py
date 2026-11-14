@@ -33,43 +33,112 @@ def numbers(values):
 # que la activación sale de la geometría, no de leer la posición de las
 # articulaciones. Webots no entrega paquetes dentro de un mismo robot: la
 # distancia la mide la planta (scara_uci.cpp, D57).
-# Por articulación: radio desde el eje (m), ángulo del sensor (rad), centros
-# de los imanes (rad o m) y medio ancho de la zona activa. El flanco del lado
-# negativo es HALL_EDGE en firmware/config.h (tests/test_hall.py lo verifica).
+# Montaje (D93): en J1–J3 los imanes van pegados por fuera de la pared del
+# carretel que gira con la pieza (radio 35 mm, pared de 2 mm) y el KY-003, en
+# una escuadra atornillada a la pieza fija, mira a esa pared desde 180°. En J4
+# el único cuerpo que recorre los 120 mm frente a un punto fijo es el pistón:
+# los imanes van por dentro de su pared, porque por fuera rozarían el cuerpo Z
+# en el que corre, y el KY-003 cuelga del buje exterior con una abrazadera.
+# El flanco del lado negativo es HALL_EDGE en firmware/config.h
+# (tests/test_hall.py lo verifica).
 HALL_HALF_WIDTH = (math.radians(5), math.radians(5), math.radians(5), 0.003)
-HALL_RADIUS = (0.06, 0.04, 0.03, 0.03)
+MAGNET = (0.004, 0.003)  # imán de neodimio de Ø8 × 3 mm, con el eje hacia el sensor
+HALL_GAP = 0.0015  # del imán (o de la cara del pistón) a la cara del sensor
+REEL_RADIUS = 0.035  # cara exterior de los carreteles
+# Altura del medio de la pared del carretel que gira, en el marco de la pieza
+# que se mueve: A-CarretelSup, B-CarretelInf y R-CarretelSup.
+HALL_HEIGHT = (-0.048, 0.034, 0.045)
+# Cara de la pieza fija donde se atornilla la escuadra, en su marco: tapa de la
+# torre, cara de abajo del brazo y cara de arriba del antebrazo.
+HALL_MOUNT_Z = (0.2216, -0.025, 0.025)
+# J4: cara y pared del pistón (tubo de 20 mm) y altura del sensor en el cuerpo
+# Z, justo debajo del buje exterior (que termina en -38 mm).
+PISTON_FACE, PISTON_WALL, HALL4_Z = 0.010, 0.0012, -0.0475
+# Collar de la escuadra de J4 alrededor del buje exterior (radio 17,5 mm); baja
+# 0,4 mm más que el buje y tapa su borde.
+COLLAR_RADIUS, COLLAR_Z, COLLAR_HEIGHT = 0.0215, -0.0344, 0.008
+# Modelo CAD del KY-003: placa de 15 × 27,5 mm con el TO-92 en la punta. Su
+# punto sensible es la cabeza del TO-92, 1 mm detrás de la cara que mira al imán.
+KY003_TIP = (0, 0.012, 0.004)
+KY003_DEPTH = 0.001
+BRACKET_COLOR = '0.16 0.16 0.17'  # PLA negro
+
+
+def hall_layout(joint):
+    """Distancia al eje del punto sensible y del centro de los imanes, y su altura."""
+    if joint == 3:
+        return PISTON_FACE + HALL_GAP + KY003_DEPTH, PISTON_FACE - PISTON_WALL - MAGNET[1] / 2, HALL4_Z
+    return REEL_RADIUS + MAGNET[1] + HALL_GAP + KY003_DEPTH, REEL_RADIUS + MAGNET[1] / 2, HALL_HEIGHT[joint]
 
 
 def hall_range(joint):
     """Alcance del imán para que la zona activa mida ±HALL_HALF_WIDTH."""
+    sensor, magnet, _ = hall_layout(joint)
     if joint == 3:
-        return HALL_HALF_WIDTH[3]  # imán y sensor alineados: la distancia es el desplazamiento
-    return 2 * HALL_RADIUS[joint] * math.sin(HALL_HALF_WIDTH[joint] / 2)
+        return math.hypot(sensor - magnet, HALL_HALF_WIDTH[3])  # el imán pasa de largo frente al sensor
+    return math.sqrt(sensor ** 2 + magnet ** 2 - 2 * sensor * magnet * math.cos(HALL_HALF_WIDTH[joint]))
 
 
-def hall_sensor(joint, origin, height):
-    """KY-003 de Jj+1 en el marco de la pieza fija; origin es el eje de la articulación."""
-    x = origin[0] + (HALL_RADIUS[joint] if joint == 3 else -HALL_RADIUS[joint])
-    return f"""Receiver {{ translation {numbers([x, origin[1], height])} name "hall{joint+1}"
-      type "radio" channel {joint+1}
-      children [ Shape {{ appearance PBRAppearance {{ baseColor 0.1 0.25 0.6 roughness 0.6 metalness 0 }}
-        geometry Box {{ size 0.008 0.008 0.004 }} }} ] }}"""
+def hall_sensor(joint, anchor):
+    """KY-003 de Jj+1 en su escuadra, en el marco de la pieza fija; anchor es el eje de la articulación.
+
+    Los hijos se dibujan en el marco del sensor: x se aleja del imán, z hacia arriba.
+    """
+    radius, _, height = hall_layout(joint)
+    mm = 0.001
+    origin = [KY003_TIP[2], -KY003_TIP[1], -KY003_TIP[0]]  # del modelo, con su cara de componentes hacia el imán
+    board = (-13.5 * mm - KY003_TIP[1], 14 * mm - KY003_TIP[1])  # largo de la placa, a lo ancho del sensor
+    back = 4 * mm  # dorso de la placa, detrás del punto sensible
+    edge = 4.5 * mm  # la escuadra cubre 9 de los 15 mm de la placa: se ve el KY-003
+    parts = [box([3 * mm, board[1] - board[0], 2 * edge], [back + 1.5 * mm, sum(board) / 2, 0], BRACKET_COLOR)]
+    if joint == 3:
+        position, turn = [radius, 0, height], 0
+        # Pata hasta el collar, que abraza el buje exterior.
+        leg_top = COLLAR_Z - COLLAR_HEIGHT / 2 - height
+        parts.append(box([3 * mm, 8 * mm, leg_top - edge], [back + 1.5 * mm, -2 * mm, (leg_top + edge) / 2],
+                         BRACKET_COLOR))
+        parts.append(f"""Pose {{ translation {numbers([-radius, 0, COLLAR_Z - height])} children [ Shape {{
+          appearance PBRAppearance {{ baseColor {BRACKET_COLOR} roughness 0.7 metalness 0.1 }}
+          geometry Cylinder {{ radius {COLLAR_RADIUS} height {COLLAR_HEIGHT} }} }} ] }}""")
+    else:
+        position, turn = [anchor[0] - radius, anchor[1], anchor[2] + height], math.pi
+        # Pata hasta la cara de la pieza fija y pie de 12 mm atornillado a ella.
+        mount = HALL_MOUNT_Z[joint] - position[2]
+        edge = edge if mount > 0 else -edge
+        foot = mount - 1.5 * mm if mount > 0 else mount + 1.5 * mm
+        middle = sum(board) / 2
+        parts.append(box([3 * mm, 12 * mm, abs(mount - edge)], [back + 1.5 * mm, middle, (mount + edge) / 2],
+                         BRACKET_COLOR))
+        parts.append(box([12 * mm, 12 * mm, 3 * mm], [back + 6 * mm, middle, foot], BRACKET_COLOR))
+    return f"""Receiver {{ translation {numbers(position)} name "hall{joint+1}"
+      type "radio" channel {joint+1} rotation 0 0 1 {turn:.15g}
+      children [ Pose {{ translation {numbers(origin)} rotation 0 1 0 {-math.pi / 2:.15g} children [ Shape {{
+          appearance PBRAppearance {{ baseColor 0.15 0.35 0.75 roughness 0.6 metalness 0 }}
+          geometry Mesh {{ url [ "../../cad/derivados/stl/KY-003.stl" ] }} }} ] }}
+        {' '.join(parts)} ] }}"""
 
 
-def hall_magnets(joint, limits, height):
-    """Imanes de Jj+1 en el marco de la pieza que se mueve, con su origen en el eje."""
+def hall_magnets(joint, limits, offset=0):
+    """Imanes de Jj+1 en el marco de la pieza que se mueve, con su origen en el eje.
+
+    offset es la altura del sensor sobre el origen de la pieza que se mueve con
+    J = 0, si no es la de HALL_HEIGHT (J4: el pistón cuelga del cuerpo Z).
+    """
+    _, radius, height = hall_layout(joint)
     nodes = []
     for name, center in (("inicio", limits[0]), ("fin", limits[1])):
         if joint == 3:
             # J4 baja cuando crece: el imán queda alineado con el sensor con J4 = center.
-            position = [HALL_RADIUS[3], 0, height + center]
+            position, rotation = [radius, 0, height + offset + center], [0, 1, 0, math.pi / 2]
         else:
-            angle = math.pi - center  # el sensor está a 180°: con J = center, el imán queda debajo
-            position = [HALL_RADIUS[joint] * math.cos(angle), HALL_RADIUS[joint] * math.sin(angle), height]
+            angle = math.pi - center  # el sensor está a 180°: con J = center, el imán queda frente a él
+            position = [radius * math.cos(angle), radius * math.sin(angle), height]
+            rotation = [-math.sin(angle), math.cos(angle), 0, math.pi / 2]  # eje del imán hacia afuera
         nodes.append(f"""Emitter {{ translation {numbers(position)} name "iman{joint+1}_{name}"
       type "radio" range {hall_range(joint):.15g} maxRange {hall_range(joint):.15g} channel {joint+1}
+      rotation {numbers(rotation)}
       children [ Shape {{ appearance PBRAppearance {{ baseColor 0.75 0.75 0.78 roughness 0.3 metalness 0.8 }}
-        geometry Cylinder {{ radius 0.004 height 0.004 }} }} ] }}""")
+        geometry Cylinder {{ radius {MAGNET[0]} height {MAGNET[1]} }} }} ] }}""")
     return ' '.join(nodes)
 
 
@@ -147,7 +216,7 @@ def build():
 
     tool = f"""DEF TOOL Solid {{
       translation 0 0 {g['tool_z_offset']-q[3]:.15g} name "piston_y_soporte"
-      children [ {visual('tool')} {hall_magnets(3, c['limits'][3], 0)}
+      children [ {visual('tool')} {hall_magnets(3, c['limits'][3], -g['tool_z_offset'])}
         # Marcador del TCP provisional; no es geometría de una pinza.
         Shape {{ appearance PBRAppearance {{ baseColor 0.1 0.9 0.3 roughness 0.5 metalness 0 }}
           geometry Sphere {{ radius 0.004 }} }} ]
@@ -163,8 +232,8 @@ def build():
         PositionSensor {{ name "j4_sensor" }} ] endPoint {tool} }}"""
     endpoint = f"""DEF WRIST Solid {{
       translation {g['l2']:.15g} 0 0 rotation 0 0 1 {q[2]:.15g} name "conjunto_z"
-      children [ {visual('wrist')} {hall_magnets(2, c['limits'][2], 0)}
-        {hall_sensor(3, [0, 0], g['tool_z_offset'])} {slider} ]
+      children [ {visual('wrist')} {hall_magnets(2, c['limits'][2])}
+        {hall_sensor(3, [0, 0, 0])} {slider} ]
       boundingObject {collision(cad,'wrist')}
       physics {physics(bodies[2])} }}"""
     anchors = [[0,0,g['shoulder_z']], [g['l1'],0,g['elbow_z_offset']], [g['l2'],0,0]]
@@ -181,8 +250,8 @@ def build():
             group = 'forearm' if axis == 2 else 'arm'
             endpoint = f"""DEF {BODY_DEFS[group]} Solid {{
               translation {numbers(anchors[axis-1])} rotation 0 0 1 {q[axis-1]:.15g} name "{group}"
-              children [ {visual(group)} {hall_magnets(axis-1, c['limits'][axis-1], 0)}
-                {hall_sensor(axis, anchors[axis][:2], anchors[axis][2])} {joint} ]
+              children [ {visual(group)} {hall_magnets(axis-1, c['limits'][axis-1])}
+                {hall_sensor(axis, anchors[axis])} {joint} ]
               boundingObject {collision(cad,group)}
               physics {physics(bodies[axis-1])} }}"""
     tool_mass, tool_center, tool_inertia = box_with_payload(bodies[3])
@@ -211,7 +280,7 @@ PROTO SCARA [
   DEF BASE Robot {{ translation IS translation rotation IS rotation
     name "SCARA" model "SCARA con CAD articulado parcial; parametros fisicos provisionales"
     supervisor TRUE controller IS controller controllerArgs IS controllerArgs selfCollision FALSE
-    children [ {base} {hall_sensor(0, [0, 0], g['shoulder_z'])}
+    children [ {base} {hall_sensor(0, anchors[0])}
       # Un Solid físico bajo la base estática queda soldado al entorno por
       # Webots. Da a J1 un cuerpo padre para medir su esfuerzo sin liberar la base.
       DEF J1_MOUNT Solid {{ name "soporte_j1_fijo"

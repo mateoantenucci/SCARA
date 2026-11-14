@@ -235,6 +235,9 @@ Dos niveles: N1, pasos, transmisión y acople; N2, par limitado según la veloci
 **¿Dónde van los sensores Hall y por qué uno solo por eje?**
 Un KY-003 por articulación en la pieza fija y dos imanes en la que se mueve, en los extremos. Un sensor por eje entra en el UNO. J2 se mide relativo, en el codo, porque los topes que importan son los relativos. Es propuesta al profesor (D10).
 
+**¿Cómo se sostienen los sensores y los imanes?**
+En J1–J3, los imanes van pegados por fuera del carretel que gira y el KY-003 mira a esa pared desde una escuadra de PLA atornillada a la pieza fija. En J4, los imanes van por dentro del pistón y el sensor cuelga del buje exterior: una bandera por fuera chocaría con el antebrazo con J4 arriba. Las escuadras y los imanes no están en el CAD; solo en Webots, y ninguno toca a otra pieza en todo el recorrido (D93).
+
 **¿Por qué ese orden de homing, J4, J1, J2, J3?**
 J4 sube primero para alejar la herramienta de la mesa. J1 mueve M1 y M2 juntos para que J2 no cambie. J2 con M2 solo. J1 y J2 se referencian en el mismo extremo, el negativo: con J2 en el positivo y J1 en −135°, el soporte Z choca con la torre (D11).
 
