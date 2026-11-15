@@ -1,8 +1,9 @@
 """El guion de la defensa (issue #20) cita cosas que existen.
 
-docs/DEFENSA.md se sigue en vivo frente al profesor: un archivo movido, un
-botón renombrado o una decisión renumerada lo dejarían desactualizado sin que
-nada falle. Esta prueba verifica que:
+docs/interno/DEFENSA.md se sigue en vivo frente al profesor: un archivo movido,
+un botón renombrado o una decisión renumerada lo dejarían desactualizado sin que
+nada falle. El guion es material interno del grupo y no se versiona: la prueba
+se omite donde no está. Verifica que:
 - cada D-número citado esté en el registro de decisiones, y cada ADR en docs/adr;
 - cada decisión del registro tenga al menos una pregunta que la cite: una
   decisión nueva necesita su respuesta antes de la defensa;
@@ -24,12 +25,13 @@ from urc.session import Session
 from urc.trajectories import DEFAULT_FOLDER, TrajectoryManager
 
 ROOT = Path(__file__).resolve().parents[1]
-GUION = ROOT / "docs" / "DEFENSA.md"
+GUION = ROOT / "docs" / "interno" / "DEFENSA.md"
 REGISTRO = ROOT / "docs" / "REGISTRO_DE_DECISIONES.md"
 CARPETAS = ("docs", "firmware", "urc", "webots", "validation", "trayectorias", "tools", "tests", "config")
 DECISION = re.compile(r"\bD(\d+)\b")
 
 
+@unittest.skipUnless(GUION.is_file(), "el guion de la defensa no se versiona (docs/interno/)")
 class DefenseScriptTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

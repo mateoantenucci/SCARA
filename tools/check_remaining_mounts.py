@@ -213,7 +213,7 @@ def calculate():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--output', type=Path, default=ROOT/'validation/remaining_mounts.json')
+    parser.add_argument('--output', type=Path, default=ROOT/'validation/cad/remaining_mounts.json')
     args = parser.parse_args()
     report = calculate()
     args.output.parent.mkdir(parents=True, exist_ok=True)

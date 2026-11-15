@@ -1,6 +1,6 @@
 # Pérdida de pasos (N2) y F1 con `EV LOST` en Webots
 
-Issue #15, decisiones D64–D67. Fecha: 31/10/2026; repetido el 01/11/2026 con los límites de D76, la carga de D85 y el contador de D86. Windows 11, Webots R2025a, controlador `scara_uci` compilado con el `g++` 14.2 de Webots, paso de simulación de 2 ms, tiempo real.
+Decisiones D64–D67. Fecha: 31/10/2026; repetido el 01/11/2026 con los límites de D76, la carga de D85 y el contador de D86. Windows 11, Webots R2025a, controlador `scara_uci` compilado con el `g++` 14.2 de Webots, paso de simulación de 2 ms, tiempo real.
 
 ## Qué se ensayó
 
@@ -24,9 +24,11 @@ Issue #15, decisiones D64–D67. Fecha: 31/10/2026; repetido el 01/11/2026 con l
 
 ## Además
 
-Con la planta nueva se volvieron a correr los ensayos de [protocolo](../protocolo/ensayo_webots.log), [transmisión](../transmision/INFORME.md), [segmentos](../segmentos/INFORME.md), [homing](../homing/INFORME.md) y del [canal de instrumentación](../instrumentacion/INFORME.md): los cinco pasan (`ENSAYO OK`). Para eso hizo falta que la fuerza de cada articulación suba en rampa al volver la corriente (D64): sin la rampa, J4, apoyado en su tope, saltaba unos 2 mm al habilitar los motores.
+Con la planta N2 pasan también (`ENSAYO OK`) los ensayos de [protocolo](../protocolo/ensayo_webots.log), [transmisión](../transmision/INFORME.md), [segmentos](../segmentos/INFORME.md), [homing](../homing/INFORME.md) y del [canal de instrumentación](../instrumentacion/INFORME.md). Para eso la fuerza de cada articulación sube en rampa al volver la corriente (D64): sin la rampa, J4, apoyado en su tope, saltaba unos 2 mm al habilitar los motores.
 
 ## Cómo repetirlo
+
+La evidencia vigente es la de la campaña ([`campana/registros/`](../campana/registros/)); este informe describe la corrida del ensayo por separado.
 
 Desde la raíz del repo, con el controlador compilado ([UCI en Webots](../../docs/UCI_WEBOTS.md)):
 

@@ -1,6 +1,6 @@
 # SCARA académico
 
-Vocabulario del robot y de su representación digital. Las decisiones pendientes sobre alcance y comportamiento se registran en el plan, no en este glosario.
+Vocabulario del robot y de su representación digital. Las decisiones se registran en el [registro de decisiones](docs/REGISTRO_DE_DECISIONES.md) y los pendientes en el [maestro v2](docs/maestro/SCARA-Master-v2.md), no en este glosario.
 
 ## Lenguaje
 

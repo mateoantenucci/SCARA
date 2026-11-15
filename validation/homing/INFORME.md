@@ -1,6 +1,6 @@
-# Sensores Hall y homing en Webots (issue #8)
+# Sensores Hall y homing en Webots
 
-Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots y el microstepping por defecto, 1/8. Repetido el mismo día con el modelo de motores N2 (#15) y el homing más rápido de D72: búsqueda a 15 °/s (J4 a 10 mm/s) y vuelta al reposo al 100 %.
+Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scara_uci` compilado con el `g++` 14.2 de Webots y el microstepping por defecto, 1/8. Repetido el mismo día con el modelo de motores N2 y el homing más rápido de D72: búsqueda a 15 °/s (J4 a 10 mm/s) y vuelta al reposo al 100 %.
 
 ## Cómo se hizo
 
@@ -9,6 +9,8 @@ Ensayo del 31/10/2026 en Windows 11 Pro, Webots R2025a, con el controlador `scar
 - **Hall.** Son los del modelo: un KY-003 (`Receiver`) en la pieza fija y dos imanes (`Emitter` con su alcance) en la que se mueve, en `SCARA.proto`. La planta activa el Hall por la distancia entre los dos nodos (D57).
 - **Física.** El observador del [ensayo de transmisión](../transmision/observador.py), en modo absoluto, mide la posición física simulada desde el brazo estirado.
 - **Choques.** El ensayo pasa todo el camino físico, desde el arranque, por el chequeo de colisiones del repositorio (`scara/collisions.py`), de a pares de muestras cada 50 ms. El modelo de Webots no tiene choques entre las piezas del robot (`selfCollision FALSE`), así que este es el chequeo que dice si el brazo toca la torre.
+
+La evidencia vigente es la de la campaña ([`campana/registros/`](../campana/registros/)); este informe describe la corrida del ensayo por separado.
 
 Dos corridas: A arranca justo en la pose de reposo (`--desvio 0`), y B con un desvío al azar de hasta ±10° en J1–J3, que es el valor por defecto del mundo.
 
@@ -25,11 +27,11 @@ python validation/homing/ensayo_webots.py validation/homing/ensayo_webots.log
 | A | Arranque en reposo, sin referencia | Hall `1000`: solo J4, que descansa abajo sobre su imán de fin. Los imanes de J1–J3 están lejos. |
 | A | Jog de J4 hacia arriba pedido a 10 mm/s, sin referencia | Fue a 5,00 mm/s (D58). Salió del imán de abajo y frenó solo, con `ERR 10 fin`, en J4 = 3,0 mm: el flanco del imán de arriba está en 3 mm. De vuelta hacia abajo, frenó en 117,0 mm (flanco: 117 mm). |
 | A | Homing | Ejes en orden J4, J1, J2, J3. En los flancos, la física quedó a menos de 0,05° (0,01 mm en J4) de la referencia: J1 −129,99°, J2 −129,99°, J3 −145,02°, J4 3,0 mm. |
-| A | Vuelta al reposo | La URC la envió sola: PTP de 13,6 s al 100 % (antes, 26,3 s al 50 %). Física final en el reposo, a menos de 0,01 mm en J4; estimada (0, 0, 0, 120 mm); referenciado; Hall `1000`. |
+| A | Vuelta al reposo | La URC la envió sola: PTP de 13,6 s al 100 % (con la búsqueda a 8 °/s eran 26,3 s al 50 %). Física final en el reposo, a menos de 0,01 mm en J4; estimada (0, 0, 0, 120 mm); referenciado; Hall `1000`. |
 | A | Choques | Todo el camino físico, del arranque al reposo final, sin choques: ni con la torre ni con el pedestal. |
 | B | Arranque con desvío, homing y vuelta al reposo | Los cuatro ejes, en el mismo orden, y física final otra vez a menos de 0,14° del reposo. La corrida entera, del arranque al reposo, duró un 36 % menos que con la búsqueda a 8 °/s (5863 muestras contra 9115). El desvío del arranque se anota en el registro. |
 
-**El atraso de Webots (antes de N2).** En la primera corrida, Webots llevaba cada articulación a la posición de los pasos con un control de posición que seguía unas décimas de segundo atrás. Cuando la física activaba el Hall, el firmware ya había dado unos pasos más, así que la referencia quedaba corrida en esa cantidad:
+**El atraso de Webots (sin N2).** Sin el modelo de motores N2, Webots llevaba cada articulación a la posición de los pasos con un control de posición que seguía unas décimas de segundo atrás. Cuando la física activaba el Hall, el firmware ya había dado unos pasos más, así que la referencia quedaba corrida en esa cantidad:
 
 - Llegando a 1 °/s: dos pasos, 0,11°; en J4, 0,1 mm.
 - En el jog a 5 mm/s: medio milímetro.

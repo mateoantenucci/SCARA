@@ -14,7 +14,7 @@ Los tres BREP son válidos para `BRepCheck_Analyzer`. Cada malla derivada pasa l
 
 No se soldaron ni desplazaron vértices, no se cerraron huecos, no se añadieron caras y no se eliminó superficie de área positiva. Los registros restantes son idénticos byte a byte. La caja envolvente y el volumen orientado calculado del STL son idénticos antes/después en los tres cuerpos. El [informe individual](informe.json) registra índices de triángulos eliminados, versiones, fuentes, hashes y resultados.
 
-El exportador conserva los originales, el STEP y el informe principal que recibe. El lote vigente es **47 STL aceptados y tres piezas rechazadas**, incluyendo el rechazo de la malla global de `0-Torre`; las tres recuperaciones del 16/10 están documentadas aparte. Este derivado no modifica ese resultado ni certifica equivalencia exacta contra SolidWorks.
+El exportador conserva los originales, el STEP y el informe principal que recibe. El lote vigente es **47 STL aceptados y tres piezas rechazadas**, incluyendo el rechazo de la malla global de `0-Torre`; las tres recuperaciones de geometría están documentadas en [Del CAD a Webots](../../../docs/cad/DEL_CAD_A_WEBOTS.md#2-geometrías-recuperadas). Este derivado no modifica ese resultado ni certifica equivalencia exacta contra SolidWorks.
 
 Reproducir desde la raíz del proyecto con las dependencias de `tools/requirements-cad.txt`:
 

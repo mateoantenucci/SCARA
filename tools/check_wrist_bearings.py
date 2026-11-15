@@ -261,7 +261,7 @@ def measure():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT/"validation/wrist_bearing_diagnosis.json")
+    parser.add_argument("--output", type=Path, default=ROOT/"validation/cad/wrist_bearing_diagnosis.json")
     args = parser.parse_args()
     report = measure()
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,6 @@
 # UCI en el Arduino UNO: firmware, cableado y socat
 
-El mismo firmware que corre en Webots, compilado para el Arduino UNO del robot real (D3, [ADR 0002](adr/0002-firmware-compartido-robot-real-y-simulacion.md)). Solo cambia la capa de hardware: pines, serie y timer. La URC no cambia: socat puentea el USB-serie del UNO al puerto TCP 9000 donde la URC escucha (D1, D18). No hay placa todavía: el firmware compila sin hardware y el camino serie + socat se ensaya con un puerto serie virtual (issue #16).
+El mismo firmware que corre en Webots, compilado para el Arduino UNO del robot real (D3, [ADR 0002](adr/0002-firmware-compartido-robot-real-y-simulacion.md)). Solo cambia la capa de hardware: pines, serie y timer. La URC no cambia: socat puentea el USB-serie del UNO al puerto TCP 9000 donde la URC escucha (D1, D18). No se probó con la placa: el firmware compila sin hardware y el camino serie + socat se ensaya con un puerto serie virtual.
 
 ```text
 navegador ──HTTP 8766──► URC ◄──TCP 9000── socat ◄──USB-serie 115200── Arduino UNO
@@ -50,7 +50,7 @@ Por qué así:
 
 ## Cableado de los TB6600
 
-Cátodo común: PUL−, DIR− y ENA− de los cuatro drivers a la masa del Arduino; PUL+, DIR+ y ENA+ a los pines de la tabla. El TB6600 acepta 5 V en sus entradas optoacopladas sin resistencias extra. Las llaves DIP de cada driver se ponen en la corriente de su motor y en el microstepping de `SCARA_MICROSTEPS`, el parámetro único de [`firmware/config.h`](../firmware/config.h) (D44): hoy 1/8, 1600 pulsos por vuelta (D9). Si cambia uno, tiene que cambiar el otro; el firmware no puede leer las llaves.
+Cátodo común: PUL−, DIR− y ENA− de los cuatro drivers a la masa del Arduino; PUL+, DIR+ y ENA+ a los pines de la tabla. El TB6600 acepta 5 V en sus entradas optoacopladas sin resistencias extra. Las llaves DIP de cada driver se ponen en la corriente de su motor y en el microstepping de `SCARA_MICROSTEPS`, el parámetro único de [`firmware/config.h`](../firmware/config.h) (D44): 1/8, 1600 pulsos por vuelta (D9). Si cambia uno, tiene que cambiar el otro; el firmware no puede leer las llaves.
 
 - **ENA+ en alto corta la corriente.** Con este cableado, el opto del ENABLE conduce con el pin en alto y el driver queda libre. Por eso `begin()` fija D7 en alto antes de hacerlo salida, y `ENABLE` lo baja.
 - **Durante el reinicio, los drivers tienen corriente.** Mientras el UNO se reinicia (al abrir el puerto, D36), sus pines quedan en alta impedancia, el opto no conduce y los TB6600 sostienen a los motores. Dura lo que tarda el bootloader; después el firmware arranca y los deja sin corriente (D40). No se dan pasos en ese lapso: los STEP están en alta impedancia. Si hiciera falta asegurarlo contra ruido, una resistencia de 10 kΩ a masa en cada STEP lo resuelve.
@@ -68,7 +68,7 @@ El núcleo decide cuándo dar cada paso, con su reloj de milisegundos, y llama a
 
 Así el ancho del pulso no depende de cuánto tarde `poll()`, y la serie sigue atendida mientras salen los pasos.
 
-**Costo.** Contando ciclos en el desensamblado: sin pasos pendientes, la interrupción sale en unos 75 ciclos sin tocar los puertos (≈ 9 % del procesador a 20 kHz); con los cuatro motores pulsando a la vez, unos 165 en promedio (≈ 20 %). La primera versión recorría los motores en cada tick y costaba unos 250 ciclos incluso quieta (≈ 30 %): por eso el generador lleva una máscara de motores con pasos pendientes, `tick()` avisa si cambió alguna salida y unas tablas de 16 entradas traducen cada máscara a los bits del puerto.
+**Costo.** Contando ciclos en el desensamblado: sin pasos pendientes, la interrupción sale en unos 75 ciclos sin tocar los puertos (≈ 9 % del procesador a 20 kHz); con los cuatro motores pulsando a la vez, unos 165 en promedio (≈ 20 %). Recorrer los motores en cada tick costaría unos 250 ciclos incluso quieta (≈ 30 %): por eso el generador lleva una máscara de motores con pasos pendientes, `tick()` avisa si cambió alguna salida y unas tablas de 16 entradas traducen cada máscara a los bits del puerto.
 
 ## Compilar sin placa
 
@@ -83,7 +83,7 @@ Hay que correrlo desde la raíz del repo. `--library firmware` hace que el núcl
 
 `python -m unittest discover` lo compila y verifica el presupuesto si encuentra `arduino-cli` en el PATH o en la variable `ARDUINO_CLI`; si no, lo omite.
 
-**Resultado (30/10/2026, Windows 11, arduino-cli 1.5.1, `arduino:avr` 1.8.8, avr-gcc 7.3.0, con el núcleo de la transmisión N1 de #7 y 1/8):**
+**Resultado (30/10/2026, Windows 11, arduino-cli 1.5.1, `arduino:avr` 1.8.8, avr-gcc 7.3.0, con el núcleo de la transmisión N1 y 1/8):**
 
 | Recurso | Usado | Del UNO | |
 | --- | --- | --- | --- |
@@ -122,7 +122,7 @@ socat -d -d /dev/ttyS2,b115200,rawer TCP:127.0.0.1:9000
 - `rawer` deja el puerto en modo crudo y sin eco. Un socat anterior a 1.7.4 no lo conoce: usar `raw,echo=0`.
 - `-d -d` muestra en la terminal qué abrió y a qué se conectó. Para ver el tráfico, `-v`.
 
-Con el robot real no se probó todavía: no hay placa. Lo que se probó es la misma receta contra un puerto serie virtual.
+Con el robot real no se probó: no hay placa. Lo que se probó es la misma receta contra un puerto serie virtual.
 
 ## Ensayo sin placa: puerto serie virtual + socat (D49)
 

@@ -1,8 +1,6 @@
-# Campaña de validación en Webots (issue #18)
+# Campaña de validación en Webots
 
-Evidencia vigente del sistema `scara/1`: la URC, el firmware compartido dentro del controlador de Webots y la planta simulada. Es la seam 3 de la [spec #2](https://github.com/mateoantenucci/SCARA/issues/2): escenarios en Webots registrados como evidencia, cada uno con su condición inicial, el resultado esperado, la tolerancia y la ejecución registrada.
-
-**Reemplaza** al índice de validación del banco provisional `scara-dev/1` ([`docs/VALIDACION_WEBOTS.md`](../../docs/historico/VALIDACION_WEBOTS.md)) y a su especificación de fallas ([`docs/FALLAS_Y_VALIDACION.md`](../../docs/historico/FALLAS_Y_VALIDACION.md)). Esos documentos, la evidencia de `validation/historico/`, la de `validation/sesion*/` y los JSON sueltos de `validation/` son del banco viejo: quedan como registro del proceso y no se citan como prueba del sistema nuevo (D25). Los mueve a histórico el issue #1. Siguen vigentes los documentos que no dependen del control: CAD, montaje, colisiones, propiedades y transmisión.
+Evidencia vigente del sistema `scara/1`: la URC, el firmware compartido dentro del controlador de Webots y la planta simulada. Son escenarios en Webots registrados como evidencia, cada uno con su condición inicial, el resultado esperado, la tolerancia y la ejecución registrada.
 
 ## Versión ensayada
 
@@ -55,11 +53,11 @@ Cada ensayo verifica las tolerancias con `assert` y se corta en la primera que n
 | P2 | Transmisión N1 | Referenciado en el reposo | Jog articular de a una articulación; M1 cambia J1 y J2 y no el rumbo; J3 en escalones de un paso | ≤ 1 paso; escalón de 0,05625° | **OK** | [transmisión](registros/transmision.log) |
 | P3 | Segmentos y tramo PTP | Referenciado en el reposo | Llegada conjunta en el tiempo planificado; la cola absorbe 200 ms; `STOP` con rampa | Las del [informe de segmentos](../segmentos/INFORME.md) | **OK** | [segmentos](registros/segmentos.log) |
 
-El detalle de cada ensayo reusado, lo que mide y por qué, está en el informe de su issue: [protocolo](../../docs/UCI_WEBOTS.md#ensayo-del-protocolo-completo-issue-6) (#6), [transmisión](../transmision/INFORME.md) (#7), [segmentos](../segmentos/INFORME.md) (#9), [homing](../homing/INFORME.md) (#8), [instrumentación y F2–F5](../instrumentacion/INFORME.md) (#14), [pérdida de pasos y F1](../perdida_pasos/INFORME.md) (#15), [reproducción](../reproduccion/INFORME.md) (#13), [físicas C1–C3](../fisicas/INFORME.md) (#46–#48) y [movido a mano C4](../movido_mano/INFORME.md) (#49). Sus registros de entonces quedan como estaban; los de esta campaña son los de [`registros/`](registros/).
+El detalle de cada ensayo, lo que mide y por qué, está en su informe: [protocolo](../../docs/UCI_WEBOTS.md#qué-se-ensayó), [transmisión](../transmision/INFORME.md), [segmentos](../segmentos/INFORME.md), [homing](../homing/INFORME.md), [instrumentación y F2–F5](../instrumentacion/INFORME.md), [pérdida de pasos y F1](../perdida_pasos/INFORME.md), [reproducción](../reproduccion/INFORME.md), [físicas C1–C3](../fisicas/INFORME.md) y [movido a mano C4](../movido_mano/INFORME.md). Los registros de la campaña son los de [`registros/`](registros/).
 
-## Lo que agrega esta campaña
+## Ensayo propio de la campaña
 
-[`ensayo_webots.py`](ensayo_webots.py) cubre lo que ningún ensayo anterior probaba. Arranca como lo ve el operador: cerca del reposo, con el desvío al azar y sin referencia. Valores del [registro](registros/campana.log):
+[`ensayo_webots.py`](ensayo_webots.py) cubre lo que no prueban los demás ensayos. Arranca como lo ve el operador: cerca del reposo, con el desvío al azar y sin referencia. Valores del [registro](registros/campana.log):
 
 | Paso | Qué se hizo | Qué se midió |
 | --- | --- | --- |
@@ -73,11 +71,11 @@ Los tiempos de los pasos 3 y 4 son del reloj de la PC, con la validación previa
 
 ## Hallazgos
 
-- **La física se aparta de la recta un poco más que la estimada.** En una corrida anterior de la campaña, después de pausar y reanudar el tramo 2 del ensayo de reproducción, la física quedó a 0,323 mm de la recta, con la estimada a 0,295 mm. La tolerancia de 0,32 mm suma la del plan (0,069 mm, D54) y medio paso de M1 y M2 (0,25 mm), y vale para la estimada, que está siempre en pasos enteros. La física, además, sigue a los pasos con el atraso del rotor de N2 (D64). Ahora la estimada sigue con 0,32 mm y la física tiene 0,40 mm. Desde D76 la cota del plan es de 0,127 mm, porque la cuerda de cada segmento crece con la velocidad: 0,38 mm la estimada y 0,46 mm la física. En la campaña registrada: 0,206 mm la estimada y 0,207 mm la física.
+- **La física se aparta de la recta un poco más que la estimada.** En una corrida previa, después de pausar y reanudar el tramo 2 del ensayo de reproducción, la física quedó a 0,323 mm de la recta, con la estimada a 0,295 mm. La tolerancia de 0,32 mm suma la del plan (0,069 mm, D54) y medio paso de M1 y M2 (0,25 mm), y vale para la estimada, que está siempre en pasos enteros. La física, además, sigue a los pasos con el atraso del rotor de N2 (D64), así que tiene 0,40 mm. Con los límites de D76 la cota del plan es de 0,127 mm, porque la cuerda de cada segmento crece con la velocidad: 0,38 mm la estimada y 0,46 mm la física. En la campaña registrada: 0,206 mm la estimada y 0,207 mm la física.
 - **Con los límites de D76, el `EV LOST` de J4 se lee con 2 pasos completos de error.** El Hall se lee una vez por paso de Webots (2 ms); J4 lo cruza a 40 mm/s, así que avanza 0,08 mm, 2 pasos completos de M4, entre lecturas. La planta perdió 1252 y el firmware informó 1254. El ensayo de pérdida de pasos admite ± 2 en J4; J1, que cruza su imán a 10 °/s, sigue con ± 1.
-- **Un homing que no terminó.** En una corrida parcial previa a esta campaña, el homing del paso 2 (después del aborto de F3) siguió «en curso» más de 240 s. No se repitió en otras tres corridas. El homing no usa los límites de D76 (va a 15 °/s, D72), así que queda como intermitente, sin causa encontrada.
+- **Un homing que no terminó.** En una corrida parcial previa, el homing del paso 2 (después del aborto de F3) siguió «en curso» más de 240 s. No se repitió en otras tres corridas. El homing no usa los límites de D76 (va a 15 °/s, D72), así que queda como intermitente, sin causa encontrada.
 - **La pausa no siempre frena a 0,05 mm de la recta.** D69 cita 0,053 mm, de una corrida. En esta, la pose de la pausa quedó a 0,164 mm. Es el escalón de los pasos al frenar en un punto cualquiera, y queda dentro de la misma tolerancia.
-- **Dos ensayos tenían esperas frágiles.** La reproducción esperaba el fin del loop con un margen fijo de 30 s del reloj de la PC, y falló una vez con Webots más lento. El de transmisión exigía que J3 frenara en el último escalón visto, y puede dar un paso más antes del `JOG STOP`. Los dos se corrigieron en esta campaña, sin aflojar lo que miden.
+- **Esperas de dos ensayos.** El de reproducción no espera el fin del loop con un margen fijo del reloj de la PC (falló una vez con Webots más lento) y el de transmisión admite que J3 dé un paso más antes del `JOG STOP`. Ninguna espera afloja lo que el ensayo mide.
 
 ## Trayectorias de demostración
 
@@ -91,7 +89,7 @@ En [`trayectorias/`](../../trayectorias/), la carpeta por defecto de la URC: con
 
 [`tests/test_demos.py`](../../tests/test_demos.py) carga cada una por HTTP y la reproduce en loop de 2 vueltas desde el reposo con una UCI falsa: valida todos sus tramos, la vuelta y el tramo de aproximación. Si un cambio de límites, del modelo o del planificador invalida una demo, la suite lo dice antes de la defensa.
 
-## Pruebas automáticas (seams 1 y 2)
+## Pruebas automáticas
 
 Sin Webots, `python -m unittest discover` corre:
 
@@ -104,8 +102,8 @@ Resultado en el commit ensayado: **218 pruebas descubiertas: 210 en verde, 8 omi
 
 ## Límites
 
-- **Entorno ensayado:** la campaña completa actual está validada y registrada en **macOS 27.2 (arm64, Apple Silicon) con Webots R2025a**, superando la limitación histórica de D19 donde macOS quedaba pendiente de verificar. La corrida previa histórica del 01/11/2026 se había ejecutado en Windows 11.
-- **Sin mirar la ventana de Webots:** los ensayos corren en modo batch sin renderizado ni vista, por la URC y el canal de instrumentación. Lo visual queda para la QA humana de la R6 (recorrido en el PR del issue #18; los pasos del banco, corregidos, en [instrumentación](../instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana)).
+- **Entorno ensayado:** la campaña completa actual está validada y registrada en **macOS 27.2 (arm64, Apple Silicon) con Webots R2025a**. Una corrida previa, del 01/11/2026, se ejecutó en Windows 11.
+- **Sin mirar la ventana de Webots:** los ensayos corren en modo batch sin renderizado ni vista, por la URC y el canal de instrumentación. Lo visual queda para la QA humana de la R6 (los pasos del banco, en [instrumentación](../instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana)).
 - **Parámetros provisionales:** límites articulares, envolventes de colisión, ubicación de los Hall (D10) y los motores de N2, que son de la familia más cercana o supuestos declarados ([ADR 0001](../../docs/adr/0001-simulacion-del-diseno-sin-hardware.md)). La campaña prueba el diseño simulado, no un robot construido.
 - **N2 sin términos cruzados ni modelo eléctrico** ([ADR 0006](../../docs/adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)).
-- **El jog del teach (T1) va por órdenes `JOG` de `scara/1`**, no por el jog de la URC, que cambia con el jog cartesiano (#11). El jog de la URC lo prueban sus endpoints HTTP.
+- **El jog del teach (T1) va por órdenes `JOG` de `scara/1`**, no por el jog de la URC (que también tiene jog cartesiano). El jog de la URC lo prueban sus endpoints HTTP.

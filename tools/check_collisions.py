@@ -221,7 +221,7 @@ def calculate():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT/"validation/collisions.json")
+    parser.add_argument("--output", type=Path, default=ROOT/"validation/cad/collisions.json")
     args = parser.parse_args()
     report = calculate()
     args.output.parent.mkdir(parents=True, exist_ok=True)

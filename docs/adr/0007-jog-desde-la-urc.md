@@ -10,8 +10,6 @@ El profesor sugirió mover las articulaciones con teclas en Webots. Decidimos le
 2. El jog cartesiano necesita la cinemática inversa, que corre en la URC.
 3. La lista de puntos queda a la vista mientras se captura.
 
-Decidido el 29/10/2026.
-
 ## Considered Options
 
 - **Teclas en la ventana de Webots** (descartado como vía principal): solo existiría en la simulación, permitiría únicamente jog articular y exige hacer clic en la vista 3D para darle el foco. Si el profesor lo pide, se puede agregar sin cambiar el firmware.
