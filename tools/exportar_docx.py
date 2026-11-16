@@ -18,8 +18,9 @@ import tempfile
 from pathlib import Path
 
 from docx import Document
+from docx.enum.style import WD_STYLE_TYPE
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK
+from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_BREAK, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
@@ -144,6 +145,75 @@ def heading(doc, text, level):
     par = doc.add_heading(level=level)
     add_inline(par, text)
     return par
+
+
+def front_heading(doc, text):
+    """Título de las páginas previas al índice: con el aspecto de un título, pero fuera del índice."""
+    par = doc.add_paragraph()
+    add_inline(par, text, size=18, bold=True, color=AZUL)
+    _spacing(par, before=14, after=6)
+    par.paragraph_format.keep_with_next = True
+    return par
+
+
+def _field_char(run, kind):
+    fld = OxmlElement("w:fldChar")
+    fld.set(qn("w:fldCharType"), kind)
+    run._r.append(fld)
+
+
+def toc(doc, entries):
+    """Índice de Word (campo TOC) con los títulos de nivel 1 y 2.
+
+    Se guarda ya con los títulos escritos, sin números de página: Word los
+    calcula al abrir el documento, porque el campo queda marcado para
+    actualizarse (updateFields).
+    """
+    styles = doc.styles
+    for level in (1, 2):
+        name = f"TOC {level}"
+        if name not in [s.name for s in styles]:
+            st = styles.add_style(name, WD_STYLE_TYPE.PARAGRAPH)
+            st.base_style = styles["Normal"]
+            st.paragraph_format.left_indent = Cm(0 if level == 1 else 0.6)
+            st.paragraph_format.space_before = Pt(6 if level == 1 else 0)
+            st.paragraph_format.space_after = Pt(2)
+            st.paragraph_format.tab_stops.add_tab_stop(Cm(ANCHO_UTIL), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.DOTS)
+            st.font.bold = level == 1
+    first = doc.add_paragraph(style="TOC 1")
+    run = first.add_run()
+    _field_char(run, "begin")
+    instr = OxmlElement("w:instrText")
+    instr.set(qn("xml:space"), "preserve")
+    instr.text = ' TOC \\o "1-2" \\h \\z \\u '
+    run._r.append(instr)
+    _field_char(run, "separate")
+    par = first
+    for n, (level, text) in enumerate(entries):
+        if n:
+            par = doc.add_paragraph(style=f"TOC {level}")
+        else:
+            par.style = styles[f"TOC {level}"]
+        add_inline(par, text)
+    _field_char(par.add_run(), "end")
+    settings = doc.settings.element
+    update = OxmlElement("w:updateFields")
+    update.set(qn("w:val"), "true")
+    settings.append(update)
+
+
+def restart_numbering(doc, pars):
+    """Cada lista numerada empieza en 1: Word, si no, sigue contando desde la lista anterior."""
+    numbering = doc.part.numbering_part.element
+    style_num = doc.styles["List Number"].element.pPr.numPr.numId.val
+    abstract = next(n for n in numbering.findall(qn("w:num")) if n.numId == style_num).abstractNumId.val
+    num = numbering.add_num(abstract)
+    override = num.add_lvlOverride(ilvl=0)
+    override.add_startOverride(1)
+    for par in pars:
+        numpr = par._p.get_or_add_pPr().get_or_add_numPr()
+        numpr.get_or_add_ilvl().val = 0
+        numpr.get_or_add_numId().val = num.numId
 
 
 def paragraph(doc, text, style=None):
@@ -325,6 +395,9 @@ def convert(source, dest):
     setup(doc)
     imgs = Imagenes(source.parent)
     lines = text.split("\n")
+    has_toc = "<!-- INDICE -->" in text
+    # Antes del índice (homenaje, «Contenido») los títulos no van al índice.
+    front = has_toc
     i = 0
     while i < len(lines):
         line = lines[i]
@@ -335,6 +408,19 @@ def convert(source, dest):
         if s == "<!-- SALTO DE PAGINA -->":
             page_break(doc)
             i += 1
+            continue
+        if s == "<!-- INDICE -->":
+            # La lista escrita a mano es para leer el .md; en Word va el índice real.
+            while lines[i].strip() != "<!-- /INDICE -->":
+                i += 1
+            i += 1
+            entries = []
+            for rest in lines[i:]:
+                m = re.match(r"(#{2,3})\s+(.*)", rest.strip())
+                if m:
+                    entries.append((len(m.group(1)) - 1, m.group(2)))
+            toc(doc, entries)
+            front = False
             continue
         if s.startswith("<!--"):
             while "-->" not in lines[i]:
@@ -368,7 +454,10 @@ def convert(source, dest):
         m = re.match(r"(#{1,3})\s+(.*)", s)
         if m:
             level = len(m.group(1))
-            heading(doc, m.group(2), 1 if level <= 2 else 2)
+            if front:
+                front_heading(doc, m.group(2))
+            else:
+                heading(doc, m.group(2), 1 if level <= 2 else 2)
             i += 1
             continue
         if s.startswith("|"):
@@ -392,6 +481,7 @@ def convert(source, dest):
             continue
         if re.match(r"(-|\d+\.)\s", s):
             ordered = s[0].isdigit()
+            items = []
             while i < len(lines) and re.match(r"(-|\d+\.)\s", lines[i].strip()):
                 item = re.sub(r"^(-|\d+\.)\s+", "", lines[i].strip())
                 i += 1
@@ -401,6 +491,9 @@ def convert(source, dest):
                 par = paragraph(doc, item, style="List Number" if ordered else "List Bullet")
                 par.alignment = WD_ALIGN_PARAGRAPH.LEFT
                 _spacing(par, after=3, line=1.1)
+                items.append(par)
+            if ordered:
+                restart_numbering(doc, items)
             continue
         para = [s]
         i += 1

@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 660" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#333"/>
+    </marker>
+    <style>
+      .grupo { fill: #f6f7fb; stroke: #8a90a6; stroke-width: 1.2; stroke-dasharray: 5 4; }
+      .caja { stroke: #335; stroke-width: 1.4; rx: 6; }
+      .igual { fill: #e8f0fb; }
+      .real { fill: #fdf3e6; }
+      .sim { fill: #e6f6ec; }
+      .titulo { font-weight: bold; font-size: 14px; }
+      .chico { font-size: 11px; fill: #333; }
+      .uno { stroke: #333; stroke-width: 1.5; fill: none; marker-end: url(#f); }
+      .rot { font-size: 11px; fill: #222; }
+    </style>
+  </defs>
+
+  <!-- Núcleo -->
+  <rect class="caja igual" x="40" y="20" width="880" height="72"/>
+  <text class="titulo" x="60" y="44">Núcleo del firmware · firmware/firmware.cpp</text>
+  <text class="chico" x="60" y="63">scara/1, cola de 16 segmentos, jog, homing, watchdog, STOP y HALT</text>
+  <text class="chico" x="60" y="79">convierte unidades articulares a pasos de cada motor y decide cuándo dar cada uno</text>
+
+  <path class="uno" d="M480,92 L480,128"/>
+  <text class="rot" x="490" y="114">llama a step(motor, sentido) por cada paso</text>
+
+  <!-- Interfaz -->
+  <rect class="caja igual" x="40" y="130" width="880" height="60"/>
+  <text class="titulo" x="60" y="154">Interfaz HAL · firmware/hal.h</text>
+  <text class="chico" x="60" y="174">millis() · step(motor, sentido) · enableDrivers(on) · readHall() · readByte() · write(texto)</text>
+
+
+  <!-- Arduino -->
+  <rect class="grupo" x="20" y="205" width="440" height="410" rx="10"/>
+  <text class="titulo" x="35" y="226">Arduino UNO (robot real, previsto)</text>
+
+  <rect class="caja real" x="40" y="235" width="400" height="56"/>
+  <text class="titulo" x="55" y="254">HalUno · hal_uno.cpp</text>
+  <text class="chico" x="55" y="270">step(): anota un paso pendiente para ese motor</text>
+  <text class="chico" x="55" y="284">(hasta 255 por motor; si no entra, espera)</text>
+
+  <path class="uno" d="M240,291 L240,309"/>
+
+  <rect class="caja real" x="40" y="311" width="400" height="56"/>
+  <text class="titulo" x="55" y="330">Generador de pulsos · pulsos.cpp</text>
+  <text class="chico" x="55" y="346">corre en la interrupción del Timer1, a 20 kHz (cada 50 µs):</text>
+  <text class="chico" x="55" y="360">fija DIR, y STEP queda un tick en alto y otro en bajo</text>
+
+  <path class="uno" d="M240,367 L240,385"/>
+
+  <rect class="caja real" x="40" y="387" width="400" height="56"/>
+  <text class="titulo" x="55" y="406">Pines STEP y DIR</text>
+  <text class="chico" x="55" y="422">STEP: D2, D3, D5, D6 · DIR: A0–A3 · ENABLE común: D7</text>
+  <text class="chico" x="55" y="436">un pulso en STEP = un paso; DIR = sentido de giro</text>
+
+  <path class="uno" d="M240,443 L240,461"/>
+
+  <rect class="caja real" x="40" y="463" width="400" height="56"/>
+  <text class="titulo" x="55" y="482">Driver TB6600, a 1/8 de paso</text>
+  <text class="chico" x="55" y="498">alimenta las bobinas del motor: cada pulso lo gira</text>
+  <text class="chico" x="55" y="512">1/1600 de vuelta (0,225°)</text>
+
+  <path class="uno" d="M240,519 L240,537"/>
+
+  <rect class="caja real" x="40" y="539" width="400" height="56"/>
+  <text class="titulo" x="55" y="558">Motor paso a paso y transmisión</text>
+  <text class="chico" x="55" y="574">NEMA 23 o 17 · poleas 20T → 80T (4:1) o varilla ACME</text>
+  <text class="chico" x="55" y="588">de 8 mm por vuelta → la articulación del brazo</text>
+
+  <!-- Webots -->
+  <rect class="grupo" x="500" y="205" width="440" height="410" rx="10"/>
+  <text class="titulo" x="515" y="226">Webots (gemelo digital)</text>
+
+  <rect class="caja sim" x="520" y="235" width="400" height="56"/>
+  <text class="titulo" x="535" y="254">WebotsHal · scara_uci.cpp</text>
+  <text class="chico" x="535" y="270">step(): le pasa el paso a la planta simulada</text>
+  <text class="chico" x="535" y="284">(en el mismo instante, sin pulsos eléctricos)</text>
+
+  <path class="uno" d="M720,291 L720,309"/>
+
+  <rect class="caja sim" x="520" y="311" width="400" height="56"/>
+  <text class="titulo" x="535" y="330">Contador de pasos de la planta</text>
+  <text class="chico" x="535" y="346">+1 o −1 en el contador de ese motor,</text>
+  <text class="chico" x="535" y="360">solo si el motor tiene corriente</text>
+
+  <path class="uno" d="M720,367 L720,385"/>
+
+  <rect class="caja sim" x="520" y="387" width="400" height="56"/>
+  <text class="titulo" x="535" y="406">Modelo de rotor · stepper.h</text>
+  <text class="chico" x="535" y="422">persigue al contador con el par de su curva par–velocidad;</text>
+  <text class="chico" x="535" y="436">si le falta par, pierde pasos (el firmware no se entera)</text>
+
+  <path class="uno" d="M720,443 L720,461"/>
+
+  <rect class="caja sim" x="520" y="463" width="400" height="56"/>
+  <text class="titulo" x="535" y="482">Transmisión</text>
+  <text class="chico" x="535" y="498">J1 = θM1 / 4 · J2 = (θM2 − θM1) / 4</text>
+  <text class="chico" x="535" y="512">J3 = θM3 / 4 · J4 = 8 mm × vueltas de M4</text>
+
+  <path class="uno" d="M720,519 L720,537"/>
+
+  <rect class="caja sim" x="520" y="539" width="400" height="56"/>
+  <text class="titulo" x="535" y="558">Motor de Webots → articulación</text>
+  <text class="chico" x="535" y="574">setVelocity y setAvailableTorque (Force en J4);</text>
+  <text class="chico" x="535" y="588">HingeJoint J1–J3, SliderJoint J4; la física la integra Webots</text>
+
+  <!-- de la interfaz a cada implementación -->
+  <path class="uno" d="M400,190 L400,233"/>
+  <path class="uno" d="M880,190 L880,233"/>
+
+  <!-- leyenda -->
+  <rect class="caja igual" x="30" y="632" width="18" height="14"/>
+  <text class="chico" x="55" y="643">el mismo código en las dos plataformas</text>
+  <rect class="caja real" x="320" y="632" width="18" height="14"/>
+  <text class="chico" x="345" y="643">solo en el robot real</text>
+  <rect class="caja sim" x="520" y="632" width="18" height="14"/>
+  <text class="chico" x="545" y="643">solo en la simulación</text>
+</svg>
