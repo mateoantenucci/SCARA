@@ -8,8 +8,13 @@ from scara.frames import chain_frames, multiply, rigid_inverse, transform_point
 from scara.kinematics import forward, load_config
 from tools.integrate_cad import derive
 
+# Los originales SolidWorks de la cátedra no van en el zip de la entrega.
+ORIGINALES = Path(__file__).resolve().parents[1] / "Modelos3D"
+SIN_ORIGINALES = "faltan los originales SolidWorks de la cátedra (Modelos3D/)"
+
 
 class CADIntegrationTests(unittest.TestCase):
+    @unittest.skipUnless(ORIGINALES.is_dir(), SIN_ORIGINALES)
     def test_wrist_pulley_uses_shoulder_and_rotates_with_the_bushing(self):
         cad = derive()
         parts = {p['instance_name']: p for p in cad['instances']}
@@ -29,6 +34,7 @@ class CADIntegrationTests(unittest.TestCase):
             self.assertLess(math.dist(transform_point(placed, [0, 0, 0]),
                                       transform_point(support, [0, 0, .031])), 1e-10)
 
+    @unittest.skipUnless(ORIGINALES.is_dir(), SIN_ORIGINALES)
     def test_output_pulleys_follow_the_driven_link(self):
         cad = derive()
         parts = {p['instance_name']: p for p in cad['instances']}
@@ -42,6 +48,7 @@ class CADIntegrationTests(unittest.TestCase):
             self.assertTrue(part['registration_evidence'])
             self.assertIsNone(part['placement_correction'])
 
+    @unittest.skipUnless(ORIGINALES.is_dir(), SIN_ORIGINALES)
     def test_motor_pulleys_sit_on_their_motor_and_the_plant_spins_them(self):
         cad = derive()
         parts = {p['instance_name']: p for p in cad['instances']}
@@ -68,6 +75,7 @@ class CADIntegrationTests(unittest.TestCase):
             self.assertIn('rotation IS ' + field + '\n', proto)
             self.assertIn('"' + field + '"', plant)
 
+    @unittest.skipUnless(ORIGINALES.is_dir(), SIN_ORIGINALES)
     def test_wrist_cap_and_bearings_use_the_coherent_housing_assembly(self):
         cad = derive()
         parts = {p['instance_name']: p for p in cad['instances']}
@@ -87,6 +95,7 @@ class CADIntegrationTests(unittest.TestCase):
             self.assertEqual(parts[name]['group'], 'forearm')
             self.assertTrue(parts[name]['meshes'])
 
+    @unittest.skipUnless(ORIGINALES.is_dir(), SIN_ORIGINALES)
     def test_saved_assembly_and_joint_lines_survive_articulation(self):
         config = load_config()
         cad = derive(config)

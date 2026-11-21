@@ -34,6 +34,9 @@ class VerificarEnlacesTests(unittest.TestCase):
         })
         self.assertEqual(enlaces_rotos(raiz), [])
 
+    # El zip de la entrega deja afuera los originales de la cátedra y el informe,
+    # que se envía aparte: sus enlaces solo se pueden verificar en el repositorio.
+    @unittest.skipUnless((ROOT / "Modelos3D").is_dir(), "entrega sin los originales de la cátedra ni el informe")
     def test_el_repo_no_tiene_enlaces_rotos(self):
         self.assertEqual(enlaces_rotos(ROOT), [])
 

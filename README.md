@@ -1,6 +1,6 @@
 # SCARA · teach & play simulado en Webots
 
-> **Para revisar el trabajo, empezá por el [informe (PDF)](INFORME-SCARA.pdf).** Sigue las secciones que pide la consigna: equipo a simular, programa externo, protocolo, interconexión, pila tecnológica y observaciones finales. Este README explica cómo ejecutarlo; lo demás de `docs/` es referencia técnica para quien quiera el detalle.
+> **Para revisar el trabajo, empezá por el informe, [`INFORME-SCARA.pdf`](INFORME-SCARA.pdf)**, que se entrega junto con este zip (en el repositorio está en la raíz). Sigue las secciones que pide la consigna: equipo a simular, programa externo, protocolo, interconexión, pila tecnológica y observaciones finales. Este README explica cómo ejecutarlo; lo demás de `docs/` es referencia técnica para quien quiera el detalle.
 
 Simulación del diseño SCARA entregado por la cátedra: se mueve el robot con jog, se graban puntos, se arman trayectorias con nombre y se reproducen con tramos PTP y LIN, con homing por sensores Hall y fallas F1–F5. **No existe un robot físico con el que comparar el modelo** (D0): los parámetros son provisionales y declaran su procedencia.
 
@@ -21,12 +21,12 @@ Lo que solo existe en la simulación (posición física, fallas, carga) va por u
 | `webots/` | Mundos, proto del robot y controlador `scara_uci`. |
 | `trayectorias/` | Trayectorias de demostración. |
 | `config/` | Parámetros del robot (geometría, límites, motores). |
-| `Modelos3D/` | Originales SolidWorks de la cátedra (piezas, ensambles y planos en PDF). |
+| `Modelos3D/` | Originales SolidWorks de la cátedra. Solo en el repositorio: el zip de la entrega no los incluye, igual que la consigna y el maestro v1. |
 | `cad/` | Derivados del CAD: STEP, STL, ensambles y propiedades. |
 | `tools/` | Scripts de conversión y auditoría del CAD y de exportación del informe. |
 | `tests/` | Pruebas automáticas (`python3 -m unittest discover`). |
 | `validation/` | Evidencia de los ensayos en Webots y de las auditorías del CAD. |
-| `docs/` | Informe en Markdown y Word, protocolo, guías de Webots y Arduino, transmisión, CAD, registro de decisiones y glosario. |
+| `docs/` | Informe en Markdown y Word (solo en el repositorio), protocolo, guías de Webots y Arduino, transmisión, CAD, registro de decisiones y glosario. |
 | `fotografias/` | Renders y fotos de referencia. |
 
 ## Qué podés abrir
