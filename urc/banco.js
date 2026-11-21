@@ -1,4 +1,4 @@
-// Banco de ensayo (solo simulación, ADR 0004, D59): las fallas F1–F5 y la
+// Banco de ensayo (solo simulación, D2, D59): las fallas F1–F5 y la
 // carga, con lo que está vigente en el simulador. Sin canal de
 // instrumentación, como con el robot real, el panel no aparece. La posición
 // simulada va junto a la estimada, en la columna de la derecha de la página.

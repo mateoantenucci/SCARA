@@ -10,7 +10,7 @@ Especificación del contrato de mensajes entre la URC y el firmware de la UCI. L
 - ASCII imprimible (bytes 32 a 126), una línea por mensaje terminada en LF. El CR se ignora, así funciona el `println` de Arduino.
 - Hasta 64 bytes con el LF. Una línea más larga se descarta entera y la UCI responde `ERR 3 largo`. Una línea con un byte fuera de ASCII imprimible se descarta entera con `ERR 1 comando` (un byte nulo cortaría la línea sin avisar).
 - Campos separados por uno o más espacios. Una línea vacía no es un mensaje.
-- Los números son enteros (ADR 0003): centésimas de grado en J1–J3 (`9000` = 90,00°) y centésimas de mm en J4 (`12000` = 120,00 mm).
+- Los números son enteros (D5): centésimas de grado en J1–J3 (`9000` = 90,00°) y centésimas de mm en J4 (`12000` = 120,00 mm).
 - Se puede hablar a mano (D4): `nc -l 9000` hace de URC frente a Webots, y el monitor serie del IDE de Arduino, frente a la UCI real.
 
 ## URC → UCI
@@ -79,7 +79,7 @@ Con segmentos en ejecución, todo `ERR` frena con rampa, como `STOP` (D52).
 
 ## Segmentos
 
-La URC planifica y el firmware ejecuta (D6, [ADR 0005](adr/0005-la-urc-planifica-el-firmware-ejecuta.md)). La URC parte cada tramo en segmentos de 20 ms y los envía con `SEG`; el firmware los encola y los ejecuta con su reloj.
+La URC planifica y el firmware ejecuta (D6, D6). La URC parte cada tramo en segmentos de 20 ms y los envía con `SEG`; el firmware los encola y los ejecuta con su reloj.
 
 **Ejecución.** Cada segmento va desde el destino del anterior hasta el suyo, en `ms` milisegundos, interpolando lineal en articulaciones: el firmware interpola en pasos de motor, que es lo mismo porque el acople es lineal. Un segmento empieza cuando termina el anterior, no cuando llega: los tiempos los marca el reloj del firmware, y una demora del enlace no se nota mientras quede cola. Si la cola se vacía, el robot se queda en el último destino y el próximo segmento arranca cuando llega; para que eso no sea un salto de velocidad, la URC planifica cada tramo hasta velocidad cero. Un segmento sin movimiento es una espera.
 
@@ -108,7 +108,7 @@ Un sensor Hall por articulación y dos imanes, centrados en los extremos del rec
 
 ## Pérdida de pasos
 
-Sin encoders, el firmware no ve los pasos que un motor no siguió (F1, [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)). Lo descubre al pasar por un Hall (D65):
+Sin encoders, el firmware no ve los pasos que un motor no siguió (F1, D8). Lo descubre al pasar por un Hall (D65):
 
 - Con el eje referenciado, su Hall se activa siempre en el mismo lugar: al entrar en el imán de abajo, en el flanco de la referencia (`HALL_EDGE`); al entrar en el del otro extremo, en `HALL_FAR_EDGE` (J1 y J2 en +130°, J3 en +145°, J4 a 117 mm). El firmware elige el imán más cercano a la posición estimada.
 - Si los pasos contados difieren de los del flanco en 2 pasos completos o más, envía `EV LOST j pasos`. Dos pasos completos son medio ciclo eléctrico: un motor pierde pasos de a cuatro, y lo que puede errar la lectura del Hall en movimiento queda por debajo.
@@ -127,7 +127,7 @@ Sin encoders, el firmware no ve los pasos que un motor no siguió (F1, [ADR 0006
 
 ## Conformidad
 
-Las conversaciones de [`firmware/test/conversaciones`](../firmware/test/conversaciones/) son la definición ejecutable de este documento ([formato](../firmware/test/conversaciones/LEEME.md)). Se corren contra los dos lados con `python -m unittest discover` (D42):
+Las conversaciones de [`firmware/test/conversaciones`](../firmware/test/conversaciones/) son la definición ejecutable de este documento ([formato](../firmware/test/conversaciones/README.md)). Se corren contra los dos lados con `python -m unittest discover` (D42):
 
 - **Firmware** (`tests/test_firmware.py`): el núcleo real, compilado para la PC con una capa de hardware falsa, recibe las órdenes `>` y tiene que responder las líneas `<`.
 - **URC** (`tests/test_conformidad.py`): una UCI falsa se conecta por TCP a la URC real y le envía las líneas `<`; la URC tiene que entenderlas y poder enviar cada orden `>`, salvo las que el firmware rechaza por su forma, que tiene que negarse a enviar con el mismo código.

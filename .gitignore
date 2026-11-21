@@ -27,3 +27,6 @@ Desktop.ini
 /webots/controllers/scara_uci/build/
 /webots/controllers/scara_uci/scara_uci
 /webots/controllers/scara_uci/scara_uci.exe
+
+# Archivos temporales de Word mientras un documento está abierto.
+~$*

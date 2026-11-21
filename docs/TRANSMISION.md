@@ -13,7 +13,7 @@ Fuente: [maestro, pp. 10–14](../00-SCARA-Master.pdf#page=10). Los datos son de
 
 ## Qué se comprobó en el CAD
 
-Se incorporaron como visuales las salidas de brazo y codo y la polea de muñeca, con colocaciones sustentadas. La elección entre las poses R y B de muñeca y las incompatibilidades pendientes están en [Montaje](cad/MONTAJE_Y_COLISIONES.md).
+Se incorporaron como visuales las salidas de brazo y codo y la polea de muñeca, con colocaciones sustentadas. La elección entre las poses R y B de muñeca y las incompatibilidades pendientes están en [Montaje](MONTAJE_Y_COLISIONES.md).
 
 La polea grande de muñeca tiene **80 dientes contados en la geometría**, coincidentes con el maestro. El plano suelto la describe como de 60: falta confirmar revisión. Las otras siete geometrías de polea son lisas y no permiten contar dientes; sus nombres y el maestro son referencias documentales.
 
@@ -48,7 +48,7 @@ Decisiones D44–D46. Ecuaciones, con θ el ángulo del eje de cada motor y los 
 J1 = θM1 / 4        J2 = (θM2 − θM1) / 4        J3 = θM3 / 4        J4 = 8 mm · vueltas de M4
 ```
 
-**Un solo microstepping.** [`firmware/config.h`](../firmware/config.h) fija `SCARA_MICROSTEPS` (8 por defecto, D9) y los 200 pasos por vuelta de los motores. Lo incluyen el núcleo, la capa del Arduino UNO y la planta de Webots (D44). Cambiarlo ahí, y en las llaves DIP de los TB6600, es todo lo que hace falta: el protocolo habla en unidades articulares (ADR 0003).
+**Un solo microstepping.** [`firmware/config.h`](../firmware/config.h) fija `SCARA_MICROSTEPS` (8 por defecto, D9) y los 200 pasos por vuelta de los motores. Lo incluyen el núcleo, la capa del Arduino UNO y la planta de Webots (D44). Cambiarlo ahí, y en las llaves DIP de los TB6600, es todo lo que hace falta: el protocolo habla en unidades articulares (D5).
 
 **El firmware** ([`firmware/transmission.h`](../firmware/transmission.h)) convierte unidades del protocolo a pasos con una fracción entera reducida, calculada al compilar:
 
@@ -83,7 +83,7 @@ Con 1/8, la velocidad de M4 son 8000 pulsos/s (el Timer1 del UNO da hasta 10 000
 
 ## Par de los motores y pérdida de pasos (N2)
 
-Decisiones D64–D67 y [ADR 0006](adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md). El modelo está en [`stepper.h`](../webots/controllers/scara_uci/stepper.h), sin Webots, y tiene sus pruebas en la PC ([`test/stepper.cpp`](../webots/controllers/scara_uci/test/stepper.cpp), `tests/test_planta.py`).
+Decisiones D64–D67 y D8. El modelo está en [`stepper.h`](../webots/controllers/scara_uci/stepper.h), sin Webots, y tiene sus pruebas en la PC ([`test/stepper.cpp`](../webots/controllers/scara_uci/test/stepper.cpp), `tests/test_planta.py`).
 
 **Cómo funciona.** Cada pulso del firmware adelanta el campo del estator un micropaso. El rotor es una inercia (la suya más la de la carga, reflejada por la transmisión) que sigue al campo con la curva par–ángulo del motor híbrido:
 

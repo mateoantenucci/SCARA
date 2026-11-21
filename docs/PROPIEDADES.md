@@ -1,6 +1,6 @@
 # Propiedades geométricas del CAD y paso a masas
 
-Este documento explica qué se calcula del CAD (volumen, centroide y tensor geométrico de cada pieza), cómo se reproduce, dónde están los resultados y cómo se pasaría de esas propiedades a las masas de [`config/scara.json`](../../config/scara.json). También dice qué falta para que las masas dejen de ser provisionales. La conversión y las colocaciones están en [Del CAD a Webots](DEL_CAD_A_WEBOTS.md); los choques, en [Montaje y colisiones](MONTAJE_Y_COLISIONES.md).
+Este documento explica qué se calcula del CAD (volumen, centroide y tensor geométrico de cada pieza), cómo se reproduce, dónde están los resultados y cómo se pasaría de esas propiedades a las masas de [`config/scara.json`](../config/scara.json). También dice qué falta para que las masas dejen de ser provisionales. La conversión y las colocaciones están en [Del CAD a Webots](DEL_CAD_A_WEBOTS.md); los choques, en [Montaje y colisiones](MONTAJE_Y_COLISIONES.md).
 
 **Estado.** El precálculo cubre los 50 STEP: 49 tipos de pieza, 51 sólidos y 39/39 instancias del modelo. Solo `B-ExtensorM3` queda excluida, por BREP inválido, y no está en el modelo. No se asignó ningún material ni se aplicó el resultado a la física activa: las masas de Webots son provisionales (ver [Límites](#límites)).
 
@@ -28,20 +28,20 @@ Ejemplo, `A-Brazo` en su marco de pieza: V = 6,9501053162809×10⁻⁵ m³ (69,5
 
 | Archivo | Contenido |
 | --- | --- |
-| [`cad/propiedades/propiedades_geometricas_39.json`](../../cad/propiedades/propiedades_geometricas_39.json) | **Vigente (39 instancias).** Volumen, centroide, tensor central, sólidos, SHA-256 de originales y STEP, advertencias del conversor, transformaciones y cobertura por grupo. |
-| [`cad/propiedades/propiedades_geometricas_39.csv`](../../cad/propiedades/propiedades_geometricas_39.csv) | Lo mismo en tabla, para una planilla. SI; las filas excluidas tienen las propiedades vacías, nunca cero. |
-| [`cad/propiedades/propiedades_geometricas.json`](../../cad/propiedades/propiedades_geometricas.json) y [`.csv`](../../cad/propiedades/propiedades_geometricas.csv) | Corrida de 38 instancias. |
-| [`tools/calcular_propiedades_cad.py`](../../tools/calcular_propiedades_cad.py) | El cálculo. Lee los artefactos existentes; no reconvierte, no repara ni escribe originales, configuración, mundo o PROTO. |
-| [`tests/test_cad_properties.py`](../../tests/test_cad_properties.py) | Escala, tensor central, rotación y composición. |
-| [`validation/cad/cad_properties.json`](../../validation/cad/cad_properties.json) | 21 pruebas aprobadas sin omisiones y contraste independiente de cinco cuerpos (corrida de 38). |
-| [`validation/cad/physics_sources.json`](../../validation/cad/physics_sources.json) | Revisión documental de fuentes de física: campos, fuentes y límites. |
-| [`validation/cad/cad_recovery_regression.json`](../../validation/cad/cad_recovery_regression.json) | 15/15 controles al comparar las tres conversiones recuperadas con y sin la corrección de curvas de intersección. |
-| [`validation/cad/cad_motion_recovery.json`](../../validation/cad/cad_motion_recovery.json) | Modelo regenerado con las piezas recuperadas: 11 snapshots, 330 colocaciones y seis llegadas aprobadas. No valida materiales. |
-| [`validation/cad/sesion8/`](../../validation/cad/sesion8/INFORME.md) | Procedencia del paso de 38 a 39 instancias. |
+| [`cad/propiedades/propiedades_geometricas_39.json`](../cad/propiedades/propiedades_geometricas_39.json) | **Vigente (39 instancias).** Volumen, centroide, tensor central, sólidos, SHA-256 de originales y STEP, advertencias del conversor, transformaciones y cobertura por grupo. |
+| [`cad/propiedades/propiedades_geometricas_39.csv`](../cad/propiedades/propiedades_geometricas_39.csv) | Lo mismo en tabla, para una planilla. SI; las filas excluidas tienen las propiedades vacías, nunca cero. |
+| [`cad/propiedades/propiedades_geometricas.json`](../cad/propiedades/propiedades_geometricas.json) y [`.csv`](../cad/propiedades/propiedades_geometricas.csv) | Corrida de 38 instancias. |
+| [`tools/calcular_propiedades_cad.py`](../tools/calcular_propiedades_cad.py) | El cálculo. Lee los artefactos existentes; no reconvierte, no repara ni escribe originales, configuración, mundo o PROTO. |
+| [`tests/test_cad_properties.py`](../tests/test_cad_properties.py) | Escala, tensor central, rotación y composición. |
+| [`validation/cad/cad_properties.json`](../validation/cad/cad_properties.json) | 21 pruebas aprobadas sin omisiones y contraste independiente de cinco cuerpos (corrida de 38). |
+| [`validation/cad/physics_sources.json`](../validation/cad/physics_sources.json) | Revisión documental de fuentes de física: campos, fuentes y límites. |
+| [`validation/cad/cad_recovery_regression.json`](../validation/cad/cad_recovery_regression.json) | 15/15 controles al comparar las tres conversiones recuperadas con y sin la corrección de curvas de intersección. |
+| [`validation/cad/cad_motion_recovery.json`](../validation/cad/cad_motion_recovery.json) | Modelo regenerado con las piezas recuperadas: 11 snapshots, 330 colocaciones y seis llegadas aprobadas. No valida materiales. |
+| [`validation/cad/sesion8/`](../validation/cad/sesion8/INFORME.md) | Procedencia del paso de 38 a 39 instancias. |
 
 ### 38 contra 39
 
-El de 39 es el vigente: agrega una sola ocurrencia, la polea de muñeca `2GT_80Teet_40Bore` (+9,166651648 cm³ en `wrist`); lo demás coincide exactamente con el de 38. El de 38 sigue en el repo porque lo leen [`tools/check_collisions.py`](../../tools/check_collisions.py) y [`tools/check_self_collisions.py`](../../tools/check_self_collisions.py),. El comando de reproducción sin `--output` sobrescribe el par sin sufijo (el de 38): para comparar, elegí siempre un destino nuevo.
+El de 39 es el vigente: agrega una sola ocurrencia, la polea de muñeca `2GT_80Teet_40Bore` (+9,166651648 cm³ en `wrist`); lo demás coincide exactamente con el de 38. El de 38 sigue en el repo porque lo leen [`tools/check_collisions.py`](../tools/check_collisions.py) y [`tools/check_self_collisions.py`](../tools/check_self_collisions.py),. El comando de reproducción sin `--output` sobrescribe el par sin sufijo (el de 38): para comparar, elegí siempre un destino nuevo.
 
 ### Vistas del CSV
 
@@ -86,7 +86,7 @@ La traslación no cambia el tensor central de una pieza; el término de ejes par
 
 ## Cómo se reproduce
 
-Para mirar el CSV o el JSON no hace falta nada. Para recalcular, Python 3.11–3.14 con [`tools/requirements-cad.txt`](../../tools/requirements-cad.txt) (OCP). El Python 3.9 del sistema no sirve para esto; el cliente y Webots siguen con su Python habitual. No hace falta descargar el conversor.
+Para mirar el CSV o el JSON no hace falta nada. Para recalcular, Python 3.11–3.14 con [`tools/requirements-cad.txt`](../tools/requirements-cad.txt) (OCP). El Python 3.9 del sistema no sirve para esto; el cliente y Webots siguen con su Python habitual. No hace falta descargar el conversor.
 
 ```sh
 python3.12 -m venv /tmp/scara-propiedades-venv
@@ -121,16 +121,16 @@ Procedimiento previsto, no aplicado:
 3. **Componente comercial:** masa, COM e inercia de su ficha o de un modelo equivalente, sin multiplicar por una densidad.
 4. **Webots:** `density -1`, masa explícita, `centerOfMass` local y tensor central en el orden `[Ixx Iyy Izz], [Ixy Ixz Iyz]`. Habría que adaptar también `scara/dynamics.py`, el generador y los ensayos, que reconstruyen cajas y una carga cúbica de 40 mm. Cambiar solo `mass`, o copiar Jc sin multiplicar por rho, deja un modelo incoherente.
 
-**Estado actual.** `config/scara.json` conserva masas exploratorias de **0,30 kg (brazo), 0,50 (antebrazo), 0,35 (muñeca) y 0,15 (herramienta)**, con centro e inercia de las cajas envolventes de cada grupo CAD. El campo `provenance.body_properties` del archivo lo declara: no son propiedades materiales validadas. La herramienta suma además la carga del banco, hasta 5 kg ([Transmisión](../TRANSMISION.md)). El maestro v2 llama a estas masas «provisionales»; la tabla de su sección de física dice «calculadas del CAD con densidades nominales», pero el precálculo no se usó para fijarlas: vale lo que dice `config/scara.json`.
+**Estado actual.** `config/scara.json` conserva masas exploratorias de **0,30 kg (brazo), 0,50 (antebrazo), 0,35 (muñeca) y 0,15 (herramienta)**, con centro e inercia de las cajas envolventes de cada grupo CAD. El campo `provenance.body_properties` del archivo lo declara: no son propiedades materiales validadas. La herramienta suma además la carga del banco, hasta 5 kg ([Transmisión](TRANSMISION.md)). El precálculo no se usó para fijarlas: vale lo que dice `config/scara.json`.
 
 ## Límites
 
 - **Materiales.** Los 50 originales llevan la etiqueta `Material <sin especificar>` (literal UTF-16LE y stream `Header2`). Acredita la etiqueta, no descarta overrides internos. No hay material físico confirmado.
-- **Materiales nominales de diseño**, a confirmar para la revisión elegida: el [maestro v1, p. 9](../../00-SCARA-Master.pdf#page=9) indica acero en L0 y tubos de aluminio en L1–L4. Los planos de B-SoporteRuleman, R-Bancada, R-ContraBancada, Z-BujeExterior, Z-BujeInterior y Z-SoporteEfector piden PLA con relleno del 30 %; los de las poleas distinguen aluminio y PLA; el ACME es de acero y la tuerca de bronce. No dan una densidad uniforme al cuerpo articulado.
+- **Materiales nominales de diseño**, a confirmar para la revisión elegida: el [maestro v1, p. 9](../00-SCARA-Master.pdf#page=9) indica acero en L0 y tubos de aluminio en L1–L4. Los planos de B-SoporteRuleman, R-Bancada, R-ContraBancada, Z-BujeExterior, Z-BujeInterior y Z-SoporteEfector piden PLA con relleno del 30 %; los de las poleas distinguen aluminio y PLA; el ACME es de acero y la tuerca de bronce. No dan una densidad uniforme al cuerpo articulado.
 - **Relleno de impresión.** El porcentaje de relleno no multiplica uniformemente volumen e inercia: importan perímetros, tapas, patrón y zonas macizas. El G-code `A-CarretelInf.gcode` es un trabajo conjunto de A-CarretelInf y A-CarretelSup (tres perímetros, tres capas, relleno rectilíneo del 30 %, perfil de 1,25 g/cm³, material sin identificar, 33,56 g en total). No se puede partir por la mitad ni atar a los CAD actuales, y no prueba que se hayan impreso.
 - **Componentes comerciales.** Motores, rodamientos y acoples tienen CAD simplificado: el volumen no dice masa ni distribución internas (carcasa y rotor). Una masa de catálogo sola no determina el tensor.
 - **Elementos auxiliares.** Tornillería, correas, cables, imanes, sensores y carga cambian COM e inercia aunque no dominen visualmente. Los imanes y escuadras de los Hall solo están en Webots, no en el CAD.
-- **Esfuerzo.** Las propiedades inerciales no determinan los torques disponibles ni la caída por falta de sostén: eso depende de motor, driver, transmisión, fricción y holgura ([Transmisión](../TRANSMISION.md)).
+- **Esfuerzo.** Las propiedades inerciales no determinan los torques disponibles ni la caída por falta de sostén: eso depende de motor, driver, transmisión, fricción y holgura ([Transmisión](TRANSMISION.md)).
 - **Solapamientos.** Las sumas no auditan interferencias internas ni uniones booleanas.
 
 Una hipótesis de densidad efectiva puede estudiarse como escenario declarado; no pasa a ser material confirmado.

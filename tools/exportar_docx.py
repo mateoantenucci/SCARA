@@ -5,7 +5,7 @@ carátula, títulos, párrafos, listas, citas, tablas, bloques de código, figur
 saltos de página. Las figuras SVG se pasan a PNG con Chrome sin interfaz.
 
     python3 tools/exportar_docx.py --fuente docs/informe/INFORME-SCARA.md \
-        --destino output/docx/SCARA-Informe-Gemelos-Digitales.docx
+        --destino docs/informe/SCARA-Informe-Gemelos-Digitales.docx
 
 Requiere python-docx y, si hay figuras SVG, Google Chrome.
 """

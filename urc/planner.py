@@ -1,7 +1,7 @@
-"""Planificador de la URC: tramos PTP y LIN en segmentos temporizados (ADR 0005).
+"""Planificador de la URC: tramos PTP y LIN en segmentos temporizados (D6).
 
 Módulo puro, sin red ni estado. Trabaja en las unidades de scara/1:
-centésimas de grado en J1–J3 y centésimas de mm en J4 (ADR 0003).
+centésimas de grado en J1–J3 y centésimas de mm en J4 (D5).
 
 Un tramo PTP interpola todas las articulaciones con un mismo perfil
 trapezoidal de velocidad, así empiezan, aceleran, frenan y llegan a la vez.

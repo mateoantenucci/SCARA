@@ -1,7 +1,7 @@
 // Prueba del firmware por su protocolo, en la PC (seam 1 de la spec #2).
 // Uso: conversacion ARCHIVO...
 // Cada archivo es una conversación scara/1 con una capa de hardware falsa;
-// el formato está en firmware/test/conversaciones/LEEME.md.
+// el formato está en firmware/test/conversaciones/README.md.
 #include <cstdio>
 #include <cstdlib>
 #include <deque>

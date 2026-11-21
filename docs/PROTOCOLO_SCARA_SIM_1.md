@@ -1,6 +1,6 @@
 # Protocolo `scara-sim/1`
 
-Especificación del canal de instrumentación entre la URC y el controlador de Webots (D2, D59, [ADR 0004](adr/0004-canal-de-instrumentacion-separado.md)). Lleva lo que solo existe en la simulación: la posición física simulada, las fallas F1–F5, la carga, los obstáculos, el empujón, el movido a mano y la recarga del mundo. El robot real no lo tiene: sin este canal, la URC funciona igual y el banco de ensayo no aparece. El contrato con el robot es [`scara/1`](PROTOCOLO_SCARA_1.md).
+Especificación del canal de instrumentación entre la URC y el controlador de Webots (D2, D59, D2). Lleva lo que solo existe en la simulación: la posición física simulada, las fallas F1–F5, la carga, los obstáculos, el empujón, el movido a mano y la recarga del mundo. El robot real no lo tiene: sin este canal, la URC funciona igual y el banco de ensayo no aparece. El contrato con el robot es [`scara/1`](PROTOCOLO_SCARA_1.md).
 
 Implementaciones: `Bench` en [`scara_uci.cpp`](../webots/controllers/scara_uci/scara_uci.cpp) y [`urc/instrumentation.py`](../urc/instrumentation.py).
 

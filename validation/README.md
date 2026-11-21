@@ -1,6 +1,6 @@
 # Evidencia de validación
 
-Qué se ensayó, dónde está la evidencia y cómo repetirla. La evidencia vigente del sistema es la [campaña de validación](campana/INFORME.md): identifica la versión ensayada por commit y SHA-256, y su resumen está en la sección 10 del [maestro v2](../docs/maestro/SCARA-Master-v2.md#10-validación).
+Qué se ensayó, dónde está la evidencia y cómo repetirla. La evidencia vigente del sistema es la [campaña de validación](campana/INFORME.md): identifica la versión ensayada por commit y SHA-256, y su resumen está en la sección 6 del [informe](../docs/informe/INFORME-SCARA.md).
 
 ## Campaña en Webots
 
@@ -28,7 +28,7 @@ Cada carpeta tiene su script, su informe y, en algunos casos, el registro de una
 
 ## Auditorías del CAD
 
-[`cad/`](cad/) guarda los resultados vigentes de las herramientas de `tools/` que auditan el modelo: recuperación de geometrías, propiedades, colisiones, autocolisiones y montajes. Se explican en [Del CAD a Webots](../docs/cad/DEL_CAD_A_WEBOTS.md), [propiedades](../docs/cad/PROPIEDADES.md) y [montaje y colisiones](../docs/cad/MONTAJE_Y_COLISIONES.md). [`cad/sesion8/`](cad/sesion8/INFORME.md) es el precálculo geométrico de las 39 instancias; su `verificar_sesion8.py` compara hashes de archivos que ya no están en el árbol y se reproduce desde el tag `pre-limpieza`.
+[`cad/`](cad/) guarda los resultados vigentes de las herramientas de `tools/` que auditan el modelo: recuperación de geometrías, propiedades, colisiones, autocolisiones y montajes. Se explican en [Del CAD a Webots](../docs/DEL_CAD_A_WEBOTS.md), [propiedades](../docs/PROPIEDADES.md) y [montaje y colisiones](../docs/MONTAJE_Y_COLISIONES.md). [`cad/sesion8/`](cad/sesion8/INFORME.md) es el precálculo geométrico de las 39 instancias; su `verificar_sesion8.py` compara hashes de archivos que ya no están en el árbol y se reproduce desde el tag `pre-limpieza`.
 
 ## Línea base de la muñeca
 

@@ -1,4 +1,4 @@
-# Controlador de Webots en C++ que aloja el firmware compartido (ADR 0002).
+# Controlador de Webots en C++ que aloja el firmware compartido (D3).
 # Se compila con el botón Build del editor de Webots o con make desde una
 # terminal (docs/UCI_WEBOTS.md). Necesita WEBOTS_HOME.
 FIRMWARE = ../../../firmware

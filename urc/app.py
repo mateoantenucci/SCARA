@@ -97,7 +97,7 @@ def _units(target):
 
 
 def handler_for(session, bench=None, manager=None, player=None):
-    """bench: el canal de instrumentación, que solo existe en la simulación (ADR 0004)."""
+    """bench: el canal de instrumentación, que solo existe en la simulación (D2)."""
     manager = manager or TrajectoryManager(session)
     player = player or Player(session, manager)
 

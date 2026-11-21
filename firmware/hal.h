@@ -1,4 +1,4 @@
-// Interfaz de capa de hardware del firmware (ADR 0002).
+// Interfaz de capa de hardware del firmware (D3).
 // El núcleo solo conoce esto. El Arduino la implementa con pines, serie y
 // timers; el controlador de Webots, con un socket TCP y la planta simulada; las
 // pruebas en la PC, con una versión falsa.

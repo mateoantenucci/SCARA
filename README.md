@@ -1,15 +1,33 @@
 # SCARA · teach & play simulado en Webots
 
-Simulación del diseño SCARA entregado por la cátedra: se mueve el robot con jog, se graban puntos, se arman trayectorias con nombre y se reproducen con tramos PTP y LIN, con homing por sensores Hall y fallas F1–F5. **No existe un robot físico con el que comparar el modelo** ([ADR 0001](docs/adr/0001-simulacion-del-diseno-sin-hardware.md)): los parámetros son provisionales y declaran su procedencia.
+> **Para revisar el trabajo, empezá por el [informe (PDF)](INFORME-SCARA.pdf).** Sigue las secciones que pide la consigna: equipo a simular, programa externo, protocolo, interconexión, pila tecnológica y observaciones finales. Este README explica cómo ejecutarlo; lo demás de `docs/` es referencia técnica para quien quiera el detalle.
+
+Simulación del diseño SCARA entregado por la cátedra: se mueve el robot con jog, se graban puntos, se arman trayectorias con nombre y se reproducen con tramos PTP y LIN, con homing por sensores Hall y fallas F1–F5. **No existe un robot físico con el que comparar el modelo** (D0): los parámetros son provisionales y declaran su procedencia.
 
 El sistema tiene dos partes que hablan el protocolo de texto [`scara/1`](docs/PROTOCOLO_SCARA_1.md) por TCP:
 
 - **URC** (`urc/`, Python, en la PC): la página web, la cinemática, el planificador de tramos y jog, el gestor de trayectorias y la reproducción.
-- **UCI**: un único firmware C++ (`firmware/`) que corre en el controlador `scara_uci` de Webots y compila para el Arduino UNO, conectado a la URC por USB y socat ([ADR 0002](docs/adr/0002-firmware-compartido-robot-real-y-simulacion.md)).
+- **UCI**: un único firmware C++ (`firmware/`) que corre en el controlador `scara_uci` de Webots y compila para el Arduino UNO, conectado a la URC por USB y socat (D3).
 
-Lo que solo existe en la simulación (posición física, fallas, carga) va por un canal de instrumentación aparte ([ADR 0004](docs/adr/0004-canal-de-instrumentacion-separado.md)).
+Lo que solo existe en la simulación (posición física, fallas, carga) va por un canal de instrumentación aparte (D2).
 
-Para entender el proyecto desde cero, leé el [documento maestro v2](docs/maestro/SCARA-Master-v2.md) y la [guía de archivos](docs/PROCESO_Y_ARCHIVOS.md). Este README es el manual de ejecución.
+## Qué hay en cada carpeta
+
+| Carpeta | Contenido |
+| --- | --- |
+| `urc/` | Programa externo (URC): servidor, página web, planificador y trayectorias. |
+| `scara/` | Cinemática, dinámica y colisiones en Python, que usa la URC. |
+| `firmware/` | Firmware C++ de la UCI, compartido por Webots y el Arduino UNO, con sus pruebas de conformidad del protocolo. |
+| `webots/` | Mundos, proto del robot y controlador `scara_uci`. |
+| `trayectorias/` | Trayectorias de demostración. |
+| `config/` | Parámetros del robot (geometría, límites, motores). |
+| `Modelos3D/` | Originales SolidWorks de la cátedra (piezas, ensambles y planos en PDF). |
+| `cad/` | Derivados del CAD: STEP, STL, ensambles y propiedades. |
+| `tools/` | Scripts de conversión y auditoría del CAD y de exportación del informe. |
+| `tests/` | Pruebas automáticas (`python3 -m unittest discover`). |
+| `validation/` | Evidencia de los ensayos en Webots y de las auditorías del CAD. |
+| `docs/` | Informe en Markdown y Word, protocolo, guías de Webots y Arduino, transmisión, CAD, registro de decisiones y glosario. |
+| `fotografias/` | Renders y fotos de referencia. |
 
 ## Qué podés abrir
 
@@ -28,7 +46,7 @@ J1 mueve el brazo, J2 el antebrazo, J3 gira la muñeca y J4 desplaza el conjunto
 
 ## Copia del proyecto
 
-El [repositorio privado](https://github.com/mateoantenucci/SCARA) conserva código, originales CAD, derivados, documentación y evidencia:
+El [repositorio](https://github.com/mateoantenucci/SCARA) conserva código, originales CAD, derivados, documentación y evidencia:
 
 ```sh
 git clone https://github.com/mateoantenucci/SCARA.git
@@ -49,13 +67,13 @@ Las tres trayectorias de demostración están en `trayectorias/`, la carpeta por
 
 ## Qué se validó y qué falta
 
-La [campaña de validación](validation/campana/INFORME.md) ([mapa de la evidencia](validation/README.md)) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la [sección 10 del maestro](docs/maestro/SCARA-Master-v2.md#10-validación). Una prueba no valida automáticamente una versión distinta.
+La [campaña de validación](validation/campana/INFORME.md) ([mapa de la evidencia](validation/README.md)) ensaya en Webots el homing (H1, H2), teach & play (T1–T3) y las fallas F1–F5, con la versión ensayada identificada por commit y SHA-256. El resumen está en la sección 6 del informe. Una prueba no valida automáticamente una versión distinta.
 
-Quedan fuera del alcance, entre otras cosas (maestro, secciones 9 y 10):
+Quedan fuera del alcance, entre otras cosas (informe, sección 6.2):
 
 - Probar el firmware con la placa real; solo se probó el camino serie con un puerto virtual y socat (D49).
 - Sustituir parámetros provisionales por datos de materiales, componentes y motores con hoja de datos.
-- Las propuestas P1 (microstepping) y P2 (sensores Hall) quedan para la revisión del profesor.
+- El microstepping 1/8 (D9) y la ubicación de los sensores Hall (D10) son propuestas del grupo que quedan para la revisión del profesor (informe, secciones 1.3 y 1.4).
 
 ## Pruebas y lectura adicional
 
@@ -69,11 +87,10 @@ En Windows usá `python` en lugar de `python3`. No requiere Webots ni Internet. 
 
 | Tema | Guía |
 | --- | --- |
-| Diseño, decisiones y validación | [Maestro v2](docs/maestro/SCARA-Master-v2.md), [registro de decisiones](docs/REGISTRO_DE_DECISIONES.md) y [ADR](docs/adr/) |
-| Archivos del proyecto | [Proceso y archivos](docs/PROCESO_Y_ARCHIVOS.md) |
+| Decisiones de diseño (D0, D1, …) | [Registro de decisiones](docs/REGISTRO_DE_DECISIONES.md) |
 | Protocolo | [`scara/1`](docs/PROTOCOLO_SCARA_1.md) y el canal de instrumentación [`scara-sim/1`](docs/PROTOCOLO_SCARA_SIM_1.md) |
-| Informe del trabajo final (Gemelos digitales) | [Informe](docs/informe/INFORME-SCARA.md) y su [versión Word](output/docx/SCARA-Informe-Gemelos-Digitales.docx) |
+| Informe del trabajo final (Gemelos digitales) | [PDF](INFORME-SCARA.pdf), con su fuente en [Markdown](docs/informe/INFORME-SCARA.md) y [Word](docs/informe/SCARA-Informe-Gemelos-Digitales.docx) |
 | Webots y Arduino | [UCI en Webots](docs/UCI_WEBOTS.md) y [UCI en el Arduino UNO](docs/ARDUINO_UNO.md) |
 | Transmisión y motores | [Transmisión](docs/TRANSMISION.md) |
-| Del CAD a Webots | [Conversión, ensambles e integración](docs/cad/DEL_CAD_A_WEBOTS.md), [propiedades](docs/cad/PROPIEDADES.md) y [montaje y colisiones](docs/cad/MONTAJE_Y_COLISIONES.md) |
-| Alcance, pendientes y vocabulario | Secciones 9 y 10 del [maestro v2](docs/maestro/SCARA-Master-v2.md) y [glosario](GLOSSARY.md) |
+| Del CAD a Webots | [Conversión, ensambles e integración](docs/DEL_CAD_A_WEBOTS.md), [propiedades](docs/PROPIEDADES.md) y [montaje y colisiones](docs/MONTAJE_Y_COLISIONES.md) |
+| Alcance, pendientes y vocabulario | Sección 6 del informe y [glosario](docs/GLOSARIO.md) |

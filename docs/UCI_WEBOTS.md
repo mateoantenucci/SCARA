@@ -41,7 +41,7 @@ Sin corriente, J4 cae por su peso y los motores pierden los pasos (D60): la posi
 | [`firmware/hal.h`](../firmware/hal.h) | Interfaz de capa de hardware: pasos, corriente de los drivers, Hall, reloj y enlace. |
 | [`firmware/transmission.h`](../firmware/transmission.h) | Conversión de unidades del protocolo a pasos y acople M1/M2. |
 | [`firmware/firmware.cpp`](../firmware/firmware.cpp) | Núcleo portable: parser de `scara/1`, corriente, jog articular y por motor, paradas, watchdog y estado. Sin memoria dinámica ni flotantes. |
-| [`firmware/test/`](../firmware/test/) | Capa de hardware falsa y conversaciones de conformidad ([formato](../firmware/test/conversaciones/LEEME.md)). |
+| [`firmware/test/`](../firmware/test/) | Capa de hardware falsa y conversaciones de conformidad ([formato](../firmware/test/conversaciones/README.md)). |
 | [`webots/controllers/scara_uci/`](../webots/controllers/scara_uci/) | Controlador C++: cliente TCP, reloj simulado y planta simulada. |
 | [`webots/worlds/scara_uci.wbt`](../webots/worlds/scara_uci.wbt) | Mundo con el mismo robot y el controlador nuevo. |
 | [`urc/`](../urc/) | URC: gramática de `scara/1` (`protocol.py`), sesión, servidor HTTP y página. |

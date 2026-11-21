@@ -1,6 +1,6 @@
 # Montaje y colisiones
 
-Este documento cubre qué protege el planificador de la URC contra choques, qué auditorías CAD lo respaldan, qué se diagnosticó y corrigió en el montaje (rodamientos, poleas, montajes restantes) y qué límites tiene todo eso. La conversión y los criterios de integración están en [DEL_CAD_A_WEBOTS.md](DEL_CAD_A_WEBOTS.md); las masas y los centros, en [PROPIEDADES.md](PROPIEDADES.md). El montaje no certifica cómo fabricar o ensamblar el robot real. Los casos ensayados están en la [campaña de validación](../../validation/campana/INFORME.md).
+Este documento cubre qué protege el planificador de la URC contra choques, qué auditorías CAD lo respaldan, qué se diagnosticó y corrigió en el montaje (rodamientos, poleas, montajes restantes) y qué límites tiene todo eso. La conversión y los criterios de integración están en [DEL_CAD_A_WEBOTS.md](DEL_CAD_A_WEBOTS.md); las masas y los centros, en [PROPIEDADES.md](PROPIEDADES.md). El montaje no certifica cómo fabricar o ensamblar el robot real. Los casos ensayados están en la [campaña de validación](../validation/campana/INFORME.md).
 
 ## 1. Qué protege el planificador
 
@@ -24,11 +24,11 @@ El entorno de ensayo: pedestal de X,Y entre −200 y +200 mm y Z entre −200 y 
 | Mitad | −15° | 120° | 0° | 120 mm |
 | Final | 30° | 120° | 0° | 120 mm |
 
-La interpolación es articular, así que el extremo sigue una curva. Un control que solo mirara destino y extremos lo aceptaría; el planificador lo rechaza ([`collisions_before_after.json`](../../validation/cad/collisions_before_after.json), comparación de aceptación de consignas, no ejecución física).
+La interpolación es articular, así que el extremo sigue una curva. Un control que solo mirara destino y extremos lo aceptaría; el planificador lo rechaza ([`collisions_before_after.json`](../validation/cad/collisions_before_after.json), comparación de aceptación de consignas, no ejecución física).
 
 ### Cajas y carga
 
-`piece_boxes()` de [`scara/collisions.py`](../../scara/collisions.py) saca una caja local por instancia del manifiesto `cad/ensambles/integracion_articulada.json`; la usan el generador de Webots y el comprobador. Las cajas agregadas por cuerpo exageraban el volumen. Los centros e inercias de la física equivalente quedan aparte. Con carga positiva, el comprobador reserva un cubo de 40 mm en el TCP (como `scara/dynamics.py`); es una reserva geométrica, no un sólido de contacto de Webots. La URC no pasa carga al comprobador.
+`piece_boxes()` de [`scara/collisions.py`](../scara/collisions.py) saca una caja local por instancia del manifiesto `cad/ensambles/integracion_articulada.json`; la usan el generador de Webots y el comprobador. Las cajas agregadas por cuerpo exageraban el volumen. Los centros e inercias de la física equivalente quedan aparte. Con carga positiva, el comprobador reserva un cubo de 40 mm en el TCP (como `scara/dynamics.py`); es una reserva geométrica, no un sólido de contacto de Webots. La URC no pasa carga al comprobador.
 
 ### Cómo se acota el recorrido
 
@@ -71,9 +71,9 @@ python tools/check_self_collisions.py   # validation/cad/self_collisions.json
 
 | Auditoría | Resultado vigente |
 | --- | --- |
-| [`check_collisions.py`](../../tools/check_collisions.py): once poses y un recorrido frente a pedestal y suelo ([`collisions.json`](../../validation/cad/collisions.json)) | `passed`. 22 instancias móviles, 19 con BREP válido y 3 excluidas (`B-CarretelSup`, `B-CarretelInf`, `Z-SoporteEfector`; conservan caja, sin volumen CAD). 4 intersecciones confirmadas: pistón y soporte plegados sobre el pedestal. |
-| Con geometrías recuperadas ([`collisions_recovery.json`](../../validation/cad/collisions_recovery.json)) | `passed`; confirma pistón y soporte invasivos. |
-| [`check_self_collisions.py`](../../tools/check_self_collisions.py): 41 poses, 34 instancias ([`self_collisions.json`](../../validation/cad/self_collisions.json)) | `interferences_found`: las 4 invasiones conocidas del soporte contra la torre y 12 solapes iniciales de cajas sin volumen CAD. |
+| [`check_collisions.py`](../tools/check_collisions.py): once poses y un recorrido frente a pedestal y suelo ([`collisions.json`](../validation/cad/collisions.json)) | `passed`. 22 instancias móviles, 19 con BREP válido y 3 excluidas (`B-CarretelSup`, `B-CarretelInf`, `Z-SoporteEfector`; conservan caja, sin volumen CAD). 4 intersecciones confirmadas: pistón y soporte plegados sobre el pedestal. |
+| Con geometrías recuperadas ([`collisions_recovery.json`](../validation/cad/collisions_recovery.json)) | `passed`; confirma pistón y soporte invasivos. |
+| [`check_self_collisions.py`](../tools/check_self_collisions.py): 41 poses, 34 instancias ([`self_collisions.json`](../validation/cad/self_collisions.json)) | `interferences_found`: las 4 invasiones conocidas del soporte contra la torre y 12 solapes iniciales de cajas sin volumen CAD. |
 
 Una interferencia encontrada es resultado de auditoría, no un fallo. Los solapes sin volumen CAD muestran por qué no se pueden activar contactos internos generales con las cajas actuales. El control rechaza los recorridos nominales de las cuatro poses invasivas, incluido el tramo intermedio. No hay un ensayo de contactos en Webots que repita estas poses.
 
@@ -83,18 +83,18 @@ Una interferencia encontrada es resultado de auditoría, no un fallo. Los solape
 
 Hay seis rodamientos simplificados (dos en base, dos en brazo, dos en muñeca): visuales, sin anillos animados ni masa. El montaje guardado tenía `R-ContraBancada` girada media vuelta respecto de `R-EnsambleRotacion`; sus lados son asimétricos y eso explica un desfase de 3 mm. Con `R-Bancada` como referencia coinciden rodamientos, agujeros y apoyos. Se adopta esa colocación ya guardada, sin desplazar la tapa ni retocarla. Falta confirmar la revisión oficial y la fijación de los aros.
 
-Reproducción: `python tools/check_wrist_bearings.py`. Respaldo: [`wrist_bearing_diagnosis.json`](../../validation/cad/wrist_bearing_diagnosis.json) (17 comprobaciones) y [`wrist_bearings.json`](../../validation/cad/wrist_bearings.json).
+Reproducción: `python tools/check_wrist_bearings.py`. Respaldo: [`wrist_bearing_diagnosis.json`](../validation/cad/wrist_bearing_diagnosis.json) (17 comprobaciones) y [`wrist_bearings.json`](../validation/cad/wrist_bearings.json).
 
 ### Poleas
 
-Las poleas de salida `2GT_80Teet_16Bore` y `2GT_60Teet_8Bore` acompañan al brazo y al antebrazo, con posiciones guardadas y fijación y fase provisionales ([`pulley_mounts.json`](../../validation/cad/pulley_mounts.json), `tools/check_pulley_mounts.py`). Para la `2GT_80Teet_40Bore` de muñeca se compararon dos colocaciones:
+Las poleas de salida `2GT_80Teet_16Bore` y `2GT_60Teet_8Bore` acompañan al brazo y al antebrazo, con posiciones guardadas y fijación y fase provisionales ([`pulley_mounts.json`](../validation/cad/pulley_mounts.json), `tools/check_pulley_mounts.py`). Para la `2GT_80Teet_40Bore` de muñeca se compararon dos colocaciones:
 
 | Colocación | Resultado |
 | --- | --- |
 | B (`B-EnsambleAntebrazo`) | Invade el escalón del buje 470,376 mm³. Descartada. |
 | R (`R-EnsambleRotacion`) | Apoya en el escalón de 31 mm, Ø40 mm, 12 mm de acople axial, sin intersección con seis vecinos. Adoptada. |
 
-La pose R se vincula al cuerpo que gira con J3; no se certifica que transmita el torque real. [`remaining_mounts.json`](../../validation/cad/remaining_mounts.json) (`tools/check_remaining_mounts.py`) conserva ambas alternativas. [`pulley_geometry.json`](../../validation/cad/pulley_geometry.json) (`tools/check_pulley_geometry.py`) cuenta dientes: solo la de muñeca modela 80 cortes (cada 4,5°). Es inspección de geometría; no acredita correas, fases ni signos. La [transmisión](../TRANSMISION.md) no se simula con correas y rotores.
+La pose R se vincula al cuerpo que gira con J3; no se certifica que transmita el torque real. [`remaining_mounts.json`](../validation/cad/remaining_mounts.json) (`tools/check_remaining_mounts.py`) conserva ambas alternativas. [`pulley_geometry.json`](../validation/cad/pulley_geometry.json) (`tools/check_pulley_geometry.py`) cuenta dientes: solo la de muñeca modela 80 cortes (cada 4,5°). Es inspección de geometría; no acredita correas, fases ni signos. La [transmisión](TRANSMISION.md) no se simula con correas y rotores.
 
 ### Piezas que siguen faltando
 

@@ -1,4 +1,4 @@
-"""Canal de instrumentación (ADR 0004): la verdad del simulador, aparte de scara/1.
+"""Canal de instrumentación (D2): la verdad del simulador, aparte de scara/1.
 
 Un controlador falso se conecta por TCP como lo hace Webots en el puerto 9001.
 La URC lo muestra en el banco de ensayo y nunca lo usa para capturar ni
@@ -179,7 +179,7 @@ class InstrumentationTests(unittest.TestCase):
 
 
 class IsolationTests(unittest.TestCase):
-    """Capturar y planificar nunca usan datos del canal de instrumentación (ADR 0004)."""
+    """Capturar y planificar nunca usan datos del canal de instrumentación (D2)."""
 
     def test_no_robot_module_imports_the_channel(self):
         for name in ("session.py", "planner.py", "validation.py", "protocol.py", "trajectories.py", "playback.py", "jog.py"):

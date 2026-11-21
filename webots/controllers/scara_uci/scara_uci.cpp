@@ -1,5 +1,5 @@
 // Controlador de Webots que hace de UCI: aloja el firmware compartido
-// (firmware/, ADR 0002) con una capa de hardware de simulación.
+// (firmware/, D3) con una capa de hardware de simulación.
 //   - Enlace: cliente TCP hacia la URC (D1), con reintentos.
 //   - Reloj: tiempo simulado (D26).
 //   - Planta simulada, transmisión N1 y par N2 (D8, D64): cuenta los pasos de
@@ -9,7 +9,7 @@
 //     acople M1/M2 y el ACME.
 //   - Sensores Hall: imanes y KY-003 del modelo; se activan por distancia (D10, D57).
 //   - Arranque cerca de la pose de reposo, con un desvío al azar (D11).
-//   - Canal de instrumentación (ADR 0004): la verdad del simulador y las fallas
+//   - Canal de instrumentación (D2): la verdad del simulador y las fallas
 //     F1–F5, la carga y la recarga, por otro puerto.
 // Argumentos (controllerArgs): --host 127.0.0.1 --port 9000 --sim-port 9001 --desvio 10
 // (grados; 0 arranca justo en la pose de reposo, como usan los ensayos).
@@ -763,7 +763,7 @@ private:
   bool cut_;
 };
 
-// --- Canal de instrumentación (ADR 0004, D59) -----------------------------
+// --- Canal de instrumentación (D2, D59) -----------------------------
 
 // Lo que solo existe en la simulación, por otro puerto (9001) y con otro
 // protocolo de texto, scara-sim/1. El robot real no lo tiene: la URC funciona

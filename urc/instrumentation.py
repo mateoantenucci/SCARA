@@ -1,4 +1,4 @@
-"""Canal de instrumentación: lo que solo existe en la simulación (ADR 0004, D59).
+"""Canal de instrumentación: lo que solo existe en la simulación (D2, D59).
 
 El controlador de Webots se conecta a la URC en otro puerto (9001) y habla
 scara-sim/1, un protocolo de texto aparte de scara/1:

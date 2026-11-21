@@ -1,4 +1,4 @@
-// Capa de hardware del Arduino UNO (ADR 0002): pines, serie y timer.
+// Capa de hardware del Arduino UNO (D3): pines, serie y timer.
 // Cableado y razones en docs/ARDUINO_UNO.md.
 #ifndef SCARA_HAL_UNO_H
 #define SCARA_HAL_UNO_H

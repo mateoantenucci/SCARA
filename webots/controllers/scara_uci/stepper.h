@@ -1,4 +1,4 @@
-// Modelo de motor paso a paso de la planta simulada, nivel N2 (ADR 0006,
+// Modelo de motor paso a paso de la planta simulada, nivel N2 (D8,
 // D64): par disponible según la velocidad y pérdida de pasos cuando la carga
 // o la aceleración lo superan. El firmware no se entera: sigue contando los
 // pulsos que emitió.

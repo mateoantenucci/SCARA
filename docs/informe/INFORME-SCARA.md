@@ -751,7 +751,7 @@ Webots reemplaza al gabinete y al brazo. El navegador, la URC y `scara/1` no cam
 | --- | --- | --- |
 | Claude Code (Anthropic), con los modelos Claude Opus 5.5, Sonnet 5.5 y Haiku 5.5. | Suscripción comercial. | Asistencia en la implementación, dirigida por el grupo: herramientas de conversión e integración del CAD y generación del mundo y del PROTO de Webots, firmware, URC, planta simulada y pruebas; además, la redacción de la documentación y los informes, la investigación de fuentes y la revisión de código. Los commits asistidos llevan la línea `Co-Authored-By` del modelo. |
 
-Las decisiones de diseño fueron del grupo, y lo que dependía del profesor se consultó en clase. Lo que produjo la IA se aceptó solo después de verificarlo: el código pasa 218 pruebas automáticas, entre ellas las conversaciones de conformidad de `scara/1` (3.12), y el sistema pasa la campaña de diez ensayos en Webots (`validation/campana/`).
+Las decisiones de diseño fueron del grupo, y lo que dependía del profesor se consultó en clase. Lo que produjo la IA se aceptó solo después de verificarlo: el código pasa 208 pruebas automáticas, entre ellas las conversaciones de conformidad de `scara/1` (3.12), y el sistema pasa la campaña de diez ensayos en Webots (`validation/campana/`).
 
 Licencias de los componentes de terceros: Webots (Apache-2.0), sldprt2step (Apache-2.0, con su `LICENSE-sldprt2step.txt` y `NOTICE-sldprt2step.txt` en `tools/patches/`), OpenCascade (LGPL-2.1 con excepción), socat (GPL-2.0), Python (PSF). SolidWorks y los modelos son de la cátedra.
 
@@ -808,7 +808,7 @@ Se desarrolló un modelo físico en Webots (`.wbt` y proto), el controlador en C
 | Trayectorias de demostración | `trayectorias/demo-*.json` |
 | Especificaciones del protocolo | `docs/PROTOCOLO_SCARA_1.md`, `docs/PROTOCOLO_SCARA_SIM_1.md`, `firmware/test/conversaciones/` |
 | Evidencia de la validación | `validation/campana/` (informe, `campana.json` y registros) |
-| Este informe | `docs/informe/INFORME-SCARA.md`, exportado a `output/docx/SCARA-Informe-Gemelos-Digitales.docx` |
+| Este informe | `docs/informe/INFORME-SCARA.md`, exportado a `docs/informe/SCARA-Informe-Gemelos-Digitales.docx` y a `INFORME-SCARA.pdf`, en la raíz |
 
 Primera ejecución, desde la raíz del repositorio:
 

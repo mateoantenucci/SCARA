@@ -6,9 +6,9 @@ La URC rechaza el pedido mientras algún driver tenga corriente, y la planta vue
 
 `DISABLE` pierde la referencia (D40), aun cuando nadie toque el brazo. Al habilitar de nuevo, la planta retiene cada eje donde quedó y el firmware conserva su cuenta, pero sigue sin referencia. La URC impide reproducir una trayectoria hasta completar el homing o declarar una referencia manual. Ninguno de esos estados depende del canal de instrumentación: el firmware y el planificador no reciben la posición física.
 
-El homing busca los Hall y vuelve a establecer la relación entre los pasos y la posición física; permite recuperar la reproducción correcta después del movimiento a mano. La referencia manual, en cambio, declara que la pose actual es el reposo: presupone que el operador llevó el brazo a sus marcas. Declararla con J1 corrido acepta un origen falso. La trayectoria se reproduce con ese corrimiento físico y sin aviso mientras no se cruce un Hall que revele la discrepancia. El banco deja observar el error, pero no lo usa para corregir ni frenar el robot (ADR 0004).
+El homing busca los Hall y vuelve a establecer la relación entre los pasos y la posición física; permite recuperar la reproducción correcta después del movimiento a mano. La referencia manual, en cambio, declara que la pose actual es el reposo: presupone que el operador llevó el brazo a sus marcas. Declararla con J1 corrido acepta un origen falso. La trayectoria se reproduce con ese corrimiento físico y sin aviso mientras no se cruce un Hall que revele la discrepancia. El banco deja observar el error, pero no lo usa para corregir ni frenar el robot (D2).
 
-Los ensayos y sus tolerancias se registran en la campaña. Esta demostración corresponde a la planta simulada del diseño; no es una medición ni una calibración de un robot construido (ADR 0001).
+Los ensayos y sus tolerancias se registran en la campaña. Esta demostración corresponde a la planta simulada del diseño; no es una medición ni una calibración de un robot construido (D0).
 
 Para repetir solo C4: `python3 validation/campana/campana.py movido_mano`. El ejecutor compila el controlador y deja el registro parcial en un temporal. La campaña completa incorpora C4 al JSON, con el commit y las huellas de lo ensayado. El ensayo usa los puertos 9132 y 9133, y elimina su mundo y trayectoria temporales al salir.
 

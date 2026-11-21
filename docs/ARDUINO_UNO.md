@@ -1,6 +1,6 @@
 # UCI en el Arduino UNO: firmware, cableado y socat
 
-El mismo firmware que corre en Webots, compilado para el Arduino UNO del robot real (D3, [ADR 0002](adr/0002-firmware-compartido-robot-real-y-simulacion.md)). Solo cambia la capa de hardware: pines, serie y timer. La URC no cambia: socat puentea el USB-serie del UNO al puerto TCP 9000 donde la URC escucha (D1, D18). No se probó con la placa: el firmware compila sin hardware y el camino serie + socat se ensaya con un puerto serie virtual.
+El mismo firmware que corre en Webots, compilado para el Arduino UNO del robot real (D3, D3). Solo cambia la capa de hardware: pines, serie y timer. La URC no cambia: socat puentea el USB-serie del UNO al puerto TCP 9000 donde la URC escucha (D1, D18). No se probó con la placa: el firmware compila sin hardware y el camino serie + socat se ensaya con un puerto serie virtual.
 
 ```text
 navegador ──HTTP 8766──► URC ◄──TCP 9000── socat ◄──USB-serie 115200── Arduino UNO
@@ -56,7 +56,7 @@ Cátodo común: PUL−, DIR− y ENA− de los cuatro drivers a la masa del Ardu
 - **Durante el reinicio, los drivers tienen corriente.** Mientras el UNO se reinicia (al abrir el puerto, D36), sus pines quedan en alta impedancia, el opto no conduce y los TB6600 sostienen a los motores. Dura lo que tarda el bootloader; después el firmware arranca y los deja sin corriente (D40). No se dan pasos en ese lapso: los STEP están en alta impedancia. Si hiciera falta asegurarlo contra ruido, una resistencia de 10 kΩ a masa en cada STEP lo resuelve.
 - **Tiempos del TB6600**: pide DIR estable al menos 5 µs antes del flanco del pulso y pulsos de al menos 2,2 µs. El generador da 50 µs de cada uno.
 
-Los KY-003 van a 5 V y masa del Arduino, con su salida al pin de la tabla. Los drivers se alimentan aparte, con 36 V (maestro v2, §5).
+Los KY-003 van a 5 V y masa del Arduino, con su salida al pin de la tabla. Los drivers se alimentan aparte, con 36 V (maestro v1).
 
 ## Pasos por timer (D48)
 

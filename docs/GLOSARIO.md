@@ -1,6 +1,6 @@
 # SCARA académico
 
-Vocabulario del robot y de su representación digital. Las decisiones se registran en el [registro de decisiones](docs/REGISTRO_DE_DECISIONES.md) y los pendientes en el [maestro v2](docs/maestro/SCARA-Master-v2.md), no en este glosario.
+Vocabulario del robot y de su representación digital. Las decisiones se registran en el [registro de decisiones](REGISTRO_DE_DECISIONES.md) y los pendientes en la sección 6 del [informe](informe/INFORME-SCARA.md), no en este glosario.
 
 ## Lenguaje
 

@@ -1,6 +1,6 @@
 """Jog verificado: el próximo segmento del jog con el robot referenciado (D28, D75).
 
-Módulo puro, sin red ni estado, en las unidades de scara/1 (ADR 0003). La
+Módulo puro, sin red ni estado, en las unidades de scara/1 (D5). La
 sesión pide un paso por vez, de 20 ms, y mantiene unos tres en la cola del
 firmware: al soltar la tecla deja de pedir, y el robot frena cuando termina
 lo encolado.

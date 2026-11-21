@@ -104,6 +104,6 @@ Resultado en el commit ensayado: **218 pruebas descubiertas: 210 en verde, 8 omi
 
 - **Entorno ensayado:** la campaña completa actual está validada y registrada en **macOS 27.2 (arm64, Apple Silicon) con Webots R2025a**. Una corrida previa, del 01/11/2026, se ejecutó en Windows 11.
 - **Sin mirar la ventana de Webots:** los ensayos corren en modo batch sin renderizado ni vista, por la URC y el canal de instrumentación. Lo visual queda para la QA humana de la R6 (los pasos del banco, en [instrumentación](../instrumentacion/INFORME.md#qué-mirar-en-la-qa-humana)).
-- **Parámetros provisionales:** límites articulares, envolventes de colisión, ubicación de los Hall (D10) y los motores de N2, que son de la familia más cercana o supuestos declarados ([ADR 0001](../../docs/adr/0001-simulacion-del-diseno-sin-hardware.md)). La campaña prueba el diseño simulado, no un robot construido.
-- **N2 sin términos cruzados ni modelo eléctrico** ([ADR 0006](../../docs/adr/0006-modelo-de-motores-pasos-y-perdida-de-pasos.md)).
+- **Parámetros provisionales:** límites articulares, envolventes de colisión, ubicación de los Hall (D10) y los motores de N2, que son de la familia más cercana o supuestos declarados (D0). La campaña prueba el diseño simulado, no un robot construido.
+- **N2 sin términos cruzados ni modelo eléctrico** (D8).
 - **El jog del teach (T1) va por órdenes `JOG` de `scara/1`**, no por el jog de la URC (que también tiene jog cartesiano). El jog de la URC lo prueban sus endpoints HTTP.

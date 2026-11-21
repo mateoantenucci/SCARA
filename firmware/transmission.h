@@ -3,7 +3,7 @@
 //
 //   J1 = θM1 / 4    J2 = (θM2 − θM1) / 4    J3 = θM3 / 4    J4 = 8 mm · vueltas de M4
 //
-// Unidades del protocolo (ADR 0003): J1–J3 en centésimas de grado y J4 en
+// Unidades del protocolo (D5): J1–J3 en centésimas de grado y J4 en
 // centésimas de mm. Las funciones toman el eje 0..3 (J1..J4, o el motor
 // M1..M4 medido en las unidades de su articulación).
 #ifndef SCARA_TRANSMISSION_H
