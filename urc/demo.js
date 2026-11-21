@@ -19,83 +19,99 @@
   const REST = [0, 0, 0, 12000];
   const PLAYING = ["reproduciendo", "pausando", "pausada"];
 
-  const STEPS = [
-    { group: "Arranque" },
-    { id: "home", label: "Habilitar y homing", note: "Sin preguntar por la pose de reposo. Tarda ~1 min.", run: home },
-    { group: "Teach & play" },
-    { id: "new", label: "Trayectoria nueva", note: "Después: jog con A/D W/S Q/E R/F, Tab cartesiano, Espacio captura.",
-      run: () => post("/api/trayectoria/nueva", { discard: true }).then(() => "Vacía, lista para capturar") },
-    { id: "play", label: "▶ Reproducir la grabada", run: () => play() },
-    { id: "square", label: "▶ Cuadrado LIN", run: () => play("demo-cuadrado-lin.json") },
-    { id: "pick", label: "▶ Pick and place", run: () => play("demo-pick-and-place.json") },
-    { group: "Falla 1 · Maceta (C1)" },
-    { id: "pot", label: "Ir al barrido y poner la maceta", note: "J1 −90°, J2 −60°, J4 40 mm; maceta en X 375, Y −217.", run: pot },
-    { id: "sweep", label: "Barrer J1 hasta +90°", run: sweep },
-    { id: "pot-off", label: "Sacar la maceta", run: () => obstacle({ tipo: "ninguno" }).then(() => "Sin maceta: el brazo queda corrido") },
-    { group: "Falla 2 · Pasos perdidos que detecta el Hall (F1)" },
-    { id: "f1-prep", label: "J4 a 60 mm, 5 kg y M4 al 50 %", run: f1Prepare },
-    { id: "f1-up", label: "Subir J4 a 10 mm", run: f1Up },
-    { id: "f1-park", label: "M4 al 100 % y estacionar", run: f1Park },
-    { group: "Falla 3 · Reinicio de la UCI (F5)" },
-    { id: "f5", label: "Subir J4 y reiniciar la UCI", danger: true, note: "Sin referencia, reinicia sin subir.", run: f5 },
-    { group: "Para ensayar" },
-    { id: "reset", label: "Restablecer el banco", note: "Sin obstáculo ni carga, corrientes al 100 % y sin fallas.", run: resetBench },
-    { id: "reload", label: "Recargar el mundo", danger: true, always: true,
-      note: "Vuelve al arranque: desvío al azar y sin referencia.", run: reload },
+  // Un bloque por fila, con los pasos numerados en el orden de la presentación.
+  // Compacto a propósito: en media pantalla del proyector entran la tabla de
+  // posiciones, este panel y el tráfico sin desplazarse.
+  const GROUPS = [
+    { title: "Arranque", note: "~1 min: busca los Hall de J4, J1, J2 y J3 y vuelve al reposo.", steps: [
+      { label: "Habilitar y homing", run: home }] },
+    { title: "Teach & play", note: "Jog: A/D J1 · W/S J2 · Q/E J3 · R/F J4 · Tab cartesiano · Espacio captura.", steps: [
+      { label: "Trayectoria nueva",
+        run: () => post("/api/trayectoria/nueva", { discard: true }).then(() => "Vacía, lista para capturar") },
+      { label: "▶ Grabada", run: () => play() },
+      { label: "▶ Cuadrado LIN", run: () => play("demo-cuadrado-lin.json") },
+      { label: "▶ Pick and place", run: () => play("demo-pick-and-place.json") }] },
+    { title: "Falla 1 · Maceta", note: "Barrido de J1 de −90° a +90° con el codo en −60°; maceta en X 375, Y −217.", steps: [
+      { label: "1 · Ir y poner la maceta", run: pot },
+      { label: "2 · Barrer", run: sweep },
+      { label: "3 · Sacar la maceta", run: () => obstacle({ tipo: "ninguno" }).then(() => "Sin maceta: el brazo queda corrido") }] },
+    { title: "Falla 2 · F1 y EV LOST", note: "5 kg en la herramienta y M4 con la mitad de corriente: menos par.", steps: [
+      { label: "1 · J4 a 60 mm, 5 kg, M4 50 %", run: f1Prepare },
+      { label: "2 · Subir J4", run: f1Up },
+      { label: "3 · M4 100 % y estacionar", run: f1Park }] },
+    { title: "Falla 3 · F5", note: "Sube J4 y reinicia el firmware: sin corriente, J4 cae. Sin referencia, solo reinicia.", steps: [
+      { label: "Subir J4 y reiniciar la UCI", danger: true, run: f5 }] },
+    { title: "Para ensayar", folded: true,
+      note: "Restablecer: sin obstáculo ni carga, corrientes al 100 %, sin fallas. Recargar: vuelve al arranque.", steps: [
+      { label: "Restablecer el banco", run: resetBench },
+      { label: "Recargar el mundo", danger: true, always: true, run: reload }] },
   ];
 
   panel.innerHTML = `
-    <div class="card-head">
+    <div class="card-head" style="margin-bottom: 4px">
       <h2>Demo de la presentación</h2>
       <span class="grow"></span>
       <span class="badge">solo con #demo</span>
     </div>
     <div id="demo-steps"></div>
-    <h3>Tráfico scara/1 (sin S, PING, SEG ni OK)</h3>
-    <pre id="demo-traffic" style="max-height: 9.5em"></pre>`;
+    <div class="demo-group"><strong>Tráfico scara/1</strong>
+      <span class="demo-status">Sin S, PING, SEG ni OK: los que llegan decenas de veces por segundo.</span></div>
+    <pre id="demo-traffic" style="max-height: none; min-height: 10.4em; margin-top: 4px"></pre>
+    <div id="demo-folded" style="margin-top: 8px"></div>`;
 
   const $ = (id) => document.getElementById(id);
   const buttons = new Map();
-  for (const step of STEPS) {
-    if (step.group) {
-      const title = document.createElement("h3");
-      title.textContent = step.group;
-      $("demo-steps").append(title);
-      continue;
-    }
+  for (const group of GROUPS) {
+    const element = document.createElement("div");
+    element.className = "demo-group";
+    const title = document.createElement("strong");
+    title.textContent = group.title;
     const row = document.createElement("div");
     row.className = "row";
-    const button = document.createElement("button");
-    button.textContent = step.label;
-    if (step.danger) button.className = "danger";
-    const status = document.createElement("span");
-    status.className = "small muted";
-    status.textContent = step.note || "";
-    button.addEventListener("click", () => run(step, button, status));
-    row.append(button, status);
-    $("demo-steps").append(row);
-    buttons.set(step, button);
+    const status = document.createElement("p");
+    status.className = "demo-status";
+    status.textContent = group.note;
+    for (const step of group.steps) {
+      const button = document.createElement("button");
+      button.textContent = step.label;
+      if (step.danger) button.className = "danger";
+      button.addEventListener("click", () => run(step, status));
+      row.append(button);
+      buttons.set(step, button);
+    }
+    element.append(title, row, status);
+    if (group.folded) {
+      // Lo que no se usa frente al profesor, plegado: no ocupa lugar en pantalla.
+      const details = document.createElement("details");
+      const summary = document.createElement("summary");
+      summary.className = "small muted";
+      summary.textContent = group.title;
+      details.append(summary, element);
+      $("demo-folded").append(details);
+    } else {
+      $("demo-steps").append(element);
+    }
   }
 
-  // Un atajo por vez; F5 y recargar el mundo interrumpen cualquier cosa.
+  // Un atajo por vez; recargar el mundo interrumpe cualquier cosa.
   let busy = false;
-  async function run(step, button, status) {
+  async function run(step, status) {
     if (busy && !step.always) return;
     const started = Date.now();
     if (!step.always) {
       busy = true;
       for (const [other, element] of buttons) element.disabled = !other.always;
     }
-    status.className = "small";
+    status.className = "demo-status";
     status.style.color = "var(--accent)";
-    status.textContent = "en curso…";
+    status.textContent = `${step.label}: en curso…`;
     try {
       const result = await step.run();
       status.style.color = "var(--ok)";
       status.textContent = `${result} · ${Math.round((Date.now() - started) / 1000)} s`;
     } catch (error) {
       status.style.color = "";
-      status.className = "small feedback";
+      status.className = "demo-status feedback";
       showError(status, error);
     } finally {
       if (!step.always) {
@@ -243,7 +259,8 @@
 
   document.addEventListener("urc:estado", () => {
     if (panel.hidden || !urcState) return;
-    const text = urcState.traffic.slice(-8).map((entry) => `${entry.direction} ${entry.line}`).join("\n");
+    // Seis líneas, las más nuevas abajo: entran sin barra de desplazamiento.
+    const text = urcState.traffic.slice(-6).map((entry) => `${entry.direction} ${entry.line}`).join("\n");
     if ($("demo-traffic").textContent !== text) $("demo-traffic").textContent = text;
   });
   const toggle = () => { panel.hidden = location.hash !== "#demo"; };

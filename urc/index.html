@@ -97,6 +97,13 @@
     .feedback summary { cursor: pointer; color: var(--error); font-weight: 600; }
     .status-line { font-size: .88rem; color: var(--muted); margin-top: 10px; }
     .status-line:empty { display: none; }
+    /* Demo de la presentación (demo.js, solo con #demo): un bloque por fila. */
+    #demo .demo-group { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 4px 12px; align-items: center; padding: 7px 0; border-top: 1px solid var(--line); }
+    #demo .demo-group > strong { font-size: .85rem; }
+    #demo .demo-status { grid-column: 2; margin: 0; font-size: .82rem; color: var(--muted); }
+    #demo .demo-status.feedback { min-height: 0; color: var(--error); }
+    #demo .demo-group button { min-height: 32px; padding: 4px 10px; font-size: .88rem; }
+    @media (max-width: 720px) { #demo .demo-group { grid-template-columns: 1fr; } #demo .demo-status { grid-column: 1; } }
 
     /* Ayuda plegada al pie de cada tarjeta: no hace falta leerla para operar. */
     details.help { margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--line); }
