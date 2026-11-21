@@ -63,7 +63,7 @@ python3 -m urc.app
 ## Recorrido de demostración (5 minutos)
 
 1. **Habilitar motores** y después **Homing…**. El robot busca un sensor Hall por eje y vuelve a la pose de reposo.
-2. **Jog:** con la página enfocada, mantené **A/D** (J1), **W/S** (J2), **Q/E** (J3) o **R/F** (J4). Para mover el extremo en X, Y, Z, cambiá el jog a modo cartesiano: las teclas son las mismas.
+2. **Jog:** con la página enfocada, mantené **A/D** (J1), **W/S** (J2), **Q/E** (J3) o **R/F** (J4). Para mover el extremo en X, Y, Z, pasá a modo cartesiano con el botón **Cartesiano** o la tecla **Tab**: las teclas son las mismas.
 3. **Reproducir una demostración:** en el panel de trayectorias, cargá `demo-pick-and-place` (o `demo-cuadrado-lin`, que hace rectas) y apretá **▶ Desde el principio**. Antes de mover, la URC valida la trayectoria entera. **Esc** o **Stop** frenan con rampa.
 4. **Grabar una propia:** llevá el robot con el jog, capturá cada punto con **Espacio** y guardala con **Guardar como…**.
 5. **Fallas:** el panel **Banco de ensayo (solo simulación)** inyecta pérdida de pasos, Hall trabado, corte del enlace, reinicio de la placa, carga y obstáculos.
