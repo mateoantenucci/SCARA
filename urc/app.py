@@ -19,7 +19,7 @@ from urc.validation import Rejection
 
 
 MAX_BODY = 1024
-SCRIPTS = {"/avisos.js", "/trajectories.js", "/banco.js"}  # los scripts de la página, junto a index.html
+SCRIPTS = {"/avisos.js", "/trajectories.js", "/banco.js", "/demo.js"}  # los scripts de la página, junto a index.html
 # Órdenes sin parámetros de la página.
 ORDERS = {
     "/api/jog/stop": Session.jog_stop,

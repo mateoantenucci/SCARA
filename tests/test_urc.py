@@ -2,6 +2,7 @@
 
 import http.client
 import json
+import re
 import socket
 import threading
 import time
@@ -795,6 +796,13 @@ class HttpTests(unittest.TestCase):
         status, body = self.request("GET", "/api/estado")
         self.assertEqual(status, 200)
         self.assertFalse(json.loads(body)["connected"])
+        # Cada script que pide la página se sirve, también el de la demo (#demo).
+        scripts = re.findall(rb'<script src="(/[a-z]+\.js)"', page)
+        self.assertIn(b"/demo.js", scripts)
+        for script in scripts:
+            with self.subTest(script=script):
+                status, _ = self.request("GET", script.decode())
+                self.assertEqual(status, 200)
 
     def test_orders_need_a_robot_and_a_local_origin(self):
         status, body = self.request("POST", "/api/jog", {"joint": 1, "direction": "+"})
