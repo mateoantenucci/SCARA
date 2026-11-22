@@ -223,6 +223,9 @@ class SessionTests(unittest.TestCase):
         second.send("S JOG 0 1 2 3 4 0 16 0")
         state = wait_for(lambda: (s := self.session.snapshot())["status"] and s)
         self.assertEqual(state["status"]["position"], [1, 2, 3, 4])
+        # El tráfico de la conexión anterior no queda mezclado con el nuevo.
+        self.assertEqual(state["traffic"][0], {"direction": ">", "line": "HELLO"})
+        self.assertNotIn({"direction": "<", "line": "ERR 1 comando"}, state["traffic"])
 
 
 class JogTestCase(unittest.TestCase):

@@ -627,6 +627,9 @@ class Session:
             self._end_jog()
             self.jog_last = None
             self._discard_outgoing()
+            # Conexión nueva (mundo recargado, Arduino reiniciado): el tráfico
+            # arranca de cero para que lo primero que se lea sea el saludo.
+            self.traffic.clear()
             self._say("UCI conectada", "ok")
             self._queue("HELLO")
 
