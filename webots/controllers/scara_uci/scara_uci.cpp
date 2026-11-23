@@ -29,6 +29,8 @@
 #include <memory>
 #include <random>
 #include <string>
+#include <utility>
+#include <vector>
 
 #ifdef _WIN32
 #include <winsock2.h>
@@ -790,6 +792,7 @@ public:
   // el firmware (F5). Con --sim-port 0 no hay canal: los ensayos que no lo
   // usan no se conectan a la URC de otro.
   bool service() {
+    reapObstacles();
     if (!enabled_) return false;
     link_.service();
     if (!link_.connected()) {
@@ -877,7 +880,7 @@ private:
           "geometry Cylinder { radius 0.06 height 0.15 } } ] "
           "boundingObject Cylinder { radius 0.06 height 0.15 } }", joint / 1000.0, value / 1000.0);
       robot_.getRoot()->getField("children")->importMFNodeFromString(-1, solid);
-      obstacle_ = robot_.getFromDef("ENSAYO_OBSTACULO");
+      obstacle_ = robot_.getRoot()->getField("children")->getMFNode(-1);
       plant_.setObstacle(obstacle_, "maceta");
       plant_.resetEffortPeaks();
     } else if (whole(std::sscanf(line.c_str(), "OBSTACULO mesa %d %ld %d%n", &joint, &value, &extra, &used), 3) &&
@@ -896,7 +899,7 @@ private:
           "geometry Box { size 0.16 0.16 %.6f } } ] "
           "boundingObject Box { size 0.16 0.16 %.6f } }", joint / 1000.0, value / 1000.0, z, height, height);
       robot_.getRoot()->getField("children")->importMFNodeFromString(-1, solid);
-      obstacle_ = robot_.getFromDef("ENSAYO_OBSTACULO");
+      obstacle_ = robot_.getRoot()->getField("children")->getMFNode(-1);
       plant_.setObstacle(obstacle_, "mesa");
       plant_.resetEffortPeaks();
     } else if (line == "RECARGA") {
@@ -908,11 +911,33 @@ private:
     }
   }
 
+  // Webots responde los contactos del brazo con la lista del último paso de
+  // física: si el obstáculo se borra mientras el brazo lo toca, esa lista
+  // apunta a un sólido que ya no existe y Webots se cae (segfault en
+  // WbSolid::extractContactPoints). Por eso primero se lo aleja, donde no
+  // toca nada, y se lo borra unos pasos después, con la lista ya renovada.
   void removeObstacle() {
     plant_.setObstacle(nullptr, "ninguno");
-    if (obstacle_) obstacle_->remove();
+    if (obstacle_) {
+      obstacle_->disableContactPointsTracking();
+      const double away[3] = {0.0, 0.0, -100.0};
+      obstacle_->getField("translation")->setSFVec3f(away);
+      retired_.push_back({obstacle_, RETIRE_STEPS});
+    }
     obstacle_ = nullptr;
     obstacleX_ = obstacleY_ = obstacleHeight_ = 0;
+  }
+
+  // Borra los obstáculos alejados cuando ya pasó la física sin ellos.
+  void reapObstacles() {
+    for (auto it = retired_.begin(); it != retired_.end();) {
+      if (--it->second > 0) {
+        ++it;
+      } else {
+        it->first->remove();
+        it = retired_.erase(it);
+      }
+    }
   }
 
   long percent(int motor) const { return std::lround(plant_.current(motor) * 100.0); }
@@ -957,6 +982,9 @@ private:
   double lastState_;
   webots::Node* obstacle_;
   int obstacleX_, obstacleY_, obstacleHeight_;
+  // Obstáculos alejados que esperan su borrado, con los pasos que faltan.
+  static const int RETIRE_STEPS = 3;
+  std::vector<std::pair<webots::Node*, int>> retired_;
   std::string line_;
 };
 
