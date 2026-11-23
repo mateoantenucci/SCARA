@@ -8,11 +8,19 @@
   const panel = document.getElementById("demo");
   // demo-barrido-ptp.json, puntos 1 y 2: J1 de −90° a +90° con el codo en
   // −60° y J4 en 40 mm. Con J1 = 0° la herramienta pasa por X 375, Y −217 mm:
-  // ahí va la maceta, como en el ensayo C1. La maceta se pone con el robot ya
-  // en el punto 1, porque el tramo desde el reposo también puede rozarla.
+  // ahí va la maceta, como en el ensayo C1. Primero se pone la maceta y después
+  // el robot va al punto 1 desde donde esté, con un rodeo: el tramo directo
+  // desde el reposo pasa a 62 mm del centro de la maceta y la choca. La
+  // herramienta siempre queda por debajo de la maceta (150 mm), así que no se
+  // la puede saltar: se sube J4 por encima del pedestal, se pliega el codo
+  // hacia el lado opuesto a la maceta, se gira J1 con el codo plegado y se
+  // abre en el punto 1 (la herramienta pasa a ≥ 11 cm del centro de la maceta).
+  // Con el codo a ±120° el soporte del efector roza la torre en algunos ángulos de J1.
   // Al 50 % el barrido dura 4,3 s y el choque se alcanza a ver (al 100 %, ~2,5 s).
   const SWEEP_START = [-90, -60, 0, 40], SWEEP_END = [90, -60, 0, 40], SWEEP_SPEED = 50;
   const POT = { tipo: "maceta", x: 375, y: -217 };
+  const POT_ANGLE = Math.atan2(POT.y, POT.x) * 180 / Math.PI;  // −30°
+  const FOLD_J2 = 100, DETOUR_J1 = -130;
   // F1 como en el ensayo de pérdida de pasos: 5 kg en total, M4 al 50 % y J4 de 60 a 10 mm.
   const F1_LOW = [0, 0, 0, 60], F1_HIGH = [0, 0, 0, 10], LOAD_G = 4850, F1_CURRENT = 50;
   const F5_J4 = 40;
@@ -32,7 +40,7 @@
       { label: "▶ Cuadrado LIN", run: () => play("demo-cuadrado-lin.json") },
       { label: "▶ Pick and place", run: () => play("demo-pick-and-place.json") }] },
     { title: "Falla 1 · Maceta", note: "Barrido de J1 de −90° a +90° con el codo en −60°; maceta en X 375, Y −217.", steps: [
-      { label: "1 · Ir y poner la maceta", run: pot },
+      { label: "1 · Poner la maceta e ir", run: pot },
       { label: "2 · Barrer", run: sweep },
       { label: "3 · Sacar la maceta", run: () => obstacle({ tipo: "ninguno" }).then(() => "Sin maceta: el brazo queda corrido") }] },
     { title: "Falla 2 · F1 y EV LOST", note: "5 kg en la herramienta y M4 con la mitad de corriente: menos par.", steps: [
@@ -54,8 +62,9 @@
       <span class="badge">solo con #demo</span>
     </div>
     <div id="demo-steps"></div>
-    <div class="demo-group"><strong>Tráfico scara/1</strong>
-      <span class="demo-status">Sin S, PING, SEG ni OK: los que llegan decenas de veces por segundo.</span></div>
+    <div class="demo-group" title="El tráfico va sin S, PING, SEG ni OK: los que llegan decenas de veces por segundo. El S, aparte: el último que llegó.">
+      <strong>Tráfico scara/1</strong>
+      <span class="demo-status">Último S: <code id="demo-status-line" style="color: var(--ink)">—</code></span></div>
     <pre id="demo-traffic" style="max-height: none; min-height: 10.4em; margin-top: 4px"></pre>
     <div id="demo-folded" style="margin-top: 8px"></div>`;
 
@@ -188,10 +197,32 @@
     return player.message || player.state;
   }
 
+  // PTP salvo que ya esté ahí: un tramo de largo cero no hace falta.
+  async function go(joints) {
+    const state = await get("/api/estado");
+    return at(state, units(joints)) ? state : ptp(joints);
+  }
+
   async function pot() {
-    await ptp(SWEEP_START);
     await obstacle(POT);
-    return "En el inicio del barrido, con la maceta";
+    const state = await get("/api/estado");
+    if (!at(state, units(SWEEP_START))) {
+      const [j1, j2, j3, j4] = state.status.position.map((value) => value / 100);
+      const rad = Math.PI / 180;
+      // Ángulo de la herramienta vista desde la torre (l1 = l2).
+      const angle = Math.atan2(Math.sin(j1 * rad) + Math.sin((j1 + j2) * rad),
+                               Math.cos(j1 * rad) + Math.cos((j1 + j2) * rad)) / rad;
+      // Plegar el codo hacia +J2 gira la herramienta hacia ángulos mayores: se aleja de la maceta.
+      const fold = angle > POT_ANGLE ? FOLD_J2 : -FOLD_J2;
+      // Con el codo plegado la herramienta pasa sobre el pedestal (tapa en z = 0):
+      // primero sube a la altura del barrido, donde la punta queda por encima.
+      const lift = Math.min(j4, SWEEP_START[3]);
+      await go([j1, j2, j3, lift]);
+      await go([j1, fold, j3, lift]);
+      await go([DETOUR_J1, fold, j3, lift]);
+      await go(SWEEP_START);
+    }
+    return "Con la maceta, en el inicio del barrido";
   }
 
   async function sweep() {
@@ -262,6 +293,11 @@
     // Seis líneas, las más nuevas abajo: entran sin barra de desplazamiento.
     const text = urcState.traffic.slice(-6).map((entry) => `${entry.direction} ${entry.line}`).join("\n");
     if ($("demo-traffic").textContent !== text) $("demo-traffic").textContent = text;
+    // El estado S tal como lo manda la UCI (20 por segundo; la página lo
+    // consulta 5): la URC guarda sus campos, en el orden de scara/1.
+    const s = urcState.connected ? urcState.status : null;
+    const line = s ? `S ${s.mode} ${s.homed} ${s.position.join(" ")} ${s.hall} ${s.free} ${s.last}` : "—";
+    if ($("demo-status-line").textContent !== line) $("demo-status-line").textContent = line;
   });
   const toggle = () => { panel.hidden = location.hash !== "#demo"; };
   window.addEventListener("hashchange", toggle);
