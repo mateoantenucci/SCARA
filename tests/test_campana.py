@@ -1,6 +1,6 @@
-"""Campaña de validación en Webots (issue #18): los escenarios y su registro.
+"""Campaña de validación en Webots: los escenarios y su registro.
 
-No corre Webots: verifica que cada escenario dice lo que exige la spec
+No corre Webots: verifica que cada escenario dice lo que exige el plan de validación
 (condición inicial, resultado esperado, tolerancia y ensayo que lo ejecuta),
 que están todos los de la spec y que el registro de la última campaña los
 trae a todos, aprobados y con la versión ensayada.

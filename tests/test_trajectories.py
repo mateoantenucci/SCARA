@@ -1,4 +1,4 @@
-"""Gestor de trayectorias de la URC por sus endpoints HTTP (seam 2 de la spec #2)."""
+"""Gestor de trayectorias de la URC por sus endpoints HTTP."""
 
 import http.client
 import json

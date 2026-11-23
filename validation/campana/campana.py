@@ -1,13 +1,13 @@
-"""Campaña de validación en Webots (issue #18, seam 3 de la spec #2).
+"""Campaña de validación en Webots.
 
 Corre, uno detrás de otro, los ensayos en Webots del camino nuevo y deja la
 evidencia de la campaña en validation/campana/campana.json: qué versión se
 ensayó (commit, y el SHA-256 del controlador compilado, del mundo, del proto
 y de las trayectorias de demostración), y para cada escenario su condición
 inicial, el resultado esperado, la tolerancia, el ensayo que lo ejecuta, su
-registro y si pasó. Cada ensayo es el de su issue, sin copiarlo: su registro
-de la campaña va a validation/campana/registros/, así que el del issue queda
-como estaba.
+registro y si pasó. Cada ensayo es el de su carpeta, sin copiarlo: su registro
+de la campaña va a validation/campana/registros/, así que el de la carpeta
+queda como estaba.
 
 Antes de correr, compila el controlador (make no hace nada si está al día),
 para que el binario ensayado salga del commit registrado.
@@ -290,7 +290,7 @@ def main(names):
         raise SystemExit("La versión cambió durante la campaña: no se registra")
     escenarios = [dict(e, resultado="OK" if all(ensayos[n]["resultado"] == "OK" for n in e["ensayos"]) else "FALLA",
                        registros=[ensayos[n]["registro"] for n in e["ensayos"]]) for e in ESCENARIOS]
-    document = {"campana": "scara/1 en Webots (issue #18)", "inicio": started,
+    document = {"campana": "scara/1 en Webots", "inicio": started,
                 "fin": datetime.datetime.now().astimezone().isoformat(timespec="seconds"),
                 "version": identity, "ensayos": ensayos, "escenarios": escenarios}
     RESULT.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")

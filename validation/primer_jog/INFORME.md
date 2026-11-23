@@ -1,4 +1,4 @@
-# Bala trazadora: jog de J1 en Webots
+# Primer jog de J1 en Webots
 
 Ensayo del 30/10/2026 en Windows 11 Pro, Webots R2025a, `g++` 14.2.0 del MSYS2 de Webots y Python 3.12.7.
 

@@ -1,6 +1,6 @@
 """Conformidad de la URC: las mismas conversaciones que prueban el firmware
 (firmware/test/conversaciones) se reproducen contra la URC real, con una UCI
-falsa conectada por TCP (seam 2 de la spec #2).
+falsa conectada por TCP.
 
 Cada renglón se lee desde el lado de la URC:
 

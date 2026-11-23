@@ -1,4 +1,4 @@
-"""Trayectorias de demostración de la defensa (issue #18): se cargan y se reproducen sin errores.
+"""Trayectorias de demostración de la defensa: se cargan y se reproducen sin errores.
 
 Cada archivo de trayectorias/ se carga con el gestor y se reproduce en loop de
 2 vueltas, como en la defensa, por los endpoints HTTP: así se validan todos

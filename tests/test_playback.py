@@ -1,4 +1,4 @@
-"""Reproducción de trayectorias por los endpoints HTTP (seam 2 de la spec #2).
+"""Reproducción de trayectorias por los endpoints HTTP.
 
 Una UCI falsa confirma cada SEG apenas llega, como un firmware con la cola
 siempre libre, y anota lo que recibe. La prueba decide qué informa el estado

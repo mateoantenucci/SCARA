@@ -23,7 +23,7 @@ Cada carpeta tiene su script, su informe y, en algunos casos, el registro de una
 
 ## Otros ensayos del sistema
 
-- [bala_trazadora](bala_trazadora/INFORME.md): primer jog de J1 de punta a punta con `scara/1`.
+- [primer_jog](primer_jog/INFORME.md): primer jog de J1 de punta a punta con `scara/1`.
 - [jog](jog/INFORME.md): jog cartesiano y jog verificado contra colisiones.
 
 ## Auditorías del CAD

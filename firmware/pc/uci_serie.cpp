@@ -1,6 +1,6 @@
 // UCI de PC por puerto serie: el núcleo del firmware con una capa de hardware
 // POSIX que hace de Arduino UNO detrás de un puerto serie virtual (un PTY).
-// Sirve para ensayar el camino serie + socat hacia la URC sin la placa (#16):
+// Sirve para ensayar el camino serie + socat hacia la URC sin la placa:
 // socat abre este puerto con la misma receta que abre el USB del UNO.
 //
 // Uso: uci_serie

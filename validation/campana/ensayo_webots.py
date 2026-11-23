@@ -1,4 +1,4 @@
-"""Escenarios de la campaña de validación (issue #18) que no cubría ningún ensayo anterior.
+"""Escenarios de la campaña de validación que no cubría ningún ensayo anterior.
 
 La sesión real de la URC (scara/1, puerto 9120), su gestor de trayectorias y
 su reproducción, con el canal de instrumentación (scara-sim/1, puerto 9121),

@@ -1,4 +1,4 @@
-"""C4: movimiento a mano, pérdida de referencia y recuperación, issue #49.
+"""C4: movimiento a mano, pérdida de referencia y recuperación.
 
 La sesión, el reproductor y la instrumentación reales contra la UCI de
 Webots. El mundo parte del reposo sin desvío, para declarar inicialmente

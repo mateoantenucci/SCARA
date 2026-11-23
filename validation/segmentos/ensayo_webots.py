@@ -1,4 +1,4 @@
-"""Ensayo de los segmentos temporizados y el tramo PTP (issue #9) en Webots.
+"""Ensayo de los segmentos temporizados y el tramo PTP en Webots.
 
 La sesión real de la URC, en el puerto 9102, contra el controlador scara_uci
 compilado, en un Webots minimizado y sin vista. El observador del ensayo de

@@ -1,4 +1,4 @@
-"""Reproducción y análisis experimental de #51.
+"""Reproducción y análisis experimental del homing con Webots más rápido que el tiempo real.
 
 «El homing aborta con ERR 4 watchdog cuando Webots corre más rápido que el tiempo real».
 
@@ -18,7 +18,7 @@ velocidad de simulación, el intervalo simulado entre mensajes se amplía y el m
 absorber fluctuaciones del host se reduce.
 
 Uso:
-  python validation/homing/reproducir_51.py [archivo_log]
+  python validation/homing/reproducir_homing_rapido.py [archivo_log]
 """
 import json
 import os
@@ -37,8 +37,8 @@ from urc.session import Session
 PORT = 9230
 WEBOTS = os.environ.get("WEBOTS", "/Applications/Webots.app/Contents/MacOS/webots" if sys.platform == "darwin"
                         else r"C:\Program Files\Webots\msys64\mingw64\bin\webots.exe")
-OBSERVER_DIR = ROOT / "webots" / "controllers" / "_obs_repro_51"
-WORLD_FILE = ROOT / "webots" / "worlds" / "_repro_51.wbt"
+OBSERVER_DIR = ROOT / "webots" / "controllers" / "_obs_repro_homing_rapido"
+WORLD_FILE = ROOT / "webots" / "worlds" / "_repro_homing_rapido.wbt"
 
 LOG_FILE = open(sys.argv[1], "w", encoding="utf-8") if len(sys.argv) > 1 else None
 
@@ -118,7 +118,7 @@ while robot.step(step) != -1:
         json.dump({"t": robot.getTime()}, f)
     os.replace(tmp, out)
 """
-    (OBSERVER_DIR / "_obs_repro_51.py").write_text(obs_code, encoding="utf-8")
+    (OBSERVER_DIR / "_obs_repro_homing_rapido.py").write_text(obs_code, encoding="utf-8")
 
 
 def cleanup_observer_controller():
@@ -164,7 +164,7 @@ def run_attempt(name, mode_args, basic_time_step=2, timeout=120):
         world += f"""
 Robot {{
   name "observador"
-  controller "_obs_repro_51"
+  controller "_obs_repro_homing_rapido"
   controllerArgs ["{sample_file.as_posix()}"]
   supervisor TRUE
 }}
@@ -272,7 +272,7 @@ Robot {{
 
 def main():
     log("======================================================================")
-    log("REPRODUCCIÓN Y ANÁLISIS EXPERIMENTAL #51")
+    log("REPRODUCCIÓN Y ANÁLISIS EXPERIMENTAL: HOMING CON WEBOTS RÁPIDO")
     log("Homing y Watchdog vs Velocidad de Simulación en Webots")
     log(f"Fecha: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     log(f"Plataforma: {sys.platform}")
@@ -309,7 +309,7 @@ def main():
 
     # --- TABLA Y CONTEOS FINALES ---
     log("\n" + "=" * 78)
-    log("TABLA DE RESULTADOS POR INTENTO (#51):")
+    log("TABLA DE RESULTADOS POR INTENTO:")
     log("=" * 78)
     log(f"{'Intento':<36} | {'Velocidad':<12} | {'Resultado':<18} | {'Ejes logrados'}")
     log("-" * 78)

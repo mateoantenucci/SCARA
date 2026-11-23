@@ -1,4 +1,4 @@
-"""Planificador PTP de la URC como módulo puro (seam 2 de la spec #2)."""
+"""Planificador PTP de la URC como módulo puro."""
 
 import math
 from pathlib import Path

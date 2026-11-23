@@ -1,10 +1,10 @@
-"""C1, C2 y C3: ensayos físicos de contacto y perturbación (spec #45, issues #46, #47 y #48).
+"""C1, C2 y C3: ensayos físicos de contacto y perturbación.
 
-- C1 (#46): maceta fija en medio del barrido largo de J1 (demo-barrido-ptp.json
+- C1: maceta fija en medio del barrido largo de J1 (demo-barrido-ptp.json
   a 25 y 100 % de velocidad y aceleración).
-- C2 (#47): mesa fija bajo el pistón (X=500, Y=0, altura=40 mm) que bloquea el
+- C2: mesa fija bajo el pistón (X=500, Y=0, altura=40 mm) que bloquea el
   descenso de J4, hace perder pasos a M4 y registra la fuerza axial real (~73,7 N).
-- C3 (#48): empujón horizontal en la punta con motores energizados: por debajo
+- C3: empujón horizontal en la punta con motores energizados: por debajo
   del par de retención (5 N) cede y vuelve sin perder pasos; por encima (12 N)
   salta ciclos eléctricos y queda corrido sin aviso hasta hacer homing.
 """
@@ -164,7 +164,7 @@ try:
         results.append(result)
     log("C1 comparación 25 % / 100 %", json.dumps(results, ensure_ascii=False))
 
-    # --- C2: J4 contra la mesa (issue #47) ---
+    # --- C2: J4 contra la mesa ---
     log("C2 inicio")
     move([0, 0, 0, 1000], speed=0.5)
     obstacle("mesa", x=500, y=0, altura=40)
@@ -201,7 +201,7 @@ try:
     log("C2", json.dumps(c2_result, ensure_ascii=False))
     log("C2 homing recupera", home())
 
-    # --- C3: Empujón en la punta (issue #48) ---
+    # --- C3: Empujón en la punta ---
     def wait_physical_still(timeout=15):
         prev = bench.snapshot()["simulated"]
         def settled():

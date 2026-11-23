@@ -1,4 +1,4 @@
-"""Ensayo de la pérdida de pasos (N2) y de F1 con EV LOST (issue #15) en Webots.
+"""Ensayo de la pérdida de pasos (N2) y de F1 con EV LOST en Webots.
 
 La sesión real de la URC (scara/1, puerto 9110) y el canal de instrumentación
 real (scara-sim/1, puerto 9111) contra el controlador scara_uci compilado, en

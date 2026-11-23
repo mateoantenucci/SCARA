@@ -1,4 +1,4 @@
-"""Tramo LIN y validación previa como módulos puros (seam 2 de la spec #2)."""
+"""Tramo LIN y validación previa como módulos puros."""
 
 import math
 import unittest

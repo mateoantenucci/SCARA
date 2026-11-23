@@ -1,4 +1,4 @@
-"""Ensayo de los sensores Hall y el homing (issue #8) en Webots.
+"""Ensayo de los sensores Hall y el homing en Webots.
 
 La sesión real de la URC, en el puerto 9103, contra el controlador scara_uci
 compilado, en un Webots minimizado y sin vista. Los Hall son imanes (Emitter

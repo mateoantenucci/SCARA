@@ -1,4 +1,4 @@
-// Prueba del firmware por su protocolo, en la PC (seam 1 de la spec #2).
+// Prueba del firmware por su protocolo, en la PC.
 // Uso: conversacion ARCHIVO...
 // Cada archivo es una conversación scara/1 con una capa de hardware falsa;
 // el formato está en firmware/test/conversaciones/README.md.

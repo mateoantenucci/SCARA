@@ -1,4 +1,4 @@
-"""Ensayo del jog cartesiano y del jog verificado (issue #11) en Webots.
+"""Ensayo del jog cartesiano y del jog verificado en Webots.
 
 La sesión real de la URC (scara/1, puerto 9116) contra el controlador
 scara_uci compilado, en un Webots minimizado y sin vista, con el canal de
@@ -46,7 +46,7 @@ WORLD = ROOT / "webots" / "worlds" / "_ensayo_jog.wbt"
 OBSERVER = ROOT / "webots" / "controllers" / "_observador_jog"
 LOG = open(sys.argv[1], "w", encoding="utf-8", newline="\n")
 REFRESH = 0.15               # s, como la página
-# El criterio del issue es frenar en unos 100 ms. Con otro Webots corriendo
+# El criterio de aceptación es frenar en unos 100 ms. Con otro Webots corriendo
 # en la PC, la simulación se traba de a ratos y el observador puede escribir
 # tarde: cada medida se acepta hasta 150 ms, y la mediana hasta 100.
 RELEASE_LIMIT = 0.15         # s de simulación

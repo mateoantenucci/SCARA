@@ -1,4 +1,4 @@
-"""Ensayo de la reproducción de trayectorias (issue #13) en Webots.
+"""Ensayo de la reproducción de trayectorias en Webots.
 
 La sesión real de la URC (scara/1, puerto 9114), el gestor de trayectorias y
 la reproducción, con el canal de instrumentación (scara-sim/1, puerto 9115)

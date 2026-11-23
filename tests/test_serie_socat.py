@@ -1,4 +1,4 @@
-"""Camino serie de punta a punta (issue #16): la URC real opera el firmware
+"""Camino serie de punta a punta: la URC real opera el firmware
 por un puerto serie virtual y socat, como operará al UNO por USB.
 
     Session (URC) ◄─TCP─ socat ─PTY─ uci_serie (núcleo + capa de hardware serie)

@@ -1,4 +1,4 @@
-"""Ensayo de punta a punta del protocolo scara/1 (issue #6) en Webots.
+"""Ensayo de punta a punta del protocolo scara/1 en Webots.
 
 La sesión real de la URC, en el puerto 9100 para no chocar con una URC o un
 Webots abiertos, contra el controlador scara_uci compilado, en un Webots

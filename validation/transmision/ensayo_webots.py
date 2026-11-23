@@ -1,4 +1,4 @@
-"""Ensayo de la transmisión N1 (issue #7) en Webots.
+"""Ensayo de la transmisión N1 en Webots.
 
 La sesión real de la URC, en el puerto 9101, contra el controlador scara_uci
 compilado, en un Webots minimizado y sin vista. Un supervisor aparte

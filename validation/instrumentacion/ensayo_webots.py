@@ -1,4 +1,4 @@
-"""Ensayo del canal de instrumentación y las fallas F2–F5 (issue #14) en Webots.
+"""Ensayo del canal de instrumentación y las fallas F2–F5 en Webots.
 
 La sesión real de la URC (scara/1, puerto 9104) y el canal de instrumentación
 real (scara-sim/1, puerto 9105) contra el controlador scara_uci compilado,
@@ -76,7 +76,7 @@ try:
     log(f"0 canal conectado ({sim['protocol']}): estimada {state['status']['position']}, simulado {sim['simulated']}, "
         f"motores con corriente {sim['power']:04b}, carga {sim['load_g']} g")
     # J4 sostiene su peso con el control de posición de Webots y cede unas
-    # décimas de mm (ensayo de transmisión, #7).
+    # décimas de mm (ensayo de transmisión).
     assert all(abs(a - b) <= limit for a, b, limit in zip(state["status"]["position"], sim["simulated"],
                                                          (STEP, STEP, STEP, 30)))
     assert sim["power"] == 0b1111

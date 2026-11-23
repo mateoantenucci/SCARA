@@ -1,5 +1,5 @@
 ======================================================================
-REPRODUCCIÓN Y ANÁLISIS EXPERIMENTAL #51
+REPRODUCCIÓN Y ANÁLISIS EXPERIMENTAL: HOMING CON WEBOTS RÁPIDO
 Homing y Watchdog vs Velocidad de Simulación en Webots
 Fecha: 2026-11-06 19:01:31
 Plataforma: darwin
@@ -113,7 +113,7 @@ INTENTO: AUXILIAR: Fast con basicTimeStep 8
    RESULTADO: Abortó con ERR 4 watchdog tras referenciar ejes []
 
 ==============================================================================
-TABLA DE RESULTADOS POR INTENTO (#51):
+TABLA DE RESULTADOS POR INTENTO:
 ==============================================================================
 Intento                              | Velocidad    | Resultado          | Ejes logrados
 ------------------------------------------------------------------------------

@@ -4,7 +4,7 @@ EXTERNPROTO "../protos/SCARA.proto"
 
 WorldInfo {
   info [
-    "UCI scara/1: el controlador C++ aloja el firmware compartido y una planta mínima (bala trazadora, issue #5)"
+    "UCI scara/1: el controlador C++ aloja el firmware compartido y una planta mínima"
   ]
   basicTimeStep 2
 }
